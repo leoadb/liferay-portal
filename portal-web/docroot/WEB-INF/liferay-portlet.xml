@@ -801,20 +801,6 @@
 		<system>true</system>
 	</portlet>
 	<portlet>
-		<portlet-name>150</portlet-name>
-		<icon>/html/icons/workflow_tasks.png</icon>
-		<struts-path>workflow_tasks</struts-path>
-		<portlet-url-class>com.liferay.portal.struts.StrutsActionPortletURL</portlet-url-class>
-		<preferences-owned-by-group>true</preferences-owned-by-group>
-		<use-default-template>false</use-default-template>
-		<private-request-attributes>false</private-request-attributes>
-		<private-session-attributes>false</private-session-attributes>
-		<render-weight>50</render-weight>
-		<header-portlet-css>/html/portlet/users_admin/css/main.css</header-portlet-css>
-		<header-portlet-css>/html/portlet/workflow_definitions/css/main.css</header-portlet-css>
-		<css-class-wrapper>portlet-workflow-tasks</css-class-wrapper>
-	</portlet>
-	<portlet>
 		<portlet-name>151</portlet-name>
 		<icon>/html/icons/workflow_definitions.png</icon>
 		<struts-path>workflow_definitions</struts-path>
