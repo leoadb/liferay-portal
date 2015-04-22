@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.workflowtasks.web.portlet;
+package com.liferay.workflow.task.web.portlet;
 
 import javax.portlet.Portlet;
 
@@ -26,7 +26,7 @@ import com.liferay.portal.util.PortletKeys;
  */
 @Component(immediate = true,
 	property = {
-		"com.liferay.portlet.icon=/icons/workflow_tasks.png",
+		"com.liferay.portlet.icon=/icons/workflow_task.png",
 		"com.liferay.portlet.control-panel-entry-category=configuration",
 		"com.liferay.portlet.control-panel-entry-weight=4.0",
 		"com.liferay.portlet.preferences-owned-by-group=true",
@@ -35,11 +35,11 @@ import com.liferay.portal.util.PortletKeys;
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.use-default-template=true",
 		"com.liferay.portlet.control-panel-entry-class=com.liferay.portal.workflow.WorkflowControlPanelEntry",
-		"javax.portlet.display-name=Workflow Tasks",
+		"javax.portlet.display-name=Workflow Task",
 		"javax.portlet.expiration-cache=0",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + PortletKeys.WORKFLOW_TASKS,
+		"javax.portlet.name=" + PortletKeys.WORKFLOW_TASK,
 		"javax.portlet.security-role-ref=administrator",
 		"javax.portlet.supports.mime-type=text/html"
 	},

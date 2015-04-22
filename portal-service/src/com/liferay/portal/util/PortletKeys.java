@@ -197,7 +197,7 @@ public class PortletKeys {
 
 	public static final String WORKFLOW_INSTANCES = "157";
 
-	public static final String WORKFLOW_TASKS = 
+	public static final String WORKFLOW_TASK = 
 			"com_liferay_workflow_task_web_portlet_WorkflowTaskPortlet";
 
 }
