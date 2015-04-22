@@ -58,12 +58,12 @@ PortletURL viewDiffsPortletURL = workflowHandler.getURLViewDiffs(classPK, lifera
 %>
 
 <portlet:renderURL var="backURL">
-	<portlet:param name="struts_action" value="/workflow_tasks/view" />
+	<portlet:param name="mvcPath" value="/view.jsp" />
 </portlet:renderURL>
 
 <liferay-ui:header
 	backURL="<%= backURL.toString() %>"
-	localizeTitle="<%= false %>"
+	localizeTitle="<%= Boolean.FALSE %>"
 	title="<%= headerTitle %>"
 />
 
