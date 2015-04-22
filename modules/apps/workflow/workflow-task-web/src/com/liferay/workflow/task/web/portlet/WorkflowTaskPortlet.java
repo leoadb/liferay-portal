@@ -34,7 +34,7 @@ import com.liferay.portal.util.PortletKeys;
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.use-default-template=true",
-		"com.liferay.portlet.control-panel-entry-class=com.liferay.portal.workflow.WorkflowControlPanelEntry",
+		"com.liferay.portlet.control-panel-entry-class=com.liferay.workflow.task.web.portlet.WorkflowTaskControlPanelEntry",
 		"javax.portlet.display-name=Workflow Task",
 		"javax.portlet.expiration-cache=0",
 		"javax.portlet.init-param.template-path=/",
