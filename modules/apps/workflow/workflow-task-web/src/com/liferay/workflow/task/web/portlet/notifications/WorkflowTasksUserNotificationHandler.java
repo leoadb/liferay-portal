@@ -12,11 +12,14 @@
  * details.
  */
 
-package com.liferay.portlet.workflowtasks.notifications;
+package com.liferay.workflow.task.web.portlet.notifications;
+
+import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.notifications.BaseUserNotificationHandler;
+import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.workflow.WorkflowHandler;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
@@ -29,7 +32,15 @@ import com.liferay.portal.util.PortletKeys;
 
 /**
  * @author Jonathan Lee
+ * @author Leonardo Barros
  */
+@Component(
+		immediate = true,
+		property = {
+			"javax.portlet.name=" + PortletKeys.MY_WORKFLOW_TASKS
+		},
+		service = UserNotificationHandler.class
+	)
 public class WorkflowTasksUserNotificationHandler
 	extends BaseUserNotificationHandler {
 
