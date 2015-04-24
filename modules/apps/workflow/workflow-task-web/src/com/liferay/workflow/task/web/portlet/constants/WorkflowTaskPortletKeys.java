@@ -12,24 +12,13 @@
  * details.
  */
 
-package com.liferay.workflow.task.web.portlet;
-
-import org.osgi.service.component.annotations.Component;
-
-import com.liferay.portal.workflow.WorkflowControlPanelEntry;
-import com.liferay.portlet.ControlPanelEntry;
-import com.liferay.workflow.task.web.portlet.constants.WorkflowTaskPortletKeys;
+package com.liferay.workflow.task.web.portlet.constants;
 
 /**
  * @author Leonardo Barros
  */
-@Component(
-	immediate = true,
-	property = {
-		"javax.portlet.name=" + WorkflowTaskPortletKeys.WORKFLOW_TASK
-	},
-	service = ControlPanelEntry.class
-)
-public class WorkflowTaskControlPanelEntry extends WorkflowControlPanelEntry {
-
+public class WorkflowTaskPortletKeys {
+	
+	public static final String WORKFLOW_TASK = 
+			"com_liferay_workflow_task_web_portlet_WorkflowTaskPortlet";
 }
