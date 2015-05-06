@@ -36,42 +36,42 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void antCommand(String fileName, String target) throws Exception {
-		LiferaySeleniumHelper.antCommand(this, fileName, target);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertAlert(String pattern) throws Exception {
-		LiferaySeleniumHelper.assertAlert(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertAlertNotPresent() throws Exception {
-		LiferaySeleniumHelper.assertAlertNotPresent(this);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void assertChecked(String locator) throws Exception {
-		LiferaySeleniumHelper.assertChecked(this, locator);
+	public void assertChecked(String pattern) throws Exception {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertConfirmation(String pattern) throws Exception {
-		LiferaySeleniumHelper.assertConfirmation(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertConsoleTextNotPresent(String text) throws Exception {
-		LiferaySeleniumHelper.assertConsoleTextNotPresent(text);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertConsoleTextPresent(String text) throws Exception {
-		LiferaySeleniumHelper.assertConsoleTextPresent(text);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertElementNotPresent(String locator) throws Exception {
-		LiferaySeleniumHelper.assertElementNotPresent(this, locator);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -81,24 +81,24 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void assertEmailBody(String index, String body) throws Exception {
-		LiferaySeleniumHelper.assertEmailBody(this, index, body);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertEmailSubject(String index, String subject)
 		throws Exception {
 
-		LiferaySeleniumHelper.assertEmailSubject(this, index, subject);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertHTMLSourceTextNotPresent(String value) throws Exception {
-		LiferaySeleniumHelper.assertHTMLSourceTextPresent(this, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertHTMLSourceTextPresent(String value) throws Exception {
-		LiferaySeleniumHelper.assertHTMLSourceTextPresent(this, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void assertLocation(String pattern) {
-		LiferaySeleniumHelper.assertLocation(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -134,44 +134,43 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void assertNotAlert(String pattern) {
-		LiferaySeleniumHelper.assertNotAlert(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertNotChecked(String locator) throws Exception {
-		LiferaySeleniumHelper.assertNotChecked(this, locator);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertNotLocation(String pattern) throws Exception {
-		LiferaySeleniumHelper.assertNotLocation(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertNotPartialText(String locator, String pattern)
 		throws Exception {
 
-		LiferaySeleniumHelper.assertNotPartialText(this, locator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertNotSelectedLabel(String selectLocator, String pattern)
 		throws Exception {
 
-		LiferaySeleniumHelper.assertNotSelectedLabel(
-			this, selectLocator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertNotText(String locator, String pattern) throws Exception {
-		LiferaySeleniumHelper.assertNotText(this, locator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertNotValue(String locator, String pattern)
 		throws Exception {
 
-		LiferaySeleniumHelper.assertNotValue(this, locator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -181,21 +180,21 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void assertPartialConfirmation(String pattern) throws Exception {
-		LiferaySeleniumHelper.assertPartialConfirmation(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertPartialText(String locator, String pattern)
 		throws Exception {
 
-		LiferaySeleniumHelper.assertPartialText(this, locator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertSelectedLabel(String selectLocator, String pattern)
 		throws Exception {
 
-		LiferaySeleniumHelper.assertSelectedLabel(this, selectLocator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -205,17 +204,17 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void assertTextNotPresent(String pattern) throws Exception {
-		LiferaySeleniumHelper.assertTextNotPresent(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertTextPresent(String pattern) throws Exception {
-		LiferaySeleniumHelper.assertTextPresent(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void assertValue(String locator, String pattern) throws Exception {
-		LiferaySeleniumHelper.assertValue(this, locator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -237,8 +236,7 @@ public abstract class BaseMobileDriverImpl
 	public void connectToEmailAccount(String emailAddress, String emailPassword)
 		throws Exception {
 
-		LiferaySeleniumHelper.connectToEmailAccount(
-			emailAddress, emailPassword);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -253,7 +251,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void deleteAllEmails() throws Exception {
-		LiferaySeleniumHelper.deleteAllEmails();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -263,7 +261,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void fail(String message) {
-		LiferaySeleniumHelper.fail(message);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -288,12 +286,12 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public String getEmailBody(String index) throws Exception {
-		return LiferaySeleniumHelper.getEmailBody(index);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String getEmailSubject(String index) throws Exception {
-		return LiferaySeleniumHelper.getEmailSubject(index);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -308,12 +306,12 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public String getNumberDecrement(String value) {
-		return LiferaySeleniumHelper.getNumberDecrement(value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String getNumberIncrement(String value) {
-		return LiferaySeleniumHelper.getNumberIncrement(value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -343,7 +341,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public boolean isConfirmation(String pattern) {
-		return LiferaySeleniumHelper.isConfirmation(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -358,7 +356,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public boolean isHTMLSourceTextPresent(String value) throws Exception {
-		return LiferaySeleniumHelper.isHTMLSourceTextPresent(this, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -368,12 +366,12 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public boolean isNotChecked(String locator) {
-		return LiferaySeleniumHelper.isNotChecked(this, locator);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean isNotPartialText(String locator, String value) {
-		return LiferaySeleniumHelper.isNotPartialText(this, locator, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -388,7 +386,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public boolean isNotValue(String locator, String value) {
-		return LiferaySeleniumHelper.isNotValue(this, locator, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -418,7 +416,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public boolean isTextNotPresent(String pattern) {
-		return LiferaySeleniumHelper.isTextNotPresent(this, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -472,7 +470,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void replyToEmail(String to, String body) throws Exception {
-		LiferaySeleniumHelper.replyToEmail(this, to, body);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -523,7 +521,7 @@ public abstract class BaseMobileDriverImpl
 	public void sendEmail(String to, String subject, String body)
 		throws Exception {
 
-		LiferaySeleniumHelper.sendEmail(this, to, subject, body);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -574,12 +572,12 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void sikuliAssertElementNotPresent(String image) throws Exception {
-		LiferaySeleniumHelper.sikuliAssertElementNotPresent(this, image);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliAssertElementPresent(String image) throws Exception {
-		LiferaySeleniumHelper.sikuliAssertElementPresent(this, image);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -591,58 +589,58 @@ public abstract class BaseMobileDriverImpl
 	public void sikuliDragAndDrop(String image, String coordString)
 		throws Exception {
 
-		LiferaySeleniumHelper.sikuliDragAndDrop(this, image, coordString);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliLeftMouseDown() throws Exception {
-		LiferaySeleniumHelper.sikuliLeftMouseDown(this);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliLeftMouseUp() throws Exception {
-		LiferaySeleniumHelper.sikuliLeftMouseUp(this);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliMouseMove(String image) throws Exception {
-		LiferaySeleniumHelper.sikuliMouseMove(this, image);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliRightMouseDown() throws Exception {
-		LiferaySeleniumHelper.sikuliRightMouseDown(this);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliRightMouseUp() throws Exception {
-		LiferaySeleniumHelper.sikuliRightMouseUp(this);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliType(String image, String value) throws Exception {
-		LiferaySeleniumHelper.sikuliType(this, image, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliUploadCommonFile(String image, String value)
 		throws Exception {
 
-		LiferaySeleniumHelper.sikuliUploadCommonFile(this, image, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliUploadTCatFile(String image, String value)
 		throws Exception {
 
-		LiferaySeleniumHelper.sikuliUploadTCatFile(this, image, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void sikuliUploadTempFile(String image, String value)
 		throws Exception {
 
-		LiferaySeleniumHelper.sikuliUploadTempFile(this, image, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -676,7 +674,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void typeScreen(String value) {
-		LiferaySeleniumHelper.typeScreen(value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -701,7 +699,7 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void waitForElementNotPresent(String locator) throws Exception {
-		LiferaySeleniumHelper.waitForElementNotPresent(this, locator);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -713,25 +711,24 @@ public abstract class BaseMobileDriverImpl
 	public void waitForNotPartialText(String locator, String value)
 		throws Exception {
 
-		LiferaySeleniumHelper.waitForNotPartialText(this, locator, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void waitForNotSelectedLabel(String selectLocator, String pattern)
 		throws Exception {
 
-		LiferaySeleniumHelper.waitForNotSelectedLabel(
-			this, selectLocator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void waitForNotText(String locator, String value) throws Exception {
-		LiferaySeleniumHelper.waitForNotText(this, locator, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void waitForNotValue(String locator, String value) throws Exception {
-		LiferaySeleniumHelper.waitForNotValue(this, locator, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -743,15 +740,14 @@ public abstract class BaseMobileDriverImpl
 	public void waitForPartialText(String locator, String value)
 		throws Exception {
 
-		LiferaySeleniumHelper.waitForPartialText(this, locator, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void waitForSelectedLabel(String selectLocator, String pattern)
 		throws Exception {
 
-		LiferaySeleniumHelper.waitForSelectedLabel(
-			this, selectLocator, pattern);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -761,17 +757,17 @@ public abstract class BaseMobileDriverImpl
 
 	@Override
 	public void waitForTextNotPresent(String value) throws Exception {
-		LiferaySeleniumHelper.waitForTextNotPresent(this, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void waitForTextPresent(String value) throws Exception {
-		LiferaySeleniumHelper.waitForTextPresent(this, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void waitForValue(String locator, String value) throws Exception {
-		LiferaySeleniumHelper.waitForValue(this, locator, value);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

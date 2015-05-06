@@ -104,7 +104,7 @@ if (!inlineEdit) {
 			}
 
 			a.cke_dialog_tab_selected {
-				display: block !important;
+				display:block !important;
 			}
 		</style>
 	</liferay-util:html-top>
@@ -184,19 +184,6 @@ if (inlineEdit && Validator.isNotNull(inlineEditSaveURL)) {
 </script>
 
 <aui:script use="<%= modules %>">
-	var getInitialContent = function() {
-		var data;
-
-		if (window['<%= HtmlUtil.escape(namespace + initMethod) %>']) {
-			data = <%= HtmlUtil.escape(namespace + initMethod) %>();
-		}
-		else {
-			data = '<%= contents != null ? HtmlUtil.escapeJS(contents) : StringPool.BLANK %>';
-		}
-
-		return data;
-	};
-
 	window['<%= name %>'] = {
 		create: function() {
 			if (!window['<%= name %>'].instanceReady) {
@@ -240,7 +227,18 @@ if (inlineEdit && Validator.isNotNull(inlineEditSaveURL)) {
 			var data;
 
 			if (!window['<%= name %>'].instanceReady) {
-				data = getInitialContent();
+				<c:choose>
+					<c:when test="<%= contents != null %>">
+						data = '<%= UnicodeFormatter.toString(contents) %>';
+					</c:when>
+					<c:otherwise>
+						data = '';
+
+						if (window['<%= HtmlUtil.escapeJS(namespace + initMethod) %>']) {
+							data = window['<%= HtmlUtil.escapeJS(namespace + initMethod) %>']();
+						}
+					</c:otherwise>
+				</c:choose>
 			}
 			else {
 				data = CKEDITOR.instances['<%= name %>'].getData();
@@ -258,18 +256,7 @@ if (inlineEdit && Validator.isNotNull(inlineEditSaveURL)) {
 		},
 
 		getText: function() {
-			var data;
-
-			if (!window['<%= name %>'].instanceReady) {
-				data = getInitialContent();
-			}
-			else {
-				var editor = CKEDITOR.instances['<%= name %>'];
-
-				data = editor.editable().getText();
-			}
-
-			return data;
+			return window['<%= name %>'].getCkData();
 		},
 
 		instanceReady: false,
@@ -286,7 +273,7 @@ if (inlineEdit && Validator.isNotNull(inlineEditSaveURL)) {
 				var dirty = ckEditor.checkDirty();
 
 				if (dirty) {
-					window['<%= HtmlUtil.escapeJS(onChangeMethod) %>'](window['<%= name %>'].getHTML());
+					window['<%= HtmlUtil.escapeJS(onChangeMethod) %>'](window['<%= name %>'].getText());
 
 					ckEditor.resetDirty();
 				}

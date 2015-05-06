@@ -17,11 +17,13 @@ package com.liferay.portal.kernel.comment;
 /**
  * @author Adolfo Pérez
  */
-public interface WorkflowableComment extends Comment {
+public interface WorkflowableComment {
 
 	public long getCompanyId();
 
 	public long getGroupId();
+
+	public Class<?> getModelClass();
 
 	public long getPrimaryKey();
 

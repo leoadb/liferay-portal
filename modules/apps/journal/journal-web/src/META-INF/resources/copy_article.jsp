@@ -25,9 +25,7 @@ String newArticleId = ParamUtil.getString(request, "newArticleId");
 double version = ParamUtil.getDouble(request, "version");
 %>
 
-<portlet:actionURL name="copyArticle" var="copyArticleURL">
-	<portlet:param name="mvcPath" value="/copy_article.jsp" />
-</portlet:actionURL>
+<portlet:actionURL name="copyArticle" var="copyArticleURL" />
 
 <aui:form action="<%= copyArticleURL %>" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />

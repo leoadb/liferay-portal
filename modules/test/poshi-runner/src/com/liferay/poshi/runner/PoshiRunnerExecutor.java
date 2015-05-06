@@ -228,7 +228,11 @@ public class PoshiRunnerExecutor {
 
 		PoshiRunnerVariablesUtil.pushCommandMap();
 
+		PoshiRunnerStackTraceUtil.pushFilePath(classCommandName, "function");
+
 		parseElement(commandElement);
+
+		PoshiRunnerStackTraceUtil.popFilePath();
 
 		PoshiRunnerVariablesUtil.popCommandMap();
 	}
@@ -302,7 +306,8 @@ public class PoshiRunnerExecutor {
 			}
 		}
 
-		PoshiRunnerStackTraceUtil.pushStackTrace(executeElement);
+		PoshiRunnerStackTraceUtil.pushStackTrace(
+			executeElement.attributeValue("line-number"));
 
 		CommandLoggerHandler.startCommand(executeElement);
 		SummaryLoggerHandler.startSummary(executeElement);
@@ -384,7 +389,11 @@ public class PoshiRunnerExecutor {
 
 		PoshiRunnerVariablesUtil.pushCommandMap();
 
+		PoshiRunnerStackTraceUtil.pushFilePath(classCommandName, "macro");
+
 		parseElement(commandElement);
+
+		PoshiRunnerStackTraceUtil.popFilePath();
 
 		PoshiRunnerVariablesUtil.popCommandMap();
 	}
@@ -415,7 +424,8 @@ public class PoshiRunnerExecutor {
 			runVarElement(executeVarElement, false);
 		}
 
-		PoshiRunnerStackTraceUtil.pushStackTrace(executeElement);
+		PoshiRunnerStackTraceUtil.pushStackTrace(
+			executeElement.attributeValue("line-number"));
 
 		SummaryLoggerHandler.startSummary(executeElement);
 

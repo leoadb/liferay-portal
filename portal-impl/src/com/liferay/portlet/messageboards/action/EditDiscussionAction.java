@@ -285,14 +285,6 @@ public class EditDiscussionAction extends PortletAction {
 		long threadId = ParamUtil.getLong(actionRequest, "threadId");
 		long parentMessageId = ParamUtil.getLong(
 			actionRequest, "parentMessageId");
-
-		if ((threadId == 0) && (parentMessageId != 0)) {
-			MBMessage parentMessage = MBMessageServiceUtil.getMessage(
-				parentMessageId);
-
-			threadId = parentMessage.getThreadId();
-		}
-
 		String subject = ParamUtil.getString(actionRequest, "subject");
 		String body = ParamUtil.getString(actionRequest, "body");
 

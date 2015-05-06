@@ -25,13 +25,13 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.MainServletTestRule;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
+import com.liferay.portlet.dynamicdatalists.model.DDLRecordSet;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureConstants;
 import com.liferay.portlet.dynamicdatamapping.service.BaseDDMServiceTestCase;
@@ -50,7 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,9 +66,12 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(), MainServletTestRule.INSTANCE);
 
-	@BeforeClass
-	public static void setUpClass() {
-		_CLASS_NAME_ID = PortalUtil.getClassNameId(StringUtil.randomString());
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_classNameId = PortalUtil.getClassNameId(DDLRecordSet.class);
 	}
 
 	@Test
@@ -76,7 +79,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-boolean-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Boolean Field Structure", definition,
+			_classNameId, null, "Boolean Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -113,7 +116,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-date-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Date Field Structure", definition,
+			_classNameId, null, "Date Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -155,7 +158,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-decimal-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Decimal Field Structure", definition,
+			_classNameId, null, "Decimal Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -192,7 +195,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-doc-lib-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Documents and Media Field Structure",
+			_classNameId, null, "Documents and Media Field Structure",
 			definition, StorageType.JSON.getValue(),
 			DDMStructureConstants.TYPE_DEFAULT);
 
@@ -249,7 +252,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-integer-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Integer Field Structure", definition,
+			_classNameId, null, "Integer Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -286,7 +289,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-link-to-page-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Link to Page Field Structure", definition,
+			_classNameId, null, "Link to Page Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -323,7 +326,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-number-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Number Field Structure", definition,
+			_classNameId, null, "Number Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -360,7 +363,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-radio-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Radio Field Structure", definition,
+			_classNameId, null, "Radio Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -396,7 +399,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-select-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Select Field Structure", definition,
+			_classNameId, null, "Select Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -432,7 +435,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 		String definition = read("ddm-structure-text-field.xsd");
 
 		DDMStructure structure = addStructure(
-			_CLASS_NAME_ID, null, "Text Field Structure", definition,
+			_classNameId, null, "Text Field Structure", definition,
 			StorageType.JSON.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 
 		Fields fields = new Fields();
@@ -536,8 +539,7 @@ public class StorageAdapterTest extends BaseDDMServiceTestCase {
 			expectedFieldsString, jsonSerializer.serializeDeep(actualFields));
 	}
 
-	private static long _CLASS_NAME_ID;
-
+	private long _classNameId;
 	private final Locale _enLocale = LocaleUtil.fromLanguageId("en_US");
 	private final StorageAdapter _jsonStorageAdapater =
 		new JSONStorageAdapter();

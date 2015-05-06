@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.messaging.MessageBusEventListener;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.nio.intraband.RegistrationReference;
 import com.liferay.portal.kernel.nio.intraband.messaging.DestinationConfigurationProcessCallable;
+import com.liferay.portal.kernel.nio.intraband.messaging.IntrabandBridgeDestination;
 import com.liferay.portal.kernel.nio.intraband.rpc.IntrabandRPCUtil;
 import com.liferay.portal.kernel.resiliency.spi.SPI;
 import com.liferay.portal.kernel.resiliency.spi.SPIUtil;
@@ -281,6 +282,10 @@ public abstract class AbstractMessagingConfigurator
 		}
 
 		for (Destination destination : _destinations) {
+			if (SPIUtil.isSPI()) {
+				destination = new IntrabandBridgeDestination(destination);
+			}
+
 			_messageBus.addDestination(destination);
 		}
 

@@ -21,14 +21,12 @@ int index = GetterUtil.getInteger(request.getAttribute("liferay-ui:discussion:in
 int initialIndex = GetterUtil.getInteger(request.getAttribute("liferay-ui:discussion:index"));
 int rootIndexPage = GetterUtil.getInteger(request.getAttribute("liferay-ui:discussion:rootIndexPage"));
 
-CommentManager commentManager = CommentManagerUtil.getCommentManager();
-
 DiscussionTaglibHelper discussionTaglibHelper = new DiscussionTaglibHelper(request);
 DiscussionRequestHelper discussionRequestHelper = new DiscussionRequestHelper(request);
 
-Discussion discussion = commentManager.getDiscussion(discussionTaglibHelper.getUserId(), discussionRequestHelper.getScopeGroupId(), discussionTaglibHelper.getClassName(), discussionTaglibHelper.getClassPK(), ServiceContextFactory.getInstance(request));
+CommentSectionDisplayContext commentSectionDisplayContext = new MBCommentSectionDisplayContext(discussionTaglibHelper, discussionRequestHelper);
 
-Comment rootComment = discussion.getRootComment();
+Comment rootComment = commentSectionDisplayContext.getRootComment();
 
 CommentIterator commentIterator = rootComment.getThreadCommentsIterator(rootIndexPage);
 
@@ -41,8 +39,9 @@ while (commentIterator.hasNext()) {
 
 	Comment comment = commentIterator.next();
 
+	request.setAttribute("liferay-ui:discussion:commentSectionDisplayContext", commentSectionDisplayContext);
 	request.setAttribute("liferay-ui:discussion:currentComment", comment);
-	request.setAttribute("liferay-ui:discussion:discussion", discussion);
+	request.setAttribute("liferay-ui:discussion:rootComment", rootComment);
 %>
 
 	<liferay-util:include page="/html/taglib/ui/discussion/view_message_thread.jsp" />

@@ -57,7 +57,7 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 	@Override
 	public <K, S> ServiceTrackerMap<K, List<S>> multiValueMap(
 		Class<S> clazz, String filterString,
-		final ServiceReferenceMapper<K, ? super S> serviceReferenceMapper) {
+		final ServiceReferenceMapper<K, S> serviceReferenceMapper) {
 
 		ServiceReferenceMapperWrapper<K, S> serviceReferenceMapperWrapper =
 			new ServiceReferenceMapperWrapper<>(serviceReferenceMapper);
@@ -80,7 +80,7 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 	@Override
 	public <K, S> ServiceTrackerMap<K, List<S>> multiValueMap(
 		Class<S> clazz, String filterString,
-		ServiceReferenceMapper<K, ? super S> serviceReferenceMapper,
+		ServiceReferenceMapper<K, S> serviceReferenceMapper,
 		Comparator<ServiceReference<S>> comparator) {
 
 		ServiceReferenceMapperWrapper<K, S> serviceReferenceMapperWrapper =
@@ -107,7 +107,7 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 	@Override
 	public <K, SR, S> ServiceTrackerMap<K, List<S>> multiValueMap(
 		Class<SR> clazz, String filterString,
-		ServiceReferenceMapper<K, ? super SR> serviceReferenceMapper,
+		ServiceReferenceMapper<K, SR> serviceReferenceMapper,
 		ServiceTrackerCustomizer<SR, S> serviceTrackerCustomizer) {
 
 		ServiceReferenceMapperWrapper<K, SR> serviceReferenceMapperWrapper =
@@ -134,7 +134,7 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 	@Override
 	public <K, SR, S> ServiceTrackerMap<K, List<S>> multiValueMap(
 		Class<SR> clazz, String filterString,
-		ServiceReferenceMapper<K, ? super SR> serviceReferenceMapper,
+		ServiceReferenceMapper<K, SR> serviceReferenceMapper,
 		ServiceTrackerCustomizer<SR, S> serviceTrackerCustomizer,
 		Comparator<ServiceReference<SR>> comparator) {
 
@@ -207,7 +207,7 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 	@Override
 	public <K, S> ServiceTrackerMap<K, S> singleValueMap(
 		Class<S> clazz, String filterString,
-		ServiceReferenceMapper<K, ? super S> serviceReferenceMapper) {
+		ServiceReferenceMapper<K, S> serviceReferenceMapper) {
 
 		ServiceReferenceMapperWrapper<K, S> serviceReferenceMapperWrapper =
 			new ServiceReferenceMapperWrapper<>(serviceReferenceMapper);
@@ -230,7 +230,7 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 	@Override
 	public <K, S> ServiceTrackerMap<K, S> singleValueMap(
 		Class<S> clazz, String filterString,
-		ServiceReferenceMapper<K, ? super S> serviceReferenceMapper,
+		ServiceReferenceMapper<K, S> serviceReferenceMapper,
 		final Comparator<ServiceReference<S>> comparator) {
 
 		ServiceReferenceMapperWrapper<K, S> serviceReferenceMapperWrapper =
@@ -257,7 +257,7 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 	@Override
 	public <K, SR, S> ServiceTrackerMap<K, S> singleValueMap(
 		Class<SR> clazz, String filterString,
-		ServiceReferenceMapper<K, ? super SR> serviceReferenceMapper,
+		ServiceReferenceMapper<K, SR> serviceReferenceMapper,
 		ServiceTrackerCustomizer<SR, S> serviceTrackerCustomizer) {
 
 		ServiceReferenceMapperWrapper<K, SR> serviceReferenceMapperWrapper =
@@ -284,7 +284,7 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 	@Override
 	public <K, SR, S> ServiceTrackerMap<K, S> singleValueMap(
 		Class<SR> clazz, String filterString,
-		ServiceReferenceMapper<K, ? super SR> serviceReferenceMapper,
+		ServiceReferenceMapper<K, SR> serviceReferenceMapper,
 		ServiceTrackerCustomizer<SR, S> serviceTrackerCustomizer,
 		Comparator<ServiceReference<SR>> comparator) {
 
@@ -388,13 +388,12 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 			com.liferay.osgi.service.tracker.map.ServiceReferenceMapper<K, S> {
 
 		public ServiceReferenceMapperWrapper(
-			ServiceReferenceMapper<K, ? super S> serviceReferenceMapper) {
+			ServiceReferenceMapper<K, S> serviceReferenceMapper) {
 
 			_serviceReferenceMapper = serviceReferenceMapper;
 		}
 
 		@Override
-		@SuppressWarnings({"rawtypes", "unchecked"})
 		public void map(
 			org.osgi.framework.ServiceReference<S> serviceReference,
 			final Emitter<K> emitter) {
@@ -403,12 +402,10 @@ public class ServiceTrackerMapFactoryImpl implements ServiceTrackerMapFactory {
 				new ServiceReferenceWrapper<>(serviceReference);
 
 			_serviceReferenceMapper.map(
-				(ServiceReferenceWrapper)serviceReferenceWrapper,
-				new EmitterWrapper<>(emitter));
+				serviceReferenceWrapper, new EmitterWrapper<>(emitter));
 		}
 
-		private final ServiceReferenceMapper<K, ? super S>
-			_serviceReferenceMapper;
+		private final ServiceReferenceMapper<K, S> _serviceReferenceMapper;
 
 	}
 

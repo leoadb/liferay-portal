@@ -18,7 +18,6 @@ import com.btr.proxy.search.ProxySearch;
 
 import com.liferay.sync.engine.documentlibrary.handler.Handler;
 import com.liferay.sync.engine.util.PropsValues;
-import com.liferay.sync.engine.util.ReleaseInfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -258,7 +257,12 @@ public class Session {
 
 		_buildHttpPostBody(httpPost, parameters);
 
-		_prepareHttpRequest(httpPost);
+		if (_oAuthEnabled) {
+			_oAuthConsumer.sign(httpPost);
+		}
+		else {
+			httpPost.setHeader("Sync-JWT", _token);
+		}
 
 		return _httpClient.execute(_httpHost, httpPost, _getBasicHttpContext());
 	}
@@ -270,7 +274,12 @@ public class Session {
 
 		_buildHttpPostBody(httpPost, parameters);
 
-		_prepareHttpRequest(httpPost);
+		if (_oAuthEnabled) {
+			_oAuthConsumer.sign(httpPost);
+		}
+		else {
+			httpPost.setHeader("Sync-JWT", _token);
+		}
 
 		return _httpClient.execute(
 			_httpHost, httpPost, handler, _getBasicHttpContext());
@@ -291,7 +300,12 @@ public class Session {
 			HttpContext httpContext)
 		throws Exception {
 
-		_prepareHttpRequest(httpRequest);
+		if (_oAuthEnabled) {
+			_oAuthConsumer.sign(httpRequest);
+		}
+		else {
+			httpRequest.setHeader("Sync-JWT", _token);
+		}
 
 		return _httpClient.execute(
 			_httpHost, httpRequest, handler, httpContext);
@@ -301,7 +315,12 @@ public class Session {
 			HttpRequest httpRequest, HttpContext httpContext)
 		throws Exception {
 
-		_prepareHttpRequest(httpRequest);
+		if (_oAuthEnabled) {
+			_oAuthConsumer.sign(httpRequest);
+		}
+		else {
+			httpRequest.setHeader("Sync-JWT", _token);
+		}
 
 		return _httpClient.execute(_httpHost, httpRequest, httpContext);
 	}
@@ -526,18 +545,6 @@ public class Session {
 		}
 
 		return new UrlEncodedFormEntity(nameValuePairs);
-	}
-
-	private void _prepareHttpRequest(HttpRequest httpRequest) throws Exception {
-		httpRequest.setHeader(
-			"Sync-Build", String.valueOf(ReleaseInfo.getBuildNumber()));
-
-		if (_oAuthEnabled) {
-			_oAuthConsumer.sign(httpRequest);
-		}
-		else {
-			httpRequest.setHeader("Sync-JWT", _token);
-		}
 	}
 
 	private static final Logger _logger = LoggerFactory.getLogger(

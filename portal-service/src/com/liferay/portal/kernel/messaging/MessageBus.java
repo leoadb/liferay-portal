@@ -43,15 +43,10 @@ public interface MessageBus {
 
 	public Destination removeDestination(String destinationName);
 
-	public Destination removeDestination(
-		String destinationName, boolean closeOnRemove);
-
 	public boolean removeMessageBusEventListener(
 		MessageBusEventListener messageBusEventListener);
 
 	public void replace(Destination destination);
-
-	public void replace(Destination destination, boolean closeOnReplace);
 
 	public void sendMessage(String destinationName, Message message);
 

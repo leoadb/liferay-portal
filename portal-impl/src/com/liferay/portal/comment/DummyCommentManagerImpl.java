@@ -14,9 +14,7 @@
 
 package com.liferay.portal.comment;
 
-import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
-import com.liferay.portal.kernel.comment.Discussion;
 import com.liferay.portal.kernel.util.Function;
 import com.liferay.portal.service.ServiceContext;
 
@@ -58,27 +56,5 @@ public class DummyCommentManagerImpl implements CommentManager {
 	public int getCommentsCount(String className, long classPK) {
 		return 0;
 	}
-
-	@Override
-	public Discussion getDiscussion(
-		long userId, long groupId, String className, long classPK,
-		ServiceContext serviceContext) {
-
-		return _discussion;
-	}
-
-	private static final Discussion _discussion = new Discussion() {
-
-		@Override
-		public boolean isMaxCommentsLimitExceeded() {
-			return true;
-		}
-
-		@Override
-		public Comment getRootComment() {
-			return null;
-		}
-
-	};
 
 }

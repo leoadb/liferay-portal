@@ -662,11 +662,16 @@
 	</command>
 
 	<command name="ViewWebContentConfigurationCP" priority="4">
+		<var name="authorAddress" value="test@liferay.com" />
+		<var name="authorName" value="Joe Bloggs" />
+
 		<execute macro="Page#gotoContentCP">
 			<var name="portletName" value="Web Content" />
 		</execute>
 
-		<execute macro="WebContent#viewEmailConfigurationCP">
+		<execute macro="WebContentPortlet#viewEmailConfigurationCP">
+			<var name="authorAddress" value="${authorAddress}" />
+			<var name="authorName" value="${authorName}" />
 			<var name="webContentWorkflowEnabled" value="false" />
 		</execute>
 
@@ -682,7 +687,9 @@
 			<var name="portletName" value="Web Content" />
 		</execute>
 
-		<execute macro="WebContent#viewEmailConfigurationCP">
+		<execute macro="WebContentPortlet#viewEmailConfigurationCP">
+			<var name="authorAddress" value="${authorAddress}" />
+			<var name="authorName" value="${authorName}" />
 			<var name="webContentWorkflowEnabled" value="true" />
 		</execute>
 	</command>

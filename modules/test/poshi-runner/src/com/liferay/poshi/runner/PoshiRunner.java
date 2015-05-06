@@ -42,11 +42,11 @@ public class PoshiRunner {
 	public static List<String> getList() throws Exception {
 		PoshiRunnerContext.readFiles();
 
-		String testName = PropsValues.TEST_NAME;
-
-		PoshiRunnerValidation.validate(testName);
+		PoshiRunnerValidation.validate();
 
 		List<String> classCommandNames = new ArrayList<>();
+
+		String testName = PropsValues.TEST_NAME;
 
 		if (testName.contains("#")) {
 			classCommandNames.add(testName);
@@ -134,12 +134,12 @@ public class PoshiRunner {
 			classCommandName);
 
 		if (commandElement != null) {
-			PoshiRunnerStackTraceUtil.startStackTrace(
+			PoshiRunnerStackTraceUtil.pushFilePath(
 				classCommandName, "test-case");
 
 			PoshiRunnerExecutor.parseElement(commandElement);
 
-			PoshiRunnerStackTraceUtil.emptyStackTrace();
+			PoshiRunnerStackTraceUtil.popFilePath();
 		}
 	}
 

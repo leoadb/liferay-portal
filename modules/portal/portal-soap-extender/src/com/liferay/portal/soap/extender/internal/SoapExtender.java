@@ -47,6 +47,14 @@ import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 )
 public class SoapExtender {
 
+	public org.apache.felix.dm.Component getComponent() {
+		return _component;
+	}
+
+	public DependencyManager getDependencyManager() {
+		return _dependencyManager;
+	}
+
 	public SoapExtenderConfiguration getSoapExtenderConfiguration() {
 		return _soapExtenderConfiguration;
 	}

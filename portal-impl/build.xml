@@ -1103,10 +1103,9 @@ svn://svn.liferay.com/repos/public/alloy/trunk/sandbox/taglibs.
 	</target>
 
 	<target name="format-source">
-		<path id="source.formatter.classpath">
-			<fileset dir="${project.dir}/tools/sdk/dependencies/com.liferay.source.formatter/lib" includes="*.jar" />
-			<path refid="project.classpath" />
-		</path>
+		<copy todir="${project.dir}/portal-impl/classes" overwrite="true" preservelastmodified="true">
+			<fileset dir="${project.dir}/portal-impl/src" includes="com/liferay/portal/tools/dependencies/*.properties" />
+		</copy>
 
 		<if>
 			<not>
@@ -1118,8 +1117,8 @@ svn://svn.liferay.com/repos/public/alloy/trunk/sandbox/taglibs.
 		</if>
 
 		<java
-			classname="com.liferay.source.formatter.SourceFormatter"
-			classpathref="source.formatter.classpath"
+			classname="com.liferay.portal.tools.sourceformatter.SourceFormatter"
+			classpathref="project.classpath"
 			dir="${source.formatter.dir}"
 			fork="true"
 			newenvironment="true"

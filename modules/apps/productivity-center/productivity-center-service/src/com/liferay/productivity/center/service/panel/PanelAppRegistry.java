@@ -52,7 +52,7 @@ public class PanelAppRegistry {
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.multiValueMap(
 			bundleContext, PanelApp.class, "(panel.category.key=*)",
-			new PanelCategoryServiceReferenceMapper());
+			PanelCategoryServiceReferenceMapper.<PanelApp>create());
 
 		_serviceTrackerMap.open();
 	}

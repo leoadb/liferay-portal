@@ -131,7 +131,7 @@ boolean changeStructure = GetterUtil.getBoolean(request.getAttribute("edit_artic
 							},
 							eventName: '<portlet:namespace />selectDisplayPage',
 							id: '<portlet:namespace />selectDisplayPage',
-							title: '<liferay-ui:message key="select-page" />',
+							title: '<%= LanguageUtil.get(locale, "select-page") %>',
 							uri: '<%= documentSelectorURL.toString() %>'
 						},
 						function(event) {

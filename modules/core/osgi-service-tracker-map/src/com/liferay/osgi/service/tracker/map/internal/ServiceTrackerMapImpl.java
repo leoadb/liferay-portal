@@ -40,7 +40,7 @@ public class ServiceTrackerMapImpl<K, SR, TS, R>
 
 	public ServiceTrackerMapImpl(
 			BundleContext bundleContext, Class<SR> clazz, String filterString,
-			ServiceReferenceMapper<K, ? super SR> serviceReferenceMapper,
+			ServiceReferenceMapper<K, SR> serviceReferenceMapper,
 			ServiceTrackerCustomizer<SR, TS> serviceTrackerCustomizer,
 			ServiceTrackerBucketFactory<SR, TS, R>
 				serviceTrackerMapBucketFactory)
@@ -144,7 +144,7 @@ public class ServiceTrackerMapImpl<K, SR, TS, R>
 		serviceReferenceServiceTuple.addEmittedKey(key);
 	}
 
-	private final ServiceReferenceMapper<K, ? super SR> _serviceReferenceMapper;
+	private final ServiceReferenceMapper<K, SR> _serviceReferenceMapper;
 	private final ServiceTracker<SR, ServiceReferenceServiceTuple<SR, TS, K>>
 		_serviceTracker;
 	private final ConcurrentHashMap<K, ServiceTrackerBucket<SR, TS, R>>
@@ -200,21 +200,18 @@ public class ServiceTrackerMapImpl<K, SR, TS, R>
 				<SR, ServiceReferenceServiceTuple<SR, TS, K>> {
 
 		@Override
-		@SuppressWarnings({"rawtypes", "unchecked"})
 		public ServiceReferenceServiceTuple<SR, TS, K> addingService(
 			final ServiceReference<SR> serviceReference) {
 
 			DefaultEmitter defaultEmitter = new DefaultEmitter(
 				serviceReference);
 
-			_serviceReferenceMapper.map(
-				(ServiceReference)serviceReference, defaultEmitter);
+			_serviceReferenceMapper.map(serviceReference, defaultEmitter);
 
 			return defaultEmitter.getServiceReferenceServiceTuple();
 		}
 
 		@Override
-		@SuppressWarnings({"rawtypes", "unchecked"})
 		public void modifiedService(
 			ServiceReference<SR> serviceReference,
 			final ServiceReferenceServiceTuple<SR, TS, K>
@@ -226,8 +223,7 @@ public class ServiceTrackerMapImpl<K, SR, TS, R>
 				serviceReference, serviceReferenceServiceTuple.getService());
 
 			_serviceReferenceMapper.map(
-				(ServiceReference)serviceReference,
-				new ServiceReferenceMapper.Emitter<K>() {
+				serviceReference, new ServiceReferenceMapper.Emitter<K>() {
 
 				@Override
 				public void emit(K key) {

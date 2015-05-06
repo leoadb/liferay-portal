@@ -15,7 +15,6 @@
 package com.liferay.portlet.blogs.util;
 
 import com.liferay.portal.kernel.comment.CommentManager;
-import com.liferay.portal.kernel.comment.CommentManagerUtil;
 import com.liferay.portal.kernel.comment.DuplicateCommentException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -357,8 +356,7 @@ public class PingbackMethodImpl implements Method {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PingbackMethodImpl.class);
 
-	private CommentManager _commentManager =
-		CommentManagerUtil.getCommentManager();
+	private CommentManager _commentManager = BlogsUtil.getCommentManager();
 	private String _sourceURI;
 	private String _targetURI;
 

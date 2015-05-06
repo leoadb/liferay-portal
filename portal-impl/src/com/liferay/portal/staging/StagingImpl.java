@@ -30,7 +30,6 @@ import com.liferay.portal.RemoteOptionsException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -974,20 +973,10 @@ public class StagingImpl implements Staging {
 	public long getRecentLayoutSetBranchId(User user, long layoutSetId) {
 		PortalPreferences portalPreferences = getPortalPreferences(user);
 
-		try {
-			return getRecentLayoutAttribute(
-				portalPreferences, getRecentLayoutSetBranchIdKey(layoutSetId));
-		}
-		catch (JSONException jsone) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to get recent layout set branch ID with user " +
-						user.getUserId() + " and layout set " + layoutSetId,
-					jsone);
-			}
-		}
-
-		return 0;
+		return GetterUtil.getLong(
+			portalPreferences.getValue(
+				Staging.class.getName(),
+				getRecentLayoutSetBranchIdKey(layoutSetId)));
 	}
 
 	@Override
@@ -1587,20 +1576,9 @@ public class StagingImpl implements Staging {
 
 		PortalPreferences portalPreferences = getPortalPreferences(user);
 
-		try {
-			setRecentLayoutAttribute(
-				portalPreferences, getRecentLayoutSetBranchIdKey(layoutSetId),
-				layoutSetBranchId);
-		}
-		catch (JSONException jsone) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to set recent layout set branch ID with user " +
-						user.getUserId() + " and layout set " + layoutSetId +
-							" and layout set branch " + layoutSetBranchId,
-					jsone);
-			}
-		}
+		portalPreferences.setValue(
+			Staging.class.getName(), getRecentLayoutSetBranchIdKey(layoutSetId),
+			String.valueOf(layoutSetBranchId));
 	}
 
 	@Override
@@ -1897,44 +1875,9 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences, long layoutSetBranchId,
 		long plid) {
 
-		String oldPortalPreferences = portalPreferences.getValue(
+		portalPreferences.setValue(
 			Staging.class.getName(),
-			StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP);
-
-		try {
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-			JSONArray oldJsonArray = JSONFactoryUtil.createJSONArray(
-				oldPortalPreferences);
-
-			String recentLayoutRevisionIdKey = getRecentLayoutRevisionIdKey(
-				layoutSetBranchId, plid);
-
-			for (int i = 0; i < oldJsonArray.length(); i ++) {
-				JSONObject jsonObject = oldJsonArray.getJSONObject(i);
-
-				if (Validator.isNotNull(
-						jsonObject.getString(recentLayoutRevisionIdKey))) {
-
-					continue;
-				}
-
-				jsonArray.put(jsonObject);
-			}
-
-			portalPreferences.setValue(
-				Staging.class.getName(),
-				StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP,
-				jsonArray.toString());
-		}
-		catch (JSONException jsone) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to delete recent layout revision ID with layout " +
-						"set branch " + layoutSetBranchId + " and PLID " + plid,
-					jsone);
-			}
-		}
+			getRecentLayoutRevisionIdKey(layoutSetBranchId, plid), null);
 	}
 
 	protected void doCopyRemoteLayouts(
@@ -2010,21 +1953,10 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences, long layoutSetBranchId,
 		long plid) {
 
-		try {
-			return getRecentLayoutAttribute(
-				portalPreferences,
-				getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
-		}
-		catch (JSONException jsone) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to get recent layout branch ID with layout set " +
-						"branch " + layoutSetBranchId + " and PLID " + plid,
-					jsone);
-			}
-		}
-
-		return 0;
+		return GetterUtil.getLong(
+			portalPreferences.getValue(
+				Staging.class.getName(),
+				getRecentLayoutBranchIdKey(layoutSetBranchId, plid)));
 	}
 
 	protected String getRecentLayoutBranchIdKey(
@@ -2045,21 +1977,10 @@ public class StagingImpl implements Staging {
 			long plid)
 		throws PortalException {
 
-		long layoutRevisionId = 0;
-
-		try {
-			layoutRevisionId = getRecentLayoutAttribute(
-				portalPreferences,
-				getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
-		}
-		catch (JSONException jsone) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to get recent layout revision ID with layout set " +
-						"branch " + layoutSetBranchId + " and PLID " + plid,
-					jsone);
-			}
-		}
+		long layoutRevisionId = GetterUtil.getLong(
+			portalPreferences.getValue(
+				Staging.class.getName(),
+				getRecentLayoutRevisionIdKey(layoutSetBranchId, plid)));
 
 		if (layoutRevisionId > 0) {
 			return layoutRevisionId;
@@ -2339,21 +2260,10 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences, long layoutSetBranchId, long plid,
 		long layoutBranchId) {
 
-		try {
-			setRecentLayoutAttribute(
-				portalPreferences,
-				getRecentLayoutBranchIdKey(layoutSetBranchId, plid),
-				layoutBranchId);
-		}
-		catch (JSONException jsone) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to set recent layout branch ID with layout set " +
-						"branch " + layoutSetBranchId + " and PLID " + plid +
-							" and layout branch " + layoutBranchId,
-					jsone);
-			}
-		}
+		portalPreferences.setValue(
+			Staging.class.getName(),
+			getRecentLayoutBranchIdKey(layoutSetBranchId, plid),
+			String.valueOf(layoutBranchId));
 	}
 
 	protected void setRecentLayoutRevisionId(
@@ -2378,24 +2288,22 @@ public class StagingImpl implements Staging {
 					portalPreferences, layoutSetBranchId, plid);
 			}
 			else {
-				setRecentLayoutAttribute(
-					portalPreferences,
+				portalPreferences.setValue(
+					Staging.class.getName(),
 					getRecentLayoutRevisionIdKey(layoutSetBranchId, plid),
-					layoutRevisionId);
+					String.valueOf(layoutRevisionId));
 			}
 		}
 		catch (PortalException pe) {
 			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to set recent layout revision ID with layout set " +
-						"branch " + layoutSetBranchId + " and PLID " + plid +
-							" and layout branch " + layoutBranchId,
-					pe);
+				_log.warn("Unable to set recent layout revision ID", pe);
 			}
 		}
 
-		setRecentLayoutBranchId(
-			portalPreferences, layoutSetBranchId, plid, layoutBranchId);
+		portalPreferences.setValue(
+			Staging.class.getName(),
+			getRecentLayoutBranchIdKey(layoutSetBranchId, plid),
+			String.valueOf(layoutBranchId));
 	}
 
 	protected void validateRemoteGroup(
@@ -2482,71 +2390,6 @@ public class StagingImpl implements Staging {
 
 			throw ree;
 		}
-	}
-
-	private long getRecentLayoutAttribute(
-			PortalPreferences portalPreferences, String key)
-		throws JSONException {
-
-		String preferencesString = portalPreferences.getValue(
-			Staging.class.getName(),
-			StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP);
-
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
-			preferencesString);
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-			if (jsonObject.has(key)) {
-				return GetterUtil.getLong(jsonObject.getString(key));
-			}
-		}
-
-		return 0;
-	}
-
-	private void setRecentLayoutAttribute(
-			PortalPreferences portalPreferences, String key, long value)
-		throws JSONException {
-
-		String oldPortalPreferences = portalPreferences.getValue(
-			Staging.class.getName(),
-			StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP);
-
-		JSONArray oldJsonArray = JSONFactoryUtil.createJSONArray(
-			oldPortalPreferences);
-
-		boolean alreadyExists = false;
-
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		for (int i = 0; i < oldJsonArray.length(); i++) {
-			JSONObject jsonObject = oldJsonArray.getJSONObject(i);
-
-			if (Validator.isNotNull(jsonObject.getString(key))) {
-				alreadyExists = true;
-
-				jsonObject.remove(key);
-
-				jsonObject.put(key, String.valueOf(value));
-			}
-
-			jsonArray.put(jsonObject);
-		}
-
-		if (!alreadyExists) {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-			jsonObject.put(key, String.valueOf(value));
-
-			jsonArray.put(jsonObject);
-		}
-
-		portalPreferences.setValue(
-			Staging.class.getName(),
-			StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP,
-			jsonArray.toString());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(StagingImpl.class);

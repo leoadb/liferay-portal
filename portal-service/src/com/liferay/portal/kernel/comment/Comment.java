@@ -33,10 +33,6 @@ public interface Comment {
 
 	public Date getCreateDate();
 
-	public Class<?> getModelClass();
-
-	public String getModelClassName();
-
 	public Date getModifiedDate();
 
 	public Comment getParentComment() throws PortalException;

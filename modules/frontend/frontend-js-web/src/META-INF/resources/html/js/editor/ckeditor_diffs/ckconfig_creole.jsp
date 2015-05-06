@@ -78,15 +78,16 @@ response.setContentType(ContentTypes.TEXT_JAVASCRIPT);
 	config.language = '<%= languageId.replace("iw_", "he_") %>';
 
 	config.removePlugins = [
-		'bidi',
-		'colorbutton',
-		'colordialog',
-		'div',
 		'elementspath',
+		'save',
+		'font',
+		'bidi',
+		'colordialog',
+		'colorbutton',
+		'div',
 		'flash',
 		'font',
 		'forms',
-		'indentblock',
 		'justify',
 		'keystrokes',
 		'link',
@@ -96,8 +97,8 @@ response.setContentType(ContentTypes.TEXT_JAVASCRIPT);
 		'preview',
 		'print',
 		'save',
-		'showblocks',
 		'smiley',
+		'showblocks',
 		'stylescombo',
 		'templates',
 		'video'

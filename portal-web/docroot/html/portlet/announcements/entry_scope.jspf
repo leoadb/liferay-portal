@@ -52,7 +52,7 @@ else if (entryClassName.equals(UserGroup.class.getName())) {
 	scopeClassName = "user-group";
 }
 else {
-	scopeName = LanguageUtil.get(request, "general");
+	scopeName = LanguageUtil.get(locale, "general");
 	scopeClassName = scopeName;
 }
 

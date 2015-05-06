@@ -19,23 +19,18 @@
 <%
 String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 
-CommentManager commentManager = CommentManagerUtil.getCommentManager();
-
 DiscussionTaglibHelper discussionTaglibHelper = new DiscussionTaglibHelper(request);
 DiscussionRequestHelper discussionRequestHelper = new DiscussionRequestHelper(request);
 
-DiscussionPermission discussionPermission = new MBDiscussionPermissionImpl(discussionRequestHelper.getPermissionChecker());
-Discussion discussion = commentManager.getDiscussion(discussionTaglibHelper.getUserId(), discussionRequestHelper.getScopeGroupId(), discussionTaglibHelper.getClassName(), discussionTaglibHelper.getClassPK(), ServiceContextFactory.getInstance(request));
+CommentSectionDisplayContext commentSectionDisplayContext = new MBCommentSectionDisplayContext(discussionTaglibHelper, discussionRequestHelper);
 
-Comment rootComment = discussion.getRootComment();
-
-CommentSectionDisplayContext commentSectionDisplayContext = new MBCommentSectionDisplayContext(discussionTaglibHelper, discussionRequestHelper, discussionPermission, discussion);
+Comment rootComment = commentSectionDisplayContext.getRootComment();
 %>
 
 <section>
 	<div class="hide lfr-message-response" id="<portlet:namespace />discussionStatusMessages"></div>
 
-	<c:if test="<%= discussion.isMaxCommentsLimitExceeded() %>">
+	<c:if test="<%= commentSectionDisplayContext.isDiscussionMaxComments() %>">
 		<div class="alert alert-warning">
 			<liferay-ui:message key="maximum-number-of-comments-has-been-reached" />
 		</div>
@@ -55,6 +50,7 @@ CommentSectionDisplayContext commentSectionDisplayContext = new MBCommentSection
 				<aui:input name="permissionClassPK" type="hidden" value="<%= discussionTaglibHelper.getPermissionClassPK() %>" />
 				<aui:input name="permissionOwnerId" type="hidden" value="<%= String.valueOf(discussionTaglibHelper.getUserId()) %>" />
 				<aui:input name="messageId" type="hidden" />
+				<aui:input name="threadId" type="hidden" value="<%= commentSectionDisplayContext.getThreadId() %>" />
 				<aui:input name="parentMessageId" type="hidden" />
 				<aui:input name="body" type="hidden" />
 				<aui:input name="workflowAction" type="hidden" value="<%= String.valueOf(WorkflowConstants.ACTION_PUBLISH) %>" />
@@ -66,7 +62,7 @@ CommentSectionDisplayContext commentSectionDisplayContext = new MBCommentSection
 
 				<c:if test="<%= commentSectionDisplayContext.isControlsVisible() %>">
 					<aui:fieldset cssClass="add-comment" id='<%= randomNamespace + "messageScroll0" %>'>
-						<c:if test="<%= !discussion.isMaxCommentsLimitExceeded() %>">
+						<c:if test="<%= !commentSectionDisplayContext.isDiscussionMaxComments() %>">
 							<div id="<%= randomNamespace %>messageScroll<%= rootComment.getCommentId() %>">
 								<aui:input name="messageId0" type="hidden" value="<%= rootComment.getCommentId() %>" />
 								<aui:input name="parentMessageId0" type="hidden" value="<%= rootComment.getCommentId() %>" />
@@ -102,7 +98,7 @@ CommentSectionDisplayContext commentSectionDisplayContext = new MBCommentSection
 							</c:choose>
 						</c:if>
 
-						<c:if test="<%= !discussion.isMaxCommentsLimitExceeded() %>">
+						<c:if test="<%= !commentSectionDisplayContext.isDiscussionMaxComments() %>">
 							<aui:input name="emailAddress" type="hidden" />
 
 							<c:choose>
@@ -165,9 +161,10 @@ CommentSectionDisplayContext commentSectionDisplayContext = new MBCommentSection
 
 							comment = commentIterator.next();
 
+							request.setAttribute("liferay-ui:discussion:commentSectionDisplayContext", commentSectionDisplayContext);
 							request.setAttribute("liferay-ui:discussion:currentComment", comment);
-							request.setAttribute("liferay-ui:discussion:discussion", discussion);
 							request.setAttribute("liferay-ui:discussion:randomNamespace", randomNamespace);
+							request.setAttribute("liferay-ui:discussion:rootComment", rootComment);
 						%>
 
 							<liferay-util:include page="/html/taglib/ui/discussion/view_message_thread.jsp" />

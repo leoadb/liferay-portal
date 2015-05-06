@@ -169,12 +169,6 @@ public class BaseJSONHandler extends BaseHandler {
 			SyncFileService.deleteSyncFile(syncFile, false);
 		}
 		else if (exception.equals(
-					"com.liferay.sync.SyncClientMinBuildException")) {
-
-			retryServerConnection(
-				SyncAccount.UI_EVENT_MIN_BUILD_REQUIREMENT_FAILED, -1);
-		}
-		else if (exception.equals(
 					"com.liferay.sync.SyncServicesUnavailableException")) {
 
 			retryServerConnection(
