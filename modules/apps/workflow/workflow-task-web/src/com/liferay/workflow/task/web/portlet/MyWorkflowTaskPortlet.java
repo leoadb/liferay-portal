@@ -14,27 +14,29 @@
 
 package com.liferay.workflow.task.web.portlet;
 
-import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
-import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.workflow.WorkflowException;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.PortletKeys;
-import com.liferay.workflow.task.web.portlet.action.ActionUtil;
-
 import java.io.IOException;
 
 import javax.portlet.Portlet;
-import javax.portlet.PortletContext;
 import javax.portlet.PortletException;
-import javax.portlet.PortletRequestDispatcher;
-import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
+
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.workflow.WorkflowException;
+import com.liferay.portal.kernel.workflow.WorkflowTask;
+import com.liferay.portal.kernel.workflow.WorkflowTaskDueDateException;
+import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
+import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.util.PortletKeys;
+import com.liferay.portal.util.WebKeys;
+import com.liferay.workflow.task.web.portlet.constants.WorkflowTaskConstants;
+import com.liferay.workflow.task.web.portlet.context.WorkflowTaskDisplayContext;
 
 /**
  * @author Leonardo Barros
@@ -71,37 +73,17 @@ public class MyWorkflowTaskPortlet extends MVCPortlet {
 		throws IOException, PortletException {
 
 		try {
-			LiferayPortletRequest liferayPortletRequest =
-				PortalUtil.getLiferayPortletRequest(request);
+			
+			setWorkflowTaskRenderRequestAttribute(request);
 
-			LiferayPortletResponse liferayPortletResponse =
-				PortalUtil.getLiferayPortletResponse(response);
-
-			long workflowTaskId = ParamUtil.getLong(
-				request, ActionUtil.WORKFLOW_TASK_ID);
-
-			if (workflowTaskId > 0) {
-				ActionUtil.getWorkflowTask(
-					liferayPortletRequest, workflowTaskId);
-			}
-			else {
-				ActionUtil.searchWorkflowTasks(
-					liferayPortletRequest, liferayPortletResponse);
-			}
+			setDisplayContextRenderRequestAttribute(request, response);
+			
 		}
 		catch (Exception e) {
-			if (e instanceof WorkflowException) {
+			if (isSessionErrorException(e)) {
+				hideDefaultErrorMessage(request);
+
 				SessionErrors.add(request, e.getClass());
-
-				PortletSession portletSession = request.getPortletSession();
-
-				PortletContext portletContext =
-					portletSession.getPortletContext();
-
-				PortletRequestDispatcher portletRequestDispatcher =
-					portletContext.getRequestDispatcher("/error.jsp");
-
-				portletRequestDispatcher.include(request, response);
 			}
 			else {
 				throw new PortletException(e);
@@ -110,5 +92,70 @@ public class MyWorkflowTaskPortlet extends MVCPortlet {
 
 		super.render(request, response);
 	}
+	
+	@Override
+	protected void doDispatch(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
 
+		if (SessionErrors.contains(
+				renderRequest, WorkflowException.class.getName()) ||
+			SessionErrors.contains(
+					renderRequest, PrincipalException.class.getName())) {
+
+			hideDefaultErrorMessage(renderRequest);
+
+			include("/error.jsp", renderRequest, renderResponse);
+		}
+		else {
+			super.doDispatch(renderRequest, renderResponse);
+		}
+	}
+	
+	@Override
+	protected boolean isSessionErrorException(Throwable cause) {
+		if (cause instanceof WorkflowException ||
+			cause instanceof WorkflowTaskDueDateException ||
+			cause instanceof PrincipalException) {
+
+			return true;
+		}
+
+		return false;
+	}
+	
+	protected WorkflowTaskDisplayContext createWorkflowTaskDisplayContext(
+		RenderRequest renderRequest, RenderResponse renderResponse) {
+	
+		return new WorkflowTaskDisplayContext(renderRequest, renderResponse);
+	}
+	
+	protected void setDisplayContextRenderRequestAttribute(
+		RenderRequest renderRequest, RenderResponse renderResponse)
+		throws PortalException {
+		
+		renderRequest.setAttribute(
+			WebKeys.DISPLAY_CONTEXT, createWorkflowTaskDisplayContext(
+				renderRequest, renderResponse));
+	}
+
+	protected void setWorkflowTaskRenderRequestAttribute(
+		RenderRequest renderRequest)
+		throws PortalException {
+		
+		long workflowTaskId = ParamUtil.getLong(
+			renderRequest, WorkflowTaskConstants.WORKFLOW_TASK_ID);
+		
+		if (workflowTaskId > 0) {
+		
+			ThemeDisplay themeDisplay = 
+				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+	
+			WorkflowTask workflowTask = WorkflowTaskManagerUtil.getWorkflowTask(
+				themeDisplay.getCompanyId(), workflowTaskId);
+	
+			renderRequest.setAttribute(WebKeys.WORKFLOW_TASK, workflowTask);
+
+		}
+	}
 }

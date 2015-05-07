@@ -24,7 +24,7 @@
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.workflow.WorkflowTask"
 		modelVar="workflowTask"
-		stringKey="<%= Boolean.TRUE %>"
+		stringKey="<%= true %>"
 	>
 		<liferay-ui:search-container-row-parameter
 			name="workflowTask"
@@ -42,33 +42,33 @@
 			name="task"
 		>
 			<span class="task-name" id="<%= workflowTask.getWorkflowTaskId() %>">
-				<liferay-ui:message key="<%= displayContext.getTaskName(workflowTask) %>" />
+				<liferay-ui:message key="<%= displayContext.getTaskName() %>" />
 			</span>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
 			href="<%= rowURL %>"
 			name="asset-title"
-			value="<%= displayContext.getAssetTitle(workflowTask) %>"
+			value="<%= displayContext.getAssetTitle() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			href="<%= rowURL %>"
 			name="asset-type"
-			value="<%= displayContext.getAssetType(workflowTask) %>"
+			value="<%= displayContext.getAssetType() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			href="<%= rowURL %>"
 			name="last-activity-date"
-			value="<%= displayContext.getLastActivityDate(workflowTask) %>"
+			value="<%= displayContext.getLastActivityDate() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			href="<%= rowURL %>"
 			name="due-date"
-			orderable="<%= Boolean.TRUE %>"
-			value="<%= displayContext.getDueDate(workflowTask) %>"
+			orderable="<%= true %>"
+			value="<%= displayContext.getDueDate() %>"
 		/>
 
 		<c:if test="<%= !displayContext.isCompletedTab() %>">
