@@ -45,9 +45,9 @@ List<WorkflowHandler<?>> workflowHandlersOfSearchableAssets = displayContext.get
 				id="toggle_id_workflow_task_search">
 
 				<aui:fieldset>
-					<aui:input inlineField="<%= true %>" label="task" name="<%= WorkflowTaskDisplayTerms.NAME %>" size="20" value="<%= displayTerms.getName() %>" />
+					<aui:input inlineField="<%= true %>" label="task" name="<%= WorkflowTaskConstants.NAME %>" size="20" value="<%= displayTerms.getName() %>" />
 
-					<aui:select inlineField="<%= true %>" name="<%= WorkflowTaskDisplayTerms.TYPE %>">
+					<aui:select inlineField="<%= true %>" name="<%= WorkflowTaskConstants.TYPE %>">
 
 						<%
 						for (WorkflowHandler<?> workflowHandler : workflowHandlersOfSearchableAssets) {

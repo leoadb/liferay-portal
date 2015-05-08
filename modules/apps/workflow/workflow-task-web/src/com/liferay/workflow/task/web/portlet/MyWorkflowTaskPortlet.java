@@ -16,6 +16,8 @@ package com.liferay.workflow.task.web.portlet;
 
 import java.io.IOException;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
@@ -27,9 +29,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
-import com.liferay.portal.kernel.workflow.WorkflowTaskDueDateException;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -54,7 +56,7 @@ import com.liferay.workflow.task.web.portlet.context.WorkflowTaskDisplayContext;
 		"com.liferay.portlet.private-request-attributes=false",
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
-		"com.liferay.portlet.use-default-template=false",
+		"com.liferay.portlet.use-default-template=true",
 		"javax.portlet.display-name=My Workflow Tasks",
 		"javax.portlet.expiration-cache=0",
 		"javax.portlet.init-param.template-path=/",
@@ -94,6 +96,22 @@ public class MyWorkflowTaskPortlet extends MVCPortlet {
 	}
 	
 	@Override
+	public void processAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException, PortletException {
+
+		super.processAction(actionRequest, actionResponse);
+		
+		String actionName = ParamUtil.getString(
+			actionRequest, ActionRequest.ACTION_NAME);
+
+		if (StringUtil.equalsIgnoreCase(
+			actionName, WorkflowTaskConstants.DISCUSSION_ACTION)) {
+			hideDefaultSuccessMessage(actionRequest);
+		}
+	}
+	
+	@Override
 	protected void doDispatch(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
@@ -101,7 +119,7 @@ public class MyWorkflowTaskPortlet extends MVCPortlet {
 		if (SessionErrors.contains(
 				renderRequest, WorkflowException.class.getName()) ||
 			SessionErrors.contains(
-					renderRequest, PrincipalException.class.getName())) {
+				renderRequest, PrincipalException.class.getName())) {
 
 			hideDefaultErrorMessage(renderRequest);
 
@@ -115,11 +133,10 @@ public class MyWorkflowTaskPortlet extends MVCPortlet {
 	@Override
 	protected boolean isSessionErrorException(Throwable cause) {
 		if (cause instanceof WorkflowException ||
-			cause instanceof WorkflowTaskDueDateException ||
 			cause instanceof PrincipalException) {
 
 			return true;
-		}
+		} 
 
 		return false;
 	}

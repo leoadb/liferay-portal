@@ -114,4 +114,13 @@ public class WorkflowTaskConstants {
 
 	public static final String NOTIFICATION_MESSAGE = "notificationMessage";
 	
+	public static final String DISCUSSION_ACTION = "invokeTaglibDiscussion";
+
+	public static final String X_ASSIGNED_THE_TASK_TO_HERSELF = 
+		"x-assigned-the-task-to-herself";
+
+	public static final String X_ASSIGNED_THE_TASK_TO_HIMSELF = 
+		"x-assigned-the-task-to-himself";
+
+	public static final String HIDE_CONTROLS = "hideControls";
 }

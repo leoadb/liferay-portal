@@ -28,10 +28,10 @@ WorkflowTask workflowTask = displayContext.getWorkflowTask();
 %>
 
 <liferay-ui:icon-menu icon="<%= StringPool.BLANK %>" message="<%= StringPool.BLANK %>" showExpanded="<%= (row == null) %>" showWhenSingleIcon="<%= (row == null) %>">
-	<c:if test="<%= !workflowTask.isCompleted() && displayContext.isAssignedToUser() %>">
+	<c:if test="<%= !workflowTask.isCompleted() && displayContext.isAssignedToUser(workflowTask) %>">
 
 		<%
-		List<String> transitionNames = displayContext.getTransitionNames();
+		List<String> transitionNames = displayContext.getTransitionNames(workflowTask);
 
 		for (String transitionName : transitionNames) {
 			String message = displayContext.getTransitionMessage(transitionName);
@@ -64,7 +64,7 @@ WorkflowTask workflowTask = displayContext.getWorkflowTask();
 
 	</c:if>
 
-	<c:if test="<%= !workflowTask.isCompleted() && !displayContext.isAssignedToUser() %>">
+	<c:if test="<%= !workflowTask.isCompleted() && !displayContext.isAssignedToUser(workflowTask) %>">
 		<liferay-portlet:actionURL name="assignWorkflowTask" portletName="<%= PortletKeys.MY_WORKFLOW_TASKS %>" var="assignToMeURL">
 			<portlet:param name="mvcPath" value="/edit_workflow_task.jsp" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
@@ -83,7 +83,7 @@ WorkflowTask workflowTask = displayContext.getWorkflowTask();
 		/>
 	</c:if>
 
-	<c:if test="<%= displayContext.hasOtherAssignees() %>">
+	<c:if test="<%= displayContext.hasOtherAssignees(workflowTask) %>">
 		<liferay-portlet:actionURL name="assignWorkflowTask" portletName="<%= PortletKeys.MY_WORKFLOW_TASKS %>" var="assignURL">
 			<portlet:param name="mvcPath" value="/edit_workflow_task.jsp" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
@@ -120,11 +120,11 @@ WorkflowTask workflowTask = displayContext.getWorkflowTask();
 </liferay-ui:icon-menu>
 
 <div class="hide" id="<%= randomId %>updateAsignee">
-	<c:if test="<%= displayContext.hasOtherAssignees() %>">
+	<c:if test="<%= displayContext.hasOtherAssignees(workflowTask) %>">
 		<aui:select label="assign-to" name="assigneeUserId">
 
 			<%
-			for (long pooledActorId : displayContext.getActorsIds()) {
+			for (long pooledActorId : displayContext.getActorsIds(workflowTask)) {
 			%>
 
 				<aui:option label="<%= displayContext.getActorName(pooledActorId) %>" selected="<%= workflowTask.getAssigneeUserId() == pooledActorId %>" value="<%= String.valueOf(pooledActorId) %>" />
@@ -152,10 +152,10 @@ WorkflowTask workflowTask = displayContext.getWorkflowTask();
 <aui:script use="liferay-workflow-tasks">
 	var onTaskClickFn = A.rbind('onTaskClick', Liferay.WorkflowTasks, '<%= randomId %>');
 
-	<c:if test="<%= !workflowTask.isCompleted() && displayContext.isAssignedToUser() %>">
+	<c:if test="<%= !workflowTask.isCompleted() && displayContext.isAssignedToUser(workflowTask) %>">
 
 		<%
-		List<String> transitionNames = displayContext.getTransitionNames();
+		List<String> transitionNames = displayContext.getTransitionNames(workflowTask);
 
 		for (String transitionName : transitionNames) {
 			String message = displayContext.getTransitionMessage(transitionName);

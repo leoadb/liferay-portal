@@ -69,7 +69,8 @@ page import="com.liferay.portlet.asset.model.AssetRenderer" %><%@
 page import="com.liferay.portlet.asset.model.AssetRendererFactory" %><%@
 page import="com.liferay.workflow.task.web.portlet.context.WorkflowTaskDisplayContext" %><%@
 page import="com.liferay.workflow.task.web.portlet.search.WorkflowTaskDisplayTerms" %><%@
-page import="com.liferay.workflow.task.web.portlet.search.WorkflowTaskSearch" %>
+page import="com.liferay.workflow.task.web.portlet.search.WorkflowTaskSearch" %><%@
+page import="com.liferay.workflow.task.web.portlet.constants.WorkflowTaskConstants" %>
 
 <%@ page import="java.io.Serializable" %>
 
