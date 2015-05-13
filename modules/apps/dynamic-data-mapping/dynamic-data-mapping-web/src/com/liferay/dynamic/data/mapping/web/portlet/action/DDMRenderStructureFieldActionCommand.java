@@ -53,7 +53,7 @@ import com.liferay.portlet.dynamicdatamapping.render.DDMFormFieldRenderingContex
 	},
 	service = { ActionCommand.class }
 )
-public class RenderStructureFieldActionCommand extends BaseActionCommand {
+public class DDMRenderStructureFieldActionCommand extends BaseActionCommand {
 
 	@Override
 	protected void doProcessCommand(PortletRequest portletRequest,

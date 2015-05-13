@@ -25,12 +25,15 @@ import com.liferay.dynamic.data.mapping.web.portlet.constants.DDMConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.ActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseActionCommand;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
-import com.liferay.portlet.dynamicdatamapping.service.DDMStructureServiceUtil;
+import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
+import com.liferay.portlet.dynamicdatamapping.model.DDMTemplateConstants;
+import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateServiceUtil;
 
 /**
  * @author Leonardo Barros
@@ -38,36 +41,50 @@ import com.liferay.portlet.dynamicdatamapping.service.DDMStructureServiceUtil;
 @Component(
 	immediate = true,
 	property = {
-		"action.command.name=ddmGetStructure",
+		"action.command.name=ddmGetTemplate",
 		"javax.portlet.name=" + PortletKeys.DYNAMIC_DATA_MAPPING
 	},
 	service = { ActionCommand.class }
 )
-public class GetStructureActionCommand extends BaseActionCommand {
+public class DDMGetTemplateActionCommand extends BaseActionCommand {
 
 	@Override
 	protected void doProcessCommand(PortletRequest portletRequest,
 			PortletResponse portletResponse) throws Exception {
+		
+		long templateId = ParamUtil.getLong(
+			portletRequest, DDMConstants.TEMPLATE_ID);
 
-		long structureId = ParamUtil.getLong(
-			portletRequest, DDMConstants.STRUCTURE_ID);
+		DDMTemplate template = DDMTemplateServiceUtil.getTemplate(
+			templateId);
 
-		DDMStructure structure = DDMStructureServiceUtil.getStructure(
-			structureId);
+		String script = template.getScript();
 
-		String definition = structure.getDefinition();
+		String contentType = null;
 
+		String type = template.getType();
+		
+		String language = GetterUtil.getString(
+			template.getLanguage(), TemplateConstants.LANG_TYPE_VM);
+
+		if (type.equals(DDMTemplateConstants.TEMPLATE_TYPE_FORM) ||
+			language.equals(TemplateConstants.LANG_TYPE_XSL)) {
+
+			contentType = ContentTypes.TEXT_XML_UTF8;
+		}
+		else {
+			contentType = ContentTypes.TEXT_PLAIN_UTF8;
+		}
+		
 		HttpServletRequest httpServletRequest = 
 			PortalUtil.getHttpServletRequest(portletRequest);
 		
 		HttpServletResponse httpServletResponse = 
 			PortalUtil.getHttpServletResponse(portletResponse);
-		
+
 		ServletResponseUtil.sendFile(
-			httpServletRequest, httpServletResponse, null, 
-			definition.getBytes(),
-			ContentTypes.TEXT_XML_UTF8);
-		
+			httpServletRequest, httpServletResponse, null, script.getBytes(), 
+			contentType);
 	}
 
 }
