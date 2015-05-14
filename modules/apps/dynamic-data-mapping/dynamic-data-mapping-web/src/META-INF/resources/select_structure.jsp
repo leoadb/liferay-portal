@@ -13,7 +13,8 @@
  * details.
  */
 --%>
-init.jsp" %>
+
+<%@ include file="/init.jsp" %>
 
 <%
 long groupId = ParamUtil.getLong(request, "groupId", scopeGroupId);

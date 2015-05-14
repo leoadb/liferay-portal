@@ -145,5 +145,7 @@ long resourceClassNameId = ParamUtil.getLong(request, "resourceClassNameId");
 		</c:choose>
 	</aui:nav>
 
-	<aui:nav-bar-search file="/template_search.jsp" searchContainer="<%= searchContainer %>" />
+	<aui:nav-bar-search searchContainer="<%= searchContainer %>">
+		<liferay-util:include page="/template_search.jsp" servletContext="<%= application %>" />
+	</aui:nav-bar-search>
 </aui:nav-bar>

@@ -45,5 +45,7 @@ String eventName = ParamUtil.getString(request, "eventName", "selectStructure");
 		</c:if>
 	</aui:nav>
 
-	<aui:nav-bar-search file="/structure_search.jsp" searchContainer="<%= searchContainer %>" />
+	<aui:nav-bar-search searchContainer="<%= searchContainer %>">
+		<liferay-util:include page="/structure_search.jsp" servletContext="<%= application %>" />
+	</aui:nav-bar-search>
 </aui:nav-bar>

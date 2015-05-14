@@ -22,6 +22,7 @@ SearchContainer searchContainer = (SearchContainer)request.getAttribute(WebKeys.
 String toolbarItem = ParamUtil.getString(request, "toolbarItem");
 
 long groupId = ParamUtil.getLong(request, "groupId", scopeGroupId);
+
 %>
 
 <aui:nav-bar>
@@ -30,17 +31,32 @@ long groupId = ParamUtil.getLong(request, "groupId", scopeGroupId);
 			<portlet:renderURL var="viewStructuresURL">
 				<portlet:param name="mvcPath" value="/view.jsp" />
 				<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+				<portlet:param name="refererPortletName" value="<%= ParamUtil.getString(request, "refererPortletName", portletName) %>" />
+				<portlet:param name="refererWebDAVToken" value="<%= ParamUtil.getString(request, "refererWebDAVToken", portletConfig.getInitParameter("refererWebDAVToken")) %>" />
+				<portlet:param name="scopeTitle" value="<%= ParamUtil.getString(request, "scopeTitle") %>" />
+				<portlet:param name="showAncestorScopes" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showAncestorScopes")) %>" />
+				<portlet:param name="showManageTemplates" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showManageTemplates", true)) %>" />
+				<portlet:param name="showToolbar" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showToolbar", true)) %>" /> 
 			</portlet:renderURL>
 
 			<portlet:renderURL var="addStructureURL">
 				<portlet:param name="mvcPath" value="/edit_structure.jsp" />
 				<portlet:param name="redirect" value="<%= viewStructuresURL %>" />
 				<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+				<portlet:param name="refererPortletName" value="<%= ParamUtil.getString(request, "refererPortletName", portletName) %>" />
+				<portlet:param name="refererWebDAVToken" value="<%= ParamUtil.getString(request, "refererWebDAVToken", portletConfig.getInitParameter("refererWebDAVToken")) %>" />
+				<portlet:param name="scopeTitle" value="<%= ParamUtil.getString(request, "scopeTitle") %>" />
+				<portlet:param name="showAncestorScopes" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showAncestorScopes")) %>" />
+				<portlet:param name="showManageTemplates" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showManageTemplates", true)) %>" />
+				<portlet:param name="showToolbar" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showToolbar", true)) %>" /> 
 			</portlet:renderURL>
 
 			<aui:nav-item href="<%= addStructureURL %>" iconCssClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>' />
 		</c:if>
 	</aui:nav>
 
-	<aui:nav-bar-search file="/structure_search.jsp" searchContainer="<%= searchContainer %>" />
+	<aui:nav-bar-search searchContainer="<%= searchContainer %>">
+		<liferay-util:include page="/structure_search.jsp" servletContext="<%= application %>" />
+	</aui:nav-bar-search>
+	
 </aui:nav-bar>

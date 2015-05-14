@@ -68,7 +68,7 @@ portletURL.setParameter(ActionRequest.ACTION_NAME, "ddmDeleteStructure");
 			request.setAttribute(WebKeys.SEARCH_CONTAINER, searchContainer);
 			%>
 
-			<liferay-util:include page="/toolbar.jsp">
+			<liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>">
 				<liferay-util:param name="groupId" value="<%= String.valueOf(groupId) %>" />
 			</liferay-util:include>
 		</c:if>
@@ -84,13 +84,13 @@ portletURL.setParameter(ActionRequest.ACTION_NAME, "ddmDeleteStructure");
 		>
 
 			<%
-			PortletURL rowURL = renderResponse.createRenderURL();
+			PortletURL rowURL = PortletURLUtil.clone(currentURLObj, liferayPortletResponse);
 
 			rowURL.setParameter("mvcPath", "/edit_structure.jsp");
 			rowURL.setParameter("redirect", currentURL);
 			rowURL.setParameter("classNameId", String.valueOf(PortalUtil.getClassNameId(DDMStructure.class)));
 			rowURL.setParameter("classPK", String.valueOf(structure.getStructureId()));
-
+			
 			String rowHREF = rowURL.toString();
 			%>
 
