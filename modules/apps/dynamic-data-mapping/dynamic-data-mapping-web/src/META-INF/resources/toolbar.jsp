@@ -28,28 +28,16 @@ long groupId = ParamUtil.getLong(request, "groupId", scopeGroupId);
 <aui:nav-bar>
 	<aui:nav cssClass="navbar-nav" searchContainer="<%= searchContainer %>">
 		<c:if test="<%= ddmDisplay.isShowAddStructureButton() && DDMPermission.contains(permissionChecker, groupId, ddmPermissionHandler.getResourceName(scopeClassNameId), ddmPermissionHandler.getAddStructureActionId()) %>">
-			<portlet:renderURL var="viewStructuresURL">
+			<liferay-portlet:renderURL var="viewStructuresURL">
 				<portlet:param name="mvcPath" value="/view.jsp" />
 				<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
-				<portlet:param name="refererPortletName" value="<%= ParamUtil.getString(request, "refererPortletName", portletName) %>" />
-				<portlet:param name="refererWebDAVToken" value="<%= ParamUtil.getString(request, "refererWebDAVToken", portletConfig.getInitParameter("refererWebDAVToken")) %>" />
-				<portlet:param name="scopeTitle" value="<%= ParamUtil.getString(request, "scopeTitle") %>" />
-				<portlet:param name="showAncestorScopes" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showAncestorScopes")) %>" />
-				<portlet:param name="showManageTemplates" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showManageTemplates", true)) %>" />
-				<portlet:param name="showToolbar" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showToolbar", true)) %>" /> 
-			</portlet:renderURL>
+			</liferay-portlet:renderURL>
 
-			<portlet:renderURL var="addStructureURL">
+			<liferay-portlet:renderURL var="addStructureURL">
 				<portlet:param name="mvcPath" value="/edit_structure.jsp" />
 				<portlet:param name="redirect" value="<%= viewStructuresURL %>" />
 				<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
-				<portlet:param name="refererPortletName" value="<%= ParamUtil.getString(request, "refererPortletName", portletName) %>" />
-				<portlet:param name="refererWebDAVToken" value="<%= ParamUtil.getString(request, "refererWebDAVToken", portletConfig.getInitParameter("refererWebDAVToken")) %>" />
-				<portlet:param name="scopeTitle" value="<%= ParamUtil.getString(request, "scopeTitle") %>" />
-				<portlet:param name="showAncestorScopes" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showAncestorScopes")) %>" />
-				<portlet:param name="showManageTemplates" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showManageTemplates", true)) %>" />
-				<portlet:param name="showToolbar" value="<%= String.valueOf(ParamUtil.getBoolean(request, "showToolbar", true)) %>" /> 
-			</portlet:renderURL>
+			</liferay-portlet:renderURL>
 
 			<aui:nav-item href="<%= addStructureURL %>" iconCssClass="icon-plus" label="add" selected='<%= toolbarItem.equals("add") %>' />
 		</c:if>

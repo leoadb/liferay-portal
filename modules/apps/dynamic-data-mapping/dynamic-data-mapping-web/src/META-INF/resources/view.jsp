@@ -84,7 +84,7 @@ portletURL.setParameter(ActionRequest.ACTION_NAME, "ddmDeleteStructure");
 		>
 
 			<%
-			PortletURL rowURL = PortletURLUtil.clone(currentURLObj, liferayPortletResponse);
+			PortletURL rowURL = renderResponse.createRenderURL();
 
 			rowURL.setParameter("mvcPath", "/edit_structure.jsp");
 			rowURL.setParameter("redirect", currentURL);
