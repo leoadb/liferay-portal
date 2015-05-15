@@ -70,9 +70,13 @@ import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUti
 		"com.liferay.portlet.css-class-wrapper=portlet-dynamic-data-mapping",
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.header-portlet-css=css/main.css",
-		"com.liferay.portlet.autopropagated-parameters=refererPortletName," +
-			"refererWebDAVToken,scopeTitle,showAncestorScopes,showBackURL," + 
-			"showManageTemplates,showToolbar",
+		"com.liferay.portlet.autopropagated-parameters=refererPortletName",
+		"com.liferay.portlet.autopropagated-parameters=refererWebDAVToken",
+		"com.liferay.portlet.autopropagated-parameters=scopeTitle",
+		"com.liferay.portlet.autopropagated-parameters=showAncestorScopes",
+		"com.liferay.portlet.autopropagated-parameters=showBackURL",
+		"com.liferay.portlet.autopropagated-parameters=showManageTemplates",
+		"com.liferay.portlet.autopropagated-parameters=showToolbar",
 		"javax.portlet.display-name=Dynamic Data Mapping Web",
 		"javax.portlet.expiration-cache=0",
 		"javax.portlet.init-param.template-path=/",
