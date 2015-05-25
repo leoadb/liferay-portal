@@ -27,6 +27,7 @@ boolean readOnly = GetterUtil.getBoolean(String.valueOf(request.getAttribute("ui
 boolean repeatable = GetterUtil.getBoolean(String.valueOf(request.getAttribute("ui:html-field:repeatable")), true);
 java.util.Locale requestedLocale = (java.util.Locale)request.getAttribute("ui:html-field:requestedLocale");
 boolean showEmptyFieldLabel = GetterUtil.getBoolean(String.valueOf(request.getAttribute("ui:html-field:showEmptyFieldLabel")), true);
+java.lang.Object servletContext = (java.lang.Object)request.getAttribute("ui:html-field:servletContext");
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("ui:html-field:dynamicAttributes");
 Map<String, Object> scopedAttributes = (Map<String, Object>)request.getAttribute("ui:html-field:scopedAttributes");
 %>

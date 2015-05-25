@@ -16,7 +16,9 @@
 @generated
 --%>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
 
 <%@ page import="com.liferay.portal.json.JSONFactoryImpl"%>
 <%@ page import="com.liferay.portal.kernel.servlet.taglib.aui.ScriptData"%>
@@ -37,7 +39,34 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Set" %>
 
+<%@ page import="javax.portlet.PortletRequest" %><%@ 
+page import="javax.portlet.PortletResponse" %><%@
+page import="javax.portlet.PortletURL" %><%@
+page import="javax.portlet.WindowState" %><%@
+page import="com.liferay.portal.kernel.util.JavaConstants" %><%@
+page import="com.liferay.taglib.aui.AUIUtil" %><%@
+page import="com.liferay.portlet.PortletURLUtil" %>
+
 <liferay-theme:defineObjects />
+
+<%
+PortletRequest portletRequest = (PortletRequest)request.getAttribute(JavaConstants.JAVAX_PORTLET_REQUEST);
+
+PortletResponse portletResponse = (PortletResponse)request.getAttribute(JavaConstants.JAVAX_PORTLET_RESPONSE);
+
+String namespace = AUIUtil.getNamespace(portletRequest, portletResponse);
+
+String currentURL = null;
+
+if ((portletRequest != null) && (portletResponse != null)) {
+	PortletURL currentURLObj = PortletURLUtil.getCurrent(PortalUtil.getLiferayPortletRequest(portletRequest), PortalUtil.getLiferayPortletResponse(portletResponse));
+
+	currentURL = currentURLObj.toString();
+}
+else {
+	currentURL = PortalUtil.getCurrentURL(request);
+}
+%>
 
 <%!
 private static ArrayList<Object> _toArrayList(Object obj) {

@@ -57,6 +57,11 @@
 				<outputType>boolean</outputType>
 				<defaultValue>true</defaultValue>
 			</attribute>
+			<attribute>
+				<name>servletContext</name>
+				<required>false</required>
+				<rtexprvalue>true</rtexprvalue>
+			</attribute>
 		</attributes>
 	</component>
 	<component name="HTMLField" bodyContent="true" writeJSP="true">
@@ -105,6 +110,11 @@
 				<inputType>boolean</inputType>
 				<outputType>boolean</outputType>
 				<defaultValue>true</defaultValue>
+			</attribute>
+			<attribute>
+				<name>servletContext</name>
+				<required>false</required>
+				<rtexprvalue>true</rtexprvalue>
 			</attribute>
 		</attributes>
 	</component>
