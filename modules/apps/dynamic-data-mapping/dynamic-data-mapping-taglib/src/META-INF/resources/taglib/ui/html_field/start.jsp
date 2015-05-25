@@ -14,4 +14,53 @@
  */
 --%>
 
-<%@ include file="init.jsp" %>
+<%@ include file="/taglib/ui/html_field/init.jsp" %>
+
+<div class="lfr-ddm-container" id="<%= randomNamespace %>">
+	<c:if test="<%= ddmForm != null %>">
+
+		<%
+		Map<String, DDMFormField> ddmFormFieldsMap = ddmForm.getDDMFormFieldsMap(true);
+
+		DDMFormField ddmFormField = ddmFormFieldsMap.get(field.getName());
+
+		DDMFormFieldRenderer ddmFormFieldRenderer = DDMFormFieldRendererRegistryUtil.getDDMFormFieldRenderer(ddmFormField.getType());
+
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext = new DDMFormFieldRenderingContext();
+
+		ddmFormFieldRenderingContext.setField(field);
+		ddmFormFieldRenderingContext.setHttpServletRequest(request);
+		ddmFormFieldRenderingContext.setHttpServletResponse(response);
+		ddmFormFieldRenderingContext.setLocale(requestedLocale);
+		ddmFormFieldRenderingContext.setMode(mode);
+		ddmFormFieldRenderingContext.setNamespace(fieldsNamespace);
+		ddmFormFieldRenderingContext.setPortletNamespace(portletResponse.getNamespace());
+		ddmFormFieldRenderingContext.setReadOnly(readOnly);
+		ddmFormFieldRenderingContext.setShowEmptyFieldLabel(showEmptyFieldLabel);
+		%>
+
+		<%= ddmFormFieldRenderer.render(ddmFormField, ddmFormFieldRenderingContext) %>
+
+		<aui:input name="<%= ddmFormValuesInputName %>" type="hidden" />
+
+		<aui:script use="liferay-ddm-form">
+			Liferay.component(
+				'<portlet:namespace /><%= fieldsNamespace %>ddmForm',
+				function() {
+					return new Liferay.DDM.Form(
+						{
+							container: '#<%= randomNamespace %>',
+							ddmFormValuesInput: '#<portlet:namespace /><%= ddmFormValuesInputName %>',
+							definition: <%= DDMFormJSONSerializerUtil.serialize(ddmForm) %>,
+							doAsGroupId: <%= scopeGroupId %>,
+							fieldsNamespace: '<%= fieldsNamespace %>',
+							mode: '<%= mode %>',
+							p_l_id: <%= themeDisplay.getPlid() %>,
+							portletNamespace: '<portlet:namespace />',
+							repeatable: <%= repeatable %>
+						}
+					);
+				}
+			);
+		</aui:script>
+	</c:if>

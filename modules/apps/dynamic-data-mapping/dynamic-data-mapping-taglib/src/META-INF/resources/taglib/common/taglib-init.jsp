@@ -16,8 +16,8 @@
 @generated
 --%>
 
-<%@ page import="com.liferay.alloy.util.MarkupUtil"%>
-<%@ page import="com.liferay.alloy.util.MessageUtil"%>
+<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
+
 <%@ page import="com.liferay.portal.json.JSONFactoryImpl"%>
 <%@ page import="com.liferay.portal.kernel.servlet.taglib.aui.ScriptData"%>
 <%@ page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %>
@@ -37,6 +37,7 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Set" %>
 
+<liferay-theme:defineObjects />
 
 <%!
 private static ArrayList<Object> _toArrayList(Object obj) {

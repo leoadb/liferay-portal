@@ -14,4 +14,76 @@
  */
 --%>
 
-<%@ include file="init.jsp" %>
+<%@ include file="/taglib/ui/html/init.jsp" %>
+
+<div class="lfr-ddm-container" id="<%= randomNamespace %>">
+	<c:if test="<%= ddmForm != null %>">
+
+		<%
+		pageContext.setAttribute("checkRequired", checkRequired);
+
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext = new DDMFormFieldRenderingContext();
+
+		ddmFormFieldRenderingContext.setFields(fields);
+		ddmFormFieldRenderingContext.setHttpServletRequest(request);
+		ddmFormFieldRenderingContext.setHttpServletResponse(response);
+		ddmFormFieldRenderingContext.setLocale(requestedLocale);
+		ddmFormFieldRenderingContext.setMode(mode);
+		ddmFormFieldRenderingContext.setNamespace(fieldsNamespace);
+		ddmFormFieldRenderingContext.setPortletNamespace(portletResponse.getNamespace());
+		ddmFormFieldRenderingContext.setReadOnly(readOnly);
+		ddmFormFieldRenderingContext.setShowEmptyFieldLabel(showEmptyFieldLabel);
+		%>
+
+		<%= DDMFormRendererUtil.render(ddmForm, ddmFormFieldRenderingContext) %>
+
+		<aui:input name="<%= ddmFormValuesInputName %>" type="hidden" />
+
+		<aui:script use="liferay-ddm-form">
+			var liferayDDMForm = new Liferay.DDM.Form(
+				{
+					container: '#<%= randomNamespace %>',
+					ddmFormValuesInput: '#<portlet:namespace /><%= ddmFormValuesInputName %>',
+					definition: <%= DDMFormJSONSerializerUtil.serialize(ddmForm) %>,
+					doAsGroupId: <%= scopeGroupId %>,
+					fieldsNamespace: '<%= fieldsNamespace %>',
+					mode: '<%= mode %>',
+					p_l_id: <%= themeDisplay.getPlid() %>,
+					portletNamespace: '<portlet:namespace />',
+					repeatable: <%= repeatable %>
+
+					<%
+					long ddmStructureId = classPK;
+
+					if (classNameId == PortalUtil.getClassNameId(DDMTemplate.class)) {
+						DDMTemplate ddmTemplate = DDMTemplateLocalServiceUtil.getTemplate(classPK);
+
+						ddmStructureId = ddmTemplate.getClassPK();
+					}
+
+					DDMStructure ddmStructure = DDMStructureServiceUtil.getStructure(ddmStructureId);
+
+					DDMFormValues ddmFormValues = null;
+
+					if (fields != null) {
+						ddmFormValues = FieldsToDDMFormValuesConverterUtil.convert(ddmStructure, fields);
+					}
+					%>
+
+					<c:if test="<%= ddmFormValues != null %>">
+						, values: <%= DDMFormValuesJSONSerializerUtil.serialize(ddmFormValues) %>
+					</c:if>
+				}
+			);
+
+			var onDestroyPortlet = function(event) {
+				if (event.portletId === '<%= portletDisplay.getRootPortletId() %>') {
+					liferayDDMForm.destructor();
+
+					Liferay.detach('destroyPortlet', onDestroyPortlet);
+				}
+			};
+
+			Liferay.on('destroyPortlet', onDestroyPortlet);
+		</aui:script>
+	</c:if>

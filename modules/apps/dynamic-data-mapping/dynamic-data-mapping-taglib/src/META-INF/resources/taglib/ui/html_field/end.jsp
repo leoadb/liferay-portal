@@ -1,3 +1,4 @@
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -11,13 +12,8 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+--%>
 
-package com.liferay.taglib.ddm;
+<%@ include file="/taglib/ui/html_field/init.jsp" %>
 
-import com.liferay.taglib.ddm.base.BaseHTMLFieldTag;
-
-/**
- * @author Sergio González
- */
-public class HTMLFieldTag extends BaseHTMLFieldTag {
-}
+</div>
