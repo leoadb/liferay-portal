@@ -3,6 +3,75 @@
 
 <project>
 	<import file="../../../../tools/sdk/build-common-osgi-plugin.xml" />
-
+	
 	<property name="auto.deploy.dir" value="${liferay.home}/osgi/modules" />
+	
+	<property name="project.dir" value="." />
+	
+	<path id="project.classpath">
+		<pathelement location="${app.server.classes.portal.dir}" />
+		<fileset dir="${app.server.lib.global.dir}" includes="*.jar" />
+		<fileset dir="${app.server.lib.portal.dir}" includes="*.jar" />
+		<fileset dir="${sdk.dir}/lib" includes="*.jar" />
+		<fileset dir="${sdk.dir}/dependencies/org.freemarker/lib" includes="*.jar" />
+	</path>
+	
+	<target name="build-taglibs">
+		<delete file="${project.dir}/src/META-INF/resources/liferay-ddm.tld" failonerror="false" />
+
+		<java
+			classname="com.liferay.alloy.tools.tagbuilder.TagBuilder"
+			classpathref="project.classpath"
+			fork="true"
+			maxmemory="256m"
+			newenvironment="true"
+		>
+			<jvmarg value="-Dtagbuilder.components.xml=${project.dir}/src/META-INF/liferay-ddm.xml" />
+			<jvmarg value="-Dtagbuilder.copyright.year=present" />
+			<jvmarg value="-Dtagbuilder.docroot.dir=${project.dir}/src/META-INF/resources" />
+			<jvmarg value="-Dtagbuilder.java.dir=${project.dir}/src/com/liferay/dynamic/data/mapping/taglib/" />
+			<jvmarg value="-Dtagbuilder.java.package=com.liferay.dynamic.data.mapping.taglib" />
+			<jvmarg value="-Dtagbuilder.jsp.common.init.path=/taglib/common/taglib-init.jsp" />
+			<jvmarg value="-Dtagbuilder.jsp.dir=/taglib/" />
+			<jvmarg value="-Dtagbuilder.templates.dir=com/liferay/alloy/tools/tagbuilder/templates/" />
+			<jvmarg value="-Dtagbuilder.tld.dir=${project.dir}/src/META-INF/resources/" />
+		</java>
+		
+		<copy file="${project.dir}/src/META-INF/resources/ui.tld" tofile="${project.dir}/src/META-INF/resources/liferay-ddm.tld" preservelastmodified="true" />
+		
+		<delete file="${project.dir}/src/META-INF/resources/ui.tld" />
+		
+		<replace file="${project.dir}/src/META-INF/resources/liferay-ddm.tld">
+			<replacetoken><![CDATA[<short-name>ui</short-name>]]></replacetoken>
+			<replacevalue><![CDATA[<short-name>liferay-ddm</short-name>]]></replacevalue>
+		</replace>
+
+	</target>
+	
+	<target name="taglibdoc" depends="validate-tld">
+		<property name="doc.taglibs.dir" value="${doc.dir}/taglibs" />
+
+		<mkdir dir="${doc.taglibs.dir}" />
+
+		<java
+			classname="com.sun.tlddoc.TLDDoc"
+			classpathref="project.classpath"
+			failonerror="true"
+			fork="true"
+			maxmemory="256m"
+		>
+			<arg line="-d ${doc.taglibs.dir}" />
+			<arg value="${project.dir}/src/META-INF/resources/liferay-ddm.tld" />
+		</java>
+	</target>
+
+	<target name="validate-tld">
+		<schemavalidate>
+			<fileset
+				dir="${project.dir}/src/META-INF/resources/"
+				includes="*.tld"
+			/>
+		</schemavalidate>
+	</target>
+
 </project>
