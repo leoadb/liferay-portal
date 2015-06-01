@@ -14,6 +14,10 @@
 
 package com.liferay.portlet.dynamicdatamapping.util;
 
+import java.io.Serializable;
+
+import javax.portlet.PortletRequest;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -22,13 +26,10 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.dynamicdatamapping.model.DDMForm;
 import com.liferay.portlet.dynamicdatamapping.model.DDMFormLayout;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
+import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersion;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.storage.Field;
 import com.liferay.portlet.dynamicdatamapping.storage.Fields;
-
-import java.io.Serializable;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Eduardo Lundgren
@@ -46,6 +47,9 @@ public interface DDM {
 
 	public JSONArray getDDMFormFieldsJSONArray(
 		DDMStructure ddmStructure, String script);
+
+	public JSONArray getDDMFormFieldsJSONArray(
+		DDMStructureVersion ddmStructureVersion, String script);
 
 	public DDMPermissionHandler getDDMPermissionHandler(long classNameId);
 

@@ -14,6 +14,22 @@
 
 package com.liferay.portlet.dynamicdatamapping.util;
 
+import java.io.File;
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpServletRequest;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -58,6 +74,7 @@ import com.liferay.portlet.dynamicdatamapping.model.DDMFormLayoutColumn;
 import com.liferay.portlet.dynamicdatamapping.model.DDMFormLayoutPage;
 import com.liferay.portlet.dynamicdatamapping.model.DDMFormLayoutRow;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
+import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersion;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.model.LocalizedValue;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLocalServiceUtil;
@@ -70,25 +87,6 @@ import com.liferay.portlet.dynamicdatamapping.util.comparator.StructureIdCompara
 import com.liferay.portlet.dynamicdatamapping.util.comparator.StructureModifiedDateComparator;
 import com.liferay.portlet.dynamicdatamapping.util.comparator.TemplateIdComparator;
 import com.liferay.portlet.dynamicdatamapping.util.comparator.TemplateModifiedDateComparator;
-
-import java.io.File;
-import java.io.Serializable;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.portlet.PortletRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Eduardo Lundgren
@@ -190,47 +188,27 @@ public class DDMImpl implements DDM {
 	@Override
 	public JSONArray getDDMFormFieldsJSONArray(
 		DDMStructure ddmStructure, String script) {
-
-		if (Validator.isNull(script)) {
-			return null;
+		
+		DDMForm ddmForm = null;
+		
+		if(Validator.isNotNull(ddmStructure)) {
+			ddmForm = ddmStructure.getDDMForm();
 		}
+		
+		return getDDMFormFieldsJSONArray(ddmForm, script);
+	}
+	
+	@Override
+	public JSONArray getDDMFormFieldsJSONArray(
+		DDMStructureVersion ddmStructureVersion, String script) {
 
-		if (ddmStructure == null) {
-			try {
-				DDMForm ddmForm = DDMFormJSONDeserializerUtil.deserialize(
-					script);
-
-				return getDDMFormFieldsJSONArray(
-					ddmForm.getDDMFormFields(), ddmForm.getAvailableLocales(),
-					ddmForm.getDefaultLocale());
-			}
-			catch (PortalException pe) {
-				if (_log.isWarnEnabled()) {
-					_log.warn("Unable to deserialize script", pe);
-				}
-
-				return null;
-			}
+		DDMForm ddmForm = null;
+		
+		if(Validator.isNotNull(ddmStructureVersion)) {
+			ddmForm = ddmStructureVersion.getDDMForm();
 		}
-
-		try {
-			DDMForm ddmForm = DDMFormJSONDeserializerUtil.deserialize(script);
-
-			return getDDMFormFieldsJSONArray(
-				ddmForm.getDDMFormFields(), ddmForm.getAvailableLocales(),
-				ddmForm.getDefaultLocale());
-		}
-		catch (PortalException pe) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to deserialize script", pe);
-			}
-
-			DDMForm ddmForm = ddmStructure.getDDMForm();
-
-			return getDDMFormFieldsJSONArray(
-				ddmForm.getDDMFormFields(), ddmForm.getAvailableLocales(),
-				ddmForm.getDefaultLocale());
-		}
+		
+		return getDDMFormFieldsJSONArray(ddmForm, script);
 	}
 
 	@Override
@@ -576,6 +554,48 @@ public class DDMImpl implements DDM {
 		addDDMFormFieldLocalizedProperty(
 			jsonObject, "tip", ddmFormField.getTip(), locale, defaultLocale,
 			ddmFormField.getType());
+	}
+	
+	protected JSONArray getDDMFormFieldsJSONArray(DDMForm form, String script) {
+
+		if (Validator.isNull(script)) {
+			return null;
+		}
+
+		if (form == null) {
+			try {
+				DDMForm ddmForm = DDMFormJSONDeserializerUtil.deserialize(
+					script);
+
+				return getDDMFormFieldsJSONArray(
+					ddmForm.getDDMFormFields(), ddmForm.getAvailableLocales(),
+					ddmForm.getDefaultLocale());
+			}
+			catch (PortalException pe) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to deserialize script", pe);
+				}
+
+				return null;
+			}
+		}
+
+		try {
+			DDMForm ddmForm = DDMFormJSONDeserializerUtil.deserialize(script);
+
+			return getDDMFormFieldsJSONArray(
+				ddmForm.getDDMFormFields(), ddmForm.getAvailableLocales(),
+				ddmForm.getDefaultLocale());
+		}
+		catch (PortalException pe) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to deserialize script", pe);
+			}
+
+			return getDDMFormFieldsJSONArray(
+				form.getDDMFormFields(), form.getAvailableLocales(),
+				form.getDefaultLocale());
+		}
 	}
 
 	protected void addDDMFormFieldLocalizedProperty(

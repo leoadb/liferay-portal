@@ -23,11 +23,11 @@ DDMStructureVersion structureVersion = (DDMStructureVersion)row.getObject();
 %>
 
 <liferay-ui:icon-menu icon="<%= StringPool.BLANK %>" message="<%= StringPool.BLANK %>">
-	<liferay-portlet:renderURL portletName="<%= PortletKeys.DYNAMIC_DATA_LISTS %>" var="viewStructureVersionURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
+	<liferay-portlet:renderURL portletName="<%= PortletKeys.DYNAMIC_DATA_MAPPING %>" var="viewStructureVersionURL" windowState="<%= WindowState.MAXIMIZED.toString() %>">
 		<portlet:param name="mvcPath" value="/view_structure.jsp" />
 		<portlet:param name="redirect" value="<%= currentURL %>" />
 		<portlet:param name="structureId" value="<%= String.valueOf(structureVersion.getStructureId()) %>" />
-		<portlet:param name="version" value="<%= structureVersion.getVersion() %>" />
+		<portlet:param name="structureVersionId" value="<%= String.valueOf(structureVersion.getStructureVersionId()) %>" />
 	</liferay-portlet:renderURL>
 
 	<liferay-ui:icon

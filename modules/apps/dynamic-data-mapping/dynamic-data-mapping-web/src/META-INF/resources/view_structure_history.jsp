@@ -67,10 +67,11 @@ portletURL.setParameter("structureId", String.valueOf(structureId));
 
 		PortletURL rowURL = renderResponse.createRenderURL();
 
-		rowURL.setParameter("mvcPath", "/view_strucure.jsp");
+		rowURL.setParameter("mvcPath", "/view_structure.jsp");
 		rowURL.setParameter("redirect", currentURL);
 		rowURL.setParameter("structureId", String.valueOf(structureId));
-		rowURL.setParameter("version", structureVersion.getVersion());
+		rowURL.setParameter("structureVersionId", String.valueOf(structureVersion.getStructureVersionId()));
+		
 
 		// Structure version id
 
