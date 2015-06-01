@@ -25,6 +25,7 @@ import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.PortletURLImpl;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
+import com.liferay.portlet.dynamicdatamapping.model.DDMStructureConstants;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplateConstants;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureService;
@@ -61,9 +62,13 @@ public class CopyStructureActionCommand extends DDMBaseActionCommand {
 			portletRequest, "name");
 		Map<Locale, String> descriptionMap =
 			LocalizationUtil.getLocalizationMap(portletRequest, "description");
+		
+		int status = ParamUtil.getInteger(portletRequest, "status");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			DDMStructure.class.getName(), portletRequest);
+		
+		serviceContext.setAttribute(DDMStructureConstants.STATUS, status);
 
 		DDMStructure structure = _ddmStructureService.copyStructure(
 			classPK, nameMap, descriptionMap, serviceContext);
