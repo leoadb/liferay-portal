@@ -14,12 +14,6 @@
 
 package com.liferay.dynamic.data.mapping.web.portlet.action;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 import com.liferay.portal.kernel.portlet.bridges.mvc.ActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -28,6 +22,12 @@ import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureService;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Leonardo Barros
@@ -44,17 +44,17 @@ public class RevertStructureActionCommand extends BaseActionCommand {
 
 	@Override
 	protected void doProcessCommand(
-		PortletRequest portletRequest, PortletResponse portletResponse) 
+			PortletRequest portletRequest, PortletResponse portletResponse)
 		throws Exception {
 
 		long structureId = ParamUtil.getLong(portletRequest, "structureId");
-		
+
 		long structureVersionId = ParamUtil.getLong(
 			portletRequest, "structureVersionId");
-		
+
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			DDMStructure.class.getName(), portletRequest);
-		
+
 		_ddmStructureService.revertStructure(
 			structureId, structureVersionId, serviceContext);
 	}
@@ -65,6 +65,7 @@ public class RevertStructureActionCommand extends BaseActionCommand {
 
 		_ddmStructureService = ddmStructureService;
 	}
-	
+
 	private DDMStructureService _ddmStructureService;
+
 }

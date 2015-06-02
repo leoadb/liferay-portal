@@ -86,12 +86,12 @@ public class UpdateStructureActionCommand extends DDMBaseActionCommand {
 			LocalizationUtil.getLocalizationMap(portletRequest, "description");
 		DDMForm ddmForm = _ddm.getDDMForm((ActionRequest)portletRequest);
 		DDMFormLayout ddmFormLayout = _ddm.getDefaultDDMFormLayout(ddmForm);
-		
+
 		int status = ParamUtil.getInteger(portletRequest, "status");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			DDMStructure.class.getName(), portletRequest);
-		
+
 		serviceContext.setAttribute(DDMStructureConstants.STATUS, status);
 
 		return _ddmStructureService.updateStructure(

@@ -14,13 +14,13 @@
 
 package com.liferay.portlet.dynamicdatamapping.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.model.CacheField;
 import com.liferay.portlet.dynamicdatamapping.io.DDMFormJSONDeserializerUtil;
 import com.liferay.portlet.dynamicdatamapping.model.DDMForm;
-
-import aQute.bnd.annotation.ProviderType;
 
 /**
  * @author Brian Wing Shun Chan
@@ -28,7 +28,7 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public class DDMStructureVersionImpl extends DDMStructureVersionBaseImpl {
-	
+
 	@Override
 	public DDMForm getDDMForm() {
 		if (_ddmForm == null) {
@@ -43,10 +43,11 @@ public class DDMStructureVersionImpl extends DDMStructureVersionBaseImpl {
 
 		return new DDMForm(_ddmForm);
 	}
-	
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMStructureVersionImpl.class);
 
 	@CacheField(methodName = "DDMForm")
 	private DDMForm _ddmForm;
+
 }

@@ -18,7 +18,7 @@
 
 <%
 String redirect = ParamUtil.getString(request, "redirect");
-		 
+
 long structureId = ParamUtil.getLong(request, "structureId");
 
 DDMStructure structure = DDMStructureServiceUtil.getStructure(structureId);
@@ -71,7 +71,6 @@ portletURL.setParameter("structureId", String.valueOf(structureId));
 		rowURL.setParameter("redirect", currentURL);
 		rowURL.setParameter("structureId", String.valueOf(structureId));
 		rowURL.setParameter("structureVersionId", String.valueOf(structureVersion.getStructureVersionId()));
-		
 
 		// Structure version id
 

@@ -20,9 +20,9 @@
 String redirect = ParamUtil.getString(request, "redirect");
 
 long structureId = ParamUtil.getLong(request, "structureId");
-		 
+
 long structureVersionId = ParamUtil.getLong(request, "structureVersionId");
-		 
+
 DDMStructure structure = DDMStructureServiceUtil.getStructure(structureId);
 
 long classPK = BeanParamUtil.getLong(structure, request, "structureId");
@@ -54,7 +54,6 @@ if (fieldsJSONArray != null) {
 }
 %>
 
-
 <liferay-ui:header
 	backURL="<%= redirect %>"
 	localizeTitle="<%= false %>"
@@ -66,7 +65,7 @@ if (fieldsJSONArray != null) {
 
 <aui:input disabled="<%= true %>" name="description" value="<%= structure.getDescription(locale) %>"  />
 
-<aui:input disabled="<%= true %>" label="<%= LanguageUtil.format(request, "parent-x", ddmDisplay.getStructureName(locale), false) %>" name="parentStructureName" type="text" value="<%= parentStructureName %>" />
+<aui:input disabled="<%= true %>" label='<%= LanguageUtil.format(request, "parent-x", ddmDisplay.getStructureName(locale), false) %>' name="parentStructureName" type="text" value="<%= parentStructureName %>" />
 
 <portlet:actionURL name="ddmGetStructure" var="getStructureURL">
 	<portlet:param name="structureId" value="<%= String.valueOf(classPK) %>" />
@@ -79,4 +78,3 @@ if (fieldsJSONArray != null) {
 <aui:button-row>
 	<aui:button href="<%= redirect %>" type="cancel" />
 </aui:button-row>
-
