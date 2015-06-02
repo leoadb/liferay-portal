@@ -28,10 +28,17 @@ PortletURL portletURL = renderResponse.createRenderURL();
 portletURL.setParameter("mvcPath", "/view_structure_history.jsp");
 portletURL.setParameter("redirect", redirect);
 portletURL.setParameter("structureId", String.valueOf(structureId));
+
+PortletURL backURL = renderResponse.createRenderURL();
+backURL.setParameter("mvcPath", "/edit_structure.jsp");
+backURL.setParameter("redirect", currentURL);
+backURL.setParameter("classNameId", String.valueOf(PortalUtil.getClassNameId(DDMStructure.class)));
+backURL.setParameter("classPK", String.valueOf(structure.getStructureId()));
 %>
 
 <liferay-ui:header
-	backURL="<%= redirect %>"
+	backURL="<%= backURL.toString() %>"
+	showBackURL="<%= true %>"
 	title='<%= LanguageUtil.format(request, "x-history", structure.getName(locale), false) %>'
 />
 
