@@ -59,7 +59,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			ddmPermissionHandler.getAddStructureActionId());
 
 		return ddmStructureLocalService.addStructure(
-			getUserId(), groupId, classNameId, nameMap, descriptionMap, ddmForm,
+			userId, groupId, classNameId, nameMap, descriptionMap, ddmForm,
 			ddmFormLayout, serviceContext);
 	}
 
@@ -104,13 +104,13 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			ddmPermissionHandler.getAddStructureActionId());
 
 		return ddmStructureLocalService.addStructure(
-			getUserId(), groupId, classNameId, nameMap, descriptionMap, xsd,
+			userId, groupId, classNameId, nameMap, descriptionMap, xsd,
 			serviceContext);
 	}
 
 	@Override
 	public DDMStructure addStructure(
-			long groupId, long parentStructureId, long classNameId,
+			long userId, long groupId, long parentStructureId, long classNameId,
 			String structureKey, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, DDMForm ddmForm,
 			DDMFormLayout ddmFormLayout, String storageType, int type,
@@ -126,7 +126,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			ddmPermissionHandler.getAddStructureActionId());
 
 		return ddmStructureLocalService.addStructure(
-			getUserId(), groupId, parentStructureId, classNameId, structureKey,
+			userId, groupId, parentStructureId, classNameId, structureKey,
 			nameMap, descriptionMap, ddmForm, ddmFormLayout, storageType, type,
 			serviceContext);
 	}
@@ -165,7 +165,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 	@Deprecated
 	@Override
 	public DDMStructure addStructure(
-			long groupId, long parentStructureId, long classNameId,
+			long userId, long groupId, long parentStructureId, long classNameId,
 			String structureKey, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, String xsd, String storageType,
 			int type, ServiceContext serviceContext)
@@ -180,7 +180,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			ddmPermissionHandler.getAddStructureActionId());
 
 		return ddmStructureLocalService.addStructure(
-			getUserId(), groupId, parentStructureId, classNameId, structureKey,
+			userId, groupId, parentStructureId, classNameId, structureKey,
 			nameMap, descriptionMap, xsd, storageType, type, serviceContext);
 	}
 
@@ -282,7 +282,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 	 */
 	@Override
 	public DDMStructure copyStructure(
-			long structureId, Map<Locale, String> nameMap,
+			long userId, long structureId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -298,12 +298,12 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			ddmPermissionHandler.getAddStructureActionId());
 
 		return ddmStructureLocalService.copyStructure(
-			getUserId(), structureId, nameMap, descriptionMap, serviceContext);
+			userId, structureId, nameMap, descriptionMap, serviceContext);
 	}
 
 	@Override
 	public DDMStructure copyStructure(
-			long structureId, ServiceContext serviceContext)
+			long userId, long structureId, ServiceContext serviceContext)
 		throws PortalException {
 
 		DDMStructure structure = ddmStructurePersistence.findByPrimaryKey(
@@ -318,7 +318,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			ddmPermissionHandler.getAddStructureActionId());
 
 		return ddmStructureLocalService.copyStructure(
-			getUserId(), structureId, serviceContext);
+			userId, structureId, serviceContext);
 	}
 
 	/**
@@ -646,7 +646,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 
 	@Override
 	public DDMStructure updateStructure(
-			long groupId, long parentStructureId, long classNameId,
+			long userId, long groupId, long parentStructureId, long classNameId,
 			String structureKey, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, DDMForm ddmForm,
 			DDMFormLayout ddmFormLayout, ServiceContext serviceContext)
@@ -657,8 +657,8 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			ActionKeys.UPDATE);
 
 		return ddmStructureLocalService.updateStructure(
-			groupId, parentStructureId, classNameId, structureKey, nameMap,
-			descriptionMap, ddmForm, ddmFormLayout, serviceContext);
+			userId, groupId, parentStructureId, classNameId, structureKey, 
+			nameMap, descriptionMap, ddmForm, ddmFormLayout, serviceContext);
 	}
 
 	/**
@@ -687,7 +687,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 	@Deprecated
 	@Override
 	public DDMStructure updateStructure(
-			long groupId, long parentStructureId, long classNameId,
+			long userId, long groupId, long parentStructureId, long classNameId,
 			String structureKey, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, String definition,
 			ServiceContext serviceContext)
@@ -698,13 +698,13 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			ActionKeys.UPDATE);
 
 		return ddmStructureLocalService.updateStructure(
-			groupId, parentStructureId, classNameId, structureKey, nameMap,
-			descriptionMap, definition, serviceContext);
+			userId, groupId, parentStructureId, classNameId, structureKey, 
+			nameMap, descriptionMap, definition, serviceContext);
 	}
 
 	@Override
 	public DDMStructure updateStructure(
-			long structureId, long parentStructureId,
+			long userId, long structureId, long parentStructureId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			DDMForm ddmForm, DDMFormLayout ddmFormLayout,
 			ServiceContext serviceContext)
@@ -714,8 +714,8 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			getPermissionChecker(), structureId, ActionKeys.UPDATE);
 
 		return ddmStructureLocalService.updateStructure(
-			structureId, parentStructureId, nameMap, descriptionMap, ddmForm,
-			ddmFormLayout, serviceContext);
+			userId, structureId, parentStructureId, nameMap, descriptionMap, 
+			ddmForm, ddmFormLayout, serviceContext);
 	}
 
 	/**
@@ -739,7 +739,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 	@Deprecated
 	@Override
 	public DDMStructure updateStructure(
-			long structureId, long parentStructureId,
+			long userId, long structureId, long parentStructureId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String definition, ServiceContext serviceContext)
 		throws PortalException {
@@ -748,8 +748,8 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			getPermissionChecker(), structureId, ActionKeys.UPDATE);
 
 		return ddmStructureLocalService.updateStructure(
-			structureId, parentStructureId, nameMap, descriptionMap, definition,
-			serviceContext);
+			userId, structureId, parentStructureId, nameMap, descriptionMap, 
+			definition, serviceContext);
 	}
 
 }
