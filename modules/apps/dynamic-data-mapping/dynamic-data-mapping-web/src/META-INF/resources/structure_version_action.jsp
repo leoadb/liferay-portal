@@ -40,7 +40,7 @@ DDMStructureVersion structureVersion = (DDMStructureVersion)row.getObject();
 		<portlet:param name="mvcPath" value="/edit_structure.jsp" />
 		<portlet:param name="redirect" value="<%= currentURL %>" />
 		<portlet:param name="structureId" value="<%= String.valueOf(structureVersion.getStructureId()) %>" />
-		<portlet:param name="version" value="<%= String.valueOf(structureVersion.getVersion()) %>" />
+		<portlet:param name="structureVersionId" value="<%= String.valueOf(structureVersion.getStructureVersionId()) %>" />
 	</portlet:actionURL>
 
 	<liferay-ui:icon
