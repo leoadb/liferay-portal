@@ -702,6 +702,12 @@ public class DDMStructureVersionWrapper implements DDMStructureVersion,
 		_ddmStructureVersion.setCreateDate(createDate);
 	}
 
+	@Override
+	public void setDDMForm(
+		com.liferay.portlet.dynamicdatamapping.model.DDMForm ddmForm) {
+		_ddmStructureVersion.setDDMForm(ddmForm);
+	}
+
 	/**
 	* Sets the definition of this d d m structure version.
 	*

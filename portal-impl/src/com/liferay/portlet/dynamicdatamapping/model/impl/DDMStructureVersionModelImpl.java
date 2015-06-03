@@ -14,17 +14,6 @@
 
 package com.liferay.portlet.dynamicdatamapping.model.impl;
 
-import java.io.Serializable;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.LocaleException;
@@ -44,11 +33,25 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
+
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersion;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersionModel;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersionSoap;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
+
+import java.io.Serializable;
+
+import java.sql.Types;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The base model implementation for the DDMStructureVersion service. Represents a row in the &quot;DDMStructureVersion&quot; database table, with each column mapped to a property of this class.
@@ -724,14 +727,6 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 		return _status;
 	}
 
-    public com.liferay.portlet.dynamicdatamapping.model.DDMForm getDDMForm() {
-		return null;
-	}
-
-    public void setDDMForm(
-    	com.liferay.portlet.dynamicdatamapping.model.DDMForm ddmForm) {
-    }
-
 	@Override
 	public void setStatus(int status) {
 		_columnBitmask |= STATUS_COLUMN_BITMASK;
@@ -801,6 +796,14 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 	@Override
 	public void setStatusDate(Date statusDate) {
 		_statusDate = statusDate;
+	}
+
+	public com.liferay.portlet.dynamicdatamapping.model.DDMForm getDDMForm() {
+		return null;
+	}
+
+	public void setDDMForm(
+		com.liferay.portlet.dynamicdatamapping.model.DDMForm ddmForm) {
 	}
 
 	/**
@@ -1172,8 +1175,6 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 
 		ddmStructureVersionCacheModel.type = getType();
 
-        ddmStructureVersionCacheModel._ddmForm = getDDMForm();
-
 		ddmStructureVersionCacheModel.status = getStatus();
 
 		ddmStructureVersionCacheModel.statusByUserId = getStatusByUserId();
@@ -1194,6 +1195,8 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 		else {
 			ddmStructureVersionCacheModel.statusDate = Long.MIN_VALUE;
 		}
+
+		ddmStructureVersionCacheModel._ddmForm = getDDMForm();
 
 		return ddmStructureVersionCacheModel;
 	}
