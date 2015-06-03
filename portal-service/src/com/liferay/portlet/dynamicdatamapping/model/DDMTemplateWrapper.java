@@ -614,6 +614,12 @@ public class DDMTemplateWrapper implements DDMTemplate,
 		return _ddmTemplate.getTemplateKey();
 	}
 
+	@Override
+	public com.liferay.portlet.dynamicdatamapping.model.DDMTemplateVersion getTemplateVersion()
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _ddmTemplate.getTemplateVersion();
+	}
+
 	/**
 	* Returns the type of this d d m template.
 	*
