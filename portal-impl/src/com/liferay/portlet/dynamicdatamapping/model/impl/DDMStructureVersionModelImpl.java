@@ -14,6 +14,17 @@
 
 package com.liferay.portlet.dynamicdatamapping.model.impl;
 
+import java.io.Serializable;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.LocaleException;
@@ -33,25 +44,11 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
-
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersion;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersionModel;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersionSoap;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
-
-import java.io.Serializable;
-
-import java.sql.Types;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * The base model implementation for the DDMStructureVersion service. Represents a row in the &quot;DDMStructureVersion&quot; database table, with each column mapped to a property of this class.
@@ -727,6 +724,14 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 		return _status;
 	}
 
+    public com.liferay.portlet.dynamicdatamapping.model.DDMForm getDDMForm() {
+		return null;
+	}
+
+    public void setDDMForm(
+    	com.liferay.portlet.dynamicdatamapping.model.DDMForm ddmForm) {
+    }
+
 	@Override
 	public void setStatus(int status) {
 		_columnBitmask |= STATUS_COLUMN_BITMASK;
@@ -1089,6 +1094,8 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 
 		ddmStructureVersionModelImpl._setOriginalStatus = false;
 
+		setDDMForm(null);
+
 		ddmStructureVersionModelImpl._columnBitmask = 0;
 	}
 
@@ -1164,6 +1171,8 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 		}
 
 		ddmStructureVersionCacheModel.type = getType();
+
+        ddmStructureVersionCacheModel._ddmForm = getDDMForm();
 
 		ddmStructureVersionCacheModel.status = getStatus();
 
