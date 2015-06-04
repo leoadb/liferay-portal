@@ -34,10 +34,11 @@ if (Validator.isNotNull(template)) {
 	templateVersion = template.getTemplateVersion();
 }
 
+long classNameId = BeanParamUtil.getLong(template, request, "classNameId");
+
 long templateId = BeanParamUtil.getLong(template, request, "templateId");
 
 long groupId = BeanParamUtil.getLong(template, request, "groupId", scopeGroupId);
-long classNameId = BeanParamUtil.getLong(template, request, "classNameId");
 long classPK = BeanParamUtil.getLong(template, request, "classPK");
 long resourceClassNameId = BeanParamUtil.getLong(template, request, "resourceClassNameId");
 
@@ -96,6 +97,7 @@ boolean showCacheableInput = ParamUtil.getBoolean(request, "showCacheableInput")
 	<aui:input name="type" type="hidden" value="<%= type %>" />
 	<aui:input name="structureAvailableFields" type="hidden" value="<%= structureAvailableFields %>" />
 	<aui:input name="saveAndContinue" type="hidden" value="<%= false %>" />
+	<aui:input name="status" type="hidden" value="<%= String.valueOf(WorkflowConstants.STATUS_APPROVED) %>" />
 
 	<liferay-ui:error exception="<%= TemplateNameException.class %>" message="please-enter-a-valid-name" />
 	<liferay-ui:error exception="<%= TemplateScriptException.class %>" message="please-enter-a-valid-script" />
@@ -141,8 +143,6 @@ boolean showCacheableInput = ParamUtil.getBoolean(request, "showCacheableInput")
 	<aui:model-context bean="<%= template %>" model="<%= DDMTemplate.class %>" />
 
 	<c:if test="<%= templateVersion != null %>">
-		<aui:model-context bean="<%= templateVersion %>" model="<%= DDMTemplateVersion.class %>" />
-
 		<aui:workflow-status model="<%= DDMTemplate.class %>" status="<%= templateVersion.getStatus() %>" version="<%= templateVersion.getVersion() %>" />
 	</c:if>
 
@@ -358,6 +358,7 @@ boolean showCacheableInput = ParamUtil.getBoolean(request, "showCacheableInput")
 
 <aui:button-row>
 	<aui:script>
+
 		Liferay.after(
 			'<portlet:namespace />saveTemplate',
 			function() {
@@ -365,11 +366,18 @@ boolean showCacheableInput = ParamUtil.getBoolean(request, "showCacheableInput")
 			}
 		);
 
+		function <portlet:namespace />saveDraftTemplate() {
+			var form = AUI.$('#<portlet:namespace />fm');
+			form.fm('status').val(<%= String.valueOf(WorkflowConstants.STATUS_DRAFT) %>);
+			Liferay.fire('<%= renderResponse.getNamespace() + "saveTemplate" %>');
+		}
+
 		function <portlet:namespace />saveAndContinueTemplate() {
 			document.<portlet:namespace />fm.<portlet:namespace />saveAndContinue.value = '1';
 
-			Liferay.fire('<portlet:namespace />saveTemplate');
+			Liferay.fire('<%= renderResponse.getNamespace() + "saveTemplate" %>');
 		}
+
 	</aui:script>
 
 	<%
@@ -379,6 +387,8 @@ boolean showCacheableInput = ParamUtil.getBoolean(request, "showCacheableInput")
 	<aui:button onClick="<%= taglibOnClick %>" primary="<%= true %>" value='<%= LanguageUtil.get(request, "save") %>' />
 
 	<aui:button onClick='<%= renderResponse.getNamespace() + "saveAndContinueTemplate();" %>' value='<%= LanguageUtil.get(request, "save-and-continue") %>' />
+
+	<aui:button onClick='<%= renderResponse.getNamespace() + "saveDraftTemplate();" %>' value='<%= LanguageUtil.get(request, "save-draft") %>' />
 
 	<aui:button href="<%= redirect %>" type="cancel" />
 </aui:button-row>
