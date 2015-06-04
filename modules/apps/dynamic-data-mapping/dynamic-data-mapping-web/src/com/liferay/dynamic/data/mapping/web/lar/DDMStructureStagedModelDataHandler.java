@@ -293,9 +293,9 @@ public class DDMStructureStagedModelDataHandler
 			else {
 				importedStructure =
 					DDMStructureLocalServiceUtil.updateStructure(
-						userId, existingStructure.getStructureId(), 
-						parentStructureId, structure.getNameMap(), 
-						structure.getDescriptionMap(), structure.getDDMForm(), 
+						userId, existingStructure.getStructureId(),
+						parentStructureId, structure.getNameMap(),
+						structure.getDescriptionMap(), structure.getDDMForm(),
 						structure.getDDMFormLayout(), serviceContext);
 			}
 		}

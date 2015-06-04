@@ -1240,8 +1240,8 @@ public class DDMTemplateLocalServiceImpl
 	 */
 	@Override
 	public DDMTemplate updateTemplate(
-			long userId, long templateId, long classPK, Map<Locale, 
-			String> nameMap, Map<Locale, String> descriptionMap, String type, 
+			long userId, long templateId, long classPK, Map<Locale,
+			String> nameMap, Map<Locale, String> descriptionMap, String type,
 			String mode, String language, String script, boolean cacheable,
 			boolean smallImage, String smallImageURL, File smallImageFile,
 			ServiceContext serviceContext)
@@ -1334,9 +1334,9 @@ public class DDMTemplateLocalServiceImpl
 	 */
 	@Override
 	public DDMTemplate updateTemplate(
-			long userId, long templateId, long classPK, 
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, 
-			String type, String mode, String language, String script, 
+			long userId, long templateId, long classPK,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String type, String mode, String language, String script,
 			boolean cacheable, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -1346,7 +1346,7 @@ public class DDMTemplateLocalServiceImpl
 		File smallImageFile = getSmallImageFile(template);
 
 		return updateTemplate(
-			userId, templateId, classPK, nameMap, descriptionMap, type, mode, 
+			userId, templateId, classPK, nameMap, descriptionMap, type, mode,
 			language, script, cacheable, template.isSmallImage(),
 			template.getSmallImageURL(), smallImageFile, serviceContext);
 	}

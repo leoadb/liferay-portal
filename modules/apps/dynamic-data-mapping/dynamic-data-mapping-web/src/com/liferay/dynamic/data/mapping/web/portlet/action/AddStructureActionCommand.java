@@ -72,9 +72,9 @@ public class AddStructureActionCommand extends DDMBaseActionCommand {
 			DDMStructure.class.getName(), portletRequest);
 
 		return _ddmStructureService.addStructure(
-			serviceContext.getUserId(), groupId, parentStructureId, 
-			scopeClassNameId, structureKey, nameMap, descriptionMap, ddmForm, 
-			ddmFormLayout, storageType, DDMStructureConstants.TYPE_DEFAULT, 
+			serviceContext.getUserId(), groupId, parentStructureId,
+			scopeClassNameId, structureKey, nameMap, descriptionMap, ddmForm,
+			ddmFormLayout, storageType, DDMStructureConstants.TYPE_DEFAULT,
 			serviceContext);
 	}
 

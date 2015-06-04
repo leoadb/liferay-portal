@@ -1217,7 +1217,7 @@ public class DDMStructureLocalServiceImpl
 
 	@Override
 	public DDMStructure updateStructure(
-			long userId, long structureId, DDMForm ddmForm, 
+			long userId, long structureId, DDMForm ddmForm,
 			DDMFormLayout ddmFormLayout, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -1244,7 +1244,7 @@ public class DDMStructureLocalServiceImpl
 			groupId, classNameId, structureKey);
 
 		return doUpdateStructure(
-			userId, parentStructureId, nameMap, descriptionMap, ddmForm, 
+			userId, parentStructureId, nameMap, descriptionMap, ddmForm,
 			ddmFormLayout, serviceContext, structure);
 	}
 
@@ -1293,7 +1293,7 @@ public class DDMStructureLocalServiceImpl
 			groupId, classNameId, structureKey);
 
 		return doUpdateStructure(
-			userId, parentStructureId, nameMap, descriptionMap, ddmForm, 
+			userId, parentStructureId, nameMap, descriptionMap, ddmForm,
 			ddmFormLayout, serviceContext, structure);
 	}
 
@@ -1309,7 +1309,7 @@ public class DDMStructureLocalServiceImpl
 			structureId);
 
 		return doUpdateStructure(
-			userId, parentStructureId, nameMap, descriptionMap, ddmForm, 
+			userId, parentStructureId, nameMap, descriptionMap, ddmForm,
 			ddmFormLayout, serviceContext, structure);
 	}
 
@@ -1350,7 +1350,7 @@ public class DDMStructureLocalServiceImpl
 			structureId);
 
 		return doUpdateStructure(
-			userId, parentStructureId, nameMap, descriptionMap, ddmForm, 
+			userId, parentStructureId, nameMap, descriptionMap, ddmForm,
 			ddmFormLayout, serviceContext, structure);
 	}
 
@@ -1372,7 +1372,7 @@ public class DDMStructureLocalServiceImpl
 	@Deprecated
 	@Override
 	public DDMStructure updateXSD(
-			long userId, long structureId, String definition, 
+			long userId, long structureId, String definition,
 			ServiceContext serviceContext)
 		throws PortalException {
 
