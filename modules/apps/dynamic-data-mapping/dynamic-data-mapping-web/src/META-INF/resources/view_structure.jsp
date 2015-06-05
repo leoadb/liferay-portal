@@ -57,6 +57,7 @@ backURL.setParameter("structureId", String.valueOf(structureVersion.getStructure
 <%
 readOnlyForm = true;
 %>
+
 <%@ include file="/form_builder.jspf" %>
 
 <aui:button-row>

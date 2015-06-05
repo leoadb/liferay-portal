@@ -14,15 +14,6 @@
 
 package com.liferay.portlet.dynamicdatamapping.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -68,6 +59,15 @@ import com.liferay.portlet.dynamicdatamapping.service.base.DDMStructureLocalServ
 import com.liferay.portlet.dynamicdatamapping.util.DDMFormTemplateSynchonizer;
 import com.liferay.portlet.dynamicdatamapping.util.DDMUtil;
 import com.liferay.portlet.dynamicdatamapping.util.DDMXMLUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Provides the local service for accessing, adding, deleting, and updating
@@ -1085,20 +1085,20 @@ public class DDMStructureLocalServiceImpl
 	public int getStructuresCount(long[] groupIds, long classNameId) {
 		return ddmStructurePersistence.countByG_C(groupIds, classNameId);
 	}
-	
+
 	@Override
 	public void revertStructure(
 			long userId, long structureId, long structureVersionId,
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		DDMStructureVersion structureVersion = 
+		DDMStructureVersion structureVersion =
 			ddmStructureVersionPersistence.fetchByPrimaryKey(
 				structureVersionId);
-		
-		DDMStructure structure = 
-			ddmStructurePersistence.fetchByPrimaryKey(structureId);
-		
+
+		DDMStructure structure = ddmStructurePersistence.fetchByPrimaryKey(
+			structureId);
+
 		String version = getNextVersion(structureVersion.getVersion(), true);
 
 		User user = userLocalService.fetchUser(userId);
@@ -1117,15 +1117,15 @@ public class DDMStructureLocalServiceImpl
 		// Structure templates
 
 		syncStructureTemplatesFields(structure);
-		
+
 		structureVersion = addStructureVersion(
 			user, structure, version, serviceContext);
 
 		// Structure Layout
-		
+
 		DDMForm ddmForm = DDMFormJSONDeserializerUtil.deserialize(
 			structureVersion.getDefinition());
-		
+
 		DDMFormLayout ddmFormLayout = DDMUtil.getDefaultDDMFormLayout(ddmForm);
 
 		ddmStructureLayoutLocalService.addStructureLayout(
@@ -1147,9 +1147,7 @@ public class DDMStructureLocalServiceImpl
 
 			ddmStructureIndexer.reindexDDMStructures(ddmStructureIds);
 		}
-
 	}
-
 
 	/**
 	 * Returns an ordered range of all the structures matching the groups and

@@ -14,10 +14,6 @@
 
 package com.liferay.portlet.dynamicdatamapping.service.impl;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.security.permission.ActionKeys;
@@ -30,6 +26,10 @@ import com.liferay.portlet.dynamicdatamapping.service.permission.DDMPermission;
 import com.liferay.portlet.dynamicdatamapping.service.permission.DDMStructurePermission;
 import com.liferay.portlet.dynamicdatamapping.util.DDMPermissionHandler;
 import com.liferay.portlet.dynamicdatamapping.util.DDMUtil;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Provides the remote service for accessing, adding, deleting, and updating
@@ -511,16 +511,16 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 		return ddmStructurePersistence.filterFindByG_C(
 			groupIds, classNameId, start, end);
 	}
-	
+
 	@Override
 	public void revertStructure(
-		long structureId, long structureVersionId, 
-		ServiceContext serviceContext)
+			long structureId, long structureVersionId,
+			ServiceContext serviceContext)
 		throws PortalException {
-		
+
 		DDMStructurePermission.check(
 			getPermissionChecker(), structureId, ActionKeys.UPDATE);
-		
+
 		ddmStructureLocalService.revertStructure(
 			getUserId(), structureId, structureVersionId, serviceContext);
 	}

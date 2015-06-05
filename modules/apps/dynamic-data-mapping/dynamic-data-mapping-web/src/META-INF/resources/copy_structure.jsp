@@ -20,7 +20,7 @@
 String closeRedirect = ParamUtil.getString(request, "closeRedirect");
 
 DDMStructure structure = (DDMStructure)request.getAttribute(WebKeys.DYNAMIC_DATA_MAPPING_STRUCTURE);
-		 
+
 DDMStructureVersion structureVersion = structure.getStructureVersion();
 
 long classNameId = PortalUtil.getClassNameId(DDMStructure.class);

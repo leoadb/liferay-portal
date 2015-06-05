@@ -14,12 +14,6 @@
 
 package com.liferay.dynamic.data.mapping.web.portlet.action;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 import com.liferay.portal.kernel.portlet.bridges.mvc.ActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -30,6 +24,12 @@ import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersion;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureService;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureVersionService;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Leonardo Barros
@@ -46,20 +46,20 @@ public class RevertStructureActionCommand extends BaseActionCommand {
 
 	@Override
 	protected void doProcessCommand(
-		PortletRequest portletRequest, PortletResponse portletResponse) 
+			PortletRequest portletRequest, PortletResponse portletResponse)
 		throws Exception {
 
 		long structureId = ParamUtil.getLong(portletRequest, "structureId");
-		
+
 		long structureVersionId = ParamUtil.getLong(
 			portletRequest, "structureVersionId");
-		
+
 		DDMStructureVersion structureVersion =
 			_ddmStructureVersionService.getStructureVersion(structureVersionId);
-		
+
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				DDMStructure.class.getName(), portletRequest);
-		
+			DDMStructure.class.getName(), portletRequest);
+
 		serviceContext.setAttribute("status", structureVersion.getStatus());
 
 		_ddmStructureService.revertStructure(
@@ -72,7 +72,7 @@ public class RevertStructureActionCommand extends BaseActionCommand {
 
 		_ddmStructureService = ddmStructureService;
 	}
-	
+
 	@Reference
 	protected void setDDMStructureVersionService(
 		DDMStructureVersionService ddmStructureVersionService) {

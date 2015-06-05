@@ -18,7 +18,7 @@
 
 <%
 String redirect = ParamUtil.getString(request, "redirect");
-		 
+
 long structureId = ParamUtil.getLong(request, "structureId");
 
 DDMStructure structure = DDMStructureServiceUtil.getStructure(structureId);

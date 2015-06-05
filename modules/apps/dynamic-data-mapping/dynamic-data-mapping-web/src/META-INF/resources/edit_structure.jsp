@@ -27,7 +27,7 @@ DDMStructure structure = (DDMStructure)request.getAttribute(WebKeys.DYNAMIC_DATA
 
 DDMStructureVersion structureVersion = null;
 
-if(Validator.isNotNull(structure)) {
+if (Validator.isNotNull(structure)) {
 	structureVersion = structure.getStructureVersion();
 }
 
@@ -119,12 +119,12 @@ if (Validator.isNotNull(requestUpdateStructureURL)) {
 	/>
 
 	<aui:model-context bean="<%= structure %>" model="<%= DDMStructure.class %>" />
-	
+
 	<c:if test="<%= structureVersion != null %>">
 		<aui:workflow-status model="<%= DDMStructure.class %>" status="<%= structureVersion.getStatus() %>" version="<%= structureVersion.getVersion() %>" />
-		
+
 		<div class="structure-history-toolbar" id="<portlet:namespace />structureHistoryToolbar"></div>
-		
+
 		<aui:script use="aui-toolbar,aui-dialog-iframe-deprecated,liferay-util-window">
 			var toolbarChildren = [
 				<portlet:renderURL var="viewHistoryURL">
@@ -132,20 +132,20 @@ if (Validator.isNotNull(requestUpdateStructureURL)) {
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 					<portlet:param name="structureId" value="<%= String.valueOf(structure.getStructureId()) %>" />
 				</portlet:renderURL>
-	
+
 				{
 					icon: 'icon-time',
 					label: '<%= UnicodeLanguageUtil.get(request, "view-history") %>',
 					on: {
 						click: function(event) {
 							event.domEvent.preventDefault();
-	
+
 							window.location.href = '<%= viewHistoryURL %>';
 						}
 					}
 				}
 			];
-		
+
 			new A.Toolbar(
 				{
 					boundingBox: '#<portlet:namespace />structureHistoryToolbar',
@@ -285,7 +285,7 @@ if (Validator.isNotNull(requestUpdateStructureURL)) {
 
 		submitForm(form);
 	}
-	
+
 	function <portlet:namespace />saveStructureAsDraft() {
 		var form = AUI.$('#<portlet:namespace />fm');
 
