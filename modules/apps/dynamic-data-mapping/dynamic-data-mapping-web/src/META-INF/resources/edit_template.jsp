@@ -347,7 +347,7 @@ boolean showCacheableInput = ParamUtil.getBoolean(request, "showCacheableInput")
 					if (confirm('<%= UnicodeLanguageUtil.get(request, "selecting-a-new-structure-changes-the-available-input-fields-and-available-templates") %>') && (document.<portlet:namespace />fm.<portlet:namespace />classPK.value != event.ddmstructureid)) {
 						document.<portlet:namespace />fm.<portlet:namespace />classPK.value = event.ddmstructureid;
 
-						Liferay.fire('<portlet:namespace />refreshEditor');
+						<portlet:namespace />saveAndContinueTemplate(true);
 					}
 				}
 			);
@@ -367,13 +367,17 @@ boolean showCacheableInput = ParamUtil.getBoolean(request, "showCacheableInput")
 		function <portlet:namespace />saveDraftTemplate() {
 			var form = AUI.$('#<portlet:namespace />fm');
 			form.fm('status').val(<%= String.valueOf(WorkflowConstants.STATUS_DRAFT) %>);
-			Liferay.fire('<%= renderResponse.getNamespace() + "saveTemplate" %>');
+			Liferay.fire('<portlet:namespace />saveTemplate');
 		}
 
-		function <portlet:namespace />saveAndContinueTemplate() {
+		function <portlet:namespace />saveAndContinueTemplate(draft) {
 			document.<portlet:namespace />fm.<portlet:namespace />saveAndContinue.value = '1';
-
-			Liferay.fire('<portlet:namespace />saveTemplate');
+			if (draft) {
+				<portlet:namespace />saveDraftTemplate();
+			}
+			else {
+				Liferay.fire('<portlet:namespace />saveTemplate');
+			}
 		}
 	</aui:script>
 
@@ -383,7 +387,7 @@ boolean showCacheableInput = ParamUtil.getBoolean(request, "showCacheableInput")
 
 	<aui:button onClick="<%= taglibOnClick %>" primary="<%= true %>" value='<%= LanguageUtil.get(request, "save") %>' />
 
-	<aui:button onClick='<%= renderResponse.getNamespace() + "saveAndContinueTemplate();" %>' value='<%= LanguageUtil.get(request, "save-and-continue") %>' />
+	<aui:button onClick='<%= renderResponse.getNamespace() + "saveAndContinueTemplate(false);" %>' value='<%= LanguageUtil.get(request, "save-and-continue") %>' />
 
 	<aui:button onClick='<%= renderResponse.getNamespace() + "saveDraftTemplate();" %>' value='<%= LanguageUtil.get(request, "save-draft") %>' />
 
