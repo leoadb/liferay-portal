@@ -105,7 +105,7 @@ if (Validator.isNotNull(scriptContent)) {
 	</liferay-ui:panel>
 </liferay-ui:panel-container>
 
-<aui:script use="aui-ace-autocomplete-freemarker,aui-ace-autocomplete-plugin,aui-ace-autocomplete-velocity,aui-toggler,aui-popover,autocomplete-base,autocomplete-filters,event-mouseenter,event-outside,liferay-util-window,resize,transition">
+<aui:script use="aui-ace-autocomplete-freemarker,aui-ace-autocomplete-plugin,aui-ace-autocomplete-velocity,aui-toggler,aui-popover,autocomplete-base,autocomplete-filters,event-mouseenter,event-outside,liferay-util-window,liferay-portlet-url,resize,transition">
 	var AArray = A.Array;
 	var ACPlugin = A.Plugin.AceAutoComplete;
 	var AObject = A.Object;
@@ -452,6 +452,19 @@ if (Validator.isNotNull(scriptContent)) {
 		'<portlet:namespace />refreshEditor',
 		function(event) {
 			var form = A.one('#<portlet:namespace />fm');
+			
+			<%
+			PortletURL portletURL = renderResponse.createRenderURL();
+
+			portletURL.setParameter("mvcPath", "/edit_template.jsp");
+			portletURL.setParameter("redirect", redirect);
+			portletURL.setParameter("classNameId",  String.valueOf(classNameId));
+			portletURL.setParameter("classPK", String.valueOf(classPK));
+			portletURL.setParameter("resourceClassNameId", String.valueOf(resourceClassNameId));
+			portletURL.setParameter("type", DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY);
+			%>
+			
+			form.set('action', '<%= portletURL.toString() %>');
 
 			<portlet:actionURL name="refreshTemplate" var="refreshTemplateURL">
 				<portlet:param name="mvcPath" value="/edit_template.jsp" />
