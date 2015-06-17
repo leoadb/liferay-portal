@@ -23,11 +23,11 @@ import com.liferay.portal.kernel.webdav.WebDAVException;
 import com.liferay.portal.kernel.webdav.WebDAVRequest;
 import com.liferay.portal.kernel.webdav.WebDAVStorage;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
-import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
-import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLocalServiceUtil;
-import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUtil;
-import com.liferay.portlet.dynamicdatamapping.webdav.DDMWebDavUtil;
+import dynamic.data.mapping.model.DDMStructure;
+import dynamic.data.mapping.model.DDMTemplate;
+import dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+import dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
+import dynamic.data.mapping.webdav.DDMWebDavUtil;
 
 import java.util.ArrayList;
 import java.util.List;

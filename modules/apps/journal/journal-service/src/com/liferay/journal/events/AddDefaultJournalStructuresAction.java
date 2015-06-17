@@ -25,7 +25,7 @@ import com.liferay.portal.service.GroupLocalService;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.dynamicdatamapping.util.DefaultDDMStructureUtil;
+import com.liferay.dynamic.data.mapping.util.DefaultDDMStructureUtil;
 import com.liferay.portlet.journal.model.JournalArticle;
 
 import java.util.List;

@@ -54,7 +54,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.wab.generator.internal.introspection.ClassLoaderSource;
 import com.liferay.portal.wab.generator.internal.introspection.Source;
 import com.liferay.portal.wab.generator.internal.util.AntUtil;
-import com.liferay.portlet.dynamicdatamapping.util.DDMXMLUtil;
+import com.liferay.dynamic.data.mapping.util.DDMXMLUtil;
 
 import java.io.File;
 import java.io.FileInputStream;

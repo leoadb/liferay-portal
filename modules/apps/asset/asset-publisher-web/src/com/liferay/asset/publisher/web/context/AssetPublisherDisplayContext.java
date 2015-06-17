@@ -49,7 +49,7 @@ import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
 import com.liferay.portlet.asset.service.AssetEntryServiceUtil;
 import com.liferay.portlet.asset.service.persistence.AssetEntryQuery;
 import com.liferay.portlet.asset.util.AssetUtil;
-import com.liferay.portlet.dynamicdatamapping.util.DDMIndexerUtil;
+import com.liferay.dynamic.data.mapping.util.DDMIndexerUtil;
 
 import java.util.Locale;
 import java.util.Set;

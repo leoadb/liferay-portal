@@ -32,9 +32,9 @@ import com.liferay.portal.kernel.util.PrefsParamUtil;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
-import com.liferay.portlet.dynamicdatamapping.NoSuchStructureException;
-import com.liferay.portlet.dynamicdatamapping.NoSuchStructureLayoutException;
-import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.NoSuchStructureException;
+import com.liferay.dynamic.data.mapping.NoSuchStructureLayoutException;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
 
 import java.io.IOException;
 
