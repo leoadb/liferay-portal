@@ -60,6 +60,7 @@ import com.liferay.portlet.dynamicdatamapping.storage.StorageType;
 import com.liferay.portlet.dynamicdatamapping.util.DDMFormTemplateSynchonizer;
 import com.liferay.portlet.dynamicdatamapping.util.DDMUtil;
 import com.liferay.portlet.dynamicdatamapping.util.DDMXMLUtil;
+import com.liferay.util.SerializableUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1508,7 +1509,10 @@ public class DDMStructureLocalServiceImpl
 
 		String version = getNextVersion(
 			latestStructureVersion.getVersion(), majorVersion);
-
+		
+		DDMStructure structureClone = 
+			(DDMStructure)SerializableUtil.clone(structure);
+		
 		structure.setVersion(version);
 		structure.setNameMap(nameMap);
 		structure.setVersionUserId(user.getUserId());
@@ -1516,16 +1520,14 @@ public class DDMStructureLocalServiceImpl
 		structure.setDescriptionMap(descriptionMap);
 		structure.setDefinition(DDMFormJSONSerializerUtil.serialize(ddmForm));
 
-		ddmStructurePersistence.update(structure);
-
-		// Structure templates
-
-		syncStructureTemplatesFields(structure);
-
 		// Structure version
 
 		DDMStructureVersion structureVersion = addStructureVersion(
 			user, structure, version, serviceContext);
+		
+		if (!structureVersion.isApproved()) {
+			return structureClone;
+		}
 
 		// Structure Layout
 
@@ -1533,6 +1535,12 @@ public class DDMStructureLocalServiceImpl
 			structureVersion.getUserId(), structureVersion.getGroupId(),
 			structureVersion.getStructureVersionId(), ddmFormLayout,
 			serviceContext);
+
+		ddmStructurePersistence.update(structure);
+
+		// Structure templates
+
+		syncStructureTemplatesFields(structure);
 
 		// Indexer
 
