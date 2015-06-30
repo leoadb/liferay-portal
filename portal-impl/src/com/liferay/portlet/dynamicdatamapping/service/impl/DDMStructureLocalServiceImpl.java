@@ -478,17 +478,6 @@ public class DDMStructureLocalServiceImpl
 						structure.getStructureId());
 			}
 
-			long classNameId = classNameLocalService.getClassNameId(
-				DDMStructure.class);
-
-			if (ddmTemplatePersistence.countByG_C_C(
-					structure.getGroupId(), classNameId,
-					structure.getPrimaryKey()) > 0) {
-
-				throw new RequiredStructureException.
-					MustNotDeleteStructureReferencedByTemplates(
-						structure.getStructureId());
-			}
 		}
 
 		// Structure
@@ -502,6 +491,13 @@ public class DDMStructureLocalServiceImpl
 				structure.getStructureId());
 
 		for (DDMStructureVersion structureVersion : structureVersions) {
+			
+			if(!structureVersion.getTemplates().isEmpty()) {
+				throw new RequiredStructureException.
+					MustNotDeleteStructureReferencedByTemplates(
+						structureVersion.getStructureVersionId());
+			}
+			
 			ddmStructureLayoutPersistence.removeByStructureVersionId(
 				structureVersion.getStructureVersionId());
 
@@ -1532,10 +1528,6 @@ public class DDMStructureLocalServiceImpl
 
 		ddmStructurePersistence.update(structure);
 
-		// Structure templates
-
-		syncStructureTemplatesFields(structure);
-
 		// Structure version
 
 		DDMStructureVersion structureVersion = addStructureVersion(
@@ -1640,39 +1632,6 @@ public class DDMStructureLocalServiceImpl
 		}
 
 		return StringPool.BLANK;
-	}
-
-	protected List<DDMTemplate> getStructureTemplates(
-		DDMStructure structure, String type) {
-
-		long classNameId = classNameLocalService.getClassNameId(
-			DDMStructure.class);
-
-		return ddmTemplateLocalService.getTemplates(
-			structure.getGroupId(), classNameId, structure.getStructureId(),
-			type);
-	}
-
-	protected void syncStructureTemplatesFields(final DDMStructure structure) {
-		TransactionCommitCallbackRegistryUtil.registerCallback(
-			new Callable<Void>() {
-
-				@Override
-				public Void call() throws Exception {
-					DDMFormTemplateSynchonizer ddmFormTemplateSynchonizer =
-						new DDMFormTemplateSynchonizer(structure.getDDMForm());
-
-					List<DDMTemplate> templates = getStructureTemplates(
-						structure, DDMTemplateConstants.TEMPLATE_TYPE_FORM);
-
-					ddmFormTemplateSynchonizer.setDDMFormTemplates(templates);
-
-					ddmFormTemplateSynchonizer.synchronize();
-
-					return null;
-				}
-
-			});
 	}
 
 	protected void validate(DDMForm parentDDMForm, DDMForm ddmForm)
