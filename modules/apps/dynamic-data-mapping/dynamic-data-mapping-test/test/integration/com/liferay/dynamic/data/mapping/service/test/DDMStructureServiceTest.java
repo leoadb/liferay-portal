@@ -31,6 +31,7 @@ import com.liferay.portlet.dynamicdatamapping.StructureDuplicateStructureKeyExce
 import com.liferay.portlet.dynamicdatamapping.StructureNameException;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructureConstants;
+import com.liferay.portlet.dynamicdatamapping.model.DDMStructureVersion;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.portlet.dynamicdatamapping.storage.StorageType;
@@ -247,11 +248,18 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 	@Test
 	public void testGetTemplates() throws Exception {
 		DDMStructure structure = addStructure(_CLASS_NAME_ID, "Test Structure");
+		
+		DDMStructureVersion ddmStructureVersion = 
+			structure.getStructureVersion();
+		
+		addDisplayTemplate(
+			ddmStructureVersion.getStructureVersionId(), 
+			"Test Display Template");
+		addFormTemplate(
+			ddmStructureVersion.getStructureVersionId(), 
+			"Test Form Template");
 
-		addDisplayTemplate(structure.getStructureId(), "Test Display Template");
-		addFormTemplate(structure.getStructureId(), "Test Form Template");
-
-		List<DDMTemplate> templates = structure.getTemplates();
+		List<DDMTemplate> templates = ddmStructureVersion.getTemplates();
 
 		Assert.assertEquals(2, templates.size());
 	}

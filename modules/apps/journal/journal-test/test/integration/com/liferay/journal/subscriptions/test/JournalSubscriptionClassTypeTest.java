@@ -64,7 +64,8 @@ public class JournalSubscriptionClassTypeTest
 		DDMStructure ddmStructure = DDMStructureLocalServiceUtil.getStructure(
 			classTypeId);
 
-		List<DDMTemplate> ddmTemplates = ddmStructure.getTemplates();
+		List<DDMTemplate> ddmTemplates =
+			ddmStructure.getStructureVersion().getTemplates();
 
 		DDMTemplate ddmTemplate = ddmTemplates.get(0);
 
