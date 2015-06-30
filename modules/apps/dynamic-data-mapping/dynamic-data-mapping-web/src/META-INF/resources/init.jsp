@@ -100,6 +100,7 @@ page import="com.liferay.portlet.dynamicdatamapping.search.TemplateSearch" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.search.TemplateSearchTerms" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.service.DDMStorageLinkLocalServiceUtil" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.service.DDMStructureServiceUtil" %><%@
+page import="com.liferay.portlet.dynamicdatamapping.service.DDMStructureVersionLocalServiceUtil" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.service.DDMStructureVersionServiceUtil" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUtil" %><%@
 page import="com.liferay.portlet.dynamicdatamapping.service.DDMTemplateServiceUtil" %><%@

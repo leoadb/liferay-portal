@@ -94,8 +94,8 @@ public class JournalArticleFinderTest {
 
 		_basicWebContentDDMStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
-		
-		DDMStructureVersion ddmStructureVersion = 
+
+		DDMStructureVersion ddmStructureVersion =
 			_basicWebContentDDMStructure.getStructureVersion();
 
 		DDMTemplate basicWebContentTemplate = DDMTemplateTestUtil.addTemplate(
@@ -114,7 +114,7 @@ public class JournalArticleFinderTest {
 			_group.getGroupId(), "Folder 2");
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			_ddmStructure.getStructureVersion().getStructureVersionId());
 
 		article = JournalTestUtil.addArticleWithXMLContent(

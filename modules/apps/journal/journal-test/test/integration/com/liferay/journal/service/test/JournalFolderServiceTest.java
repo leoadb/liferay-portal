@@ -137,7 +137,7 @@ public class JournalFolderServiceTest {
 			_group.getGroupId(), JournalArticle.class.getName());
 
 		DDMTemplate ddmTemplate2 = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure2.getStructureVersion().getStructureVersionId(),
 			LocaleUtil.getDefault());
 
@@ -248,7 +248,7 @@ public class JournalFolderServiceTest {
 			_group.getGroupId(), JournalArticle.class.getName());
 
 		DDMTemplate ddmTemplate1 = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure1.getStructureVersion().getStructureVersionId(),
 			LocaleUtil.getDefault());
 
@@ -310,7 +310,7 @@ public class JournalFolderServiceTest {
 			_group.getGroupId(), JournalArticle.class.getName());
 
 		DDMTemplate ddmTemplate1 = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure1.getStructureVersion().getStructureVersionId(),
 			LocaleUtil.getDefault());
 
@@ -382,7 +382,7 @@ public class JournalFolderServiceTest {
 			_group.getGroupId(), JournalArticle.class.getName());
 
 		DDMTemplate ddmTemplate1 = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure1.getStructureVersion().getStructureVersionId(),
 			LocaleUtil.getDefault());
 
@@ -451,7 +451,7 @@ public class JournalFolderServiceTest {
 			_group.getGroupId(), JournalArticle.class.getName());
 
 		DDMTemplate ddmTemplate1 = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure1.getStructureVersion().getStructureVersionId(),
 			LocaleUtil.getDefault());
 
@@ -535,7 +535,7 @@ public class JournalFolderServiceTest {
 			_group.getGroupId(), JournalArticle.class.getName());
 
 		DDMTemplate ddmTemplate1 = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure1.getStructureVersion().getStructureVersionId(),
 			LocaleUtil.getDefault());
 

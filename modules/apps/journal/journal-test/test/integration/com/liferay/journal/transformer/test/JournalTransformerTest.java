@@ -87,7 +87,7 @@ public class JournalTransformerTest {
 		String xsl = "$name.getData()";
 
 		_ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			_ddmStructure.getStructureVersion().getStructureVersionId(), 
+			_ddmStructure.getStructureVersion().getStructureVersionId(),
 			TemplateConstants.LANG_TYPE_VM, xsl);
 
 		String xml = DDMStructureTestUtil.getSampleStructuredContent(
@@ -254,7 +254,7 @@ public class JournalTransformerTest {
 			TestPropsValues.getGroupId(), "name");
 
 		_ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			_ddmStructure.getStructureVersion().getStructureVersionId(), 
+			_ddmStructure.getStructureVersion().getStructureVersionId(),
 			TemplateConstants.LANG_TYPE_VM, "$name.getData()");
 
 		String xml = DDMStructureTestUtil.getSampleStructuredContent(

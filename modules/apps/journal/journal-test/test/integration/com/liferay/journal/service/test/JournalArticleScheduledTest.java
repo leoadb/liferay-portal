@@ -131,7 +131,7 @@ public class JournalArticleScheduledTest {
 			groupId, JournalArticle.class.getName(), ddmForm);
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			groupId, 
+			groupId,
 			ddmStructure.getStructureVersion().getStructureVersionId());
 
 		Calendar displayDateCalendar = getCalendar(displayDate, when);

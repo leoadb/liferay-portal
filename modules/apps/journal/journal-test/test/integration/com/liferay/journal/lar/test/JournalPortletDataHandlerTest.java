@@ -123,11 +123,11 @@ public class JournalPortletDataHandlerTest
 			PortalUtil.getClassNameId(DDMStructureVersion.class), -1L);
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			stagingGroup.getGroupId(), 
+			stagingGroup.getGroupId(),
 			ddmStructure.getStructureVersion().getStructureVersionId());
 
 		DDMTemplate rendererDDMTemplate = DDMTemplateTestUtil.addTemplate(
-			stagingGroup.getGroupId(), 
+			stagingGroup.getGroupId(),
 			ddmStructure.getStructureVersion().getStructureVersionId());
 
 		JournalTestUtil.addFeed(

@@ -188,7 +188,7 @@ public class JournalArticleServiceTest {
 			_group.getGroupId(), JournalArticle.class.getName());
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure.getStructureVersion().getStructureVersionId());
 
 		JournalTestUtil.addArticleWithXMLContent(
@@ -656,7 +656,7 @@ public class JournalArticleServiceTest {
 			_group.getGroupId(), JournalArticle.class.getName(), ddmForm);
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure.getStructureVersion().getStructureVersionId());
 
 		String xmlContent = readText(journalArticleContent);

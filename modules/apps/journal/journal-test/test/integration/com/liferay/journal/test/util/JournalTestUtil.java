@@ -156,7 +156,7 @@ public class JournalTestUtil {
 			groupId, JournalArticle.class.getName(), ddmForm, defaultLocale);
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			groupId, 
+			groupId,
 			ddmStructure.getStructureVersion().getStructureVersionId());
 
 		boolean neverExpire = true;

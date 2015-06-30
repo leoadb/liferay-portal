@@ -223,7 +223,7 @@ public class JournalContentPortletLayoutListener
 
 		if (Validator.isNotNull(article.getDDMTemplateKey())) {
 			DDMTemplate ddmTemplate = DDMTemplateLocalServiceUtil.getTemplate(
-				scopeGroupId, 
+				scopeGroupId,
 				PortalUtil.getClassNameId(DDMStructureVersion.class),
 				article.getDDMTemplateKey(), true);
 

@@ -281,7 +281,7 @@ public class JournalArticleSearchTest extends BaseSearchTestCase {
 			ddmForm);
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			serviceContext.getScopeGroupId(), 
+			serviceContext.getScopeGroupId(),
 			ddmStructure.getStructureVersion().getStructureId());
 
 		return addArticleWithXmlContent(

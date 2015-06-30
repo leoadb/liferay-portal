@@ -64,8 +64,8 @@ public class DDLRecordSetStagedModelDataHandlerTest
 
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 			group.getGroupId(), DDLRecordSet.class.getName());
-		
-		DDMStructureVersion ddmStructureVersion = 
+
+		DDMStructureVersion ddmStructureVersion =
 			ddmStructure.getStructureVersion();
 
 		DDMTemplate ddmTemplate1 = DDMTemplateTestUtil.addTemplate(

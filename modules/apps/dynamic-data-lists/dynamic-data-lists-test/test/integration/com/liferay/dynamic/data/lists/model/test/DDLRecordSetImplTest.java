@@ -75,7 +75,7 @@ public class DDLRecordSetImplTest {
 		ddmForm = DDMFormTestUtil.createDDMForm("Text 2", "Text 3");
 
 		DDMTemplate template = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), 
+			_group.getGroupId(),
 			ddmStructure.getStructureVersion().getStructureVersionId(), "json",
 			DDMFormJSONSerializerUtil.serialize(ddmForm), LocaleUtil.US);
 
