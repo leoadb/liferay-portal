@@ -248,16 +248,15 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 	@Test
 	public void testGetTemplates() throws Exception {
 		DDMStructure structure = addStructure(_CLASS_NAME_ID, "Test Structure");
-		
-		DDMStructureVersion ddmStructureVersion = 
+
+		DDMStructureVersion ddmStructureVersion =
 			structure.getStructureVersion();
-		
+
 		addDisplayTemplate(
-			ddmStructureVersion.getStructureVersionId(), 
+			ddmStructureVersion.getStructureVersionId(),
 			"Test Display Template");
 		addFormTemplate(
-			ddmStructureVersion.getStructureVersionId(), 
-			"Test Form Template");
+			ddmStructureVersion.getStructureVersionId(), "Test Form Template");
 
 		List<DDMTemplate> templates = ddmStructureVersion.getTemplates();
 
