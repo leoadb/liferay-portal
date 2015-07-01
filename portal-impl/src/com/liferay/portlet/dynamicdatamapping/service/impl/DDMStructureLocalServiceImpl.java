@@ -1523,10 +1523,10 @@ public class DDMStructureLocalServiceImpl
 
 		String version = getNextVersion(
 			latestStructureVersion.getVersion(), majorVersion);
-		
-		DDMStructure structureClone = 
-			(DDMStructure)SerializableUtil.clone(structure);
-		
+
+		DDMStructure structureClone = (DDMStructure)SerializableUtil.clone(
+			structure);
+
 		structure.setVersion(version);
 		structure.setNameMap(nameMap);
 		structure.setVersionUserId(user.getUserId());
@@ -1538,7 +1538,7 @@ public class DDMStructureLocalServiceImpl
 
 		DDMStructureVersion structureVersion = addStructureVersion(
 			user, structure, version, serviceContext);
-		
+
 		if (!structureVersion.isApproved()) {
 			return structureClone;
 		}
