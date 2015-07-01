@@ -371,6 +371,13 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 
 		return ddmFormFieldsMap.containsKey(fieldName);
 	}
+	
+	@Override
+	public boolean hasStructureVersion(long ddmStructureVersionId) {
+		return Validator.isNotNull(
+			DDMStructureVersionLocalServiceUtil.fetchDDMStructureVersion(
+				ddmStructureVersionId));
+	}
 
 	@Override
 	public boolean isFieldRepeatable(String fieldName) throws PortalException {
