@@ -7567,8 +7567,8 @@ public class JournalArticleLocalServiceImpl
 				PortalUtil.getSiteGroupId(groupId),
 				classNameLocalService.getClassNameId(DDMStructureVersion.class),
 				ddmTemplateKey, true);
-
-			if (ddmTemplate.getClassPK() != ddmStructure.getStructureId()) {
+			
+			if (!ddmStructure.hasStructureVersion(ddmTemplate.getClassPK()) {
 				throw new NoSuchTemplateException(
 					"{templateKey=" + ddmTemplateKey + "}");
 			}
