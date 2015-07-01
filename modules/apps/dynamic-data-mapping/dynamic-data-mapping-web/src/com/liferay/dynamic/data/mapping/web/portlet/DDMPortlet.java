@@ -164,9 +164,9 @@ public class DDMPortlet extends MVCPortlet {
 		if (SessionErrors.contains(
 				renderRequest, NoSuchStructureException.class.getName()) ||
 			SessionErrors.contains(
-				renderRequest, PrincipalException.class.getName()) ||
+				renderRequest, PrincipalException.getNestedClasses()) ||
 			SessionErrors.contains(
-				renderRequest, PrincipalException.class.getName())) {
+				renderRequest, PrincipalException.getNestedClasses())) {
 
 			include("/error.jsp", renderRequest, renderResponse);
 		}
