@@ -134,7 +134,8 @@ public class JournalArticleTrashHandlerTest
 			ddmForm);
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			serviceContext.getScopeGroupId(), ddmStructure.getStructureId());
+			serviceContext.getScopeGroupId(),
+			ddmStructure.getStructureVersion().getStructureVersionId());
 
 		String content = StringUtil.read(
 			classLoader,
