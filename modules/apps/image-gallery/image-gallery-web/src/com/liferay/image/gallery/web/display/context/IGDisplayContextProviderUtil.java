@@ -12,11 +12,12 @@
  * details.
  */
 
-package com.liferay.portlet.imagegallerydisplay.display.context;
+package com.liferay.image.gallery.web.display.context;
 
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.pacl.permission.PortalRuntimePermission;
+import com.liferay.portlet.imagegallerydisplay.display.context.IGViewFileVersionDisplayContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
