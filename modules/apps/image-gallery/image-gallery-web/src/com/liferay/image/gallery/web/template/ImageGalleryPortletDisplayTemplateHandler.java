@@ -12,13 +12,14 @@
  * details.
  */
 
-package com.liferay.portlet.documentlibrary.template;
+package com.liferay.image.gallery.web.template;
 
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portletdisplaytemplate.BasePortletDisplayTemplateHandler;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.template.TemplateHandler;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.util.PortalUtil;
@@ -36,10 +37,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Eduardo Garcia
  */
-public class DocumentLibraryPortletDisplayTemplateHandler
+@Component(
+	immediate = true,
+	property = {"javax.portlet.name=" + PortletKeys.MEDIA_GALLERY_DISPLAY},
+	service = TemplateHandler.class
+)
+public class ImageGalleryPortletDisplayTemplateHandler
 	extends BasePortletDisplayTemplateHandler {
 
 	@Override
@@ -125,6 +133,6 @@ public class DocumentLibraryPortletDisplayTemplateHandler
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		DocumentLibraryPortletDisplayTemplateHandler.class);
+		ImageGalleryPortletDisplayTemplateHandler.class);
 
 }
