@@ -14,7 +14,7 @@
  */
 --%>
 
-<%@ include file="/html/portlet/image_gallery_display/init.jsp" %>
+<%@ include file="/init.jsp" %>
 
 <%
 String redirect = ParamUtil.getString(request, "redirect");
@@ -29,7 +29,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 %>
 
 <liferay-portlet:renderURL varImpl="searchURL">
-	<portlet:param name="struts_action" value="/image_gallery_display/search" />
+	<portlet:param name="mvcPath" value="/search.jsp" />
 </liferay-portlet:renderURL>
 
 <aui:form action="<%= searchURL %>" method="get" name="fm">
@@ -47,7 +47,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 	<%
 	PortletURL portletURL = renderResponse.createRenderURL();
 
-	portletURL.setParameter("struts_action", "/image_gallery_display/search");
+	portletURL.setParameter("mvcPath", "/search.jsp");
 	portletURL.setParameter("redirect", redirect);
 	portletURL.setParameter("breadcrumbsFolderId", String.valueOf(breadcrumbsFolderId));
 	portletURL.setParameter("searchFolderId", String.valueOf(searchFolderId));
@@ -108,7 +108,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 		request.setAttribute("view.jsp-searchContainer", searchContainer);
 		%>
 
-		<liferay-util:include page="/html/portlet/image_gallery_display/view_images.jsp" />
+		<liferay-util:include page="/view_images.jsp" />
 	</div>
 
 	<%
@@ -129,5 +129,5 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "search"
 %>
 
 <%!
-private static Log _log = LogFactoryUtil.getLog("portal-web.docroot.html.portlet.image_gallery_display.search_jsp");
+private static Log _log = LogFactoryUtil.getLog("com.liferay.image.gallery.web.image_gallery_display.search_jsp");
 %>

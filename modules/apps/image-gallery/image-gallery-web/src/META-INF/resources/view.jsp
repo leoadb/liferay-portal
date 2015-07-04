@@ -14,7 +14,7 @@
  */
 --%>
 
-<%@ include file="/html/portlet/image_gallery_display/init.jsp" %>
+<%@ include file="/init.jsp" %>
 
 <%
 Folder folder = (Folder)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_FOLDER);
@@ -73,7 +73,7 @@ List fileEntries = DLAppServiceUtil.getGroupFileEntries(scopeGroupId, 0, folderI
 
 	PortletURL portletURL = renderResponse.createRenderURL();
 
-	portletURL.setParameter("struts_action", "/image_gallery_display/view");
+	portletURL.setParameter("mvcPath", "/view.jsp");
 	portletURL.setParameter("topLink", topLink);
 	portletURL.setParameter("folderId", String.valueOf(folderId));
 
@@ -134,7 +134,7 @@ List fileEntries = DLAppServiceUtil.getGroupFileEntries(scopeGroupId, 0, folderI
 			request.setAttribute("view.jsp-searchContainer", searchContainer);
 			%>
 
-			<liferay-util:include page="/html/portlet/image_gallery_display/view_images.jsp" />
+			<liferay-util:include page="/view_images.jsp" />
 		</c:when>
 		<c:when test='<%= topLink.equals("home") %>'>
 			<aui:row>
@@ -205,7 +205,7 @@ List fileEntries = DLAppServiceUtil.getGroupFileEntries(scopeGroupId, 0, folderI
 							</liferay-ui:custom-attributes-available>
 						</c:if>
 
-						<liferay-util:include page="/html/portlet/image_gallery_display/view_images.jsp" />
+						<liferay-util:include page="/view_images.jsp" />
 					</div>
 				</aui:col>
 
@@ -272,7 +272,7 @@ List fileEntries = DLAppServiceUtil.getGroupFileEntries(scopeGroupId, 0, folderI
 					title="<%= topLink %>"
 				/>
 
-				<liferay-util:include page="/html/portlet/image_gallery_display/view_images.jsp" />
+				<liferay-util:include page="/view_images.jsp" />
 			</aui:row>
 
 			<%

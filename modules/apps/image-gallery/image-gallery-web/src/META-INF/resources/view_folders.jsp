@@ -14,7 +14,7 @@
  */
 --%>
 
-<%@ include file="/html/portlet/image_gallery_display/init.jsp" %>
+<%@ include file="/init.jsp" %>
 
 <%
 long folderId = GetterUtil.getLong((String)request.getAttribute("view.jsp-folderId"));
@@ -53,7 +53,7 @@ PortletURL portletURL = (PortletURL)request.getAttribute("view.jsp-portletURL");
 		modelVar="curFolder"
 	>
 		<liferay-portlet:renderURL varImpl="rowURL">
-			<portlet:param name="struts_action" value="/image_gallery_display/view" />
+			<portlet:param name="mvcPath" value="/view.jsp" />
 			<portlet:param name="folderId" value="<%= String.valueOf(curFolder.getFolderId()) %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 		</liferay-portlet:renderURL>

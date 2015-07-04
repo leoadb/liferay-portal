@@ -14,7 +14,7 @@
  */
 --%>
 
-<%@ include file="/html/portlet/image_gallery_display/init.jsp" %>
+<%@ include file="/init.jsp" %>
 
 <%
 Long folderId = GetterUtil.getLong((String)request.getAttribute("view.jsp-folderId"));
@@ -139,7 +139,7 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 					<c:if test="<%= dlPortletInstanceSettingsHelper.isShowActions() %>">
 						<div class="hide" id="<portlet:namespace />buttonsContainer_<%= thumbnailId %>">
 							<div class="buttons-container float-container" id="<portlet:namespace />buttons_<%= thumbnailId %>">
-								<%@ include file="/html/portlet/image_gallery_display/image_action.jspf" %>
+								<%@ include file="/image_action.jspf" %>
 							</div>
 						</div>
 					</c:if>
@@ -166,7 +166,7 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 
 			<c:when test="<%= curFolder != null %>">
 				<portlet:renderURL var="viewFolderURL">
-					<portlet:param name="struts_action" value="/image_gallery_display/view" />
+					<portlet:param name="mvcPath" value="/view.jsp" />
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 					<portlet:param name="folderId" value="<%= String.valueOf(curFolder.getFolderId()) %>" />
 				</portlet:renderURL>
@@ -267,7 +267,7 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 <%
 PortletURL embeddedPlayerURL = renderResponse.createRenderURL();
 
-embeddedPlayerURL.setParameter("struts_action", "/image_gallery_display/embedded_player");
+embeddedPlayerURL.setParameter("mvcPath", "/embedded_player.jsp");
 embeddedPlayerURL.setWindowState(LiferayWindowState.POP_UP);
 %>
 
