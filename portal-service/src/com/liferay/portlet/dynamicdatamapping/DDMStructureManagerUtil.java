@@ -161,16 +161,17 @@ public class DDMStructureManagerUtil {
 	}
 
 	public static DDMStructure updateStructure(
-			DDMStructure structure, ServiceContext serviceContext)
+			long userId, long structureId, long parentStructureId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			DDMForm ddmForm, DDMFormLayout ddmFormLayout,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
 
 		return ddmStructureManager.updateStructure(
-			serviceContext.getUserId(), structure.getStructureId(),
-			structure.getParentStructureId(), structure.getNameMap(),
-			structure.getDescriptionMap(), structure.getDDMForm(),
-			structure.getDDMFormLayout(), serviceContext);
+			userId, structureId, parentStructureId, nameMap, descriptionMap,
+			ddmForm, ddmFormLayout, serviceContext);
 	}
 
 	private static DDMStructureManager _getDDMStructureManager() {
