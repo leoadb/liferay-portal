@@ -382,10 +382,10 @@ DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext = DLDisplayConte
 								<liferay-ui:panel collapsible="<%= true %>" cssClass="metadata" extended="<%= true %>" id="documentLibraryMetadataPanel" persistState="<%= true %>" title="<%= HtmlUtil.escape(ddmStructure.getName(locale)) %>">
 
 									<liferay-ddm:html
-										classNameId="<%= PortalUtil.getClassNameId(DDMStructure.class) %>"
-										classPK="<%= ddmStructure.getPrimaryKey() %>"
+										classNameId="<%= PortalUtil.getClassNameId(ddmStructure.getModelClass()) %>"
+										classPK="<%= ddmStructure.getStructureId() %>"
 										ddmFormValues="<%= ddmFormValues %>"
-										fieldsNamespace="<%= String.valueOf(ddmStructure.getPrimaryKey()) %>"
+										fieldsNamespace="<%= String.valueOf(ddmStructure.getStructureId()) %>"
 										readOnly="<%= true %>"
 										requestedLocale="<%= locale %>"
 										showEmptyFieldLabel="<%= false %>"
@@ -413,7 +413,7 @@ DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext = DLDisplayConte
 
 						<%
 						try {
-							List<DDMStructure> ddmStructures = DDMStructureLocalServiceUtil.getClassStructures(company.getCompanyId(), PortalUtil.getClassNameId(RawMetadataProcessor.class), new StructureStructureKeyComparator(true));
+							List<DDMStructure> ddmStructures = DDMStructureManagerUtil.getClassStructures(company.getCompanyId(), PortalUtil.getClassNameId(RawMetadataProcessor.class), new StructureStructureKeyComparator(true));
 
 							for (DDMStructure ddmStructure : ddmStructures) {
 								DDMFormValues ddmFormValues = null;
@@ -434,10 +434,10 @@ DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext = DLDisplayConte
 									<liferay-ui:panel collapsible="<%= true %>" cssClass="lfr-asset-metadata" id="documentLibraryAssetMetadataPanel" persistState="<%= true %>" title="<%= name %>">
 
 										<liferay-ddm:html
-											classNameId="<%= PortalUtil.getClassNameId(DDMStructure.class) %>"
-											classPK="<%= ddmStructure.getPrimaryKey() %>"
+											classNameId="<%= PortalUtil.getClassNameId(ddmStructure.getModelClass()) %>"
+											classPK="<%= ddmStructure.getStructureId() %>"
 											ddmFormValues="<%= ddmFormValues %>"
-											fieldsNamespace="<%= String.valueOf(ddmStructure.getPrimaryKey()) %>"
+											fieldsNamespace="<%= String.valueOf(ddmStructure.getStructureId()) %>"
 											readOnly="<%= true %>"
 											requestedLocale="<%= locale %>"
 											showEmptyFieldLabel="<%= false %>"

@@ -395,10 +395,10 @@ else {
 								</c:if>
 
 								<liferay-ddm:html
-									classNameId="<%= PortalUtil.getClassNameId(DDMStructure.class) %>"
-									classPK="<%= ddmStructure.getPrimaryKey() %>"
+									classNameId="<%= PortalUtil.getClassNameId(ddmStructure.getModelClass()) %>"
+									classPK="<%= ddmStructure.getStructureId() %>"
 									ddmFormValues="<%= ddmFormValues %>"
-									fieldsNamespace="<%= String.valueOf(ddmStructure.getPrimaryKey()) %>"
+									fieldsNamespace="<%= String.valueOf(ddmStructure.getStructureId()) %>"
 									requestedLocale="<%= locale %>"
 								/>
 

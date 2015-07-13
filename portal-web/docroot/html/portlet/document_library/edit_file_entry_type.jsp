@@ -110,7 +110,7 @@ String scopeAvailableFields = ParamUtil.getString(request, "scopeAvailableFields
 				/>
 
 				<liferay-ui:search-container-row
-					className="com.liferay.portlet.dynamicdatamapping.model.DDMStructure"
+					className="com.liferay.portlet.dynamicdatamapping.DDMStructure"
 					escapedModel="<%= true %>"
 					keyProperty="structureId"
 					modelVar="curDDMStructure"
