@@ -34,7 +34,6 @@ import com.liferay.portlet.exportimport.lar.BaseStagedModelDataHandler;
 import com.liferay.portlet.exportimport.lar.ExportImportPathUtil;
 import com.liferay.portlet.exportimport.lar.PortletDataContext;
 import com.liferay.portlet.exportimport.lar.PortletDataException;
-import com.liferay.portlet.exportimport.lar.StagedModelDataHandlerUtil;
 import com.liferay.portlet.exportimport.lar.StagedModelModifiedDateComparator;
 
 import java.util.HashMap;
@@ -209,8 +208,9 @@ public class DLFileEntryTypeStagedModelDataHandler
 
 		for (DDMStructure ddmStructure : ddmStructures) {
 			Element referenceElement =
-				StagedModelDataHandlerUtil.exportReferenceStagedModel(
-					portletDataContext, fileEntryType, ddmStructure,
+				DDMStructureManagerUtil.exportReferenceStagedModel(
+					portletDataContext, fileEntryType,
+					ddmStructure.getStructureId(),
 					PortletDataContext.REFERENCE_TYPE_STRONG);
 
 			referenceElement.addAttribute(

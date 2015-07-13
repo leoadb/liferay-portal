@@ -15,7 +15,10 @@
 package com.liferay.portlet.dynamicdatamapping;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.model.StagedModel;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portlet.exportimport.lar.PortletDataContext;
 
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +40,12 @@ public interface DDMStructureManager {
 	public void deleteStructure(long structureId) throws PortalException;
 
 	public void deleteStructures(long groupId) throws PortalException;
+
+	public Element exportReferenceStagedModel(
+			PortletDataContext portletDataContext,
+			StagedModel referrerStagedModel, long structureId,
+			String referenceType)
+		throws Exception;
 
 	public DDMStructure fetchStructure(long structureId);
 
