@@ -33,6 +33,12 @@ public class DDMFormField implements Serializable {
 		_properties = new LinkedHashMap<>();
 	}
 
+	public DDMFormField(String name, String type) {
+		this();
+		setName(name);
+		setType(type);
+	}
+
 	public String getDataType() {
 		return MapUtil.getString(_properties, "dataType");
 	}

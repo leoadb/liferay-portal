@@ -38,6 +38,10 @@ public class LocalizedValue implements Serializable {
 		setDefaultLocale(defaultLocale);
 	}
 
+	public void addString(Locale locale, String value) {
+		_values.put(locale, value);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

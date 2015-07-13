@@ -99,13 +99,40 @@ public class DDMStructureImpl implements DDMStructure {
 	}
 
 	@Override
+	public String getFieldDataType(String fieldName) throws PortalException {
+		return _structure.getFieldDataType(fieldName);
+	}
+
+	@Override
+	public String getFieldProperty(String fieldName, String property)
+		throws PortalException {
+
+		return _structure.getFieldProperty(fieldName, property);
+	}
+
+	@Override
 	public String getFieldType(String fieldName) throws PortalException {
 		return _structure.getFieldType(fieldName);
 	}
 
 	@Override
+	public String getName(Locale locale) {
+		return _structure.getName(locale);
+	}
+
+	@Override
+	public String getName(Locale locale, boolean useDefault) {
+		return _structure.getName(locale, useDefault);
+	}
+
+	@Override
 	public Map<Locale, String> getNameMap() {
 		return _structure.getNameMap();
+	}
+
+	@Override
+	public long getParentStructureId() {
+		return _structure.getParentStructureId();
 	}
 
 	@Override
@@ -119,8 +146,28 @@ public class DDMStructureImpl implements DDMStructure {
 	}
 
 	@Override
+	public long getUserId() {
+		return _structure.getUserId();
+	}
+
+	@Override
 	public String getUuid() {
 		return _structure.getUuid();
+	}
+
+	@Override
+	public boolean hasField(String fieldName) {
+		return _structure.hasField(fieldName);
+	}
+
+	@Override
+	public boolean isFieldTransient(String fieldName) throws PortalException {
+		return _structure.isFieldTransient(fieldName);
+	}
+
+	@Override
+	public void setStructureKey(String structureKey) {
+		_structure.setStructureKey(structureKey);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

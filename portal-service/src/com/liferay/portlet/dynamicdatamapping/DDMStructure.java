@@ -35,14 +35,33 @@ public interface DDMStructure {
 
 	public Map<Locale, String> getDescriptionMap();
 
+	public String getFieldDataType(String fieldName) throws PortalException;
+
+	public String getFieldProperty(String fieldName, String property)
+		throws PortalException;
+
 	public String getFieldType(String fieldName) throws PortalException;
 
+	public String getName(Locale locale);
+
+	public String getName(Locale locale, boolean useDefault);
+
 	public Map<Locale, String> getNameMap();
+
+	public long getParentStructureId();
 
 	public long getStructureId();
 
 	public String getStructureKey();
 
+	public long getUserId();
+
 	public String getUuid();
+
+	public boolean hasField(String fieldName);
+
+	public boolean isFieldTransient(String fieldName) throws PortalException;
+
+	public void setStructureKey(String structureKey);
 
 }

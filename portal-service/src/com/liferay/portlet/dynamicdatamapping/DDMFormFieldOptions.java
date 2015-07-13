@@ -15,6 +15,7 @@
 package com.liferay.portlet.dynamicdatamapping;
 
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portlet.dynamicdatamapping.model.LocalizedValue;
 
 import java.io.Serializable;
 
@@ -29,6 +30,20 @@ import java.util.Set;
 public class DDMFormFieldOptions implements Serializable {
 
 	public DDMFormFieldOptions() {
+	}
+
+	public void addOptionLabel(
+		String optionValue, Locale locale, String label) {
+
+		LocalizedValue labels = _options.get(optionValue);
+
+		if (labels == null) {
+			labels = new LocalizedValue(_defaultLocale);
+
+			_options.put(optionValue, labels);
+		}
+
+		labels.addString(locale, label);
 	}
 
 	public Locale getDefaultLocale() {

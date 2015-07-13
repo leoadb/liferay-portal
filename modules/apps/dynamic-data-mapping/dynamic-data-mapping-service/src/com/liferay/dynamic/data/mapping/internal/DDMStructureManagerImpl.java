@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.dynamicdatamapping.DDMForm;
 import com.liferay.portlet.dynamicdatamapping.DDMFormLayout;
@@ -74,6 +75,23 @@ public class DDMStructureManagerImpl implements DDMStructureManager {
 	}
 
 	@Override
+	public void deleteStructures(long groupId) throws PortalException {
+		_ddmStructureLocalService.deleteStructures(groupId);
+	}
+
+	@Override
+	public DDMStructure fetchStructure(long structureId) {
+		com.liferay.portlet.dynamicdatamapping.model.DDMStructure structure =
+			_ddmStructureLocalService.fetchDDMStructure(structureId);
+
+		if (structure != null) {
+			return new DDMStructureImpl(structure);
+		}
+
+		return null;
+	}
+
+	@Override
 	public DDMStructure fetchStructure(
 		long groupId, long classNameId, String structureKey) {
 
@@ -112,6 +130,32 @@ public class DDMStructureManagerImpl implements DDMStructureManager {
 
 	@Override
 	public List<DDMStructure> getClassStructures(
+		long companyId, long classNameId) {
+
+		try {
+			List<DDMStructure> ddmStructures = new ArrayList<>();
+
+			List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure>
+				structures = _ddmStructureLocalService.getClassStructures(
+					companyId, classNameId);
+
+			for (com.liferay.portlet.dynamicdatamapping.model.DDMStructure
+					structure : structures) {
+
+				ddmStructures.add(new DDMStructureImpl(structure));
+			}
+
+			return ddmStructures;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+		}
+
+		return null;
+	}
+
+	@Override
+	public List<DDMStructure> getClassStructures(
 		long companyId, long classNameId, int start, int end) {
 
 		try {
@@ -120,6 +164,33 @@ public class DDMStructureManagerImpl implements DDMStructureManager {
 			List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure>
 				structures = _ddmStructureLocalService.getClassStructures(
 					companyId, classNameId, start, end);
+
+			for (com.liferay.portlet.dynamicdatamapping.model.DDMStructure
+					structure : structures) {
+
+				ddmStructures.add(new DDMStructureImpl(structure));
+			}
+
+			return ddmStructures;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+		}
+
+		return null;
+	}
+
+	@Override
+	public List<DDMStructure> getClassStructures(
+		long companyId, long classNameId,
+		OrderByComparator<DDMStructure> orderByComparator) {
+
+		try {
+			List<DDMStructure> ddmStructures = new ArrayList<>();
+
+			List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure>
+				structures = _ddmStructureLocalService.getClassStructures(
+					companyId, classNameId, orderByComparator);
 
 			for (com.liferay.portlet.dynamicdatamapping.model.DDMStructure
 					structure : structures) {
@@ -199,6 +270,25 @@ public class DDMStructureManagerImpl implements DDMStructureManager {
 	}
 
 	@Override
+	public DDMStructure updateStructure(DDMStructure structure)
+		throws PortalException {
+
+		try {
+			return new DDMStructureImpl(
+				_ddmStructureLocalService.updateDDMStructure(
+					translate(structure)));
+		}
+		catch (PortalException pe) {
+			throw pe;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+		}
+
+		return null;
+	}
+
+	@Override
 	public DDMStructure updateStructure(
 			long userId, long structureId, long parentStructureId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
@@ -248,6 +338,15 @@ public class DDMStructureManagerImpl implements DDMStructureManager {
 		return BeanPropertiesUtil.deepCopyProperties(
 			ddmFormLayout,
 			com.liferay.portlet.dynamicdatamapping.model.DDMFormLayout.class);
+	}
+
+	protected com.liferay.portlet.dynamicdatamapping.model.DDMStructure translate(
+			DDMStructure ddmStructure)
+		throws Exception {
+
+		return BeanPropertiesUtil.deepCopyProperties(
+			ddmStructure,
+			com.liferay.portlet.dynamicdatamapping.model.DDMStructure.class);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

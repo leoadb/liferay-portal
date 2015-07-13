@@ -30,6 +30,11 @@ import java.util.Set;
 public class DDMForm implements Serializable {
 
 	public DDMForm() {
+		_ddmFormFields = new ArrayList<>();
+	}
+
+	public void addDDMFormField(DDMFormField ddmFormField) {
+		_ddmFormFields.add(ddmFormField);
 	}
 
 	public Set<Locale> getAvailableLocales() {

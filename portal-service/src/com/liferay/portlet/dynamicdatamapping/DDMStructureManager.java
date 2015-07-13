@@ -15,6 +15,7 @@
 package com.liferay.portlet.dynamicdatamapping;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.service.ServiceContext;
 
 import java.util.List;
@@ -36,6 +37,10 @@ public interface DDMStructureManager {
 
 	public void deleteStructure(long structureId) throws PortalException;
 
+	public void deleteStructures(long groupId) throws PortalException;
+
+	public DDMStructure fetchStructure(long structureId);
+
 	public DDMStructure fetchStructure(
 		long groupId, long classNameId, String structureKey);
 
@@ -43,7 +48,14 @@ public interface DDMStructureManager {
 		String uuid, long groupId);
 
 	public List<DDMStructure> getClassStructures(
+		long companyId, long classNameId);
+
+	public List<DDMStructure> getClassStructures(
 		long companyId, long classNameId, int start, int end);
+
+	public List<DDMStructure> getClassStructures(
+		long companyId, long classNameId,
+		OrderByComparator<DDMStructure> orderByComparator);
 
 	public DDMStructure getStructure(long structureId) throws PortalException;
 
@@ -52,6 +64,9 @@ public interface DDMStructureManager {
 		throws PortalException;
 
 	public DDMStructure getStructureByUuidAndGroupId(String uuid, long groupId)
+		throws PortalException;
+
+	public DDMStructure updateStructure(DDMStructure structure)
 		throws PortalException;
 
 	public DDMStructure updateStructure(

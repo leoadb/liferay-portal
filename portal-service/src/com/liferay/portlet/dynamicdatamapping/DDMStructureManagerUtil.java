@@ -15,6 +15,7 @@
 package com.liferay.portlet.dynamicdatamapping;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
@@ -53,6 +54,18 @@ public class DDMStructureManagerUtil {
 		ddmStructureManager.deleteStructure(structureId);
 	}
 
+	public static void deleteStructures(long groupId) throws PortalException {
+		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
+
+		ddmStructureManager.deleteStructures(groupId);
+	}
+
+	public static DDMStructure fetchStructure(long structureId) {
+		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
+
+		return ddmStructureManager.fetchStructure(structureId);
+	}
+
 	public static DDMStructure fetchStructure(
 		long groupId, long classNameId, String structureKey) {
 
@@ -72,12 +85,30 @@ public class DDMStructureManagerUtil {
 	}
 
 	public static List<DDMStructure> getClassStructures(
+		long companyId, long classNameId) {
+
+		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
+
+		return ddmStructureManager.getClassStructures(companyId, classNameId);
+	}
+
+	public static List<DDMStructure> getClassStructures(
 		long companyId, long classNameId, int start, int end) {
 
 		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
 
 		return ddmStructureManager.getClassStructures(
 			companyId, classNameId, start, end);
+	}
+
+	public static List<DDMStructure> getClassStructures(
+		long companyId, long classNameId,
+		OrderByComparator<DDMStructure> orderByComparator) {
+
+		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
+
+		return ddmStructureManager.getClassStructures(
+			companyId, classNameId, orderByComparator);
 	}
 
 	public static DDMStructure getStructure(long structureId)
@@ -107,18 +138,25 @@ public class DDMStructureManagerUtil {
 		return ddmStructureManager.getStructureByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static DDMStructure updateStructure(DDMStructure structure)
+		throws PortalException {
+
+		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
+
+		return ddmStructureManager.updateStructure(structure);
+	}
+
 	public static DDMStructure updateStructure(
-			long userId, long structureId, long parentStructureId,
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			DDMForm ddmForm, DDMFormLayout ddmFormLayout,
-			ServiceContext serviceContext)
+			DDMStructure structure, ServiceContext serviceContext)
 		throws PortalException {
 
 		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
 
 		return ddmStructureManager.updateStructure(
-			userId, structureId, parentStructureId, nameMap, descriptionMap,
-			ddmForm, ddmFormLayout, serviceContext);
+			serviceContext.getUserId(), structure.getStructureId(),
+			structure.getParentStructureId(), structure.getNameMap(),
+			structure.getDescriptionMap(), structure.getDDMForm(),
+			structure.getDDMFormLayout(), serviceContext);
 	}
 
 	private static DDMStructureManager _getDDMStructureManager() {
