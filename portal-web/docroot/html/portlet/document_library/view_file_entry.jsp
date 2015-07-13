@@ -413,7 +413,7 @@ DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext = DLDisplayConte
 
 						<%
 						try {
-							List<DDMStructure> ddmStructures = DDMStructureManagerUtil.getClassStructures(company.getCompanyId(), PortalUtil.getClassNameId(RawMetadataProcessor.class), new StructureStructureKeyComparator(true));
+							List<DDMStructure> ddmStructures = DDMStructureManagerUtil.getClassStructuresUsingKeyComparator(company.getCompanyId(), PortalUtil.getClassNameId(RawMetadataProcessor.class));
 
 							for (DDMStructure ddmStructure : ddmStructures) {
 								DDMFormValues ddmFormValues = null;

@@ -15,7 +15,6 @@
 package com.liferay.portlet.dynamicdatamapping;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.service.ServiceContext;
 
 import java.util.List;
@@ -53,9 +52,8 @@ public interface DDMStructureManager {
 	public List<DDMStructure> getClassStructures(
 		long companyId, long classNameId, int start, int end);
 
-	public List<DDMStructure> getClassStructures(
-		long companyId, long classNameId,
-		OrderByComparator<DDMStructure> orderByComparator);
+	public List<DDMStructure> getClassStructuresUsingKeyComparator(
+		long companyId, long classNameId);
 
 	public DDMStructure getStructure(long structureId) throws PortalException;
 

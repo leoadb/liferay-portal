@@ -18,13 +18,13 @@ import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.dynamicdatamapping.DDMForm;
 import com.liferay.portlet.dynamicdatamapping.DDMFormLayout;
 import com.liferay.portlet.dynamicdatamapping.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.DDMStructureManager;
 import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLocalService;
+import com.liferay.portlet.dynamicdatamapping.util.comparator.StructureStructureKeyComparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,16 +181,16 @@ public class DDMStructureManagerImpl implements DDMStructureManager {
 	}
 
 	@Override
-	public List<DDMStructure> getClassStructures(
-		long companyId, long classNameId,
-		OrderByComparator<DDMStructure> orderByComparator) {
+	public List<DDMStructure> getClassStructuresUsingKeyComparator(
+		long companyId, long classNameId) {
 
 		try {
 			List<DDMStructure> ddmStructures = new ArrayList<>();
 
 			List<com.liferay.portlet.dynamicdatamapping.model.DDMStructure>
 				structures = _ddmStructureLocalService.getClassStructures(
-					companyId, classNameId, orderByComparator);
+					companyId, classNameId,
+					new StructureStructureKeyComparator(true));
 
 			for (com.liferay.portlet.dynamicdatamapping.model.DDMStructure
 					structure : structures) {

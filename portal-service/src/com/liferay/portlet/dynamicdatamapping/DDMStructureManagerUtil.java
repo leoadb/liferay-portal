@@ -15,7 +15,6 @@
 package com.liferay.portlet.dynamicdatamapping;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
@@ -101,14 +100,13 @@ public class DDMStructureManagerUtil {
 			companyId, classNameId, start, end);
 	}
 
-	public static List<DDMStructure> getClassStructures(
-		long companyId, long classNameId,
-		OrderByComparator<DDMStructure> orderByComparator) {
+	public static List<DDMStructure> getClassStructuresUsingKeyComparator(
+		long companyId, long classNameId) {
 
 		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
 
-		return ddmStructureManager.getClassStructures(
-			companyId, classNameId, orderByComparator);
+		return ddmStructureManager.getClassStructuresUsingKeyComparator(
+			companyId, classNameId);
 	}
 
 	public static DDMStructure getStructure(long structureId)
