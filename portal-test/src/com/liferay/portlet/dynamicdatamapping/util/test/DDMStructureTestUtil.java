@@ -114,8 +114,17 @@ public class DDMStructureTestUtil {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
+		String ddmParentStructureKey = null;
+
+		DDMStructure ddmParentStructure =
+			DDMStructureManagerUtil.fetchStructure(parentStructureId);
+
+		if (ddmParentStructure != null) {
+			ddmParentStructureKey = ddmParentStructure.getStructureKey();
+		}
+
 		return DDMStructureManagerUtil.addStructure(
-			TestPropsValues.getUserId(), groupId, parentStructureId,
+			TestPropsValues.getUserId(), groupId, ddmParentStructureKey,
 			PortalUtil.getClassNameId(className), null, nameMap, null, ddmForm,
 			ddmFormLayout, StorageType.JSON.toString(),
 			DDMStructureConstants.TYPE_DEFAULT, serviceContext);

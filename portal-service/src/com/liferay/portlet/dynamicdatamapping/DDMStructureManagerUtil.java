@@ -48,6 +48,21 @@ public class DDMStructureManagerUtil {
 			serviceContext);
 	}
 
+	public static DDMStructure addStructure(
+			long userId, long groupId, String parentStructureKey,
+			long classNameId, String structureKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, String definition,
+			String storageType, int type, ServiceContext serviceContext)
+		throws PortalException {
+
+		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
+
+		return ddmStructureManager.addStructure(
+			userId, groupId, parentStructureKey, classNameId, structureKey,
+			nameMap, descriptionMap, definition, storageType, type,
+			serviceContext);
+	}
+
 	public static void deleteStructure(long structureId)
 		throws PortalException {
 
@@ -172,6 +187,19 @@ public class DDMStructureManagerUtil {
 		return ddmStructureManager.updateStructure(
 			userId, structureId, parentStructureId, nameMap, descriptionMap,
 			ddmForm, ddmFormLayout, serviceContext);
+	}
+
+	public static DDMStructure updateStructure(
+			long userId, long structureId, long parentStructureId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String definition, ServiceContext serviceContext)
+		throws PortalException {
+
+		DDMStructureManager ddmStructureManager = _getDDMStructureManager();
+
+		return ddmStructureManager.updateStructure(
+			userId, structureId, parentStructureId, nameMap, descriptionMap,
+			definition, serviceContext);
 	}
 
 	private static DDMStructureManager _getDDMStructureManager() {

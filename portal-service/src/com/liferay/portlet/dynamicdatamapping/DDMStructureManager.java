@@ -37,6 +37,13 @@ public interface DDMStructureManager {
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public DDMStructure addStructure(
+			long userId, long groupId, String parentStructureKey,
+			long classNameId, String structureKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, String definition,
+			String storageType, int type, ServiceContext serviceContext)
+		throws PortalException;
+
 	public void deleteStructure(long structureId) throws PortalException;
 
 	public void deleteStructures(long groupId) throws PortalException;
@@ -81,6 +88,12 @@ public interface DDMStructureManager {
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			DDMForm ddmForm, DDMFormLayout ddmFormLayout,
 			ServiceContext serviceContext)
+		throws PortalException;
+
+	public DDMStructure updateStructure(
+			long userId, long structureId, long parentStructureId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String definition, ServiceContext serviceContext)
 		throws PortalException;
 
 }
