@@ -37,6 +37,8 @@ import java.util.Map;
  */
 public interface DDMStructureManager {
 
+	public static final int COMPARATOR_STRUCTURE_KEY = 1;
+
 	public static final long STRUCTURE_DEFAULT_PARENT_STRUCTURE_ID = 0;
 
 	public static final String STRUCTURE_INDEXER_FIELD_NAMESPACE = "ddm";
@@ -89,6 +91,9 @@ public interface DDMStructureManager {
 		long companyId, long classNameId);
 
 	public List<DDMStructure> getClassStructures(
+		long companyId, long classNameId, int comparator);
+
+	public List<DDMStructure> getClassStructures(
 		long companyId, long classNameId, int start, int end);
 
 	public Class<?> getDDMStructureModelClass();
@@ -116,6 +121,9 @@ public interface DDMStructureManager {
 			DDMForm ddmForm, DDMFormLayout ddmFormLayout,
 			ServiceContext serviceContext)
 		throws PortalException;
+
+	public void updateStructureDefinition(
+		long structureId, String definition) throws PortalException;
 
 	public void updateStructureKey(long structureId, String structureKey)
 		throws PortalException;

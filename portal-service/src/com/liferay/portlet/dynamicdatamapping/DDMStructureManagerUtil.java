@@ -108,6 +108,14 @@ public class DDMStructureManagerUtil {
 	}
 
 	public static List<DDMStructure> getClassStructures(
+		long companyId, long classNameId, int comparator) {
+
+		return
+			_ddmStructureManager.getClassStructures(
+				companyId, classNameId, comparator);
+	}
+
+	public static List<DDMStructure> getClassStructures(
 		long companyId, long classNameId, int start, int end) {
 
 		return _ddmStructureManager.getClassStructures(
@@ -166,6 +174,13 @@ public class DDMStructureManagerUtil {
 		return _ddmStructureManager.updateStructure(
 			userId, structureId, parentStructureId, nameMap, descriptionMap,
 			ddmForm, ddmFormLayout, serviceContext);
+	}
+
+	public static void updateStructureDefinition(
+			long structureId, String definition)
+		throws PortalException {
+
+		_ddmStructureManager.updateStructureDefinition(structureId, definition);
 	}
 
 	public static void updateStructureKey(long structureId, String structureKey)
