@@ -22,10 +22,10 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
-import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
-import com.liferay.portlet.dynamicdatamapping.model.DDMTemplateConstants;
-import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUtil;
+import com.liferay.portlet.dynamicdatamapping.DDMStructureManagerUtil;
+import com.liferay.portlet.dynamicdatamapping.DDMTemplate;
+import com.liferay.portlet.dynamicdatamapping.DDMTemplateManager;
+import com.liferay.portlet.dynamicdatamapping.DDMTemplateManagerUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -111,11 +111,12 @@ public class DDMTemplateTestUtil {
 
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
-
-		return DDMTemplateLocalServiceUtil.addTemplate(
-			TestPropsValues.getUserId(), groupId, classNameId, classPK, 0,
-			nameMap, null, DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, null,
-			language, script, serviceContext);
+		
+		return DDMTemplateManagerUtil.addTemplate(TestPropsValues.getUserId(), 
+			groupId, classNameId, classPK, 0, null, nameMap, null, 
+			DDMTemplateManager.TEMPLATE_TYPE_DISPLAY, 
+			DDMTemplateManager.TEMPLATE_MODE_CREATE, language, script, 
+			false, false, null, null, serviceContext);
 	}
 
 	public static DDMTemplate addTemplate(
@@ -124,8 +125,9 @@ public class DDMTemplateTestUtil {
 		throws Exception {
 
 		return addTemplate(
-			groupId, PortalUtil.getClassNameId(DDMStructure.class), structureId,
-			language, script, defaultLocale);
+			groupId, PortalUtil.getClassNameId(
+				DDMStructureManagerUtil.getDDMStructureModelClass()), 
+				structureId, language, script, defaultLocale);
 	}
 
 	public static DDMTemplate addTemplate(
