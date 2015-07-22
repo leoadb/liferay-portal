@@ -31,15 +31,13 @@ import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 import com.liferay.portal.kernel.xml.XPath;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portlet.dynamicdatamapping.DDMStructureManager;
+import com.liferay.portlet.dynamicdatamapping.DDMStructureManagerUtil;
 import com.liferay.portlet.dynamicdatamapping.model.DDMForm;
 import com.liferay.portlet.dynamicdatamapping.model.DDMFormField;
 import com.liferay.portlet.dynamicdatamapping.model.DDMFormLayout;
-import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
-import com.liferay.portlet.dynamicdatamapping.model.DDMStructureConstants;
+import com.liferay.portlet.dynamicdatamapping.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.model.LocalizedValue;
-import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLocalServiceUtil;
-import com.liferay.portlet.dynamicdatamapping.storage.StorageType;
-import com.liferay.portlet.dynamicdatamapping.util.DDMUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -109,16 +107,25 @@ public class DDMStructureTestUtil {
 
 		nameMap.put(defaultLocale, "Test Structure");
 
-		DDMFormLayout ddmFormLayout = DDMUtil.getDefaultDDMFormLayout(ddmForm);
+		DDMFormLayout ddmFormLayout = 
+			DDMStructureManagerUtil.getDefaultDDMFormLayout(ddmForm);
 
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
-
-		return DDMStructureLocalServiceUtil.addStructure(
-			TestPropsValues.getUserId(), groupId, parentStructureId,
-			PortalUtil.getClassNameId(className), null, nameMap, null, ddmForm,
-			ddmFormLayout, StorageType.JSON.toString(),
-			DDMStructureConstants.TYPE_DEFAULT, serviceContext);
+		
+		DDMStructure parentStructure = DDMStructureManagerUtil.fetchStructure(
+			parentStructureId);
+		
+		String parentStructureKey = null;
+		
+		if(parentStructure != null) {
+			parentStructureKey = parentStructure.getStructureKey();
+		}
+		
+		return DDMStructureManagerUtil.addStructure(TestPropsValues.getUserId(), 
+			groupId, parentStructureKey, PortalUtil.getClassNameId(className), 
+			null, nameMap, null, ddmForm, ddmFormLayout, "json", 
+			DDMStructureManager.STRUCTURE_TYPE_DEFAULT, serviceContext);
 	}
 
 	public static DDMStructure addStructure(String className) throws Exception {

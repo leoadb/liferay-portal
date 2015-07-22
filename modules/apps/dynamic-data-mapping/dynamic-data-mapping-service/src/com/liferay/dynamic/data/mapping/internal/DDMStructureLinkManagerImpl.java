@@ -17,7 +17,7 @@ package com.liferay.dynamic.data.mapping.internal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portlet.dynamicdatamapping.DDMStructureLink;
 import com.liferay.portlet.dynamicdatamapping.DDMStructureLinkManager;
-import com.liferay.portlet.dynamicdatamapping.service.DDMStructureLinkLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class DDMStructureLinkManagerImpl implements DDMStructureLinkManager {
 	public DDMStructureLink addStructureLink(
 		long classNameId, long classPK, long structureId) {
 
-		com.liferay.portlet.dynamicdatamapping.model.DDMStructureLink
+		com.liferay.dynamic.data.mapping.model.DDMStructureLink
 			ddmStructureLink = _ddmStructureLinkLocalService.addStructureLink(
 				classNameId, classPK, structureId);
 
@@ -52,10 +52,17 @@ public class DDMStructureLinkManagerImpl implements DDMStructureLinkManager {
 	}
 
 	@Override
+	public void deleteStructureLinks(long classNameId, long classPK) {
+
+		_ddmStructureLinkLocalService.deleteStructureLinks(
+				classNameId, classPK);
+	}
+	
+	@Override
 	public List<DDMStructureLink> getClassNameStructureLinks(long classNameId) {
 		List<DDMStructureLink> ddmStructureLinks = new ArrayList<>();
 
-		for (com.liferay.portlet.dynamicdatamapping.model.DDMStructureLink
+		for (com.liferay.dynamic.data.mapping.model.DDMStructureLink
 				structureLink :
 					_ddmStructureLinkLocalService.getClassNameStructureLinks(
 						classNameId)) {
@@ -72,7 +79,7 @@ public class DDMStructureLinkManagerImpl implements DDMStructureLinkManager {
 
 		List<DDMStructureLink> ddmStructureLinks = new ArrayList<>();
 
-		for (com.liferay.portlet.dynamicdatamapping.model.DDMStructureLink
+		for (com.liferay.dynamic.data.mapping.model.DDMStructureLink
 				ddmStructureLink :
 					_ddmStructureLinkLocalService.getStructureLinks(
 						classNameId, classPK)) {

@@ -17,6 +17,9 @@ package com.liferay.asset.publisher.web.portlet;
 import com.liferay.asset.publisher.web.upgrade.AssetPublisherWebUpgrade;
 import com.liferay.asset.publisher.web.util.AssetPublisherUtil;
 import com.liferay.asset.publisher.web.util.AssetRSSUtil;
+import com.liferay.dynamic.data.mapping.storage.Field;
+import com.liferay.dynamic.data.mapping.storage.Fields;
+import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.portal.NoSuchGroupException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -33,16 +36,11 @@ import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
-import com.liferay.portlet.dynamicdatamapping.storage.Field;
-import com.liferay.portlet.dynamicdatamapping.storage.Fields;
-import com.liferay.portlet.dynamicdatamapping.util.DDMUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-
 import java.text.DateFormat;
-
 import java.util.Date;
 
 import javax.portlet.ActionRequest;
@@ -54,7 +52,6 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
-
 import javax.servlet.ServletException;
 
 import org.osgi.service.component.annotations.Component;
@@ -116,7 +113,7 @@ public class AssetPublisherPortlet extends MVCPortlet {
 				String fieldsNamespace = ParamUtil.getString(
 					resourceRequest, "fieldsNamespace");
 
-				fields = DDMUtil.getFields(
+				fields = _ddm.getFields(
 					structureId, fieldsNamespace, serviceContext);
 			}
 
@@ -144,7 +141,7 @@ public class AssetPublisherPortlet extends MVCPortlet {
 
 			String type = ddmStructure.getFieldType(fieldName);
 
-			Serializable displayValue = DDMUtil.getDisplayFieldValue(
+			Serializable displayValue = _ddm.getDisplayFieldValue(
 				themeDisplay, fieldValue, type);
 
 			jsonObject.put("displayValue", String.valueOf(displayValue));
@@ -292,5 +289,12 @@ public class AssetPublisherPortlet extends MVCPortlet {
 	protected void setAssetPublisherWebUpgrade(
 		AssetPublisherWebUpgrade assetPublisherWebUpgrade) {
 	}
+
+	@Reference
+	protected void setDDM(DDM ddm) {
+		_ddm = ddm;
+	}
+
+	protected DDM _ddm;
 
 }

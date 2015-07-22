@@ -60,7 +60,6 @@ import com.liferay.portlet.documentlibrary.util.comparator.DLFileVersionVersionC
 import com.liferay.portlet.documentlibrary.webdav.DLWebDAVStorageImpl;
 
 import java.io.InputStream;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

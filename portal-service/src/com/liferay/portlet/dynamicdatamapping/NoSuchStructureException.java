@@ -17,10 +17,10 @@ package com.liferay.portlet.dynamicdatamapping;
 import com.liferay.portal.NoSuchModelException;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author Leonardo Barros
  */
 public class NoSuchStructureException extends NoSuchModelException {
-
+	
 	public NoSuchStructureException() {
 	}
 
@@ -35,5 +35,4 @@ public class NoSuchStructureException extends NoSuchModelException {
 	public NoSuchStructureException(Throwable cause) {
 		super(cause);
 	}
-
 }
