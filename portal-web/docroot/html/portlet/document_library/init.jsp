@@ -16,6 +16,8 @@
 
 <%@ include file="/html/portlet/init.jsp" %>
 
+<%@ taglib uri="http://liferay.com/tld/ddm" prefix="liferay-ddm" %>
+
 <%@ page import="com.liferay.portal.InvalidRepositoryException" %><%@
 page import="com.liferay.portal.NoSuchRepositoryException" %><%@
 page import="com.liferay.portal.kernel.lock.DuplicateLockException" %><%@
