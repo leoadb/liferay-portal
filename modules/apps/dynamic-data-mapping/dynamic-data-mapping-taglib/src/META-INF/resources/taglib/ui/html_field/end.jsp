@@ -14,6 +14,6 @@
  */
 --%>
 
-<%@ page import="com.liferay.portal.kernel.portletdisplaytemplate.PortletDisplayTemplateManager" %>
-<%@ page import="com.liferay.portlet.dynamicdatamapping.DDMTemplate" %>
-<%@ page import="com.liferay.portlet.dynamicdatamapping.DDMTemplateManagerUtil" %>
+<%@ include file="/taglib/ui/html_field/init.jsp" %>
+
+</div>
