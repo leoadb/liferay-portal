@@ -3,7 +3,7 @@
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
 	<tlib-version>1.0</tlib-version>
 	<short-name>liferay-ddm</short-name>
-	<uri>http://liferay.com/tld/liferay-ddm</uri>
+	<uri>http://liferay.com/tld/ddm</uri>
 	<tag>
 		<name>html</name>
 		<tag-class>com.liferay.dynamic.data.mapping.taglib.HTMLTag</tag-class>
