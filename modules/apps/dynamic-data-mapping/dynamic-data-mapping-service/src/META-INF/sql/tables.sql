@@ -8,8 +8,8 @@ create table DDMContent (
 	createDate DATE null,
 	modifiedDate DATE null,
 	name STRING null,
-	description VARCHAR(75) null,
-	data_ VARCHAR(75) null
+	description STRING null,
+	data_ TEXT null
 );
 
 create table DDMStorageLink (
@@ -36,8 +36,8 @@ create table DDMStructure (
 	structureKey VARCHAR(75) null,
 	version VARCHAR(75) null,
 	name STRING null,
-	description STRING null,
-	definition VARCHAR(75) null,
+	description TEXT null,
+	definition TEXT null,
 	storageType VARCHAR(75) null,
 	type_ INTEGER,
 	lastPublishDate DATE null
@@ -53,7 +53,7 @@ create table DDMStructureLayout (
 	createDate DATE null,
 	modifiedDate DATE null,
 	structureVersionId LONG,
-	definition VARCHAR(75) null
+	definition TEXT null
 );
 
 create table DDMStructureLink (
@@ -74,8 +74,8 @@ create table DDMStructureVersion (
 	version VARCHAR(75) null,
 	parentStructureId LONG,
 	name STRING null,
-	description STRING null,
-	definition VARCHAR(75) null,
+	description TEXT null,
+	definition TEXT null,
 	storageType VARCHAR(75) null,
 	type_ INTEGER,
 	status INTEGER,
@@ -101,11 +101,11 @@ create table DDMTemplate (
 	templateKey VARCHAR(75) null,
 	version VARCHAR(75) null,
 	name STRING null,
-	description STRING null,
+	description TEXT null,
 	type_ VARCHAR(75) null,
 	mode_ VARCHAR(75) null,
 	language VARCHAR(75) null,
-	script VARCHAR(75) null,
+	script TEXT null,
 	cacheable BOOLEAN,
 	smallImage BOOLEAN,
 	smallImageId LONG,
@@ -132,11 +132,12 @@ create table DDMTemplateVersion (
 	templateId LONG,
 	version VARCHAR(75) null,
 	name STRING null,
-	description STRING null,
+	description TEXT null,
 	language VARCHAR(75) null,
-	script VARCHAR(75) null,
+	script TEXT null,
 	status INTEGER,
 	statusByUserId LONG,
 	statusByUserName VARCHAR(75) null,
 	statusDate DATE null
 );
+
