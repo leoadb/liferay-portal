@@ -16,8 +16,8 @@ package com.liferay.journal.service.impl;
 
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLink;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalServiceUtil;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.journal.exception.DuplicateFolderNameException;
 import com.liferay.journal.exception.InvalidDDMStructureException;
 import com.liferay.journal.exception.NoSuchFolderException;
@@ -56,6 +56,7 @@ import com.liferay.portal.model.TreeModel;
 import com.liferay.portal.model.User;
 import com.liferay.portal.model.WorkflowDefinitionLink;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.model.AssetEntry;
@@ -193,7 +194,7 @@ public class JournalFolderLocalServiceImpl
 		// Workflow
 
 		List<DDMStructureLink> ddmStructureLinks =
-			DDMStructureLinkLocalServiceUtil.getStructureLinks(
+			ddmStructureLinkLocalService.getStructureLinks(
 				classNameLocalService.getClassNameId(JournalFolder.class),
 				folder.getFolderId());
 
@@ -211,7 +212,7 @@ public class JournalFolderLocalServiceImpl
 		}
 
 		for (DDMStructureLink ddmStructureLink : ddmStructureLinks ) {
-			DDMStructureLinkLocalServiceUtil.deleteStructureLink(
+			ddmStructureLinkLocalService.deleteStructureLink(
 				ddmStructureLink.getStructureLinkId());
 
 			WorkflowDefinitionLink workflowDefinitionLink =
@@ -300,7 +301,7 @@ public class JournalFolderLocalServiceImpl
 				JournalFolderConstants.
 					RESTRICTION_TYPE_DDM_STRUCTURES_AND_WORKFLOW) {
 
-			return DDMStructureLinkLocalServiceUtil.getStructureLinkStructures(
+			return ddmStructureLinkLocalService.getStructureLinkStructures(
 				classNameLocalService.getClassNameId(JournalFolder.class),
 				folderId);
 		}
@@ -308,7 +309,7 @@ public class JournalFolderLocalServiceImpl
 		folderId = getOverridedDDMStructuresFolderId(folderId);
 
 		if (folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
-			return DDMStructureLinkLocalServiceUtil.getStructureLinkStructures(
+			return ddmStructureLinkLocalService.getStructureLinkStructures(
 				classNameLocalService.getClassNameId(JournalFolder.class),
 				folderId);
 		}
@@ -316,8 +317,7 @@ public class JournalFolderLocalServiceImpl
 		long classNameId = classNameLocalService.getClassNameId(
 			JournalArticle.class);
 
-		return DDMStructureLocalServiceUtil.getStructures(
-			groupIds, classNameId);
+		return ddmStructureLocalService.getStructures(groupIds, classNameId);
 	}
 
 	@Override
@@ -817,7 +817,7 @@ public class JournalFolderLocalServiceImpl
 
 		if (folderId > JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 			originalDDMStructureIds = getDDMStructureIds(
-				DDMStructureLinkLocalServiceUtil.getStructureLinks(
+				ddmStructureLinkLocalService.getStructureLinks(
 					classNameLocalService.getClassNameId(JournalFolder.class),
 					folderId));
 
@@ -897,7 +897,7 @@ public class JournalFolderLocalServiceImpl
 		Set<Long> ddmStructureIds = SetUtil.fromArray(ddmStructureIdsArray);
 
 		List<DDMStructureLink> ddmStructureLinks =
-			DDMStructureLinkLocalServiceUtil.getStructureLinks(
+			ddmStructureLinkLocalService.getStructureLinks(
 				classNameLocalService.getClassNameId(JournalFolder.class),
 				folder.getFolderId());
 
@@ -910,7 +910,7 @@ public class JournalFolderLocalServiceImpl
 
 		for (Long ddmStructureId : ddmStructureIds) {
 			if (!originalDDMStructureIds.contains(ddmStructureId)) {
-				DDMStructureLinkLocalServiceUtil.addStructureLink(
+				ddmStructureLinkLocalService.addStructureLink(
 					classNameLocalService.getClassNameId(JournalFolder.class),
 					folder.getFolderId(), ddmStructureId);
 			}
@@ -918,7 +918,7 @@ public class JournalFolderLocalServiceImpl
 
 		for (Long originalDDMStructureId : originalDDMStructureIds) {
 			if (!ddmStructureIds.contains(originalDDMStructureId)) {
-				DDMStructureLinkLocalServiceUtil.deleteStructureLink(
+				ddmStructureLinkLocalService.deleteStructureLink(
 					classNameLocalService.getClassNameId(JournalFolder.class),
 					folder.getFolderId(), originalDDMStructureId);
 			}
@@ -1415,7 +1415,7 @@ public class JournalFolderLocalServiceImpl
 
 			for (JournalArticle article : articles) {
 				DDMStructure ddmStructure =
-					DDMStructureLocalServiceUtil.fetchStructure(
+					ddmStructureLocalService.fetchStructure(
 						article.getGroupId(), classNameId,
 						article.getDDMStructureKey(), true);
 
@@ -1457,5 +1457,11 @@ public class JournalFolderLocalServiceImpl
 			throw new DuplicateFolderNameException(name);
 		}
 	}
+
+	@ServiceReference(type = DDMStructureLinkLocalService.class)
+	protected DDMStructureLinkLocalService ddmStructureLinkLocalService;
+
+	@ServiceReference(type = DDMStructureLocalService.class)
+	protected DDMStructureLocalService ddmStructureLocalService;
 
 }
