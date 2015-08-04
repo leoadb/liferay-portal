@@ -16,10 +16,15 @@ package com.liferay.document.library.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.io.DDMFormXSDDeserializerUtil;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
+import com.liferay.dynamic.data.mapping.util.DDMBeanCopyUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -42,14 +47,9 @@ import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryMetadataLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryTypeLocalServiceUtil;
-import com.liferay.portlet.dynamicdatamapping.model.DDMForm;
-import com.liferay.portlet.dynamicdatamapping.model.DDMFormField;
-import com.liferay.portlet.dynamicdatamapping.model.UnlocalizedValue;
-import com.liferay.portlet.dynamicdatamapping.storage.DDMFormFieldValue;
 import com.liferay.portlet.dynamicdatamapping.storage.DDMFormValues;
 
 import java.io.ByteArrayInputStream;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -196,8 +196,9 @@ public class DLFileEntryMetadataLocalServiceTest {
 
 		ddmForm.addDDMFormField(ddmFormField);
 
-		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
-			ddmForm, availableLocales, currentLocale);
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues = 
+			DDMFormValuesTestUtil.createDDMFormValues(
+					ddmForm, availableLocales, currentLocale);
 
 		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
 
@@ -208,7 +209,8 @@ public class DLFileEntryMetadataLocalServiceTest {
 
 		Map<String, DDMFormValues> ddmFormValuesMap = new HashMap<>();
 
-		ddmFormValuesMap.put(ddmStructureKey, ddmFormValues);
+		ddmFormValuesMap.put(ddmStructureKey,
+			DDMBeanCopyUtil.copyDDMFormValues(ddmFormValues));
 
 		return ddmFormValuesMap;
 	}
