@@ -741,7 +741,7 @@ public class FileEntryStagedModelDataHandler
 				portletDataContext.getZipEntryAsObject(path);
 
 			serviceContext.setAttribute(
-				DDMFormValues.class.getName() + ddmStructure.getStructureId(),
+				com.liferay.portlet.dynamicdatamapping.storage.DDMFormValues.class.getName() + ddmStructure.getStructureId(),
 				ddmFormValues);
 		}
 	}
