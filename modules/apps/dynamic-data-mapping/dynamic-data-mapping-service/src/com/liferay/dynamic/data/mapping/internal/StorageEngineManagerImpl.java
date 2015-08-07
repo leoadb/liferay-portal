@@ -16,7 +16,10 @@ package com.liferay.dynamic.data.mapping.internal;
 
 import com.liferay.dynamic.data.mapping.storage.StorageEngine;
 import com.liferay.dynamic.data.mapping.util.DDM;
+import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.dynamicdatamapping.StorageEngineManager;
 import com.liferay.portlet.dynamicdatamapping.StorageFieldRequiredException;
@@ -38,11 +41,21 @@ public class StorageEngineManagerImpl implements StorageEngineManager {
 		throws PortalException {
 
 		try {
+			com.liferay.dynamic.data.mapping.storage.DDMFormValues _ddmFormValues = BeanPropertiesUtil.deepCopyProperties(ddmFormValues);
+			
 			return _storageEngine.create(
-				companyId, ddmStructureId, ddmFormValues, serviceContext);
+				companyId, ddmStructureId, _ddmFormValues, serviceContext);
 		}
 		catch (PortalException pe) {
 			throw translate(pe);
+		} 
+		catch (Exception e) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(e,e);
+			}
+
+			return 0;
 		}
 	}
 
@@ -60,7 +73,19 @@ public class StorageEngineManagerImpl implements StorageEngineManager {
 
 	@Override
 	public DDMFormValues getDDMFormValues(long classPK) throws PortalException {
-		return _storageEngine.getDDMFormValues(classPK);
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues _ddmFormValues = _storageEngine.getDDMFormValues(classPK);
+
+		try {
+			return BeanPropertiesUtil.deepCopyProperties(_ddmFormValues);
+		}
+		catch (Exception e) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(e,e);
+			}
+
+			return null;
+		}
 	}
 
 	@Override
@@ -68,9 +93,20 @@ public class StorageEngineManagerImpl implements StorageEngineManager {
 			long ddmStructureId, String fieldNamespace,
 			ServiceContext serviceContext)
 		throws PortalException {
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues _ddmFormValues = _ddm.getDDMFormValues(
+				ddmStructureId, fieldNamespace, serviceContext);
 
-		return _ddm.getDDMFormValues(
-			ddmStructureId, fieldNamespace, serviceContext);
+		try {
+			return BeanPropertiesUtil.deepCopyProperties(_ddmFormValues);
+		}
+		catch (Exception e) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(e,e);
+			}
+
+			return null;
+		}
 	}
 
 	@Override
@@ -80,10 +116,20 @@ public class StorageEngineManagerImpl implements StorageEngineManager {
 		throws PortalException {
 
 		try {
-			_storageEngine.update(classPK, ddmFormValues, serviceContext);
+			
+			com.liferay.dynamic.data.mapping.storage.DDMFormValues _ddmFormValues = BeanPropertiesUtil.deepCopyProperties(ddmFormValues);
+			
+			_storageEngine.update(classPK, _ddmFormValues, serviceContext);
 		}
 		catch (PortalException pe) {
 			throw translate(pe);
+		}
+		catch (Exception e) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(e,e);
+			}
+
 		}
 	}
 
@@ -111,5 +157,6 @@ public class StorageEngineManagerImpl implements StorageEngineManager {
 
 	private DDM _ddm;
 	private StorageEngine _storageEngine;
-
+	private static final Log _log =
+			LogFactoryUtil.getLog(StorageEngineManagerImpl.class);
 }
