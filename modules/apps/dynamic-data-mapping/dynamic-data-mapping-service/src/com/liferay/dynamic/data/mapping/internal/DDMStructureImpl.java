@@ -53,13 +53,6 @@ public class DDMStructureImpl implements DDMStructure {
 	}
 
 	@Override
-	public List<String> getChildrenFieldNames(String fieldName)
-		throws PortalException {
-
-		return _ddmStructure.getChildrenFieldNames(fieldName);
-	}
-
-	@Override
 	public long getClassNameId() {
 		return _ddmStructure.getClassNameId();
 	}
@@ -77,14 +70,6 @@ public class DDMStructureImpl implements DDMStructure {
 	@Override
 	public DDMForm getDDMForm() {
 		return DDMBeanTranslatorUtil.translate(_ddmStructure.getDDMForm());
-	}
-
-	@Override
-	public DDMFormField getDDMFormField(String fieldName)
-		throws PortalException {
-
-		return DDMBeanTranslatorUtil.translate(
-			_ddmStructure.getDDMFormField(fieldName));
 	}
 
 	@Override
@@ -106,16 +91,6 @@ public class DDMStructureImpl implements DDMStructure {
 	}
 
 	@Override
-	public String getDescription() {
-		return _ddmStructure.getDescription();
-	}
-
-	@Override
-	public String getDescription(Locale locale) {
-		return _ddmStructure.getDescription(locale);
-	}
-
-	@Override
 	public Map<Locale, String> getDescriptionMap() {
 		return _ddmStructure.getDescriptionMap();
 	}
@@ -123,11 +98,6 @@ public class DDMStructureImpl implements DDMStructure {
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return _ddmStructure.getExpandoBridge();
-	}
-
-	@Override
-	public String getFieldDataType(String fieldName) throws PortalException {
-		return _ddmStructure.getFieldDataType(fieldName);
 	}
 
 	@Override
@@ -145,12 +115,6 @@ public class DDMStructureImpl implements DDMStructure {
 	@Override
 	public String getFieldType(String fieldName) throws PortalException {
 		return _ddmStructure.getFieldType(fieldName);
-	}
-
-	@Override
-	public DDMForm getFullHierarchyDDMForm() {
-		return DDMBeanTranslatorUtil.translate(
-			_ddmStructure.getFullHierarchyDDMForm());
 	}
 
 	@Override
@@ -179,18 +143,8 @@ public class DDMStructureImpl implements DDMStructure {
 	}
 
 	@Override
-	public String getName() {
-		return _ddmStructure.getName();
-	}
-
-	@Override
 	public String getName(Locale locale) {
 		return _ddmStructure.getName(locale);
-	}
-
-	@Override
-	public String getName(Locale locale, boolean useDefault) {
-		return _ddmStructure.getName(locale, useDefault);
 	}
 
 	@Override
@@ -211,11 +165,6 @@ public class DDMStructureImpl implements DDMStructure {
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _ddmStructure.getPrimaryKeyObj();
-	}
-
-	@Override
-	public List<String> getRootFieldNames() {
-		return _ddmStructure.getRootFieldNames();
 	}
 
 	@Override
@@ -259,16 +208,6 @@ public class DDMStructureImpl implements DDMStructure {
 	}
 
 	@Override
-	public boolean hasField(String fieldName) {
-		return _ddmStructure.hasField(fieldName);
-	}
-
-	@Override
-	public boolean isFieldTransient(String fieldName) throws PortalException {
-		return _ddmStructure.isFieldTransient(fieldName);
-	}
-
-	@Override
 	public void setCompanyId(long companyId) {
 		_ddmStructure.setCompanyId(companyId);
 	}
@@ -276,11 +215,6 @@ public class DDMStructureImpl implements DDMStructure {
 	@Override
 	public void setCreateDate(Date createDate) {
 		_ddmStructure.setCreateDate(createDate);
-	}
-
-	@Override
-	public void setDefinition(String definition) {
-		_ddmStructure.setDefinition(definition);
 	}
 
 	@Override
