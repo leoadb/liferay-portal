@@ -513,6 +513,9 @@ public class DLFileEntrySearchTest extends BaseSearchTestCase {
 
 		DDMFormLayout ddmFormLayout = DDMUtil.getDefaultDDMFormLayout(ddmForm);
 
+		serviceContext.setAttribute(
+			"status", WorkflowConstants.STATUS_APPROVED);
+
 		DDMStructureLocalServiceUtil.updateStructure(
 			_ddmStructure.getUserId(), _ddmStructure.getStructureId(),
 			_ddmStructure.getParentStructureId(), _ddmStructure.getNameMap(),

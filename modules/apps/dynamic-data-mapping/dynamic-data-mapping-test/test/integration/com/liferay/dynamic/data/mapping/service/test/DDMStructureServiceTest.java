@@ -37,6 +37,8 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PortalUtil;
 
@@ -488,12 +490,17 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 	protected DDMStructure updateStructure(DDMStructure structure)
 		throws Exception {
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAttribute(
+			"status", WorkflowConstants.STATUS_APPROVED);
+
 		return DDMStructureLocalServiceUtil.updateStructure(
 			structure.getUserId(), structure.getStructureId(),
 			structure.getParentStructureId(), structure.getNameMap(),
 			structure.getDescriptionMap(), structure.getDDMForm(),
-			structure.getDDMFormLayout(),
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+			structure.getDDMFormLayout(), serviceContext);
 	}
 
 	private static long _CLASS_NAME_ID;
