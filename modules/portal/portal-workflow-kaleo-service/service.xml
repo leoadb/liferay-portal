@@ -210,11 +210,6 @@
 			<finder-column name="draftVersion" />
 		</finder>
 	</entity>
-	<exceptions>
-		<exception>DuplicateKaleoDraftDefinitionName</exception>
-		<exception>KaleoDraftDefinitionContent</exception>
-		<exception>KaleoDraftDefinitionName</exception>
-	</exceptions>
 	<entity name="KaleoInstance" local-service="true" remote-service="false">
 
 		<!-- PK fields -->
@@ -953,4 +948,9 @@
 			<finder-column name="defaultTransition" />
 		</finder>
 	</entity>
+	<exceptions>
+		<exception>DuplicateKaleoDraftDefinitionName</exception>
+		<exception>KaleoDraftDefinitionContent</exception>
+		<exception>KaleoDraftDefinitionName</exception>
+	</exceptions>
 </service-builder>
