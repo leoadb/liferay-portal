@@ -27,11 +27,12 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public class KaleoDraftDefinitionImpl extends KaleoDraftDefinitionBaseImpl {
-	/*
+	/**
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. All methods that expect a kaleo draft definition model instance should use the {@link com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition} interface instead.
 	 */
 	public KaleoDraftDefinitionImpl() {
 	}
+
 }
