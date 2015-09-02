@@ -133,11 +133,12 @@ public abstract class KaleoDraftDefinitionLocalServiceBaseImpl
 	 *
 	 * @param kaleoDraftDefinition the kaleo draft definition
 	 * @return the kaleo draft definition that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public KaleoDraftDefinition deleteKaleoDraftDefinition(
-		KaleoDraftDefinition kaleoDraftDefinition) {
+		KaleoDraftDefinition kaleoDraftDefinition) throws PortalException {
 		return kaleoDraftDefinitionPersistence.remove(kaleoDraftDefinition);
 	}
 

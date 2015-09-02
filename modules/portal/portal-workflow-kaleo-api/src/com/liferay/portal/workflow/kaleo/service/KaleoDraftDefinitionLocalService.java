@@ -58,6 +58,13 @@ public interface KaleoDraftDefinitionLocalService extends BaseLocalService,
 	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition addKaleoDraftDefinition(
 		com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition kaleoDraftDefinition);
 
+	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition addKaleoDraftDefinition(
+		long userId, long groupId, java.lang.String name,
+		java.util.Map<java.util.Locale, java.lang.String> titleMap,
+		java.lang.String content, int version, int draftVersion,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	* Creates a new kaleo draft definition with the primary key. Does not add the kaleo draft definition to the database.
 	*
@@ -72,10 +79,12 @@ public interface KaleoDraftDefinitionLocalService extends BaseLocalService,
 	*
 	* @param kaleoDraftDefinition the kaleo draft definition
 	* @return the kaleo draft definition that was removed
+	* @throws PortalException
 	*/
 	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.DELETE)
 	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition deleteKaleoDraftDefinition(
-		com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition kaleoDraftDefinition);
+		com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition kaleoDraftDefinition)
+		throws PortalException;
 
 	/**
 	* Deletes the kaleo draft definition with the primary key from the database. Also notifies the appropriate model listeners.
@@ -87,6 +96,15 @@ public interface KaleoDraftDefinitionLocalService extends BaseLocalService,
 	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.DELETE)
 	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition deleteKaleoDraftDefinition(
 		long kaleoDraftDefinitionId) throws PortalException;
+
+	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition deleteKaleoDraftDefinition(
+		java.lang.String name, int version, int draftVersion,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
+
+	public void deleteKaleoDraftDefinitions(java.lang.String name, int version,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -186,6 +204,18 @@ public interface KaleoDraftDefinitionLocalService extends BaseLocalService,
 	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition getKaleoDraftDefinition(
 		long kaleoDraftDefinitionId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition getKaleoDraftDefinition(
+		java.lang.String name, int version, int draftVersion,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition> getKaleoDraftDefinitions(
+		java.lang.String name, int version, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition> orderByComparator,
+		com.liferay.portal.service.ServiceContext serviceContext);
+
 	/**
 	* Returns a range of all the kaleo draft definitions.
 	*
@@ -209,10 +239,40 @@ public interface KaleoDraftDefinitionLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getKaleoDraftDefinitionsCount();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getKaleoDraftDefinitionsCount(java.lang.String name,
+		int version, com.liferay.portal.service.ServiceContext serviceContext);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition getLatestKaleoDraftDefinition(
+		java.lang.String name, int version,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition> getLatestKaleoDraftDefinitions(
+		long companyId, int version, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getLatestKaleoDraftDefinitionsCount(long companyId, int version);
+
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj) throws PortalException;
+
+	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition incrementKaleoDraftDefinitionDraftVersion(
+		long userId, java.lang.String name, int version,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
+
+	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition publishKaleoDraftDefinition(
+		long userId, long groupId, java.lang.String name,
+		java.util.Map<java.util.Locale, java.lang.String> titleMap,
+		java.lang.String content,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	* Sets the Spring bean ID for this bean.
@@ -230,4 +290,11 @@ public interface KaleoDraftDefinitionLocalService extends BaseLocalService,
 	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.REINDEX)
 	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition updateKaleoDraftDefinition(
 		com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition kaleoDraftDefinition);
+
+	public com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition updateKaleoDraftDefinition(
+		long userId, java.lang.String name,
+		java.util.Map<java.util.Locale, java.lang.String> titleMap,
+		java.lang.String content, int version,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
 }
