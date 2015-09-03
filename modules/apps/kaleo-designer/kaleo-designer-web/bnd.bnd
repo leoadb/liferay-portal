@@ -1,0 +1,7 @@
+Bundle-Name: Kaleo Designer Wb
+Bundle-SymbolicName: com.liferay.kaleo.designer.web
+Bundle-Version: 1.0.0
+Include-Resource:\
+	classes,\
+	META-INF/resources=src/META-INF/resources
+Web-ContextPath: /kaleo-designer-web
