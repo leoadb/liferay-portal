@@ -43,17 +43,16 @@ import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.service.permission.RolePermissionUtil;
 import com.liferay.portal.service.permission.UserPermissionUtil;
 import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.workflow.kaleo.designer.DuplicateKaleoDraftDefinitionNameException;
-import com.liferay.portal.workflow.kaleo.designer.KaleoDraftDefinitionContentException;
-import com.liferay.portal.workflow.kaleo.designer.KaleoDraftDefinitionNameException;
-import com.liferay.portal.workflow.kaleo.designer.NoSuchKaleoDraftDefinitionException;
-import com.liferay.portal.workflow.kaleo.designer.model.KaleoDraftDefinition;
-import com.liferay.portal.workflow.kaleo.designer.service.KaleoDraftDefinitionServiceUtil;
+import com.liferay.portal.workflow.kaleo.exception.DuplicateKaleoDraftDefinitionNameException;
+import com.liferay.portal.workflow.kaleo.exception.KaleoDraftDefinitionContentException;
+import com.liferay.portal.workflow.kaleo.exception.KaleoDraftDefinitionNameException;
+import com.liferay.portal.workflow.kaleo.exception.NoSuchDraftDefinitionException;
+import com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition;
+import com.liferay.portal.workflow.kaleo.service.KaleoDraftDefinitionServiceUtil;
 import com.liferay.portal.workflow.kaleo.designer.util.KaleoDesignerUtil;
 import com.liferay.portal.workflow.kaleo.designer.util.WebKeys;
 
 import java.io.IOException;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -316,7 +315,7 @@ public class KaleoDesignerPortlet extends MVCPortlet {
 		if (cause instanceof DuplicateKaleoDraftDefinitionNameException ||
 			cause instanceof KaleoDraftDefinitionContentException ||
 			cause instanceof KaleoDraftDefinitionNameException ||
-			cause instanceof NoSuchKaleoDraftDefinitionException ||
+			cause instanceof NoSuchDraftDefinitionException ||
 			cause instanceof WorkflowException) {
 
 			return true;

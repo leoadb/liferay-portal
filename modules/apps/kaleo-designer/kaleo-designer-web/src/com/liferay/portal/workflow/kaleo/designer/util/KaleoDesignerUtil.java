@@ -30,8 +30,8 @@ import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.workflow.kaleo.designer.model.KaleoDraftDefinition;
-import com.liferay.portal.workflow.kaleo.designer.service.KaleoDraftDefinitionLocalServiceUtil;
+import com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition;
+import com.liferay.portal.workflow.kaleo.service.KaleoDraftDefinitionLocalServiceUtil;
 
 import java.util.Locale;
 import java.util.Map;
