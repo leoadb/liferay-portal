@@ -61,15 +61,51 @@ import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Eduardo Lundgren
  */
+@Component(
+	immediate = true,
+	property = {
+		"com.liferay.portlet.add-default-resource=true",
+		"com.liferay.portlet.autopropagated-parameters=availableFields",
+		"com.liferay.portlet.autopropagated-parameters=availablePropertyModels",
+		"com.liferay.portlet.autopropagated-parameters=kaleoProcessId",
+		"com.liferay.portlet.autopropagated-parameters=openerWindowName",
+		"com.liferay.portlet.autopropagated-parameters=portletResourceNamespace",
+		"com.liferay.portlet.autopropagated-parameters=propertiesSaveCallback",
+		"com.liferay.portlet.autopropagated-parameters=refreshOpenerOnClose",
+		"com.liferay.portlet.autopropagated-parameters=saveCallback",
+		"com.liferay.portlet.autopropagated-parameters=uiScope",
+		"com.liferay.portlet.css-class-wrapper=kaleo-designer-portlet",
+		"com.liferay.portlet.control-panel-entry-category=configuration",
+		"com.liferay.portlet.control-panel-entry-weight=5.0",
+		"com.liferay.portlet.header-portlet-css=/css/main.css",
+		"com.liferay.portlet.header-portlet-javascript=/js/main.js",
+		"com.liferay.portlet.private-request-attributes=false",
+		"com.liferay.portlet.private-session-attributes=false",
+		"com.liferay.portlet.use-default-template=true",
+		"javax.portlet.display-name=Kaleo Designer Web",
+		"javax.portlet.expiration-cache=0",
+		"javax.portlet.init-param.copy-request-parameters=true",
+		"javax.portlet.init-param.template-path=/",
+		"javax.portlet.init-param.view-template=/view.jsp",
+		"javax.portlet.name=com_liferay_portal_workflow__kaleo_designer_designer_portlet_KaleoDesignerPortlet",
+		"javax.portlet.resource-bundle=content.Language",
+		"javax.portlet.security-role-ref=power-user,user",
+		"javax.portlet.supports.mime-type=text/html"
+	},
+	service = Portlet.class
+)
 public class KaleoDesignerPortlet extends MVCPortlet {
 
 	public void deleteKaleoDraftDefinition(
