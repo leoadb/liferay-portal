@@ -14,16 +14,22 @@
 
 package com.liferay.portal.workflow.kaleo.service.impl;
 
-import java.util.Locale;
-import java.util.Map;
-
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoDraftDefinitionServiceBaseImpl;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -32,14 +38,14 @@ import com.liferay.portal.workflow.kaleo.service.base.KaleoDraftDefinitionServic
 public class KaleoDraftDefinitionServiceImpl
 	extends KaleoDraftDefinitionServiceBaseImpl {
 
-/*	public KaleoDraftDefinition addKaleoDraftDefinition(
+	public KaleoDraftDefinition addKaleoDraftDefinition(
 			long userId, long groupId, String name,
 			Map<Locale, String> titleMap, String content, int version,
 			int draftVersion, ServiceContext serviceContext)
 		throws PortalException {
 
-		KaleoDesignerPermission.check(
-			getPermissionChecker(), groupId, ActionKeys.ADD_DRAFT);
+		/*KaleoDesignerPermission.check(
+			getPermissionChecker(), groupId, ActionKeys.ADD_DRAFT);*/
 
 		return kaleoDraftDefinitionLocalService.addKaleoDraftDefinition(
 			userId, groupId, name, titleMap, content, version, draftVersion,
@@ -54,8 +60,8 @@ public class KaleoDraftDefinitionServiceImpl
 			kaleoDraftDefinitionLocalService.getLatestKaleoDraftDefinition(
 				name, version, serviceContext);
 
-		KaleoDraftDefinitionPermission.check(
-			getPermissionChecker(), kaleoDraftDefinition, ActionKeys.DELETE);
+		/*KaleoDraftDefinitionPermission.check(
+			getPermissionChecker(), kaleoDraftDefinition, ActionKeys.DELETE);*/
 
 		kaleoDraftDefinitionLocalService.deleteKaleoDraftDefinitions(
 			name, version, serviceContext);
@@ -70,8 +76,8 @@ public class KaleoDraftDefinitionServiceImpl
 			kaleoDraftDefinitionLocalService.getKaleoDraftDefinition(
 				name, version, draftVersion, serviceContext);
 
-		KaleoDraftDefinitionPermission.check(
-			getPermissionChecker(), kaleoDraftDefinition, ActionKeys.VIEW);
+		/*KaleoDraftDefinitionPermission.check(
+			getPermissionChecker(), kaleoDraftDefinition, ActionKeys.VIEW);*/
 
 		return kaleoDraftDefinition;
 	}
@@ -95,9 +101,9 @@ public class KaleoDraftDefinitionServiceImpl
 			kaleoDraftDefinitionLocalService.getLatestKaleoDraftDefinition(
 				name, version, serviceContext);
 
-		KaleoDraftDefinitionPermission.check(
+		/*KaleoDraftDefinitionPermission.check(
 			getPermissionChecker(), latestKaleoDraftDefinition,
-			ActionKeys.VIEW);
+			ActionKeys.VIEW);*/
 
 		return latestKaleoDraftDefinition;
 	}
@@ -121,8 +127,8 @@ public class KaleoDraftDefinitionServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		KaleoDesignerPermission.check(
-			getPermissionChecker(), groupId, ActionKeys.PUBLISH);
+		/*KaleoDesignerPermission.check(
+			getPermissionChecker(), groupId, ActionKeys.PUBLISH);*/
 
 		return kaleoDraftDefinitionLocalService.publishKaleoDraftDefinition(
 			userId, groupId, name, titleMap, content, serviceContext);
@@ -136,9 +142,9 @@ public class KaleoDraftDefinitionServiceImpl
 		KaleoDraftDefinition latestKaleoDraftDefinition =
 			getLatestKaleoDraftDefinition(name, version, serviceContext);
 
-		KaleoDraftDefinitionPermission.check(
+		/*KaleoDraftDefinitionPermission.check(
 			getPermissionChecker(), latestKaleoDraftDefinition,
-			ActionKeys.UPDATE);
+			ActionKeys.UPDATE);*/
 
 		return kaleoDraftDefinitionLocalService.updateKaleoDraftDefinition(
 			userId, name, titleMap, content, version, serviceContext);
@@ -154,13 +160,13 @@ public class KaleoDraftDefinitionServiceImpl
 		for (KaleoDraftDefinition kaleoDraftDefinition :
 				kaleoDraftDefinitions) {
 
-			if (KaleoDraftDefinitionPermission.contains(
-					getPermissionChecker(), kaleoDraftDefinition, actionId)) {
+			/*if (KaleoDraftDefinitionPermission.contains(
+					getPermissionChecker(), kaleoDraftDefinition, actionId)) {*/
 
 				filteredKaleoDraftDefinitions.add(kaleoDraftDefinition);
-			}
+			/*}*/
 		}
 
 		return Collections.unmodifiableList(filteredKaleoDraftDefinitions);
-	}*/
+	}
 }

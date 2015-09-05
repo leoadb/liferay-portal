@@ -16,9 +16,19 @@ package com.liferay.portal.workflow.kaleo.service.http;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.workflow.kaleo.service.KaleoDraftDefinitionServiceUtil;
+
+import java.rmi.RemoteException;
+
+import java.util.Locale;
+import java.util.Map;
+
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.portal.workflow.kaleo.service.KaleoDraftDefinitionServiceUtil} service utility. The
+ * {@link KaleoDraftDefinitionServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -53,9 +63,164 @@ import aQute.bnd.annotation.ProviderType;
  * @author Brian Wing Shun Chan
  * @see KaleoDraftDefinitionServiceHttp
  * @see com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap
- * @see com.liferay.portal.workflow.kaleo.service.KaleoDraftDefinitionServiceUtil
+ * @see KaleoDraftDefinitionServiceUtil
  * @generated
  */
 @ProviderType
 public class KaleoDraftDefinitionServiceSoap {
+	public static com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap addKaleoDraftDefinition(
+		long userId, long groupId, java.lang.String name,
+		java.lang.String[] titleMapLanguageIds,
+		java.lang.String[] titleMapValues, java.lang.String content,
+		int version, int draftVersion,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			Map<Locale, String> titleMap = LocalizationUtil.getLocalizationMap(titleMapLanguageIds,
+					titleMapValues);
+
+			com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition returnValue =
+				KaleoDraftDefinitionServiceUtil.addKaleoDraftDefinition(userId,
+					groupId, name, titleMap, content, version, draftVersion,
+					serviceContext);
+
+			return com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void deleteKaleoDraftDefinitions(java.lang.String name,
+		int version, com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			KaleoDraftDefinitionServiceUtil.deleteKaleoDraftDefinitions(name,
+				version, serviceContext);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap getKaleoDraftDefinition(
+		java.lang.String name, int version, int draftVersion,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition returnValue =
+				KaleoDraftDefinitionServiceUtil.getKaleoDraftDefinition(name,
+					version, draftVersion, serviceContext);
+
+			return com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap[] getKaleoDraftDefinitions()
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition> returnValue =
+				KaleoDraftDefinitionServiceUtil.getKaleoDraftDefinitions();
+
+			return com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap getLatestKaleoDraftDefinition(
+		java.lang.String name, int version,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition returnValue =
+				KaleoDraftDefinitionServiceUtil.getLatestKaleoDraftDefinition(name,
+					version, serviceContext);
+
+			return com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap[] getLatestKaleoDraftDefinitions(
+		long companyId, int version, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition> returnValue =
+				KaleoDraftDefinitionServiceUtil.getLatestKaleoDraftDefinitions(companyId,
+					version, start, end, orderByComparator);
+
+			return com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap publishKaleoDraftDefinition(
+		long userId, long groupId, java.lang.String name,
+		java.lang.String[] titleMapLanguageIds,
+		java.lang.String[] titleMapValues, java.lang.String content,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			Map<Locale, String> titleMap = LocalizationUtil.getLocalizationMap(titleMapLanguageIds,
+					titleMapValues);
+
+			com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition returnValue =
+				KaleoDraftDefinitionServiceUtil.publishKaleoDraftDefinition(userId,
+					groupId, name, titleMap, content, serviceContext);
+
+			return com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap updateKaleoDraftDefinition(
+		long userId, java.lang.String name,
+		java.lang.String[] titleMapLanguageIds,
+		java.lang.String[] titleMapValues, java.lang.String content,
+		int version, com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			Map<Locale, String> titleMap = LocalizationUtil.getLocalizationMap(titleMapLanguageIds,
+					titleMapValues);
+
+			com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinition returnValue =
+				KaleoDraftDefinitionServiceUtil.updateKaleoDraftDefinition(userId,
+					name, titleMap, content, version, serviceContext);
+
+			return com.liferay.portal.workflow.kaleo.model.KaleoDraftDefinitionSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	private static Log _log = LogFactoryUtil.getLog(KaleoDraftDefinitionServiceSoap.class);
 }
