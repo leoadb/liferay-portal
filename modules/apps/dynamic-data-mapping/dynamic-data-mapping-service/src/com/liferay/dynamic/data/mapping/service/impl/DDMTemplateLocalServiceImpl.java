@@ -1311,8 +1311,6 @@ public class DDMTemplateLocalServiceImpl
 		template.setSmallImage(smallImage);
 		template.setSmallImageURL(smallImageURL);
 
-		ddmTemplatePersistence.update(template);
-
 		// Small image
 
 		saveImages(
@@ -1321,7 +1319,12 @@ public class DDMTemplateLocalServiceImpl
 
 		// Template version
 
-		addTemplateVersion(user, template, version, serviceContext);
+		DDMTemplateVersion ddmTemplateVersion = addTemplateVersion(
+			user, template, version, serviceContext);
+
+		if (ddmTemplateVersion.isApproved()) {
+			ddmTemplatePersistence.update(template);
+		}
 
 		return template;
 	}
