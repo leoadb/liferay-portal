@@ -172,6 +172,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.Set;
 
 import javax.portlet.PortletPreferences;
 
@@ -6436,11 +6437,17 @@ public class JournalArticleLocalServiceImpl
 		newArticle.setContent(contentDocument.formattedString());
 	}
 
-	protected Map<String, String> createFieldsValuesMap(Element parentElement) {
-		Map<String, String> fieldsValuesMap = new HashMap<>();
+	protected Map<String, LocalizedValue> createFieldsValuesMap(
+		Element parentElement) {
+
+		Map<String, LocalizedValue> fieldsValuesMap = new HashMap<>();
 
 		List<Element> dynamicElementElements = parentElement.elements(
 			"dynamic-element");
+
+		LocalizedValue fieldLocalizedValue = new LocalizedValue(
+				LocaleUtil.fromLanguageId(
+					parentElement.attributeValue("default-locale")));
 
 		for (Element dynamicElementElement : dynamicElementElements) {
 			String fieldName = dynamicElementElement.attributeValue(
@@ -6451,9 +6458,14 @@ public class JournalArticleLocalServiceImpl
 
 			for (Element dynamicContentElement : dynamicContentElements) {
 				String value = dynamicContentElement.getText();
+				String languageId = dynamicContentElement.attributeValue(
+					"language-id");
 
-				fieldsValuesMap.put(fieldName, value);
+				fieldLocalizedValue.addString(
+					LocaleUtil.fromLanguageId(languageId), value);
 			}
+
+			fieldsValuesMap.put(fieldName, fieldLocalizedValue);
 
 			fieldsValuesMap.putAll(
 				createFieldsValuesMap(dynamicElementElement));
@@ -6462,7 +6474,9 @@ public class JournalArticleLocalServiceImpl
 		return fieldsValuesMap;
 	}
 
-	protected Map<String, String> createFieldsValuesMap(String content) {
+	protected Map<String, LocalizedValue> createFieldsValuesMap(
+		String content) {
+
 		try {
 			Document document = SAXReaderUtil.read(content);
 
@@ -7504,12 +7518,24 @@ public class JournalArticleLocalServiceImpl
 	}
 
 	protected void updateDDMFormFieldPredefinedValue(
-		DDMFormField ddmFormField, String ddmFormFieldValue) {
+		DDMFormField ddmFormField, LocalizedValue ddmFormFieldValue) {
 
-		LocalizedValue predefinedValue = ddmFormField.getPredefinedValue();
+		Set <Locale> ddmFormAvailableLocales =
+			ddmFormField.getDDMForm().getAvailableLocales();
 
-		for (Locale locale : predefinedValue.getAvailableLocales()) {
-			predefinedValue.addString(locale, ddmFormFieldValue);
+		ddmFormField.setPredefinedValue(ddmFormFieldValue);
+		ddmFormAvailableLocales .addAll(
+			ddmFormFieldValue.getAvailableLocales());
+
+		for (Locale locale : ddmFormAvailableLocales) {
+			ddmFormField.getLabel().addString(
+				locale, ddmFormField.getLabel().getString(locale));
+
+			ddmFormField.getStyle().addString(
+				locale, ddmFormField.getStyle().getString(locale));
+
+			ddmFormField.getTip().addString(
+				locale, ddmFormField.getTip().getString(locale));
 		}
 	}
 
@@ -7570,21 +7596,23 @@ public class JournalArticleLocalServiceImpl
 		Map<String, DDMFormField> fullHierarchyDDMFormFieldsMap =
 			ddmStructure.getFullHierarchyDDMFormFieldsMap(true);
 
-		Map<String, String> fieldsValuesMap = createFieldsValuesMap(content);
+		Map<String, LocalizedValue> fieldsValuesMap = createFieldsValuesMap(
+			content);
 
-		for (Map.Entry<String, String> fieldValue :
+		for (Map.Entry<String, LocalizedValue> fieldValue :
 				fieldsValuesMap.entrySet()) {
 
 			String ddmFormFieldName = fieldValue.getKey();
-			String ddmFormFieldValue = fieldValue.getValue();
+			LocalizedValue ddmFormFieldValue = fieldValue.getValue();
 
 			updateDDMFormFieldPredefinedValue(
-				fullHierarchyDDMFormFieldsMap.get(ddmFormFieldName),
-				ddmFormFieldValue);
+					fullHierarchyDDMFormFieldsMap.get(ddmFormFieldName),
+					ddmFormFieldValue);
 
 			if (ddmFormFieldsMap.containsKey(ddmFormFieldName)) {
 				updateDDMFormFieldPredefinedValue(
-					ddmFormFieldsMap.get(ddmFormFieldName), ddmFormFieldValue);
+						ddmFormFieldsMap.get(ddmFormFieldName),
+						ddmFormFieldValue);
 			}
 		}
 
