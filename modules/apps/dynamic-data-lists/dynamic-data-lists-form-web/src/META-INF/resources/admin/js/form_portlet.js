@@ -10,9 +10,6 @@ AUI.add(
 					definition: {
 					},
 
-					editForm: {
-					},
-
 					formBuilder: {
 						valueFn: '_valueFormBuilder'
 					},
@@ -53,10 +50,6 @@ AUI.add(
 
 					bindUI: function() {
 						var instance = this;
-
-						var editForm = instance.get('editForm');
-
-						editForm.set('onSubmit', A.bind('_onSubmitEditForm', instance));
 
 						instance._eventHandlers = [
 							Liferay.on('destroyPortlet', A.bind('_onDestroyPortlet', instance))
