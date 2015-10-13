@@ -16,6 +16,7 @@ package com.liferay.journal.transformer.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
@@ -120,6 +121,64 @@ public class JournalTransformerTest {
 			TemplateConstants.LANG_TYPE_VM);
 
 		Assert.assertEquals("Joe Bloggs", content);
+	}
+
+	@Test
+	public void testContentWithNestedFieldsTransformer() throws Exception {
+		DDMForm ddmForm = new DDMForm();
+
+		ddmForm.addAvailableLocale(LocaleUtil.US);
+		ddmForm.setDefaultLocale(LocaleUtil.US);
+
+		DDMFormField ddmFormField = DDMFormTestUtil.createTextDDMFormField(
+			"text", false, false, false);
+
+		DDMFormField nestedDDMFormField =
+			DDMFormTestUtil.createTextDDMFormField(
+				"nested_text", false, false, false);
+
+		ddmFormField.addNestedDDMFormField(nestedDDMFormField);
+
+		ddmForm.addDDMFormField(ddmFormField);
+
+		_ddmStructure = DDMStructureTestUtil.addStructure(
+			JournalArticle.class.getName(), ddmForm);
+
+		String xsl = "$text.getData() - $nested_text.getData()";
+
+		_ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			_ddmStructure.getStructureId(),
+			PortalUtil.getClassNameId(JournalArticle.class),
+			TemplateConstants.LANG_TYPE_VM, xsl);
+
+		Map<Locale, String> textContent = new HashMap<>();
+
+		textContent.put(LocaleUtil.US, "text");
+
+		Map<Locale, String> nestedTextContent = new HashMap<>();
+
+		nestedTextContent.put(LocaleUtil.US, "sample text");
+
+		Map<String, Map<Locale, String>> contentMap = new HashMap<>();
+
+		contentMap.put("text", textContent);
+		contentMap.put("nested_text", nestedTextContent);
+
+		String xml = DDMStructureTestUtil.getSampleStructuredContent(
+			contentMap, LocaleUtil.US);
+
+		_article = JournalTestUtil.addArticleWithXMLContent(
+			xml, _ddmStructure.getStructureKey(),
+			_ddmTemplate.getTemplateKey());
+
+		Map<String, String> tokens = getTokens();
+
+		String content = JournalUtil.transform(
+			null, tokens, Constants.VIEW, "en_US",
+			UnsecureSAXReaderUtil.read(xml), null, xsl,
+			TemplateConstants.LANG_TYPE_VM);
+
+		Assert.assertEquals("text - sample text", content);
 	}
 
 	@Test
