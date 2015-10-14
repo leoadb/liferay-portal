@@ -16,6 +16,7 @@ package com.liferay.journal.transformer.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
@@ -120,6 +121,66 @@ public class JournalTransformerTest {
 			TemplateConstants.LANG_TYPE_VM);
 
 		Assert.assertEquals("Joe Bloggs", content);
+	}
+
+	@Test
+	public void testContentWithNestedFieldsTransformer() throws Exception {
+		DDMForm ddmForm = new DDMForm();
+
+		ddmForm.addAvailableLocale(LocaleUtil.US);
+
+		DDMFormField ddmFormField = DDMFormTestUtil.createTextDDMFormField(
+			"text", false, false, false);
+
+		DDMFormField nestedDDMFormField =
+			DDMFormTestUtil.createTextDDMFormField(
+				"nested_text", false, false, false);
+
+		ddmFormField.addNestedDDMFormField(nestedDDMFormField);
+
+		ddmForm.addDDMFormField(ddmFormField);
+
+		_ddmStructure = DDMStructureTestUtil.addStructure(
+			JournalArticle.class.getName(), ddmForm);
+
+		String xsl = "$text.getData() - $nested_text.getData()";
+
+		_ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			_ddmStructure.getStructureId(),
+			PortalUtil.getClassNameId(JournalArticle.class),
+			TemplateConstants.LANG_TYPE_VM, xsl);
+
+		String xml = DDMStructureTestUtil.getSampleStructuredContent(
+			"text", "sample text");
+
+		_article = JournalTestUtil.addArticleWithXMLContent(
+			xml, _ddmStructure.getStructureKey(),
+			_ddmTemplate.getTemplateKey());
+
+		Map<String, String> tokens = getTokens();
+
+		String content = JournalUtil.transform(
+			null, tokens, Constants.VIEW, "en_US",
+			UnsecureSAXReaderUtil.read(xml), null, xsl,
+			TemplateConstants.LANG_TYPE_VM);
+
+		Assert.assertEquals("sample text", content);
+
+		xml = DDMStructureTestUtil.getSampleStructuredContent(
+			"nested_text", "sample nested text");
+
+		Document document = UnsecureSAXReaderUtil.read(xml);
+
+		Element element = (Element)document.selectSingleNode(
+			"//dynamic-content");
+
+		element.setText("[@" + _article.getArticleId() + ";nested_text@]");
+
+		content = JournalUtil.transform(
+			null, tokens, Constants.VIEW, "en_US", document, null, xsl,
+			TemplateConstants.LANG_TYPE_VM);
+
+		Assert.assertEquals("sample nested text", content);
 	}
 
 	@Test
