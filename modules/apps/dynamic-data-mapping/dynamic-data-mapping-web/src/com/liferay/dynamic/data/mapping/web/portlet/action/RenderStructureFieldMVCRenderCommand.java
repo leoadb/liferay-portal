@@ -117,7 +117,11 @@ public class RenderStructureFieldMVCRenderCommand
 	protected DDMFormField getDDMFormField(HttpServletRequest request)
 		throws PortalException {
 
-		String definition = ParamUtil.getString(request, "definition");
+		HttpServletRequest originalRequest =
+			PortalUtil.getOriginalServletRequest(request);
+
+		String definition = ParamUtil.getString(originalRequest, "definition");
+
 		String fieldName = ParamUtil.getString(request, "fieldName");
 
 		DDMForm ddmForm = _ddmFormJSONDeserializer.deserialize(definition);

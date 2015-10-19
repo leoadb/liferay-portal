@@ -160,6 +160,9 @@ AUI.add(
 				A.io.request(
 					instance._getTemplateResourceURL(),
 					{
+						data: {
+							definition: JSON.stringify(instance.get('definition'))
+						},
 						on: {
 							success: function(event, id, xhr) {
 								if (callback) {
@@ -177,7 +180,6 @@ AUI.add(
 				var portletURL = Liferay.PortletURL.createResourceURL();
 
 				portletURL.setDoAsGroupId(instance.get('doAsGroupId'));
-				portletURL.setParameter('definition', JSON.stringify(instance.get('definition')));
 				portletURL.setParameter('fieldName', instance.get('name'));
 				portletURL.setParameter('mode', instance.get('mode'));
 				portletURL.setParameter('namespace', instance.get('namespace'));
