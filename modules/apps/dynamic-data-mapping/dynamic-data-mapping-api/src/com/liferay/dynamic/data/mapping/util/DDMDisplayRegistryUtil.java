@@ -116,8 +116,7 @@ public class DDMDisplayRegistryUtil {
 		public DDMDisplay addingService(
 			ServiceReference<DDMDisplay> serviceReference) {
 
-			DDMDisplay ddmDisplay = _serviceTracker.getService(
-				serviceReference);
+			DDMDisplay ddmDisplay = _bundleContext.getService(serviceReference);
 
 			_ddmDisplays.put(ddmDisplay.getPortletId(), ddmDisplay);
 
@@ -135,7 +134,7 @@ public class DDMDisplayRegistryUtil {
 			ServiceReference<DDMDisplay> serviceReference,
 			DDMDisplay ddmDisplay) {
 
-			_serviceTracker.remove(serviceReference);
+			_bundleContext.ungetService(serviceReference);
 
 			_ddmDisplays.remove(ddmDisplay.getPortletId());
 		}

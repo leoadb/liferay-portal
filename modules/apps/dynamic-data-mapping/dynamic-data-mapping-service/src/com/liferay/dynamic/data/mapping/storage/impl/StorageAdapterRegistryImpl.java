@@ -100,7 +100,7 @@ public class StorageAdapterRegistryImpl implements StorageAdapterRegistry {
 		public StorageAdapter addingService(
 			ServiceReference<StorageAdapter> serviceReference) {
 
-			StorageAdapter storageAdapter = _serviceTracker.getService(
+			StorageAdapter storageAdapter = _bundleContext.getService(
 				serviceReference);
 
 			_storageAdaptersMap.put(
@@ -120,7 +120,7 @@ public class StorageAdapterRegistryImpl implements StorageAdapterRegistry {
 			ServiceReference<StorageAdapter> serviceReference,
 			StorageAdapter storageAdapter) {
 
-			_serviceTracker.remove(serviceReference);
+			_bundleContext.ungetService(serviceReference);
 		}
 
 	}

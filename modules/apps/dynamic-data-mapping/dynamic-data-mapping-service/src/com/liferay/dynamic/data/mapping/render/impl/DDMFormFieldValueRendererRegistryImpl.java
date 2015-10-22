@@ -107,7 +107,7 @@ public class DDMFormFieldValueRendererRegistryImpl
 			ServiceReference<DDMFormFieldValueRenderer> serviceReference) {
 
 			DDMFormFieldValueRenderer ddmFormFieldValueRenderer =
-				_serviceTracker.getService(serviceReference);
+				_bundleContext.getService(serviceReference);
 
 			String supportedDDMFormFieldType =
 				ddmFormFieldValueRenderer.getSupportedDDMFormFieldType();
@@ -138,7 +138,7 @@ public class DDMFormFieldValueRendererRegistryImpl
 			ServiceReference<DDMFormFieldValueRenderer> serviceReference,
 			DDMFormFieldValueRenderer ddmFormFieldValueRenderer) {
 
-			_serviceTracker.remove(serviceReference);
+			_bundleContext.ungetService(serviceReference);
 
 			String supportedDDMFormFieldType =
 				ddmFormFieldValueRenderer.getSupportedDDMFormFieldType();
