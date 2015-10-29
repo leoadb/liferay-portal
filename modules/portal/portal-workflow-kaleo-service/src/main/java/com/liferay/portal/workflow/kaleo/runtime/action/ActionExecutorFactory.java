@@ -35,10 +35,15 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class ActionExecutorFactory {
 
-	public static ActionExecutor getScriptExecutor(String scriptLanguage)
+	public static ActionExecutor getActionExecutor(String type, String name)
 		throws WorkflowException {
 
-		return _instance._getScriptExecutor(scriptLanguage);
+		if (type.equalsIgnoreCase("script")) {
+			return _instance._getScriptExecutor(name);
+		}
+		else {
+			return _instance._getHandlerExecutor(name);
+		}
 	}
 
 	private ActionExecutorFactory() {
@@ -61,6 +66,34 @@ public class ActionExecutorFactory {
 			new ScriptExecutorServiceTrackerCustomizer());
 
 		_scriptServiceTracker.open();
+
+		Filter handlerFilter = null;
+
+		try {
+			handlerFilter = FrameworkUtil.createFilter(
+				"(&(objectClass=" + HandlerExecutor.class.getName() + ")");
+		}
+		catch (InvalidSyntaxException ise) {
+			ReflectionUtil.throwException(ise);
+		}
+
+		_handlerServiceTracker = new ServiceTracker<>(
+			_bundleContext, handlerFilter,
+			new HandlerExecutorServiceTrackerCustomizer());
+
+		_handlerServiceTracker.open();
+	}
+
+	private ActionExecutor _getHandlerExecutor(String name)
+		throws WorkflowException {
+
+		ActionExecutor actionExecutor = _handlerExecutors.get(name);
+
+		if (actionExecutor == null) {
+			throw new WorkflowException("Invalid handler " + name);
+		}
+
+		return actionExecutor;
 	}
 
 	private ActionExecutor _getScriptExecutor(String scriptLanguage)
@@ -79,12 +112,55 @@ public class ActionExecutorFactory {
 	private static final ActionExecutorFactory _instance =
 		new ActionExecutorFactory();
 
-	private static final Map<Object, ScriptExecutor> _scriptExecutors =
-		new ConcurrentHashMap<>();
-
 	private final BundleContext _bundleContext;
+	private final Map<Object, HandlerExecutor> _handlerExecutors =
+		new ConcurrentHashMap<>();
+	private final ServiceTracker<HandlerExecutor, HandlerExecutor>
+		_handlerServiceTracker;
+	private final Map<Object, ScriptExecutor> _scriptExecutors =
+		new ConcurrentHashMap<>();
 	private final ServiceTracker<ScriptExecutor, ScriptExecutor>
 		_scriptServiceTracker;
+
+	private class HandlerExecutorServiceTrackerCustomizer
+		implements ServiceTrackerCustomizer<HandlerExecutor, HandlerExecutor> {
+
+		@Override
+		public HandlerExecutor addingService(
+			ServiceReference<HandlerExecutor> serviceReference) {
+
+			HandlerExecutor handlerExecutor = _bundleContext.getService(
+				serviceReference);
+
+			String name = handlerExecutor.getClass().getName();
+
+			_handlerExecutors.put(name, handlerExecutor);
+
+			return handlerExecutor;
+		}
+
+		@Override
+		public void modifiedService(
+			ServiceReference<HandlerExecutor> serviceReference,
+			HandlerExecutor service) {
+		}
+
+		@Override
+		public void removedService(
+			ServiceReference<HandlerExecutor> serviceReference,
+			HandlerExecutor service) {
+
+			HandlerExecutor handlerExecutor = _bundleContext.getService(
+				serviceReference);
+
+			_bundleContext.ungetService(serviceReference);
+
+			String name = handlerExecutor.getClass().getName();
+
+			_handlerExecutors.remove(name);
+		}
+
+	}
 
 	private class ScriptExecutorServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer<ScriptExecutor, ScriptExecutor> {

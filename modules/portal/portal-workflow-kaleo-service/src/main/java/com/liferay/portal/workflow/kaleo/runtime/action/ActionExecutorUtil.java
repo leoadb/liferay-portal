@@ -56,8 +56,8 @@ public class ActionExecutorUtil {
 					scriptRequiredContexts);
 
 				ActionExecutor actionExecutor =
-					ActionExecutorFactory.getScriptExecutor(
-						kaleoAction.getScriptLanguage());
+					ActionExecutorFactory.getActionExecutor(
+						"script", kaleoAction.getScriptLanguage());
 
 				actionExecutor.execute(
 					kaleoAction, executionContext, classLoaders);
