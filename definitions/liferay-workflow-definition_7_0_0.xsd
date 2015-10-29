@@ -35,6 +35,7 @@
 		<xs:sequence>
 			<xs:element name="name" type="xs:string" />
 			<xs:element minOccurs="0" name="description" type="xs:string" />
+			<xs:element minOccurs="0" name="handler" type="xs:string" />
 			<xs:element minOccurs="0" name="script" type="xs:string" />
 			<xs:element minOccurs="0" name="script-language" type="script-language-type" />
 			<xs:element minOccurs="0" name="script-required-contexts" type="xs:string" />
