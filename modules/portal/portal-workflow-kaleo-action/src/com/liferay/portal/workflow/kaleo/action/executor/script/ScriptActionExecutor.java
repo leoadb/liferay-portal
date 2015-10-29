@@ -17,8 +17,8 @@ package com.liferay.portal.workflow.kaleo.action.executor.script;
 import com.liferay.portal.kernel.scripting.ScriptingUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoAction;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
-import com.liferay.portal.workflow.kaleo.runtime.action.ActionExecutor;
 import com.liferay.portal.workflow.kaleo.runtime.action.ActionExecutorException;
+import com.liferay.portal.workflow.kaleo.runtime.action.ScriptExecutor;
 import com.liferay.portal.workflow.kaleo.runtime.util.ScriptingContextBuilderUtil;
 import com.liferay.portal.workflow.kaleo.util.WorkflowContextUtil;
 
@@ -35,9 +35,10 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	immediate = true,
-	property = {"com.liferay.portal.workflow.kaleo.action.script.language=*"}
+	property = {"com.liferay.portal.workflow.kaleo.action.script.language=*"},
+	service = ScriptExecutor.class
 )
-public class ScriptActionExecutor implements ActionExecutor {
+public class ScriptActionExecutor implements ScriptExecutor {
 
 	public ScriptActionExecutor() {
 		_outputObjects.add(WorkflowContextUtil.WORKFLOW_CONTEXT_NAME);

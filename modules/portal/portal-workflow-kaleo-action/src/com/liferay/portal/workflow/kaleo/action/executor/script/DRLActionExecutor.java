@@ -21,8 +21,8 @@ import com.liferay.portal.kernel.bi.rules.RulesResourceRetriever;
 import com.liferay.portal.kernel.resource.StringResourceRetriever;
 import com.liferay.portal.workflow.kaleo.model.KaleoAction;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
-import com.liferay.portal.workflow.kaleo.runtime.action.ActionExecutor;
 import com.liferay.portal.workflow.kaleo.runtime.action.ActionExecutorException;
+import com.liferay.portal.workflow.kaleo.runtime.action.ScriptExecutor;
 import com.liferay.portal.workflow.kaleo.runtime.util.RulesContextBuilder;
 import com.liferay.portal.workflow.kaleo.util.WorkflowContextUtil;
 
@@ -38,9 +38,10 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	immediate = true,
-	property = {"com.liferay.portal.workflow.kaleo.action.script.language=drl"}
+	property = {"com.liferay.portal.workflow.kaleo.action.script.language=drl"},
+	service = ScriptExecutor.class
 )
-public class DRLActionExecutor implements ActionExecutor {
+public class DRLActionExecutor implements ScriptExecutor {
 
 	@Override
 	public void execute(
