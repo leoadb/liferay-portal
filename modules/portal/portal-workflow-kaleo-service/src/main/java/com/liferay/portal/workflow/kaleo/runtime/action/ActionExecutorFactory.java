@@ -35,10 +35,13 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class ActionExecutorFactory {
 
+	public static final String SCRIPT = "script";
+	public static final String HANDLER = "handler";
+
 	public static ActionExecutor getActionExecutor(String type, String name)
 		throws WorkflowException {
 
-		if (type.equalsIgnoreCase("script")) {
+		if (type.equalsIgnoreCase(SCRIPT)) {
 			return _instance._getScriptExecutor(name);
 		}
 		else {

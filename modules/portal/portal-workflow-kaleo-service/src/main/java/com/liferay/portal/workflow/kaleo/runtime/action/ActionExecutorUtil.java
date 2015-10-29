@@ -18,10 +18,12 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.workflow.kaleo.definition.ExecutionType;
 import com.liferay.portal.workflow.kaleo.model.KaleoAction;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
+import com.liferay.portal.workflow.kaleo.runtime.action.ActionExecutorFactory;
 import com.liferay.portal.workflow.kaleo.runtime.util.ClassLoaderUtil;
 import com.liferay.portal.workflow.kaleo.service.KaleoActionLocalServiceUtil;
 import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalServiceUtil;
@@ -55,9 +57,20 @@ public class ActionExecutorUtil {
 				ClassLoader[] classLoaders = ClassLoaderUtil.getClassLoaders(
 					scriptRequiredContexts);
 
-				ActionExecutor actionExecutor =
-					ActionExecutorFactory.getActionExecutor(
-						"script", kaleoAction.getScriptLanguage());
+				ActionExecutor actionExecutor = null;
+				
+				if(Validator.isNotNull(kaleoAction.getScriptLanguage())) {
+					actionExecutor =
+						ActionExecutorFactory.getActionExecutor(
+							ActionExecutorFactory.SCRIPT, 
+							kaleoAction.getScriptLanguage());
+				}
+				else {
+					actionExecutor =
+						ActionExecutorFactory.getActionExecutor(
+							ActionExecutorFactory.HANDLER, 
+							kaleoAction.getHandler());
+				}
 
 				actionExecutor.execute(
 					kaleoAction, executionContext, classLoaders);
