@@ -23,15 +23,19 @@ import com.liferay.portal.workflow.kaleo.model.KaleoAction;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.util.ClassLoaderUtil;
-import com.liferay.portal.workflow.kaleo.service.KaleoActionLocalServiceUtil;
-import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalServiceUtil;
-import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalServiceUtil;
+import com.liferay.portal.workflow.kaleo.service.KaleoActionLocalService;
+import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalService;
+import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalService;
 
 import java.util.List;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
  */
+@Component(immediate = true)
 public class ActionExecutorUtil {
 
 	public static void executeKaleoActions(
@@ -39,8 +43,45 @@ public class ActionExecutorUtil {
 			ExecutionType executionType, ExecutionContext executionContext)
 		throws PortalException {
 
+		_instance._executeKaleoActions(
+			kaleoClassName, kaleoClassPK, executionType, executionContext);
+	}
+
+	@Reference(unbind = "-")
+	protected void setActionExecutorFactory(
+		ActionExecutorFactory actionExecutorFactory) {
+
+		_actionExecutorFactory = actionExecutorFactory;
+	}
+
+	@Reference(unbind = "-")
+	protected void setKaleoActionLocalService(
+		KaleoActionLocalService kaleoActionLocalService) {
+
+		_kaleoActionLocalService = kaleoActionLocalService;
+	}
+
+	@Reference(unbind = "-")
+	protected void setKaleoInstanceLocalService(
+		KaleoInstanceLocalService kaleoInstanceLocalService) {
+
+		_kaleoInstanceLocalService = kaleoInstanceLocalService;
+	}
+
+	@Reference(unbind = "-")
+	protected void setKaleoLogLocalService(
+		KaleoLogLocalService kaleoLogLocalService) {
+
+		_kaleoLogLocalService = kaleoLogLocalService;
+	}
+
+	private void _executeKaleoActions(
+			String kaleoClassName, long kaleoClassPK,
+			ExecutionType executionType, ExecutionContext executionContext)
+		throws PortalException {
+
 		List<KaleoAction> kaleoActions =
-			KaleoActionLocalServiceUtil.getKaleoActions(
+			_kaleoActionLocalService.getKaleoActions(
 				kaleoClassName, kaleoClassPK, executionType.getValue());
 
 		for (KaleoAction kaleoAction : kaleoActions) {
@@ -56,7 +97,7 @@ public class ActionExecutorUtil {
 					scriptRequiredContexts);
 
 				ActionExecutor actionExecutor =
-					ActionExecutorFactory.getActionExecutor(
+					_actionExecutorFactory.getActionExecutor(
 						kaleoAction.getScriptLanguage());
 
 				actionExecutor.execute(
@@ -65,7 +106,7 @@ public class ActionExecutorUtil {
 				KaleoInstanceToken kaleoInstanceToken =
 					executionContext.getKaleoInstanceToken();
 
-				KaleoInstanceLocalServiceUtil.updateKaleoInstance(
+				_kaleoInstanceLocalService.updateKaleoInstance(
 					kaleoInstanceToken.getKaleoInstanceId(),
 					executionContext.getWorkflowContext(),
 					executionContext.getServiceContext());
@@ -78,7 +119,7 @@ public class ActionExecutorUtil {
 				comment = e.getMessage();
 			}
 			finally {
-				KaleoLogLocalServiceUtil.addActionExecutionKaleoLog(
+				_kaleoLogLocalService.addActionExecutionKaleoLog(
 					executionContext.getKaleoInstanceToken(), kaleoAction,
 					startTime, System.currentTimeMillis(), comment,
 					executionContext.getServiceContext());
@@ -91,5 +132,13 @@ public class ActionExecutorUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ActionExecutorUtil.class);
+
+	private static final ActionExecutorUtil _instance =
+		new ActionExecutorUtil();
+
+	private ActionExecutorFactory _actionExecutorFactory;
+	private KaleoActionLocalService _kaleoActionLocalService;
+	private KaleoInstanceLocalService _kaleoInstanceLocalService;
+	private KaleoLogLocalService _kaleoLogLocalService;
 
 }
