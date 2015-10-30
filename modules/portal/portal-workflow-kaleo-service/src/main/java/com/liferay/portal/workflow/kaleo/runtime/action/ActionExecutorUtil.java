@@ -18,13 +18,13 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.workflow.kaleo.definition.ExecutionType;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Michael C. Han
  */
-@Component(immediate = true)
 public class ActionExecutorUtil {
 
 	public static void executeKaleoActions(
@@ -32,17 +32,24 @@ public class ActionExecutorUtil {
 			ExecutionType executionType, ExecutionContext executionContext)
 		throws PortalException {
 
-		_actionExecutorManager.executeKaleoActions(
+		getActionExecutorManager().executeKaleoActions(
 			kaleoClassName, kaleoClassPK, executionType, executionContext);
 	}
 
-	@Reference(unbind = "-")
-	protected static void setActionExecutorManager(
-		ActionExecutorManager actionExecutorManager) {
-
-		_actionExecutorManager = actionExecutorManager;
+	protected static ActionExecutorManager getActionExecutorManager() {
+		return _serviceTracker.getService();
 	}
 
-	private static ActionExecutorManager _actionExecutorManager;
+	private static final ServiceTracker
+		<ActionExecutorManager, ActionExecutorManager> _serviceTracker;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(ActionExecutorUtil.class);
+
+		_serviceTracker = new ServiceTracker<>(
+			bundle.getBundleContext(), ActionExecutorManager.class, null);
+
+		_serviceTracker.open();
+	}
 
 }
