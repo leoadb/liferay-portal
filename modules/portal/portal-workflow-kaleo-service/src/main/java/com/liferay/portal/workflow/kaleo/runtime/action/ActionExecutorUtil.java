@@ -96,9 +96,19 @@ public class ActionExecutorUtil {
 				ClassLoader[] classLoaders = ClassLoaderUtil.getClassLoaders(
 					scriptRequiredContexts);
 
-				ActionExecutor actionExecutor =
-					_actionExecutorFactory.getActionExecutor(
+				ActionExecutor actionExecutor = null;
+
+				String scriptLanguage = kaleoAction.getScriptLanguage();
+
+				if (scriptLanguage.equals(_LANGUAGE_JAVA)) {
+					actionExecutor = _actionExecutorFactory.getActionExecutor(
+						kaleoAction.getScriptLanguage(),
+						kaleoAction.getScript());
+				}
+				else {
+					actionExecutor = _actionExecutorFactory.getActionExecutor(
 						kaleoAction.getScriptLanguage());
+				}
 
 				actionExecutor.execute(
 					kaleoAction, executionContext, classLoaders);
@@ -129,6 +139,8 @@ public class ActionExecutorUtil {
 
 	private static final String _COMMENT_ACTION_SUCCESS =
 		"Action completed successfully.";
+
+	private static final String _LANGUAGE_JAVA = "java";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ActionExecutorUtil.class);
