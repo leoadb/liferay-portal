@@ -15,6 +15,13 @@
 package com.liferay.dynamic.data.mapping.data.provider.web.display.context;
 
 import com.liferay.dynamic.data.mapping.data.provider.web.display.context.util.DDMDataProviderRequestHelper;
+import com.liferay.dynamic.data.mapping.data.provider.web.search.DDMDataProviderSearchTerms;
+import com.liferay.dynamic.data.mapping.model.DDMDataProvider;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderLocalService;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.exception.PortalException;
+
+import java.util.List;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
@@ -26,10 +33,12 @@ import javax.portlet.RenderResponse;
 public class DDMDataProviderDisplayContext {
 
 	public DDMDataProviderDisplayContext(
-		RenderRequest renderRequest, RenderResponse renderResponse) {
+		RenderRequest renderRequest, RenderResponse renderResponse,
+		DDMDataProviderLocalService ddmDataProviderLocalService) {
 
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+		_ddmDataProviderLocalService = ddmDataProviderLocalService;
 
 		_ddmDataProviderRequestHelper = new DDMDataProviderRequestHelper(
 			renderRequest);
@@ -46,6 +55,55 @@ public class DDMDataProviderDisplayContext {
 		return portletURL;
 	}
 
+	public List<DDMDataProvider> getSearchContainerResults(
+			SearchContainer<DDMDataProvider> searchContainer)
+		throws PortalException {
+
+		DDMDataProviderSearchTerms searchTerms =
+			(DDMDataProviderSearchTerms)searchContainer.getSearchTerms();
+
+		if (searchTerms.isAdvancedSearch()) {
+			return _ddmDataProviderLocalService.search(
+				_ddmDataProviderRequestHelper.getCompanyId(),
+				new long[] {_ddmDataProviderRequestHelper.getScopeGroupId()},
+				searchTerms.getName(), searchTerms.getDescription(),
+				searchTerms.isAndOperator(), searchContainer.getStart(),
+				searchContainer.getEnd(),
+				searchContainer.getOrderByComparator());
+		}
+		else {
+			return _ddmDataProviderLocalService.search(
+				_ddmDataProviderRequestHelper.getCompanyId(),
+				new long[] {_ddmDataProviderRequestHelper.getScopeGroupId()},
+				searchTerms.getKeywords(), searchContainer.getStart(),
+				searchContainer.getEnd(),
+				searchContainer.getOrderByComparator());
+		}
+	}
+
+	public int getSearchContainerTotal(
+			SearchContainer<DDMDataProvider> searchContainer)
+		throws PortalException {
+
+		DDMDataProviderSearchTerms searchTerms =
+			(DDMDataProviderSearchTerms)searchContainer.getSearchTerms();
+
+		if (searchTerms.isAdvancedSearch()) {
+			return _ddmDataProviderLocalService.searchCount(
+				_ddmDataProviderRequestHelper.getCompanyId(),
+				new long[] {_ddmDataProviderRequestHelper.getScopeGroupId()},
+				searchTerms.getName(), searchTerms.getDescription(),
+				searchTerms.isAndOperator());
+		}
+		else {
+			return _ddmDataProviderLocalService.searchCount(
+				_ddmDataProviderRequestHelper.getCompanyId(),
+				new long[] {_ddmDataProviderRequestHelper.getScopeGroupId()},
+				searchTerms.getKeywords());
+		}
+	}
+
+	private final DDMDataProviderLocalService _ddmDataProviderLocalService;
 	private final DDMDataProviderRequestHelper _ddmDataProviderRequestHelper;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
