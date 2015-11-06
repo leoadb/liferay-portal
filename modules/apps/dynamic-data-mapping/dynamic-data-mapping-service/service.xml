@@ -483,6 +483,7 @@
 		<exception>Content</exception>
 		<exception>ContentData</exception>
 		<exception>ContentName</exception>
+		<exception>DataProviderName</exception>
 		<exception>InvalidStructureVersion</exception>
 		<exception>InvalidTemplateVersion</exception>
 		<exception>RequiredStructure</exception>
