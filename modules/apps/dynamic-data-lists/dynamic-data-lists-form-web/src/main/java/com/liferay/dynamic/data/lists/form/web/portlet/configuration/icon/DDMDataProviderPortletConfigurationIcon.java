@@ -15,6 +15,7 @@
 package com.liferay.dynamic.data.lists.form.web.portlet.configuration.icon;
 
 import com.liferay.portal.kernel.portlet.configuration.icon.BasePortletConfigurationIcon;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -39,7 +40,6 @@ public class DDMDataProviderPortletConfigurationIcon
 
 	@Override
 	public boolean isShow() {
-
 		return true;
 	}
 
