@@ -25,6 +25,9 @@ AUI.add(
 				value: null
 			},
 
+			dataProviders: {
+			},
+
 			content: {
 				getter: function() {
 					var instance = this;
@@ -201,6 +204,7 @@ AUI.add(
 
 				return new Liferay.DDL.FormBuilderSettingsForm(
 					{
+						dataProviders: instance.get('dataProviders'),
 						definition: fieldType.get('settings'),
 						field: instance,
 						layout: fieldType.get('settingsLayout'),
