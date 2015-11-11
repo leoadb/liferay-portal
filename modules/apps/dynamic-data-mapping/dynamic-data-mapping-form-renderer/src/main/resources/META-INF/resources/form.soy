@@ -163,9 +163,7 @@
 				Next <i class="icon-angle-right"></i>
 			</button>
 
-			{if not $readOnly}
-				<button class="btn btn-lg btn-primary{if length($pages) > 1} hide{/if} lfr-ddm-form-submit pull-right" type="submit">Submit</button>
-			{/if}	
+			<button class="btn btn-lg btn-primary{if length($pages) > 1 or $readOnly} hide{/if} lfr-ddm-form-submit pull-right" type="submit">Submit</button>
 		</div>
 	</div>
 {/template}
