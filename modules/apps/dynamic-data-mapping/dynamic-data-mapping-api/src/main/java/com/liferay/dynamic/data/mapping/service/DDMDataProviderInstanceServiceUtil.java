@@ -42,6 +42,23 @@ public class DDMDataProviderInstanceServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link com.liferay.dynamic.data.mapping.service.impl.DDMDataProviderInstanceServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance addDataProviderInstance(
+		long groupId,
+		java.util.Map<java.util.Locale, java.lang.String> nameMap,
+		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
+		java.lang.String definition, java.lang.String type,
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addDataProviderInstance(groupId, nameMap, descriptionMap,
+			definition, type, ddmFormValues, serviceContext);
+	}
+
+	public static void deleteDataProviderInstance(long dataProviderInstanceId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().deleteDataProviderInstance(dataProviderInstanceId);
+	}
 
 	/**
 	* Returns the OSGi service identifier.
@@ -50,6 +67,49 @@ public class DDMDataProviderInstanceServiceUtil {
 	*/
 	public static java.lang.String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static java.util.List<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> search(
+		long companyId, long[] groupIds, java.lang.String keywords, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> orderByComparator) {
+		return getService()
+				   .search(companyId, groupIds, keywords, start, end,
+			orderByComparator);
+	}
+
+	public static java.util.List<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> search(
+		long companyId, long[] groupIds, java.lang.String name,
+		java.lang.String description, boolean andOperator, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> orderByComparator) {
+		return getService()
+				   .search(companyId, groupIds, name, description, andOperator,
+			start, end, orderByComparator);
+	}
+
+	public static int searchCount(long companyId, long[] groupIds,
+		java.lang.String keywords) {
+		return getService().searchCount(companyId, groupIds, keywords);
+	}
+
+	public static int searchCount(long companyId, long[] groupIds,
+		java.lang.String name, java.lang.String description, boolean andOperator) {
+		return getService()
+				   .searchCount(companyId, groupIds, name, description,
+			andOperator);
+	}
+
+	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance updateDataProviderInstance(
+		long dataProviderInstanceId,
+		java.util.Map<java.util.Locale, java.lang.String> nameMap,
+		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
+		java.lang.String definition,
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateDataProviderInstance(dataProviderInstanceId, nameMap,
+			descriptionMap, definition, ddmFormValues, serviceContext);
 	}
 
 	public static DDMDataProviderInstanceService getService() {

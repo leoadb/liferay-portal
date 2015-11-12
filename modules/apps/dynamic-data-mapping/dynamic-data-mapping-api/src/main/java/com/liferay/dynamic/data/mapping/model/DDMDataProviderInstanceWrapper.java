@@ -57,7 +57,7 @@ public class DDMDataProviderInstanceWrapper implements DDMDataProviderInstance,
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
-		attributes.put("dataProviderId", getDataProviderId());
+		attributes.put("dataProviderInstanceId", getDataProviderInstanceId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
@@ -80,10 +80,11 @@ public class DDMDataProviderInstanceWrapper implements DDMDataProviderInstance,
 			setUuid(uuid);
 		}
 
-		Long dataProviderId = (Long)attributes.get("dataProviderId");
+		Long dataProviderInstanceId = (Long)attributes.get(
+				"dataProviderInstanceId");
 
-		if (dataProviderId != null) {
-			setDataProviderId(dataProviderId);
+		if (dataProviderInstanceId != null) {
+			setDataProviderInstanceId(dataProviderInstanceId);
 		}
 
 		Long groupId = (Long)attributes.get("groupId");
@@ -184,13 +185,13 @@ public class DDMDataProviderInstanceWrapper implements DDMDataProviderInstance,
 	}
 
 	/**
-	* Returns the data provider ID of this d d m data provider instance.
+	* Returns the data provider instance ID of this d d m data provider instance.
 	*
-	* @return the data provider ID of this d d m data provider instance
+	* @return the data provider instance ID of this d d m data provider instance
 	*/
 	@Override
-	public long getDataProviderId() {
-		return _ddmDataProviderInstance.getDataProviderId();
+	public long getDataProviderInstanceId() {
+		return _ddmDataProviderInstance.getDataProviderInstanceId();
 	}
 
 	@Override
@@ -517,13 +518,13 @@ public class DDMDataProviderInstanceWrapper implements DDMDataProviderInstance,
 	}
 
 	/**
-	* Sets the data provider ID of this d d m data provider instance.
+	* Sets the data provider instance ID of this d d m data provider instance.
 	*
-	* @param dataProviderId the data provider ID of this d d m data provider instance
+	* @param dataProviderInstanceId the data provider instance ID of this d d m data provider instance
 	*/
 	@Override
-	public void setDataProviderId(long dataProviderId) {
-		_ddmDataProviderInstance.setDataProviderId(dataProviderId);
+	public void setDataProviderInstanceId(long dataProviderInstanceId) {
+		_ddmDataProviderInstance.setDataProviderInstanceId(dataProviderInstanceId);
 	}
 
 	/**

@@ -147,14 +147,14 @@ public interface DDMDataProviderInstancePersistence extends BasePersistence<DDMD
 	/**
 	* Returns the d d m data provider instances before and after the current d d m data provider instance in the ordered set where uuid = &#63;.
 	*
-	* @param dataProviderId the primary key of the current d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the current d d m data provider instance
 	* @param uuid the uuid
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next d d m data provider instance
 	* @throws com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException if a d d m data provider instance with the primary key could not be found
 	*/
 	public DDMDataProviderInstance[] findByUuid_PrevAndNext(
-		long dataProviderId, java.lang.String uuid,
+		long dataProviderInstanceId, java.lang.String uuid,
 		com.liferay.portal.kernel.util.OrderByComparator<DDMDataProviderInstance> orderByComparator)
 		throws com.liferay.dynamic.data.mapping.exception.NoSuchDataProviderInstanceException;
 
@@ -345,7 +345,7 @@ public interface DDMDataProviderInstancePersistence extends BasePersistence<DDMD
 	/**
 	* Returns the d d m data provider instances before and after the current d d m data provider instance in the ordered set where uuid = &#63; and companyId = &#63;.
 	*
-	* @param dataProviderId the primary key of the current d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the current d d m data provider instance
 	* @param uuid the uuid
 	* @param companyId the company ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -353,7 +353,7 @@ public interface DDMDataProviderInstancePersistence extends BasePersistence<DDMD
 	* @throws com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException if a d d m data provider instance with the primary key could not be found
 	*/
 	public DDMDataProviderInstance[] findByUuid_C_PrevAndNext(
-		long dataProviderId, java.lang.String uuid, long companyId,
+		long dataProviderInstanceId, java.lang.String uuid, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<DDMDataProviderInstance> orderByComparator)
 		throws com.liferay.dynamic.data.mapping.exception.NoSuchDataProviderInstanceException;
 
@@ -480,14 +480,14 @@ public interface DDMDataProviderInstancePersistence extends BasePersistence<DDMD
 	/**
 	* Returns the d d m data provider instances before and after the current d d m data provider instance in the ordered set where groupId = &#63;.
 	*
-	* @param dataProviderId the primary key of the current d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the current d d m data provider instance
 	* @param groupId the group ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next d d m data provider instance
 	* @throws com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException if a d d m data provider instance with the primary key could not be found
 	*/
 	public DDMDataProviderInstance[] findByGroupId_PrevAndNext(
-		long dataProviderId, long groupId,
+		long dataProviderInstanceId, long groupId,
 		com.liferay.portal.kernel.util.OrderByComparator<DDMDataProviderInstance> orderByComparator)
 		throws com.liferay.dynamic.data.mapping.exception.NoSuchDataProviderInstanceException;
 
@@ -685,14 +685,14 @@ public interface DDMDataProviderInstancePersistence extends BasePersistence<DDMD
 	/**
 	* Returns the d d m data provider instances before and after the current d d m data provider instance in the ordered set where companyId = &#63;.
 	*
-	* @param dataProviderId the primary key of the current d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the current d d m data provider instance
 	* @param companyId the company ID
 	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	* @return the previous, current, and next d d m data provider instance
 	* @throws com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException if a d d m data provider instance with the primary key could not be found
 	*/
 	public DDMDataProviderInstance[] findByCompanyId_PrevAndNext(
-		long dataProviderId, long companyId,
+		long dataProviderInstanceId, long companyId,
 		com.liferay.portal.kernel.util.OrderByComparator<DDMDataProviderInstance> orderByComparator)
 		throws com.liferay.dynamic.data.mapping.exception.NoSuchDataProviderInstanceException;
 
@@ -729,19 +729,19 @@ public interface DDMDataProviderInstancePersistence extends BasePersistence<DDMD
 	/**
 	* Creates a new d d m data provider instance with the primary key. Does not add the d d m data provider instance to the database.
 	*
-	* @param dataProviderId the primary key for the new d d m data provider instance
+	* @param dataProviderInstanceId the primary key for the new d d m data provider instance
 	* @return the new d d m data provider instance
 	*/
-	public DDMDataProviderInstance create(long dataProviderId);
+	public DDMDataProviderInstance create(long dataProviderInstanceId);
 
 	/**
 	* Removes the d d m data provider instance with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dataProviderId the primary key of the d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the d d m data provider instance
 	* @return the d d m data provider instance that was removed
 	* @throws com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException if a d d m data provider instance with the primary key could not be found
 	*/
-	public DDMDataProviderInstance remove(long dataProviderId)
+	public DDMDataProviderInstance remove(long dataProviderInstanceId)
 		throws com.liferay.dynamic.data.mapping.exception.NoSuchDataProviderInstanceException;
 
 	public DDMDataProviderInstance updateImpl(
@@ -750,20 +750,21 @@ public interface DDMDataProviderInstancePersistence extends BasePersistence<DDMD
 	/**
 	* Returns the d d m data provider instance with the primary key or throws a {@link com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException} if it could not be found.
 	*
-	* @param dataProviderId the primary key of the d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the d d m data provider instance
 	* @return the d d m data provider instance
 	* @throws com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException if a d d m data provider instance with the primary key could not be found
 	*/
-	public DDMDataProviderInstance findByPrimaryKey(long dataProviderId)
+	public DDMDataProviderInstance findByPrimaryKey(long dataProviderInstanceId)
 		throws com.liferay.dynamic.data.mapping.exception.NoSuchDataProviderInstanceException;
 
 	/**
 	* Returns the d d m data provider instance with the primary key or returns <code>null</code> if it could not be found.
 	*
-	* @param dataProviderId the primary key of the d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the d d m data provider instance
 	* @return the d d m data provider instance, or <code>null</code> if a d d m data provider instance with the primary key could not be found
 	*/
-	public DDMDataProviderInstance fetchByPrimaryKey(long dataProviderId);
+	public DDMDataProviderInstance fetchByPrimaryKey(
+		long dataProviderInstanceId);
 
 	@Override
 	public java.util.Map<java.io.Serializable, DDMDataProviderInstance> fetchByPrimaryKeys(

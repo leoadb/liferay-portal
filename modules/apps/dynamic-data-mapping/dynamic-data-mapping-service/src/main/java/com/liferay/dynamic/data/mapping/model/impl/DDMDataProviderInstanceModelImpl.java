@@ -80,7 +80,7 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 	public static final String TABLE_NAME = "DDMDataProviderInstance";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "uuid_", Types.VARCHAR },
-			{ "dataProviderId", Types.BIGINT },
+			{ "dataProviderInstanceId", Types.BIGINT },
 			{ "groupId", Types.BIGINT },
 			{ "companyId", Types.BIGINT },
 			{ "userId", Types.BIGINT },
@@ -96,7 +96,7 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("dataProviderId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("dataProviderInstanceId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
@@ -109,10 +109,10 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table DDMDataProviderInstance (uuid_ VARCHAR(75) null,dataProviderId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,description TEXT null,definition TEXT null,type_ VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table DDMDataProviderInstance (uuid_ VARCHAR(75) null,dataProviderInstanceId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,description TEXT null,definition TEXT null,type_ VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table DDMDataProviderInstance";
-	public static final String ORDER_BY_JPQL = " ORDER BY ddmDataProviderInstance.dataProviderId ASC";
-	public static final String ORDER_BY_SQL = " ORDER BY DDMDataProviderInstance.dataProviderId ASC";
+	public static final String ORDER_BY_JPQL = " ORDER BY ddmDataProviderInstance.dataProviderInstanceId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY DDMDataProviderInstance.dataProviderInstanceId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -128,7 +128,7 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 	public static final long COMPANYID_COLUMN_BITMASK = 1L;
 	public static final long GROUPID_COLUMN_BITMASK = 2L;
 	public static final long UUID_COLUMN_BITMASK = 4L;
-	public static final long DATAPROVIDERID_COLUMN_BITMASK = 8L;
+	public static final long DATAPROVIDERINSTANCEID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -145,7 +145,7 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 		DDMDataProviderInstance model = new DDMDataProviderInstanceImpl();
 
 		model.setUuid(soapModel.getUuid());
-		model.setDataProviderId(soapModel.getDataProviderId());
+		model.setDataProviderInstanceId(soapModel.getDataProviderInstanceId());
 		model.setGroupId(soapModel.getGroupId());
 		model.setCompanyId(soapModel.getCompanyId());
 		model.setUserId(soapModel.getUserId());
@@ -189,17 +189,17 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 
 	@Override
 	public long getPrimaryKey() {
-		return _dataProviderId;
+		return _dataProviderInstanceId;
 	}
 
 	@Override
 	public void setPrimaryKey(long primaryKey) {
-		setDataProviderId(primaryKey);
+		setDataProviderInstanceId(primaryKey);
 	}
 
 	@Override
 	public Serializable getPrimaryKeyObj() {
-		return _dataProviderId;
+		return _dataProviderInstanceId;
 	}
 
 	@Override
@@ -222,7 +222,7 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
-		attributes.put("dataProviderId", getDataProviderId());
+		attributes.put("dataProviderInstanceId", getDataProviderInstanceId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
@@ -248,10 +248,11 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 			setUuid(uuid);
 		}
 
-		Long dataProviderId = (Long)attributes.get("dataProviderId");
+		Long dataProviderInstanceId = (Long)attributes.get(
+				"dataProviderInstanceId");
 
-		if (dataProviderId != null) {
-			setDataProviderId(dataProviderId);
+		if (dataProviderInstanceId != null) {
+			setDataProviderInstanceId(dataProviderInstanceId);
 		}
 
 		Long groupId = (Long)attributes.get("groupId");
@@ -341,13 +342,13 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 
 	@JSON
 	@Override
-	public long getDataProviderId() {
-		return _dataProviderId;
+	public long getDataProviderInstanceId() {
+		return _dataProviderInstanceId;
 	}
 
 	@Override
-	public void setDataProviderId(long dataProviderId) {
-		_dataProviderId = dataProviderId;
+	public void setDataProviderInstanceId(long dataProviderInstanceId) {
+		_dataProviderInstanceId = dataProviderInstanceId;
 	}
 
 	@JSON
@@ -821,7 +822,7 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 		DDMDataProviderInstanceImpl ddmDataProviderInstanceImpl = new DDMDataProviderInstanceImpl();
 
 		ddmDataProviderInstanceImpl.setUuid(getUuid());
-		ddmDataProviderInstanceImpl.setDataProviderId(getDataProviderId());
+		ddmDataProviderInstanceImpl.setDataProviderInstanceId(getDataProviderInstanceId());
 		ddmDataProviderInstanceImpl.setGroupId(getGroupId());
 		ddmDataProviderInstanceImpl.setCompanyId(getCompanyId());
 		ddmDataProviderInstanceImpl.setUserId(getUserId());
@@ -921,7 +922,7 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 			ddmDataProviderInstanceCacheModel.uuid = null;
 		}
 
-		ddmDataProviderInstanceCacheModel.dataProviderId = getDataProviderId();
+		ddmDataProviderInstanceCacheModel.dataProviderInstanceId = getDataProviderInstanceId();
 
 		ddmDataProviderInstanceCacheModel.groupId = getGroupId();
 
@@ -996,8 +997,8 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
-		sb.append(", dataProviderId=");
-		sb.append(getDataProviderId());
+		sb.append(", dataProviderInstanceId=");
+		sb.append(getDataProviderInstanceId());
 		sb.append(", groupId=");
 		sb.append(getGroupId());
 		sb.append(", companyId=");
@@ -1037,8 +1038,8 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 		sb.append(getUuid());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>dataProviderId</column-name><column-value><![CDATA[");
-		sb.append(getDataProviderId());
+			"<column><column-name>dataProviderInstanceId</column-name><column-value><![CDATA[");
+		sb.append(getDataProviderInstanceId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>groupId</column-name><column-value><![CDATA[");
@@ -1092,7 +1093,7 @@ public class DDMDataProviderInstanceModelImpl extends BaseModelImpl<DDMDataProvi
 		};
 	private String _uuid;
 	private String _originalUuid;
-	private long _dataProviderId;
+	private long _dataProviderInstanceId;
 	private long _groupId;
 	private long _originalGroupId;
 	private boolean _setOriginalGroupId;

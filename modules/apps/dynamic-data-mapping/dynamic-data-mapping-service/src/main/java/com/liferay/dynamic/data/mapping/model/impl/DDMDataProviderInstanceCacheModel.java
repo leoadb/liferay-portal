@@ -52,7 +52,7 @@ public class DDMDataProviderInstanceCacheModel implements CacheModel<DDMDataProv
 
 		DDMDataProviderInstanceCacheModel ddmDataProviderInstanceCacheModel = (DDMDataProviderInstanceCacheModel)obj;
 
-		if (dataProviderId == ddmDataProviderInstanceCacheModel.dataProviderId) {
+		if (dataProviderInstanceId == ddmDataProviderInstanceCacheModel.dataProviderInstanceId) {
 			return true;
 		}
 
@@ -61,7 +61,7 @@ public class DDMDataProviderInstanceCacheModel implements CacheModel<DDMDataProv
 
 	@Override
 	public int hashCode() {
-		return HashUtil.hash(0, dataProviderId);
+		return HashUtil.hash(0, dataProviderInstanceId);
 	}
 
 	@Override
@@ -70,8 +70,8 @@ public class DDMDataProviderInstanceCacheModel implements CacheModel<DDMDataProv
 
 		sb.append("{uuid=");
 		sb.append(uuid);
-		sb.append(", dataProviderId=");
-		sb.append(dataProviderId);
+		sb.append(", dataProviderInstanceId=");
+		sb.append(dataProviderInstanceId);
 		sb.append(", groupId=");
 		sb.append(groupId);
 		sb.append(", companyId=");
@@ -108,7 +108,7 @@ public class DDMDataProviderInstanceCacheModel implements CacheModel<DDMDataProv
 			ddmDataProviderInstanceImpl.setUuid(uuid);
 		}
 
-		ddmDataProviderInstanceImpl.setDataProviderId(dataProviderId);
+		ddmDataProviderInstanceImpl.setDataProviderInstanceId(dataProviderInstanceId);
 		ddmDataProviderInstanceImpl.setGroupId(groupId);
 		ddmDataProviderInstanceImpl.setCompanyId(companyId);
 		ddmDataProviderInstanceImpl.setUserId(userId);
@@ -170,7 +170,7 @@ public class DDMDataProviderInstanceCacheModel implements CacheModel<DDMDataProv
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
-		dataProviderId = objectInput.readLong();
+		dataProviderInstanceId = objectInput.readLong();
 		groupId = objectInput.readLong();
 		companyId = objectInput.readLong();
 		userId = objectInput.readLong();
@@ -193,7 +193,7 @@ public class DDMDataProviderInstanceCacheModel implements CacheModel<DDMDataProv
 			objectOutput.writeUTF(uuid);
 		}
 
-		objectOutput.writeLong(dataProviderId);
+		objectOutput.writeLong(dataProviderInstanceId);
 		objectOutput.writeLong(groupId);
 		objectOutput.writeLong(companyId);
 		objectOutput.writeLong(userId);
@@ -238,7 +238,7 @@ public class DDMDataProviderInstanceCacheModel implements CacheModel<DDMDataProv
 	}
 
 	public String uuid;
-	public long dataProviderId;
+	public long dataProviderInstanceId;
 	public long groupId;
 	public long companyId;
 	public long userId;

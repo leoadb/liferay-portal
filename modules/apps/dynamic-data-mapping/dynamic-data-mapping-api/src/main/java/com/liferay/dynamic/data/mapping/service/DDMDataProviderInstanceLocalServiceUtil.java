@@ -54,28 +54,41 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 		return getService().addDDMDataProviderInstance(ddmDataProviderInstance);
 	}
 
+	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance addDataProviderInstance(
+		long userId, long groupId,
+		java.util.Map<java.util.Locale, java.lang.String> nameMap,
+		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
+		java.lang.String definition, java.lang.String type,
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addDataProviderInstance(userId, groupId, nameMap,
+			descriptionMap, definition, type, ddmFormValues, serviceContext);
+	}
+
 	/**
 	* Creates a new d d m data provider instance with the primary key. Does not add the d d m data provider instance to the database.
 	*
-	* @param dataProviderId the primary key for the new d d m data provider instance
+	* @param dataProviderInstanceId the primary key for the new d d m data provider instance
 	* @return the new d d m data provider instance
 	*/
 	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance createDDMDataProviderInstance(
-		long dataProviderId) {
-		return getService().createDDMDataProviderInstance(dataProviderId);
+		long dataProviderInstanceId) {
+		return getService().createDDMDataProviderInstance(dataProviderInstanceId);
 	}
 
 	/**
 	* Deletes the d d m data provider instance with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dataProviderId the primary key of the d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the d d m data provider instance
 	* @return the d d m data provider instance that was removed
 	* @throws PortalException if a d d m data provider instance with the primary key could not be found
 	*/
 	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance deleteDDMDataProviderInstance(
-		long dataProviderId)
+		long dataProviderInstanceId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().deleteDDMDataProviderInstance(dataProviderId);
+		return getService().deleteDDMDataProviderInstance(dataProviderInstanceId);
 	}
 
 	/**
@@ -178,8 +191,8 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 	}
 
 	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance fetchDDMDataProviderInstance(
-		long dataProviderId) {
-		return getService().fetchDDMDataProviderInstance(dataProviderId);
+		long dataProviderInstanceId) {
+		return getService().fetchDDMDataProviderInstance(dataProviderInstanceId);
 	}
 
 	/**
@@ -202,14 +215,14 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 	/**
 	* Returns the d d m data provider instance with the primary key.
 	*
-	* @param dataProviderId the primary key of the d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the d d m data provider instance
 	* @return the d d m data provider instance
 	* @throws PortalException if a d d m data provider instance with the primary key could not be found
 	*/
 	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance getDDMDataProviderInstance(
-		long dataProviderId)
+		long dataProviderInstanceId)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().getDDMDataProviderInstance(dataProviderId);
+		return getService().getDDMDataProviderInstance(dataProviderInstanceId);
 	}
 
 	/**
@@ -304,6 +317,36 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static java.util.List<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> search(
+		long companyId, long[] groupIds, java.lang.String keywords, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> orderByComparator) {
+		return getService()
+				   .search(companyId, groupIds, keywords, start, end,
+			orderByComparator);
+	}
+
+	public static java.util.List<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> search(
+		long companyId, long[] groupIds, java.lang.String name,
+		java.lang.String description, boolean andOperator, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> orderByComparator) {
+		return getService()
+				   .search(companyId, groupIds, name, description, andOperator,
+			start, end, orderByComparator);
+	}
+
+	public static int searchCount(long companyId, long[] groupIds,
+		java.lang.String keywords) {
+		return getService().searchCount(companyId, groupIds, keywords);
+	}
+
+	public static int searchCount(long companyId, long[] groupIds,
+		java.lang.String name, java.lang.String description, boolean andOperator) {
+		return getService()
+				   .searchCount(companyId, groupIds, name, description,
+			andOperator);
+	}
+
 	/**
 	* Updates the d d m data provider instance in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -314,6 +357,19 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 		com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance ddmDataProviderInstance) {
 		return getService()
 				   .updateDDMDataProviderInstance(ddmDataProviderInstance);
+	}
+
+	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance updateDataProviderInstance(
+		long userId, long dataProviderInstanceId,
+		java.util.Map<java.util.Locale, java.lang.String> nameMap,
+		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
+		java.lang.String definition,
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateDataProviderInstance(userId, dataProviderInstanceId,
+			nameMap, descriptionMap, definition, ddmFormValues, serviceContext);
 	}
 
 	public static DDMDataProviderInstanceLocalService getService() {

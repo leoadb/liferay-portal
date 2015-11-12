@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMDataProviderInstanceFinder;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMDataProviderInstancePersistence;
 
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -96,27 +97,27 @@ public abstract class DDMDataProviderInstanceLocalServiceBaseImpl
 	/**
 	 * Creates a new d d m data provider instance with the primary key. Does not add the d d m data provider instance to the database.
 	 *
-	 * @param dataProviderId the primary key for the new d d m data provider instance
+	 * @param dataProviderInstanceId the primary key for the new d d m data provider instance
 	 * @return the new d d m data provider instance
 	 */
 	@Override
 	public DDMDataProviderInstance createDDMDataProviderInstance(
-		long dataProviderId) {
-		return ddmDataProviderInstancePersistence.create(dataProviderId);
+		long dataProviderInstanceId) {
+		return ddmDataProviderInstancePersistence.create(dataProviderInstanceId);
 	}
 
 	/**
 	 * Deletes the d d m data provider instance with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param dataProviderId the primary key of the d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the d d m data provider instance
 	 * @return the d d m data provider instance that was removed
 	 * @throws PortalException if a d d m data provider instance with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public DDMDataProviderInstance deleteDDMDataProviderInstance(
-		long dataProviderId) throws PortalException {
-		return ddmDataProviderInstancePersistence.remove(dataProviderId);
+		long dataProviderInstanceId) throws PortalException {
+		return ddmDataProviderInstancePersistence.remove(dataProviderInstanceId);
 	}
 
 	/**
@@ -217,8 +218,8 @@ public abstract class DDMDataProviderInstanceLocalServiceBaseImpl
 
 	@Override
 	public DDMDataProviderInstance fetchDDMDataProviderInstance(
-		long dataProviderId) {
-		return ddmDataProviderInstancePersistence.fetchByPrimaryKey(dataProviderId);
+		long dataProviderInstanceId) {
+		return ddmDataProviderInstancePersistence.fetchByPrimaryKey(dataProviderInstanceId);
 	}
 
 	/**
@@ -237,14 +238,14 @@ public abstract class DDMDataProviderInstanceLocalServiceBaseImpl
 	/**
 	 * Returns the d d m data provider instance with the primary key.
 	 *
-	 * @param dataProviderId the primary key of the d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the d d m data provider instance
 	 * @return the d d m data provider instance
 	 * @throws PortalException if a d d m data provider instance with the primary key could not be found
 	 */
 	@Override
 	public DDMDataProviderInstance getDDMDataProviderInstance(
-		long dataProviderId) throws PortalException {
-		return ddmDataProviderInstancePersistence.findByPrimaryKey(dataProviderId);
+		long dataProviderInstanceId) throws PortalException {
+		return ddmDataProviderInstancePersistence.findByPrimaryKey(dataProviderInstanceId);
 	}
 
 	@Override
@@ -255,7 +256,8 @@ public abstract class DDMDataProviderInstanceLocalServiceBaseImpl
 		actionableDynamicQuery.setClass(DDMDataProviderInstance.class);
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName("dataProviderId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName(
+			"dataProviderInstanceId");
 
 		return actionableDynamicQuery;
 	}
@@ -266,7 +268,8 @@ public abstract class DDMDataProviderInstanceLocalServiceBaseImpl
 		actionableDynamicQuery.setClass(DDMDataProviderInstance.class);
 		actionableDynamicQuery.setClassLoader(getClassLoader());
 
-		actionableDynamicQuery.setPrimaryKeyPropertyName("dataProviderId");
+		actionableDynamicQuery.setPrimaryKeyPropertyName(
+			"dataProviderInstanceId");
 	}
 
 	@Override
@@ -480,6 +483,25 @@ public abstract class DDMDataProviderInstanceLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the d d m data provider instance finder.
+	 *
+	 * @return the d d m data provider instance finder
+	 */
+	public DDMDataProviderInstanceFinder getDDMDataProviderInstanceFinder() {
+		return ddmDataProviderInstanceFinder;
+	}
+
+	/**
+	 * Sets the d d m data provider instance finder.
+	 *
+	 * @param ddmDataProviderInstanceFinder the d d m data provider instance finder
+	 */
+	public void setDDMDataProviderInstanceFinder(
+		DDMDataProviderInstanceFinder ddmDataProviderInstanceFinder) {
+		this.ddmDataProviderInstanceFinder = ddmDataProviderInstanceFinder;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -668,6 +690,8 @@ public abstract class DDMDataProviderInstanceLocalServiceBaseImpl
 	protected com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService ddmDataProviderInstanceService;
 	@BeanReference(type = DDMDataProviderInstancePersistence.class)
 	protected DDMDataProviderInstancePersistence ddmDataProviderInstancePersistence;
+	@BeanReference(type = DDMDataProviderInstanceFinder.class)
+	protected DDMDataProviderInstanceFinder ddmDataProviderInstanceFinder;
 	@BeanReference(type = com.liferay.counter.service.CounterLocalService.class)
 	protected com.liferay.counter.service.CounterLocalService counterLocalService;
 	@BeanReference(type = com.liferay.portal.service.GroupLocalService.class)

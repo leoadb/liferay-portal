@@ -153,8 +153,8 @@ public class DDMDataProviderInstancePersistenceTest {
 
 		Assert.assertEquals(existingDDMDataProviderInstance.getUuid(),
 			newDDMDataProviderInstance.getUuid());
-		Assert.assertEquals(existingDDMDataProviderInstance.getDataProviderId(),
-			newDDMDataProviderInstance.getDataProviderId());
+		Assert.assertEquals(existingDDMDataProviderInstance.getDataProviderInstanceId(),
+			newDDMDataProviderInstance.getDataProviderInstanceId());
 		Assert.assertEquals(existingDDMDataProviderInstance.getGroupId(),
 			newDDMDataProviderInstance.getGroupId());
 		Assert.assertEquals(existingDDMDataProviderInstance.getCompanyId(),
@@ -250,9 +250,9 @@ public class DDMDataProviderInstancePersistenceTest {
 
 	protected OrderByComparator<DDMDataProviderInstance> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create("DDMDataProviderInstance",
-			"uuid", true, "dataProviderId", true, "groupId", true, "companyId",
-			true, "userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "name", true, "type", true);
+			"uuid", true, "dataProviderInstanceId", true, "groupId", true,
+			"companyId", true, "userId", true, "userName", true, "createDate",
+			true, "modifiedDate", true, "name", true, "type", true);
 	}
 
 	@Test
@@ -389,8 +389,8 @@ public class DDMDataProviderInstancePersistenceTest {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(DDMDataProviderInstance.class,
 				_dynamicQueryClassLoader);
 
-		dynamicQuery.add(RestrictionsFactoryUtil.eq("dataProviderId",
-				newDDMDataProviderInstance.getDataProviderId()));
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("dataProviderInstanceId",
+				newDDMDataProviderInstance.getDataProviderInstanceId()));
 
 		List<DDMDataProviderInstance> result = _persistence.findWithDynamicQuery(dynamicQuery);
 
@@ -407,7 +407,7 @@ public class DDMDataProviderInstancePersistenceTest {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(DDMDataProviderInstance.class,
 				_dynamicQueryClassLoader);
 
-		dynamicQuery.add(RestrictionsFactoryUtil.eq("dataProviderId",
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("dataProviderInstanceId",
 				RandomTestUtil.nextLong()));
 
 		List<DDMDataProviderInstance> result = _persistence.findWithDynamicQuery(dynamicQuery);
@@ -424,20 +424,21 @@ public class DDMDataProviderInstancePersistenceTest {
 				_dynamicQueryClassLoader);
 
 		dynamicQuery.setProjection(ProjectionFactoryUtil.property(
-				"dataProviderId"));
+				"dataProviderInstanceId"));
 
-		Object newDataProviderId = newDDMDataProviderInstance.getDataProviderId();
+		Object newDataProviderInstanceId = newDDMDataProviderInstance.getDataProviderInstanceId();
 
-		dynamicQuery.add(RestrictionsFactoryUtil.in("dataProviderId",
-				new Object[] { newDataProviderId }));
+		dynamicQuery.add(RestrictionsFactoryUtil.in("dataProviderInstanceId",
+				new Object[] { newDataProviderInstanceId }));
 
 		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
 
 		Assert.assertEquals(1, result.size());
 
-		Object existingDataProviderId = result.get(0);
+		Object existingDataProviderInstanceId = result.get(0);
 
-		Assert.assertEquals(existingDataProviderId, newDataProviderId);
+		Assert.assertEquals(existingDataProviderInstanceId,
+			newDataProviderInstanceId);
 	}
 
 	@Test
@@ -446,9 +447,9 @@ public class DDMDataProviderInstancePersistenceTest {
 				_dynamicQueryClassLoader);
 
 		dynamicQuery.setProjection(ProjectionFactoryUtil.property(
-				"dataProviderId"));
+				"dataProviderInstanceId"));
 
-		dynamicQuery.add(RestrictionsFactoryUtil.in("dataProviderId",
+		dynamicQuery.add(RestrictionsFactoryUtil.in("dataProviderInstanceId",
 				new Object[] { RandomTestUtil.nextLong() }));
 
 		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);

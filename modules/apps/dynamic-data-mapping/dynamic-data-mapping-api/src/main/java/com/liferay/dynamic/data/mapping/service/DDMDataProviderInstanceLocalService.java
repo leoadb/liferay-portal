@@ -58,25 +58,34 @@ public interface DDMDataProviderInstanceLocalService extends BaseLocalService,
 	public com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance addDDMDataProviderInstance(
 		com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance ddmDataProviderInstance);
 
+	public com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance addDataProviderInstance(
+		long userId, long groupId,
+		java.util.Map<java.util.Locale, java.lang.String> nameMap,
+		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
+		java.lang.String definition, java.lang.String type,
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	* Creates a new d d m data provider instance with the primary key. Does not add the d d m data provider instance to the database.
 	*
-	* @param dataProviderId the primary key for the new d d m data provider instance
+	* @param dataProviderInstanceId the primary key for the new d d m data provider instance
 	* @return the new d d m data provider instance
 	*/
 	public com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance createDDMDataProviderInstance(
-		long dataProviderId);
+		long dataProviderInstanceId);
 
 	/**
 	* Deletes the d d m data provider instance with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param dataProviderId the primary key of the d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the d d m data provider instance
 	* @return the d d m data provider instance that was removed
 	* @throws PortalException if a d d m data provider instance with the primary key could not be found
 	*/
 	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.DELETE)
 	public com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance deleteDDMDataProviderInstance(
-		long dataProviderId) throws PortalException;
+		long dataProviderInstanceId) throws PortalException;
 
 	/**
 	* Deletes the d d m data provider instance from the database. Also notifies the appropriate model listeners.
@@ -163,7 +172,7 @@ public interface DDMDataProviderInstanceLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance fetchDDMDataProviderInstance(
-		long dataProviderId);
+		long dataProviderInstanceId);
 
 	/**
 	* Returns the d d m data provider instance matching the UUID and group.
@@ -182,13 +191,13 @@ public interface DDMDataProviderInstanceLocalService extends BaseLocalService,
 	/**
 	* Returns the d d m data provider instance with the primary key.
 	*
-	* @param dataProviderId the primary key of the d d m data provider instance
+	* @param dataProviderInstanceId the primary key of the d d m data provider instance
 	* @return the d d m data provider instance
 	* @throws PortalException if a d d m data provider instance with the primary key could not be found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance getDDMDataProviderInstance(
-		long dataProviderId) throws PortalException;
+		long dataProviderInstanceId) throws PortalException;
 
 	/**
 	* Returns the d d m data provider instance matching the UUID and group.
@@ -267,6 +276,26 @@ public interface DDMDataProviderInstanceLocalService extends BaseLocalService,
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> search(
+		long companyId, long[] groupIds, java.lang.String keywords, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> search(
+		long companyId, long[] groupIds, java.lang.String name,
+		java.lang.String description, boolean andOperator, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchCount(long companyId, long[] groupIds,
+		java.lang.String keywords);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchCount(long companyId, long[] groupIds,
+		java.lang.String name, java.lang.String description, boolean andOperator);
+
 	/**
 	* Updates the d d m data provider instance in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -276,4 +305,13 @@ public interface DDMDataProviderInstanceLocalService extends BaseLocalService,
 	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.REINDEX)
 	public com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance updateDDMDataProviderInstance(
 		com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance ddmDataProviderInstance);
+
+	public com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance updateDataProviderInstance(
+		long userId, long dataProviderInstanceId,
+		java.util.Map<java.util.Locale, java.lang.String> nameMap,
+		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
+		java.lang.String definition,
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws PortalException;
 }

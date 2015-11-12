@@ -16,6 +16,7 @@ package com.liferay.dynamic.data.mapping.service.base;
 
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMDataProviderInstanceFinder;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMDataProviderInstancePersistence;
 
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -108,6 +109,25 @@ public abstract class DDMDataProviderInstanceServiceBaseImpl
 	public void setDDMDataProviderInstancePersistence(
 		DDMDataProviderInstancePersistence ddmDataProviderInstancePersistence) {
 		this.ddmDataProviderInstancePersistence = ddmDataProviderInstancePersistence;
+	}
+
+	/**
+	 * Returns the d d m data provider instance finder.
+	 *
+	 * @return the d d m data provider instance finder
+	 */
+	public DDMDataProviderInstanceFinder getDDMDataProviderInstanceFinder() {
+		return ddmDataProviderInstanceFinder;
+	}
+
+	/**
+	 * Sets the d d m data provider instance finder.
+	 *
+	 * @param ddmDataProviderInstanceFinder the d d m data provider instance finder
+	 */
+	public void setDDMDataProviderInstanceFinder(
+		DDMDataProviderInstanceFinder ddmDataProviderInstanceFinder) {
+		this.ddmDataProviderInstanceFinder = ddmDataProviderInstanceFinder;
 	}
 
 	/**
@@ -295,6 +315,8 @@ public abstract class DDMDataProviderInstanceServiceBaseImpl
 	protected DDMDataProviderInstanceService ddmDataProviderInstanceService;
 	@BeanReference(type = DDMDataProviderInstancePersistence.class)
 	protected DDMDataProviderInstancePersistence ddmDataProviderInstancePersistence;
+	@BeanReference(type = DDMDataProviderInstanceFinder.class)
+	protected DDMDataProviderInstanceFinder ddmDataProviderInstanceFinder;
 	@BeanReference(type = com.liferay.counter.service.CounterLocalService.class)
 	protected com.liferay.counter.service.CounterLocalService counterLocalService;
 	@BeanReference(type = com.liferay.portal.service.GroupLocalService.class)

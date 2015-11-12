@@ -14,7 +14,7 @@ create table DDMContent (
 
 create table DDMDataProviderInstance (
 	uuid_ VARCHAR(75) null,
-	dataProviderId LONG not null primary key,
+	dataProviderInstanceId LONG not null primary key,
 	groupId LONG,
 	companyId LONG,
 	userId LONG,

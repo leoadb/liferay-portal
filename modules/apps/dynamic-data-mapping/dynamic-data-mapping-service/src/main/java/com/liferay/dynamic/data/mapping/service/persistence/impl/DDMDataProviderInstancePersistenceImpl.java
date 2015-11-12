@@ -405,7 +405,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	/**
 	 * Returns the d d m data provider instances before and after the current d d m data provider instance in the ordered set where uuid = &#63;.
 	 *
-	 * @param dataProviderId the primary key of the current d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the current d d m data provider instance
 	 * @param uuid the uuid
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next d d m data provider instance
@@ -413,10 +413,10 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public DDMDataProviderInstance[] findByUuid_PrevAndNext(
-		long dataProviderId, String uuid,
+		long dataProviderInstanceId, String uuid,
 		OrderByComparator<DDMDataProviderInstance> orderByComparator)
 		throws NoSuchDataProviderInstanceException {
-		DDMDataProviderInstance ddmDataProviderInstance = findByPrimaryKey(dataProviderId);
+		DDMDataProviderInstance ddmDataProviderInstance = findByPrimaryKey(dataProviderInstanceId);
 
 		Session session = null;
 
@@ -1246,7 +1246,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	/**
 	 * Returns the d d m data provider instances before and after the current d d m data provider instance in the ordered set where uuid = &#63; and companyId = &#63;.
 	 *
-	 * @param dataProviderId the primary key of the current d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the current d d m data provider instance
 	 * @param uuid the uuid
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -1255,10 +1255,10 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public DDMDataProviderInstance[] findByUuid_C_PrevAndNext(
-		long dataProviderId, String uuid, long companyId,
+		long dataProviderInstanceId, String uuid, long companyId,
 		OrderByComparator<DDMDataProviderInstance> orderByComparator)
 		throws NoSuchDataProviderInstanceException {
-		DDMDataProviderInstance ddmDataProviderInstance = findByPrimaryKey(dataProviderId);
+		DDMDataProviderInstance ddmDataProviderInstance = findByPrimaryKey(dataProviderInstanceId);
 
 		Session session = null;
 
@@ -1802,7 +1802,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	/**
 	 * Returns the d d m data provider instances before and after the current d d m data provider instance in the ordered set where groupId = &#63;.
 	 *
-	 * @param dataProviderId the primary key of the current d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the current d d m data provider instance
 	 * @param groupId the group ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next d d m data provider instance
@@ -1810,10 +1810,10 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public DDMDataProviderInstance[] findByGroupId_PrevAndNext(
-		long dataProviderId, long groupId,
+		long dataProviderInstanceId, long groupId,
 		OrderByComparator<DDMDataProviderInstance> orderByComparator)
 		throws NoSuchDataProviderInstanceException {
-		DDMDataProviderInstance ddmDataProviderInstance = findByPrimaryKey(dataProviderId);
+		DDMDataProviderInstance ddmDataProviderInstance = findByPrimaryKey(dataProviderInstanceId);
 
 		Session session = null;
 
@@ -2575,7 +2575,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	/**
 	 * Returns the d d m data provider instances before and after the current d d m data provider instance in the ordered set where companyId = &#63;.
 	 *
-	 * @param dataProviderId the primary key of the current d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the current d d m data provider instance
 	 * @param companyId the company ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next d d m data provider instance
@@ -2583,10 +2583,10 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	 */
 	@Override
 	public DDMDataProviderInstance[] findByCompanyId_PrevAndNext(
-		long dataProviderId, long companyId,
+		long dataProviderInstanceId, long companyId,
 		OrderByComparator<DDMDataProviderInstance> orderByComparator)
 		throws NoSuchDataProviderInstanceException {
-		DDMDataProviderInstance ddmDataProviderInstance = findByPrimaryKey(dataProviderId);
+		DDMDataProviderInstance ddmDataProviderInstance = findByPrimaryKey(dataProviderInstanceId);
 
 		Session session = null;
 
@@ -2936,15 +2936,15 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	/**
 	 * Creates a new d d m data provider instance with the primary key. Does not add the d d m data provider instance to the database.
 	 *
-	 * @param dataProviderId the primary key for the new d d m data provider instance
+	 * @param dataProviderInstanceId the primary key for the new d d m data provider instance
 	 * @return the new d d m data provider instance
 	 */
 	@Override
-	public DDMDataProviderInstance create(long dataProviderId) {
+	public DDMDataProviderInstance create(long dataProviderInstanceId) {
 		DDMDataProviderInstance ddmDataProviderInstance = new DDMDataProviderInstanceImpl();
 
 		ddmDataProviderInstance.setNew(true);
-		ddmDataProviderInstance.setPrimaryKey(dataProviderId);
+		ddmDataProviderInstance.setPrimaryKey(dataProviderInstanceId);
 
 		String uuid = PortalUUIDUtil.generate();
 
@@ -2956,14 +2956,14 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	/**
 	 * Removes the d d m data provider instance with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param dataProviderId the primary key of the d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the d d m data provider instance
 	 * @return the d d m data provider instance that was removed
 	 * @throws com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException if a d d m data provider instance with the primary key could not be found
 	 */
 	@Override
-	public DDMDataProviderInstance remove(long dataProviderId)
+	public DDMDataProviderInstance remove(long dataProviderInstanceId)
 		throws NoSuchDataProviderInstanceException {
-		return remove((Serializable)dataProviderId);
+		return remove((Serializable)dataProviderInstanceId);
 	}
 
 	/**
@@ -3208,7 +3208,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 		ddmDataProviderInstanceImpl.setPrimaryKey(ddmDataProviderInstance.getPrimaryKey());
 
 		ddmDataProviderInstanceImpl.setUuid(ddmDataProviderInstance.getUuid());
-		ddmDataProviderInstanceImpl.setDataProviderId(ddmDataProviderInstance.getDataProviderId());
+		ddmDataProviderInstanceImpl.setDataProviderInstanceId(ddmDataProviderInstance.getDataProviderInstanceId());
 		ddmDataProviderInstanceImpl.setGroupId(ddmDataProviderInstance.getGroupId());
 		ddmDataProviderInstanceImpl.setCompanyId(ddmDataProviderInstance.getCompanyId());
 		ddmDataProviderInstanceImpl.setUserId(ddmDataProviderInstance.getUserId());
@@ -3250,14 +3250,14 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	/**
 	 * Returns the d d m data provider instance with the primary key or throws a {@link com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException} if it could not be found.
 	 *
-	 * @param dataProviderId the primary key of the d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the d d m data provider instance
 	 * @return the d d m data provider instance
 	 * @throws com.liferay.dynamic.data.mapping.NoSuchDataProviderInstanceException if a d d m data provider instance with the primary key could not be found
 	 */
 	@Override
-	public DDMDataProviderInstance findByPrimaryKey(long dataProviderId)
+	public DDMDataProviderInstance findByPrimaryKey(long dataProviderInstanceId)
 		throws NoSuchDataProviderInstanceException {
-		return findByPrimaryKey((Serializable)dataProviderId);
+		return findByPrimaryKey((Serializable)dataProviderInstanceId);
 	}
 
 	/**
@@ -3310,12 +3310,13 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	/**
 	 * Returns the d d m data provider instance with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param dataProviderId the primary key of the d d m data provider instance
+	 * @param dataProviderInstanceId the primary key of the d d m data provider instance
 	 * @return the d d m data provider instance, or <code>null</code> if a d d m data provider instance with the primary key could not be found
 	 */
 	@Override
-	public DDMDataProviderInstance fetchByPrimaryKey(long dataProviderId) {
-		return fetchByPrimaryKey((Serializable)dataProviderId);
+	public DDMDataProviderInstance fetchByPrimaryKey(
+		long dataProviderInstanceId) {
+		return fetchByPrimaryKey((Serializable)dataProviderInstanceId);
 	}
 
 	@Override
@@ -3632,7 +3633,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	protected FinderCache finderCache;
 	private static final String _SQL_SELECT_DDMDATAPROVIDERINSTANCE = "SELECT ddmDataProviderInstance FROM DDMDataProviderInstance ddmDataProviderInstance";
 	private static final String _SQL_SELECT_DDMDATAPROVIDERINSTANCE_WHERE_PKS_IN =
-		"SELECT ddmDataProviderInstance FROM DDMDataProviderInstance ddmDataProviderInstance WHERE dataProviderId IN (";
+		"SELECT ddmDataProviderInstance FROM DDMDataProviderInstance ddmDataProviderInstance WHERE dataProviderInstanceId IN (";
 	private static final String _SQL_SELECT_DDMDATAPROVIDERINSTANCE_WHERE = "SELECT ddmDataProviderInstance FROM DDMDataProviderInstance ddmDataProviderInstance WHERE ";
 	private static final String _SQL_COUNT_DDMDATAPROVIDERINSTANCE = "SELECT COUNT(ddmDataProviderInstance) FROM DDMDataProviderInstance ddmDataProviderInstance";
 	private static final String _SQL_COUNT_DDMDATAPROVIDERINSTANCE_WHERE = "SELECT COUNT(ddmDataProviderInstance) FROM DDMDataProviderInstance ddmDataProviderInstance WHERE ";

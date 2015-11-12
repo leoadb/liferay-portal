@@ -88,18 +88,18 @@ public interface DDMDataProviderInstanceModel extends BaseModel<DDMDataProviderI
 	public void setUuid(String uuid);
 
 	/**
-	 * Returns the data provider ID of this d d m data provider instance.
+	 * Returns the data provider instance ID of this d d m data provider instance.
 	 *
-	 * @return the data provider ID of this d d m data provider instance
+	 * @return the data provider instance ID of this d d m data provider instance
 	 */
-	public long getDataProviderId();
+	public long getDataProviderInstanceId();
 
 	/**
-	 * Sets the data provider ID of this d d m data provider instance.
+	 * Sets the data provider instance ID of this d d m data provider instance.
 	 *
-	 * @param dataProviderId the data provider ID of this d d m data provider instance
+	 * @param dataProviderInstanceId the data provider instance ID of this d d m data provider instance
 	 */
-	public void setDataProviderId(long dataProviderId);
+	public void setDataProviderInstanceId(long dataProviderInstanceId);
 
 	/**
 	 * Returns the group ID of this d d m data provider instance.

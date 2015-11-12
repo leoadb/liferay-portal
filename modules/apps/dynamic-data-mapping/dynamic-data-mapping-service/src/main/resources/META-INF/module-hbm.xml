@@ -28,7 +28,7 @@
 		<property name="data" type="com.liferay.portal.dao.orm.hibernate.StringClobType" column="data_" />
 	</class>
 	<class name="com.liferay.dynamic.data.mapping.model.impl.DDMDataProviderInstanceImpl" table="DDMDataProviderInstance">
-		<id name="dataProviderId" type="long">
+		<id name="dataProviderInstanceId" type="long">
 			<generator class="assigned" />
 		</id>
 		<property name="uuid" type="com.liferay.portal.dao.orm.hibernate.StringType" column="uuid_" />

@@ -36,7 +36,7 @@ public class DDMDataProviderInstanceSoap implements Serializable {
 		DDMDataProviderInstanceSoap soapModel = new DDMDataProviderInstanceSoap();
 
 		soapModel.setUuid(model.getUuid());
-		soapModel.setDataProviderId(model.getDataProviderId());
+		soapModel.setDataProviderInstanceId(model.getDataProviderInstanceId());
 		soapModel.setGroupId(model.getGroupId());
 		soapModel.setCompanyId(model.getCompanyId());
 		soapModel.setUserId(model.getUserId());
@@ -95,11 +95,11 @@ public class DDMDataProviderInstanceSoap implements Serializable {
 	}
 
 	public long getPrimaryKey() {
-		return _dataProviderId;
+		return _dataProviderInstanceId;
 	}
 
 	public void setPrimaryKey(long pk) {
-		setDataProviderId(pk);
+		setDataProviderInstanceId(pk);
 	}
 
 	public String getUuid() {
@@ -110,12 +110,12 @@ public class DDMDataProviderInstanceSoap implements Serializable {
 		_uuid = uuid;
 	}
 
-	public long getDataProviderId() {
-		return _dataProviderId;
+	public long getDataProviderInstanceId() {
+		return _dataProviderInstanceId;
 	}
 
-	public void setDataProviderId(long dataProviderId) {
-		_dataProviderId = dataProviderId;
+	public void setDataProviderInstanceId(long dataProviderInstanceId) {
+		_dataProviderInstanceId = dataProviderInstanceId;
 	}
 
 	public long getGroupId() {
@@ -199,7 +199,7 @@ public class DDMDataProviderInstanceSoap implements Serializable {
 	}
 
 	private String _uuid;
-	private long _dataProviderId;
+	private long _dataProviderInstanceId;
 	private long _groupId;
 	private long _companyId;
 	private long _userId;

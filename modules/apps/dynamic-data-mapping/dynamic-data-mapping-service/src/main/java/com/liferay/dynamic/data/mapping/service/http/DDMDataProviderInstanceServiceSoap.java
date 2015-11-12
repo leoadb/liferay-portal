@@ -16,9 +16,20 @@ package com.liferay.dynamic.data.mapping.service.http;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceServiceUtil;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
+
+import java.rmi.RemoteException;
+
+import java.util.Locale;
+import java.util.Map;
+
 /**
  * Provides the SOAP utility for the
- * {@link com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceServiceUtil} service utility. The
+ * {@link DDMDataProviderInstanceServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -53,9 +64,149 @@ import aQute.bnd.annotation.ProviderType;
  * @author Brian Wing Shun Chan
  * @see DDMDataProviderInstanceServiceHttp
  * @see com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap
- * @see com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceServiceUtil
+ * @see DDMDataProviderInstanceServiceUtil
  * @generated
  */
 @ProviderType
 public class DDMDataProviderInstanceServiceSoap {
+	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap addDataProviderInstance(
+		long groupId, java.lang.String[] nameMapLanguageIds,
+		java.lang.String[] nameMapValues,
+		java.lang.String[] descriptionMapLanguageIds,
+		java.lang.String[] descriptionMapValues, java.lang.String definition,
+		java.lang.String type,
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(nameMapLanguageIds,
+					nameMapValues);
+			Map<Locale, String> descriptionMap = LocalizationUtil.getLocalizationMap(descriptionMapLanguageIds,
+					descriptionMapValues);
+
+			com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance returnValue =
+				DDMDataProviderInstanceServiceUtil.addDataProviderInstance(groupId,
+					nameMap, descriptionMap, definition, type, ddmFormValues,
+					serviceContext);
+
+			return com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void deleteDataProviderInstance(long dataProviderInstanceId)
+		throws RemoteException {
+		try {
+			DDMDataProviderInstanceServiceUtil.deleteDataProviderInstance(dataProviderInstanceId);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap[] search(
+		long companyId, long[] groupIds, java.lang.String keywords, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> orderByComparator)
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> returnValue =
+				DDMDataProviderInstanceServiceUtil.search(companyId, groupIds,
+					keywords, start, end, orderByComparator);
+
+			return com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap[] search(
+		long companyId, long[] groupIds, java.lang.String name,
+		java.lang.String description, boolean andOperator, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> orderByComparator)
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance> returnValue =
+				DDMDataProviderInstanceServiceUtil.search(companyId, groupIds,
+					name, description, andOperator, start, end,
+					orderByComparator);
+
+			return com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static int searchCount(long companyId, long[] groupIds,
+		java.lang.String keywords) throws RemoteException {
+		try {
+			int returnValue = DDMDataProviderInstanceServiceUtil.searchCount(companyId,
+					groupIds, keywords);
+
+			return returnValue;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static int searchCount(long companyId, long[] groupIds,
+		java.lang.String name, java.lang.String description, boolean andOperator)
+		throws RemoteException {
+		try {
+			int returnValue = DDMDataProviderInstanceServiceUtil.searchCount(companyId,
+					groupIds, name, description, andOperator);
+
+			return returnValue;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap updateDataProviderInstance(
+		long dataProviderInstanceId, java.lang.String[] nameMapLanguageIds,
+		java.lang.String[] nameMapValues,
+		java.lang.String[] descriptionMapLanguageIds,
+		java.lang.String[] descriptionMapValues, java.lang.String definition,
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(nameMapLanguageIds,
+					nameMapValues);
+			Map<Locale, String> descriptionMap = LocalizationUtil.getLocalizationMap(descriptionMapLanguageIds,
+					descriptionMapValues);
+
+			com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance returnValue =
+				DDMDataProviderInstanceServiceUtil.updateDataProviderInstance(dataProviderInstanceId,
+					nameMap, descriptionMap, definition, ddmFormValues,
+					serviceContext);
+
+			return com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	private static Log _log = LogFactoryUtil.getLog(DDMDataProviderInstanceServiceSoap.class);
 }

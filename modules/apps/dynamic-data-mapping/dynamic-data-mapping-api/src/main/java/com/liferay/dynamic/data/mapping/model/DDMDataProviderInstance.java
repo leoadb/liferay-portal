@@ -36,11 +36,11 @@ public interface DDMDataProviderInstance extends DDMDataProviderInstanceModel,
 	 *
 	 * Never modify this interface directly. Add methods to {@link com.liferay.dynamic.data.mapping.model.impl.DDMDataProviderInstanceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public static final Accessor<DDMDataProviderInstance, Long> DATA_PROVIDER_ID_ACCESSOR =
+	public static final Accessor<DDMDataProviderInstance, Long> DATA_PROVIDER_INSTANCE_ID_ACCESSOR =
 		new Accessor<DDMDataProviderInstance, Long>() {
 			@Override
 			public Long get(DDMDataProviderInstance ddmDataProviderInstance) {
-				return ddmDataProviderInstance.getDataProviderId();
+				return ddmDataProviderInstance.getDataProviderInstanceId();
 			}
 
 			@Override
