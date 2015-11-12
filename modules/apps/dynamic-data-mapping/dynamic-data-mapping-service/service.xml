@@ -44,7 +44,7 @@
 
 		<!-- PK fields -->
 
-		<column name="dataProviderId" type="long" primary="true" />
+		<column name="dataProviderInstanceId" type="long" primary="true" />
 
 		<!-- Group instance -->
 

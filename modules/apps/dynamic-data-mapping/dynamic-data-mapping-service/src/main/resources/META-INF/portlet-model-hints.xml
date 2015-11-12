@@ -22,7 +22,7 @@
 	</model>
 	<model name="com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance">
 		<field name="uuid" type="String" />
-		<field name="dataProviderId" type="long" />
+		<field name="dataProviderInstanceId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
