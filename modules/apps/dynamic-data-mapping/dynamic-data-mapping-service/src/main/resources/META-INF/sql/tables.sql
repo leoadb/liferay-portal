@@ -12,7 +12,7 @@ create table DDMContent (
 	data_ TEXT null
 );
 
-create table DDMDataProvider (
+create table DDMDataProviderInstance (
 	uuid_ VARCHAR(75) null,
 	dataProviderId LONG not null primary key,
 	groupId LONG,
@@ -23,7 +23,8 @@ create table DDMDataProvider (
 	modifiedDate DATE null,
 	name STRING null,
 	description TEXT null,
-	definition TEXT null
+	definition TEXT null,
+	type_ VARCHAR(75) null
 );
 
 create table DDMStorageLink (
