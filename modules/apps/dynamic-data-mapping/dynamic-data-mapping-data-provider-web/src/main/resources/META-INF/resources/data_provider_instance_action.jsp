@@ -24,10 +24,10 @@ DDMDataProviderInstance ddmDataProviderInstance = (DDMDataProviderInstance)row.g
 
 <liferay-ui:icon-menu direction="down" icon="<%= StringPool.BLANK %>" markupView="lexicon" message="<%= StringPool.BLANK %>" showExpanded="<%= false %>" showWhenSingleIcon="<%= false %>">
 
-	<c:if test="<%= ddmDataProviderDisplayContext.isShowEditDataProviderIcon(ddmDataProviderInstance) %>">
+	<c:if test="<%= ddmDataProviderInstanceDisplayContext.isShowEditDataProviderInstanceIcon(ddmDataProviderInstance) %>">
 
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcPath" value="/edit_data_provider.jsp" />
+			<portlet:param name="mvcPath" value="/edit_data_provider_instance.jsp" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="dataProviderInstanceId" value="<%= String.valueOf(ddmDataProviderInstance.getDataProviderInstanceId()) %>" />
 			<portlet:param name="dataProviderType" value="<%= ddmDataProviderInstance.getType() %>" />
@@ -40,7 +40,7 @@ DDMDataProviderInstance ddmDataProviderInstance = (DDMDataProviderInstance)row.g
 
 	</c:if>
 
-	<c:if test="<%= ddmDataProviderDisplayContext.isShowPermissionsIcon(ddmDataProviderInstance) %>">
+	<c:if test="<%= ddmDataProviderInstanceDisplayContext.isShowPermissionsIcon(ddmDataProviderInstance) %>">
 		<liferay-security:permissionsURL
 			modelResource="<%= DDMDataProviderInstance.class.getName() %>"
 			modelResourceDescription="<%= ddmDataProviderInstance.getName(locale) %>"
@@ -57,8 +57,8 @@ DDMDataProviderInstance ddmDataProviderInstance = (DDMDataProviderInstance)row.g
 		/>
 	</c:if>
 
-	<c:if test="<%= ddmDataProviderDisplayContext.isShowDeleteDataProviderIcon(ddmDataProviderInstance) %>">
-		<portlet:actionURL name="deleteDataProvider" var="deleteURL">
+	<c:if test="<%= ddmDataProviderInstanceDisplayContext.isShowDeleteDataProviderInstanceIcon(ddmDataProviderInstance) %>">
+		<portlet:actionURL name="deleteDataProviderInstance" var="deleteURL">
 			<portlet:param name="dataProviderInstanceId" value="<%= String.valueOf(ddmDataProviderInstance.getDataProviderInstanceId()) %>" />
 		</portlet:actionURL>
 

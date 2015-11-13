@@ -12,14 +12,23 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.data.provider.web.constants;
+package com.liferay.dynamic.data.mapping.data.provider.web.search;
+
+import com.liferay.portal.kernel.dao.search.DAOParamUtil;
+
+import javax.portlet.PortletRequest;
 
 /**
  * @author Leonardo Barros
  */
-public class DDMDataProviderPortletKeys {
+public class DDMDataProviderInstanceSearchTerms
+	extends DDMDataProviderInstanceDisplayTerms {
 
-	public static final String DYNAMIC_DATA_MAPPING_DATA_PROVIDER =
-		"com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet";
+	public DDMDataProviderInstanceSearchTerms(PortletRequest portletRequest) {
+		super(portletRequest);
+
+		description = DAOParamUtil.getString(portletRequest, DESCRIPTION);
+		name = DAOParamUtil.getString(portletRequest, NAME);
+	}
 
 }

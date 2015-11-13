@@ -15,17 +15,17 @@
 package com.liferay.dynamic.data.mapping.data.provider.web.util;
 
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
-import com.liferay.dynamic.data.mapping.util.comparator.DataProviderModifiedDateComparator;
-import com.liferay.dynamic.data.mapping.util.comparator.DataProviderNameComparator;
+import com.liferay.dynamic.data.mapping.util.comparator.DataProviderInstanceModifiedDateComparator;
+import com.liferay.dynamic.data.mapping.util.comparator.DataProviderInstanceNameComparator;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 /**
  * @author Leonardo Barros
  */
-public class DDMDataProviderPortletUtil {
+public class DDMDataProviderInstancePortletUtil {
 
 	public static OrderByComparator<DDMDataProviderInstance>
-		getDDMDataProviderOrderByComparator(
+		getDDMDataProviderInstanceOrderByComparator(
 			String orderByCol, String orderByType) {
 
 		boolean orderByAsc = false;
@@ -37,11 +37,12 @@ public class DDMDataProviderPortletUtil {
 		OrderByComparator<DDMDataProviderInstance> orderByComparator = null;
 
 		if (orderByCol.equals("modified-date")) {
-			orderByComparator = new DataProviderModifiedDateComparator(
+			orderByComparator = new DataProviderInstanceModifiedDateComparator(
 				orderByAsc);
 		}
 		else if (orderByCol.equals("name")) {
-			orderByComparator = new DataProviderNameComparator(orderByAsc);
+			orderByComparator = new DataProviderInstanceNameComparator(
+				orderByAsc);
 		}
 
 		return orderByComparator;

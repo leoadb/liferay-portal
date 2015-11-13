@@ -21,7 +21,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 String dataProviderType = ParamUtil.getString(request, "dataProviderType");
 
-DDMDataProviderInstance ddmDataProviderInstance = ddmDataProviderDisplayContext.getDataProviderInstance();
+DDMDataProviderInstance ddmDataProviderInstance = ddmDataProviderInstanceDisplayContext.getDataProviderInstance();
 
 long dataProviderInstanceId = BeanParamUtil.getLong(ddmDataProviderInstance, request, "dataProviderInstanceId");
 long groupId = BeanParamUtil.getLong(ddmDataProviderInstance, request, "groupId", scopeGroupId);
@@ -34,15 +34,15 @@ portletDisplay.setURLBack(redirect);
 renderResponse.setTitle((ddmDataProviderInstance == null) ? LanguageUtil.get(request, dataProviderType) : ddmDataProviderInstance.getName(locale));
 %>
 
-<portlet:actionURL name="addDataProvider" var="addDataProviderURL">
-	<portlet:param name="mvcPath" value="/edit_data_provider.jsp" />
+<portlet:actionURL name="addDataProviderInstance" var="addDataProviderInstanceURL">
+	<portlet:param name="mvcPath" value="/edit_data_provider_instance.jsp" />
 </portlet:actionURL>
 
-<portlet:actionURL name="updateDataProvider" var="updateDataProviderURL">
-	<portlet:param name="mvcPath" value="/edit_data_provider.jsp" />
+<portlet:actionURL name="updateDataProviderInstance" var="updateDataProviderInstanceURL">
+	<portlet:param name="mvcPath" value="/edit_data_provider_instance.jsp" />
 </portlet:actionURL>
 
-<aui:form action="<%= (ddmDataProviderInstance == null) ? addDataProviderURL : updateDataProviderURL %>" method="post" name="frm">
+<aui:form action="<%= (ddmDataProviderInstance == null) ? addDataProviderInstanceURL : updateDataProviderInstanceURL %>" method="post" name="frm">
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="groupId" type="hidden" value="<%= String.valueOf(groupId) %>" />
 	<aui:input name="dataProviderInstanceId" type="hidden" value="<%= String.valueOf(dataProviderInstanceId) %>" />
@@ -59,7 +59,7 @@ renderResponse.setTitle((ddmDataProviderInstance == null) ? LanguageUtil.get(req
 		</aui:fieldset>
 
 		<aui:fieldset>
-			<%= ddmDataProviderDisplayContext.getDataProviderInstanceDefinition() %>
+			<%= ddmDataProviderInstanceDisplayContext.getDataProviderInstanceDefinition() %>
 		</aui:fieldset>
 	</div>
 

@@ -22,13 +22,13 @@ import javax.portlet.PortletRequest;
 /**
  * @author Leonardo Barros
  */
-public class DDMDataProviderDisplayTerms extends DisplayTerms {
+public class DDMDataProviderInstanceDisplayTerms extends DisplayTerms {
 
 	public static final String DESCRIPTION = "description";
 
 	public static final String NAME = "name";
 
-	public DDMDataProviderDisplayTerms(PortletRequest portletRequest) {
+	public DDMDataProviderInstanceDisplayTerms(PortletRequest portletRequest) {
 		super(portletRequest);
 
 		description = ParamUtil.getString(portletRequest, DESCRIPTION);

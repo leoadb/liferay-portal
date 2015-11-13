@@ -17,8 +17,8 @@
 <%@ include file="/init.jsp" %>
 
 <%
-DDMDataProviderDisplayTerms displayTerms = new DDMDataProviderDisplayTerms(renderRequest);
-PortletURL portletURL = ddmDataProviderDisplayContext.getPortletURL();
+DDMDataProviderInstanceDisplayTerms displayTerms = new DDMDataProviderInstanceDisplayTerms(renderRequest);
+PortletURL portletURL = ddmDataProviderInstanceDisplayContext.getPortletURL();
 %>
 
 <aui:nav-bar cssClass="collapse-basic-search" id="toolbar" markupView="lexicon">
@@ -32,9 +32,9 @@ PortletURL portletURL = ddmDataProviderDisplayContext.getPortletURL();
 				markupView="lexicon"
 			>
 				<aui:fieldset>
-					<aui:input inlineField="<%= true %>" name="<%= DDMDataProviderDisplayTerms.NAME %>" size="20" type="text" value="<%= displayTerms.getName() %>" />
+					<aui:input inlineField="<%= true %>" name="<%= DDMDataProviderInstanceDisplayTerms.NAME %>" size="20" type="text" value="<%= displayTerms.getName() %>" />
 
-					<aui:input inlineField="<%= true %>" name="<%= DDMDataProviderDisplayTerms.DESCRIPTION %>" size="20" type="text" value="<%= displayTerms.getDescription() %>" />
+					<aui:input inlineField="<%= true %>" name="<%= DDMDataProviderInstanceDisplayTerms.DESCRIPTION %>" size="20" type="text" value="<%= displayTerms.getDescription() %>" />
 				</aui:fieldset>
 			</liferay-ui:search-toggle>
 		</aui:form>

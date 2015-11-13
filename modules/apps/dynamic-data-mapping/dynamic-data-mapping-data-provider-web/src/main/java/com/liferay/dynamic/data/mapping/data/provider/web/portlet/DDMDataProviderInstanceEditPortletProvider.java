@@ -14,7 +14,7 @@
 
 package com.liferay.dynamic.data.mapping.data.provider.web.portlet;
 
-import com.liferay.dynamic.data.mapping.data.provider.web.constants.DDMDataProviderPortletKeys;
+import com.liferay.dynamic.data.mapping.data.provider.web.constants.DDMDataProviderInstancePortletKeys;
 import com.liferay.portal.kernel.portlet.BasePortletProvider;
 import com.liferay.portal.kernel.portlet.EditPortletProvider;
 
@@ -28,12 +28,12 @@ import org.osgi.service.component.annotations.Component;
 	property = {"model.class.name=com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance"},
 	service = EditPortletProvider.class
 )
-public class DDMDataProviderEditPortletProvider
+public class DDMDataProviderInstanceEditPortletProvider
 	extends BasePortletProvider implements EditPortletProvider {
 
 	@Override
 	public String getPortletId() {
-		return DDMDataProviderPortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER;
+		return DDMDataProviderInstancePortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER;
 	}
 
 }

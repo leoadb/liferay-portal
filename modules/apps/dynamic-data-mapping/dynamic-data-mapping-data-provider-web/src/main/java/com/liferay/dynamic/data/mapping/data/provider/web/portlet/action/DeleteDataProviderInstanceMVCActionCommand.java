@@ -14,7 +14,7 @@
 
 package com.liferay.dynamic.data.mapping.data.provider.web.portlet.action;
 
-import com.liferay.dynamic.data.mapping.data.provider.web.constants.DDMDataProviderPortletKeys;
+import com.liferay.dynamic.data.mapping.data.provider.web.constants.DDMDataProviderInstancePortletKeys;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -32,12 +32,13 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=" + DDMDataProviderPortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER,
-		"mvc.command.name=deleteDataProvider"
+		"javax.portlet.name=" + DDMDataProviderInstancePortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER,
+		"mvc.command.name=deleteDataProviderInstance"
 	},
 	service = MVCActionCommand.class
 )
-public class DeleteDataProviderMVCActionCommand extends BaseMVCActionCommand {
+public class DeleteDataProviderInstanceMVCActionCommand
+	extends BaseMVCActionCommand {
 
 	@Override
 	protected void doProcessAction(

@@ -25,7 +25,7 @@ String href = (String)request.getAttribute(WebKeys.SEARCH_ENTRY_HREF);
 %>
 
 <liferay-ui:app-view-entry
-	actionJsp="/data_provider_action.jsp"
+	actionJsp="/data_provider_instance_action.jsp"
 	actionJspServletContext="<%= application %>"
 	author="<%= ddmDataProviderInstance.getUserName() %>"
 	createDate="<%= ddmDataProviderInstance.getCreateDate() %>"
@@ -38,7 +38,7 @@ String href = (String)request.getAttribute(WebKeys.SEARCH_ENTRY_HREF);
 	rowCheckerName="<%= DDMDataProviderInstance.class.getSimpleName() %>"
 	showCheckbox="<%= false %>"
 	thumbnailDivStyle="height: 146px; width: 146px;"
-	thumbnailSrc="<%= ddmDataProviderDisplayContext.getUserPortraitURL(ddmDataProviderInstance.getUserId()) %>"
+	thumbnailSrc="<%= ddmDataProviderInstanceDisplayContext.getUserPortraitURL(ddmDataProviderInstance.getUserId()) %>"
 	thumbnailStyle="max-height: 128px; max-width: 128px;"
 	title="<%= ddmDataProviderInstance.getName(locale) %>"
 	url="<%= href %>"

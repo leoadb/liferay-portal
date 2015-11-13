@@ -15,7 +15,7 @@
 package com.liferay.dynamic.data.mapping.data.provider.web.portlet.action;
 
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderSettings;
-import com.liferay.dynamic.data.mapping.data.provider.web.constants.DDMDataProviderPortletKeys;
+import com.liferay.dynamic.data.mapping.data.provider.web.constants.DDMDataProviderInstancePortletKeys;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
@@ -51,12 +51,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=" + DDMDataProviderPortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER,
-		"mvc.command.name=addDataProvider"
+		"javax.portlet.name=" + DDMDataProviderInstancePortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER,
+		"mvc.command.name=addDataProviderInstance"
 	},
 	service = MVCActionCommand.class
 )
-public class AddDataProviderMVCActionCommand extends BaseMVCActionCommand {
+public class AddDataProviderInstanceMVCActionCommand
+	extends BaseMVCActionCommand {
 
 	public DDMFormValues getDDMFormValues(
 			ActionRequest actionRequest, ActionResponse actionResponse)

@@ -22,9 +22,9 @@ import javax.portlet.RenderRequest;
 /**
  * @author Leonardo Barros
  */
-public class DDMDataProviderRequestHelper extends BaseRequestHelper {
+public class DDMDataProviderInstanceRequestHelper extends BaseRequestHelper {
 
-	public DDMDataProviderRequestHelper(RenderRequest renderRequest) {
+	public DDMDataProviderInstanceRequestHelper(RenderRequest renderRequest) {
 		super(PortalUtil.getHttpServletRequest(renderRequest));
 	}
 

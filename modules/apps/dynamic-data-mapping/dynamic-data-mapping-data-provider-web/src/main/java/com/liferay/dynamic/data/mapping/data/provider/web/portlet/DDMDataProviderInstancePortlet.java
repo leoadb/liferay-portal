@@ -15,8 +15,8 @@
 package com.liferay.dynamic.data.mapping.data.provider.web.portlet;
 
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderSettings;
-import com.liferay.dynamic.data.mapping.data.provider.web.constants.DDMDataProviderPortletKeys;
-import com.liferay.dynamic.data.mapping.data.provider.web.display.context.DDMDataProviderDisplayContext;
+import com.liferay.dynamic.data.mapping.data.provider.web.constants.DDMDataProviderInstancePortletKeys;
+import com.liferay.dynamic.data.mapping.data.provider.web.display.context.DDMDataProviderInstanceDisplayContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
@@ -60,22 +60,22 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 		"javax.portlet.expiration-cache=0",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + DDMDataProviderPortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER,
+		"javax.portlet.name=" + DDMDataProviderInstancePortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user",
 		"javax.portlet.supports.mime-type=text/html"
 	},
 	service = Portlet.class
 )
-public class DDMDataProviderPortlet extends MVCPortlet {
+public class DDMDataProviderInstancePortlet extends MVCPortlet {
 
 	@Override
 	public void render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		DDMDataProviderDisplayContext ddmDataProviderDisplayContext =
-			new DDMDataProviderDisplayContext(
+		DDMDataProviderInstanceDisplayContext ddmDataProviderDisplayContext =
+			new DDMDataProviderInstanceDisplayContext(
 				renderRequest, renderResponse, _ddmDataProviderInstanceService,
 				_ddmDataProviderInstanceLocalService, _ddmFormRenderer,
 				_ddmFormValuesJSONDeserializer, _userLocalService,

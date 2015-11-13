@@ -17,20 +17,20 @@
 <%@ include file="/init.jsp" %>
 
 <%
-PortletURL portletURL = ddmDataProviderDisplayContext.getPortletURL();
+PortletURL portletURL = ddmDataProviderInstanceDisplayContext.getPortletURL();
 
 portletURL.setParameter("displayStyle", "descriptive");
 
-DDMDataProviderSearch ddmDataProviderSearch = new DDMDataProviderSearch(renderRequest, portletURL);
+DDMDataProviderInstanceSearch ddmDataProviderInstanceSearch = new DDMDataProviderInstanceSearch(renderRequest, portletURL);
 
 String orderByCol = ParamUtil.getString(request, "orderByCol", "modified-date");
 String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 
-OrderByComparator<DDMDataProviderInstance> orderByComparator = DDMDataProviderPortletUtil.getDDMDataProviderOrderByComparator(orderByCol, orderByType);
+OrderByComparator<DDMDataProviderInstance> orderByComparator = DDMDataProviderInstancePortletUtil.getDDMDataProviderInstanceOrderByComparator(orderByCol, orderByType);
 
-ddmDataProviderSearch.setOrderByCol(orderByCol);
-ddmDataProviderSearch.setOrderByComparator(orderByComparator);
-ddmDataProviderSearch.setOrderByType(orderByType);
+ddmDataProviderInstanceSearch.setOrderByCol(orderByCol);
+ddmDataProviderInstanceSearch.setOrderByComparator(orderByComparator);
+ddmDataProviderInstanceSearch.setOrderByType(orderByType);
 %>
 
 <liferay-util:include page="/search_bar.jsp" servletContext="<%= application %>" />
@@ -42,7 +42,7 @@ ddmDataProviderSearch.setOrderByType(orderByType);
 		<liferay-ui:search-container
 			emptyResultsMessage="no-data-providers-were-found"
 			id="searchContainer"
-			searchContainer="<%= ddmDataProviderSearch %>"
+			searchContainer="<%= ddmDataProviderInstanceSearch %>"
 		>
 
 			<%
@@ -50,8 +50,8 @@ ddmDataProviderSearch.setOrderByType(orderByType);
 			%>
 
 			<liferay-ui:search-container-results
-				results="<%= ddmDataProviderDisplayContext.getSearchContainerResults(searchContainer) %>"
-				total="<%= ddmDataProviderDisplayContext.getSearchContainerTotal(searchContainer) %>"
+				results="<%= ddmDataProviderInstanceDisplayContext.getSearchContainerResults(searchContainer) %>"
+				total="<%= ddmDataProviderInstanceDisplayContext.getSearchContainerTotal(searchContainer) %>"
 			/>
 
 			<liferay-ui:search-container-row
@@ -63,24 +63,24 @@ ddmDataProviderSearch.setOrderByType(orderByType);
 			>
 
 				<portlet:renderURL var="rowURL">
-					<portlet:param name="mvcPath" value="/edit_data_provider.jsp" />
+					<portlet:param name="mvcPath" value="/edit_data_provider_instance.jsp" />
 					<portlet:param name="redirect" value="<%= currentURL %>" />
 					<portlet:param name="dataProviderInstanceId" value="<%= String.valueOf(dataProviderInstance.getDataProviderInstanceId()) %>" />
 				</portlet:renderURL>
 
 				<liferay-ui:search-container-column-image
-					src="<%= ddmDataProviderDisplayContext.getUserPortraitURL(dataProviderInstance.getUserId()) %>"
+					src="<%= ddmDataProviderInstanceDisplayContext.getUserPortraitURL(dataProviderInstance.getUserId()) %>"
 					toggleRowChecker="<%= true %>"
 				/>
 
 				<liferay-ui:search-container-column-jsp
 					colspan="2"
 					href="<%= rowURL %>"
-					path="/data_provider_descriptive.jsp"
+					path="/data_provider_instance_descriptive.jsp"
 				/>
 
 				<liferay-ui:search-container-column-jsp
-					path="/data_provider_action.jsp"
+					path="/data_provider_instance_action.jsp"
 				/>
 
 			</liferay-ui:search-container-row>
@@ -90,23 +90,23 @@ ddmDataProviderSearch.setOrderByType(orderByType);
 	</aui:form>
 </div>
 
-<c:if test="<%= ddmDataProviderDisplayContext.isShowAddDataProviderButton() %>">
+<c:if test="<%= ddmDataProviderInstanceDisplayContext.isShowAddDataProviderInstanceButton() %>">
 	<liferay-frontend:add-menu>
 
 		<%
-		Set<String> dataProviderTypes = ddmDataProviderDisplayContext.getDataProviderTypes();
+		Set<String> dataProviderTypes = ddmDataProviderInstanceDisplayContext.getDataProviderTypes();
 
 		for (String dataProviderType : dataProviderTypes) {
 		%>
 
-			<portlet:renderURL var="addDataProviderURL">
-				<portlet:param name="mvcPath" value="/edit_data_provider.jsp" />
+			<portlet:renderURL var="addDataProviderInstanceURL">
+				<portlet:param name="mvcPath" value="/edit_data_provider_instance.jsp" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 				<portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
 				<portlet:param name="dataProviderType" value="<%= dataProviderType %>" />
 			</portlet:renderURL>
 
-			<liferay-frontend:add-menu-item title="<%= LanguageUtil.get(request, dataProviderType) %>" url="<%= addDataProviderURL.toString() %>" />
+			<liferay-frontend:add-menu-item title="<%= LanguageUtil.get(request, dataProviderType) %>" url="<%= addDataProviderInstanceURL.toString() %>" />
 
 		<%
 		}

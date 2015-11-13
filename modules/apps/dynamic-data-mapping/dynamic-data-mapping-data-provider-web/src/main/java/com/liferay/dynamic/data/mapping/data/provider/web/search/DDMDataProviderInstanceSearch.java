@@ -26,7 +26,7 @@ import javax.portlet.PortletURL;
 /**
  * @author Leonardo Barros
  */
-public class DDMDataProviderSearch
+public class DDMDataProviderInstanceSearch
 	extends SearchContainer<DDMDataProviderInstance> {
 
 	public static final String EMPTY_RESULTS_MESSAGE = "no-entries-were-found";
@@ -39,22 +39,24 @@ public class DDMDataProviderSearch
 		headerNames.add("userName");
 	}
 
-	public DDMDataProviderSearch(
+	public DDMDataProviderInstanceSearch(
 		PortletRequest portletRequest, PortletURL iteratorURL) {
 
 		super(
-			portletRequest, new DDMDataProviderDisplayTerms(portletRequest),
-			new DDMDataProviderSearchTerms(portletRequest), DEFAULT_CUR_PARAM,
-			DEFAULT_DELTA, iteratorURL, headerNames, EMPTY_RESULTS_MESSAGE);
+			portletRequest,
+			new DDMDataProviderInstanceDisplayTerms(portletRequest),
+			new DDMDataProviderInstanceSearchTerms(portletRequest),
+			DEFAULT_CUR_PARAM, DEFAULT_DELTA, iteratorURL, headerNames,
+			EMPTY_RESULTS_MESSAGE);
 
-		DDMDataProviderDisplayTerms displayTerms =
-			(DDMDataProviderDisplayTerms)getDisplayTerms();
+		DDMDataProviderInstanceDisplayTerms displayTerms =
+			(DDMDataProviderInstanceDisplayTerms)getDisplayTerms();
 
 		iteratorURL.setParameter(
-			DDMDataProviderDisplayTerms.DESCRIPTION,
+			DDMDataProviderInstanceDisplayTerms.DESCRIPTION,
 			displayTerms.getDescription());
 		iteratorURL.setParameter(
-			DDMDataProviderDisplayTerms.NAME,
+			DDMDataProviderInstanceDisplayTerms.NAME,
 			String.valueOf(displayTerms.getName()));
 	}
 
