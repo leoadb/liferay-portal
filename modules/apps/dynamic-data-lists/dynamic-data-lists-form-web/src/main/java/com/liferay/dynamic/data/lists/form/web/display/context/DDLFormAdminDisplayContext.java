@@ -42,6 +42,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.storage.StorageEngineUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -54,6 +55,8 @@ import com.liferay.portal.kernel.workflow.WorkflowEngineManagerUtil;
 import com.liferay.portal.kernel.workflow.WorkflowHandler;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.security.permission.ActionKeys;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.util.PortalUtil;
 
 import java.util.HashSet;
@@ -114,6 +117,14 @@ public class DDLFormAdminDisplayContext {
 
 		boolean ddmFormValuesModified = removeValuesForRemovedFields(
 			ddmFormValues, ddmForm);
+
+		if (ddmFormValuesModified) {
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				DDLRecord.class.getName(), _renderRequest);
+
+			StorageEngineUtil.update(
+				record.getDDMStorageId(), ddmFormValues, serviceContext);
+		}
 
 		DDMFormRenderingContext ddmFormRenderingContext =
 			createDDMFormRenderingContext();
