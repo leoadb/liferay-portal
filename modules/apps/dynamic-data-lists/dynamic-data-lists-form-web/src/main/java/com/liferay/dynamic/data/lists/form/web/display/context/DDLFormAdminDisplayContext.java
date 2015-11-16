@@ -109,12 +109,6 @@ public class DDLFormAdminDisplayContext {
 
 		DDMForm ddmForm = ddmStructure.getDDMForm();
 
-		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
-			setDDMFormFieldReadOnly(ddmFormField);
-		}
-
-		DDMFormLayout ddmFormLayout = ddmStructure.getDDMFormLayout();
-
 		boolean ddmFormValuesModified = removeValuesForRemovedFields(
 			ddmFormValues, ddmForm);
 
@@ -124,6 +118,12 @@ public class DDLFormAdminDisplayContext {
 
 			StorageEngineUtil.update(
 				record.getDDMStorageId(), ddmFormValues, serviceContext);
+
+			String definition = DDMFormJSONSerializerUtil.serialize(ddmForm);
+
+			ddmStructure.setDefinition(definition);
+
+			DDMStructureLocalServiceUtil.updateDDMStructure(ddmStructure);
 		}
 
 		DDMFormRenderingContext ddmFormRenderingContext =
@@ -131,8 +131,12 @@ public class DDLFormAdminDisplayContext {
 
 		ddmFormRenderingContext.setDDMFormValues(ddmFormValues);
 
+		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
+			setDDMFormFieldReadOnly(ddmFormField);
+		}
+
 		return getDDMFormRenderer().render(
-			ddmForm, ddmFormLayout, ddmFormRenderingContext);
+			ddmForm, ddmStructure.getDDMFormLayout(), ddmFormRenderingContext);
 	}
 
 	public DDMStructure getDDMStructure() throws PortalException {
@@ -391,6 +395,22 @@ public class DDLFormAdminDisplayContext {
 		}
 
 		if (ddmFormValuesModified) {
+			for (DDMFormFieldValue ddmFormFieldValue :
+					removedDDMFormFieldValues) {
+
+				for (DDMFormField ddmFormField : ddmFormFieldMap.values()) {
+					String visibilityExpression =
+						ddmFormField.getVisibilityExpression();
+
+					if (Validator.isNotNull(visibilityExpression) &&
+						visibilityExpression.contains(
+							ddmFormFieldValue.getName())) {
+
+						ddmFormField.setVisibilityExpression(null);
+					}
+				}
+			}
+
 			ddmFormValues.getDDMFormFieldValues().removeAll(
 				removedDDMFormFieldValues);
 		}
