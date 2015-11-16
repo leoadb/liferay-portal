@@ -40,6 +40,8 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
+import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -54,7 +56,10 @@ import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.util.PortalUtil;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletURL;
@@ -95,10 +100,7 @@ public class DDLFormAdminDisplayContext {
 	public String getDDMFormHTML() throws PortalException {
 		DDLRecord record = getRecord();
 
-		DDMFormRenderingContext ddmFormRenderingContext =
-			createDDMFormRenderingContext();
-
-		ddmFormRenderingContext.setDDMFormValues(record.getDDMFormValues());
+		DDMFormValues ddmFormValues = record.getDDMFormValues();
 
 		DDMStructure ddmStructure = getDDMStructure();
 
@@ -109,6 +111,14 @@ public class DDLFormAdminDisplayContext {
 		}
 
 		DDMFormLayout ddmFormLayout = ddmStructure.getDDMFormLayout();
+
+		boolean ddmFormValuesModified = removeValuesForRemovedFields(
+			ddmFormValues, ddmForm);
+
+		DDMFormRenderingContext ddmFormRenderingContext =
+			createDDMFormRenderingContext();
+
+		ddmFormRenderingContext.setDDMFormValues(ddmFormValues);
 
 		return getDDMFormRenderer().render(
 			ddmForm, ddmFormLayout, ddmFormRenderingContext);
@@ -345,6 +355,36 @@ public class DDLFormAdminDisplayContext {
 		long recordId = ParamUtil.getLong(_renderRequest, "recordId");
 
 		return DDLRecordLocalServiceUtil.fetchDDLRecord(recordId);
+	}
+
+	protected boolean removeValuesForRemovedFields(
+		DDMFormValues ddmFormValues, DDMForm ddmForm) {
+
+		boolean ddmFormValuesModified = false;
+
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			ddmFormValues.getDDMFormFieldValuesMap();
+
+		Map<String, DDMFormField> ddmFormFieldMap = ddmForm.getDDMFormFieldsMap(
+			true);
+
+		Set<DDMFormFieldValue> removedDDMFormFieldValues = new HashSet<>();
+
+		for (Map.Entry<String, List<DDMFormFieldValue>> entry :
+				ddmFormFieldValuesMap.entrySet()) {
+
+			if (!ddmFormFieldMap.containsKey(entry.getKey())) {
+				ddmFormValuesModified = true;
+				removedDDMFormFieldValues.addAll(entry.getValue());
+			}
+		}
+
+		if (ddmFormValuesModified) {
+			ddmFormValues.getDDMFormFieldValues().removeAll(
+				removedDDMFormFieldValues);
+		}
+
+		return ddmFormValuesModified;
 	}
 
 	protected void setDDMFormFieldReadOnly(DDMFormField ddmFormField) {
