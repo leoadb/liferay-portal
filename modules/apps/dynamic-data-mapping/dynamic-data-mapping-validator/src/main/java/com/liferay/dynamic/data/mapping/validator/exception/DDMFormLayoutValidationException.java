@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.validator;
+package com.liferay.dynamic.data.mapping.validator.exception;
 
 import aQute.bnd.annotation.ProviderType;
 
@@ -22,20 +22,20 @@ import com.liferay.portal.kernel.exception.PortalException;
  * @author Brian Wing Shun Chan
  */
 @ProviderType
-public class DDMFormValidationException extends PortalException {
+public class DDMFormLayoutValidationException extends PortalException {
 
-	public DDMFormValidationException() {
+	public DDMFormLayoutValidationException() {
 	}
 
-	public DDMFormValidationException(String msg) {
+	public DDMFormLayoutValidationException(String msg) {
 		super(msg);
 	}
 
-	public DDMFormValidationException(String msg, Throwable cause) {
+	public DDMFormLayoutValidationException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
-	public DDMFormValidationException(Throwable cause) {
+	public DDMFormLayoutValidationException(Throwable cause) {
 		super(cause);
 	}
 
