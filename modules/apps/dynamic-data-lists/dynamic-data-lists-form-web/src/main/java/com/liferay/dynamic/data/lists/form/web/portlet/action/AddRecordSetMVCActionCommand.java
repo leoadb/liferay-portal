@@ -31,19 +31,12 @@ import com.liferay.dynamic.data.mapping.storage.StorageType;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.model.LayoutTypePortletConstants;
-import com.liferay.portal.model.PortletInstance;
-import com.liferay.portal.service.LayoutService;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.PortletPreferencesFactoryUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -51,7 +44,6 @@ import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
-import javax.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -122,65 +114,6 @@ public class AddRecordSetMVCActionCommand
 			DDLRecordSetConstants.SCOPE_FORMS, serviceContext);
 	}
 
-	protected void addRecordSetLayout(
-			ActionRequest actionRequest, DDLRecordSet recordSet)
-		throws Exception {
-
-		PortletInstance portletInstance = new PortletInstance(
-			DDLFormPortletKeys.DYNAMIC_DATA_LISTS_FORM);
-
-		String portletId = String.valueOf(portletInstance);
-
-		Layout layout = addSinglePortletApplicationLayout(
-			actionRequest, portletId);
-
-		storePortletPreferences(layout, portletId, recordSet.getRecordSetId());
-
-		updateRecordSetPlid(recordSet, layout.getPlid());
-	}
-
-	protected Layout addSinglePortletApplicationLayout(
-			ActionRequest actionRequest, String portletId)
-		throws PortalException {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		long groupId = themeDisplay.getSiteGroupId();
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			Layout.class.getName(), actionRequest);
-
-		String name = ParamUtil.getString(actionRequest, "name");
-		String description = ParamUtil.getString(actionRequest, "description");
-
-		Map<Locale, String> friendlyURLMap =
-			LocalizationUtil.getLocalizationMap(actionRequest, "friendlyURL");
-		Map<Locale, String> titleMap = LocalizationUtil.getLocalizationMap(
-			actionRequest, "title");
-		Map<Locale, String> keywordsMap = LocalizationUtil.getLocalizationMap(
-			actionRequest, "keywords");
-		Map<Locale, String> robotsMap = LocalizationUtil.getLocalizationMap(
-			actionRequest, "robots");
-
-		UnicodeProperties typeSettingsProperties = new UnicodeProperties(true);
-
-		typeSettingsProperties.setProperty(
-			LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID, "1_column");
-		typeSettingsProperties.setProperty("column-1", portletId);
-		typeSettingsProperties.setProperty(
-			"singlePortletApplication", portletId);
-
-		serviceContext.setAttribute("layout.instanceable.allowed", true);
-
-		return layoutService.addLayout(
-			groupId, false, 0, getLocalizedMap(themeDisplay.getLocale(), name),
-			titleMap, getLocalizedMap(themeDisplay.getLocale(), description),
-			keywordsMap, robotsMap, "shared_portlet",
-			typeSettingsProperties.toString(), true, friendlyURLMap,
-			serviceContext);
-	}
-
 	@Override
 	protected void doTransactionalCommand(
 			ActionRequest actionRequest, ActionResponse actionResponse)
@@ -193,9 +126,11 @@ public class AddRecordSetMVCActionCommand
 
 		boolean publish = ParamUtil.getBoolean(actionRequest, "publish");
 
-		if (publish) {
-			addRecordSetLayout(actionRequest, recordSet);
-		}
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			DDLRecordSet.class.getName(), actionRequest);
+
+		ddlRecordSetService.updatePublished(
+			recordSet.getRecordSetId(), publish, serviceContext);
 	}
 
 	protected DDMForm getDDMForm(ActionRequest actionRequest)
@@ -261,45 +196,9 @@ public class AddRecordSetMVCActionCommand
 		this.ddmStructureService = ddmStructureService;
 	}
 
-	@Reference(unbind = "-")
-	protected void setLayoutService(LayoutService layoutService) {
-		this.layoutService = layoutService;
-	}
-
-	protected void storePortletPreferences(
-			Layout layout, String portletId, long recordSetId)
-		throws Exception {
-
-		PortletPreferences portletPreferences =
-			PortletPreferencesFactoryUtil.getStrictPortletSetup(
-				layout, portletId);
-
-		portletPreferences.setValue("recordSetId", String.valueOf(recordSetId));
-
-		portletPreferences.store();
-	}
-
-	protected void updateRecordSetPlid(DDLRecordSet recordSet, long plid)
-		throws PortalException {
-
-		UnicodeProperties settingsProperties =
-			recordSet.getSettingsProperties();
-
-		if (plid > 0) {
-			settingsProperties.setProperty("plid", String.valueOf(plid));
-		}
-		else {
-			settingsProperties.remove("plid");
-		}
-
-		ddlRecordSetService.updateRecordSet(
-			recordSet.getRecordSetId(), settingsProperties.toString());
-	}
-
 	protected DDLRecordSetService ddlRecordSetService;
 	protected DDMFormJSONDeserializer ddmFormJSONDeserializer;
 	protected DDMFormLayoutJSONDeserializer ddmFormLayoutJSONDeserializer;
 	protected DDMStructureService ddmStructureService;
-	protected LayoutService layoutService;
 
 }

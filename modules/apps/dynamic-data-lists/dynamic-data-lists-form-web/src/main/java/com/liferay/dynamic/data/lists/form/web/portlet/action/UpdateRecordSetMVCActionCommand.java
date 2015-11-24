@@ -25,20 +25,12 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.Layout;
-import com.liferay.portal.service.LayoutService;
-import com.liferay.portal.service.PortletPreferencesLocalService;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortletKeys;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -60,24 +52,6 @@ import org.osgi.service.component.annotations.Reference;
 public class UpdateRecordSetMVCActionCommand
 	extends AddRecordSetMVCActionCommand {
 
-	protected void deleteRecordSetLayout(
-			ActionRequest actionRequest, DDLRecordSet recordSet)
-		throws PortalException {
-
-		long plid = GetterUtil.getLong(
-			recordSet.getSettingsProperty("plid", StringPool.BLANK));
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			Layout.class.getName(), actionRequest);
-
-		layoutService.deleteLayout(plid, serviceContext);
-
-		_portletPreferencesLocalService.deletePortletPreferences(
-			0, PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid);
-
-		updateRecordSetPlid(recordSet, 0);
-	}
-
 	@Override
 	protected void doTransactionalCommand(
 			ActionRequest actionRequest, ActionResponse actionResponse)
@@ -88,16 +62,13 @@ public class UpdateRecordSetMVCActionCommand
 		DDLRecordSet recordSet = updateRecordSet(
 			actionRequest, ddmStructure.getStructureId());
 
-		String publish = ParamUtil.getString(actionRequest, "publish");
+		boolean publish = ParamUtil.getBoolean(actionRequest, "publish", true);
 
-		if (Validator.isBoolean(publish)) {
-			if (GetterUtil.getBoolean(publish)) {
-				addRecordSetLayout(actionRequest, recordSet);
-			}
-			else {
-				deleteRecordSetLayout(actionRequest, recordSet);
-			}
-		}
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			DDLRecordSet.class.getName(), actionRequest);
+
+		ddlRecordSetService.updatePublished(
+			recordSet.getRecordSetId(), publish, serviceContext);
 	}
 
 	@Reference(unbind = "-")
@@ -126,18 +97,6 @@ public class UpdateRecordSetMVCActionCommand
 		DDMStructureService ddmStructureService) {
 
 		this.ddmStructureService = ddmStructureService;
-	}
-
-	@Reference(unbind = "-")
-	protected void setLayoutService(LayoutService layoutService) {
-		this.layoutService = layoutService;
-	}
-
-	@Reference(unbind = "-")
-	protected void setPortletPreferencesLocalService(
-		PortletPreferencesLocalService portletPreferencesLocalService) {
-
-		_portletPreferencesLocalService = portletPreferencesLocalService;
 	}
 
 	protected DDMStructure updateDDMStructure(ActionRequest actionRequest)
@@ -184,8 +143,5 @@ public class UpdateRecordSetMVCActionCommand
 			getLocalizedMap(themeDisplay.getLocale(), description),
 			DDLRecordSetConstants.MIN_DISPLAY_ROWS_DEFAULT, serviceContext);
 	}
-
-	private volatile PortletPreferencesLocalService
-		_portletPreferencesLocalService;
 
 }
