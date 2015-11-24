@@ -21,11 +21,11 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayoutRow;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException;
-import com.liferay.dynamic.data.mapping.validator.exception.DuplicateFieldNameLayoutValidationException;
-import com.liferay.dynamic.data.mapping.validator.exception.InvalidColumnSizeLayoutValidationException;
-import com.liferay.dynamic.data.mapping.validator.exception.InvalidRowSizeLayoutValidationException;
-import com.liferay.dynamic.data.mapping.validator.exception.MissingDefaultLocaleLayoutValidationException;
-import com.liferay.dynamic.data.mapping.validator.exception.WrongDefaultLocaleSetForPageTitleLayoutValidationException;
+import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.DefaultLocaleNotSet;
+import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.DuplicateFieldName;
+import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.InvalidColumnSize;
+import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.InvalidDefaultLocaleSetForPageTitle;
+import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.InvalidRowSize;
 import com.liferay.portal.kernel.util.SetUtil;
 
 import java.util.HashSet;
@@ -58,8 +58,7 @@ public class DDMFormLayoutValidatorImpl implements DDMFormLayoutValidator {
 		Locale defaultLocale = ddmFormLayout.getDefaultLocale();
 
 		if (defaultLocale == null) {
-			throw new MissingDefaultLocaleLayoutValidationException(
-				"DDM form layout does not have a default locale");
+			throw new DefaultLocaleNotSet();
 		}
 	}
 
@@ -82,9 +81,8 @@ public class DDMFormLayoutValidatorImpl implements DDMFormLayoutValidator {
 						ddmFormLayoutColumn.getDDMFormFieldNames());
 
 					if (!intersectDDMFormFieldNames.isEmpty()) {
-						throw new DuplicateFieldNameLayoutValidationException(
-							"Field names " + intersectDDMFormFieldNames +
-								" were defined more than once");
+						throw new DuplicateFieldName(
+							intersectDDMFormFieldNames);
 					}
 
 					ddmFormFieldNames.addAll(
@@ -105,9 +103,7 @@ public class DDMFormLayoutValidatorImpl implements DDMFormLayoutValidator {
 			LocalizedValue title = ddmFormLayoutPage.getTitle();
 
 			if (!defaultLocale.equals(title.getDefaultLocale())) {
-				throw new WrongDefaultLocaleSetForPageTitleLayoutValidationException(
-					"DDM form layout page title's default locale is not the " +
-						"same as the DDM form layout's default locale");
+				throw new InvalidDefaultLocaleSetForPageTitle();
 			}
 		}
 	}
@@ -129,18 +125,14 @@ public class DDMFormLayoutValidatorImpl implements DDMFormLayoutValidator {
 					int columnSize = ddmFormLayoutColumn.getSize();
 
 					if ((columnSize <= 0) || (columnSize > _MAX_ROW_SIZE)) {
-						throw new InvalidColumnSizeLayoutValidationException(
-							"Invalid column size, it must be positive and " +
-								"less than maximum row size of 12");
+						throw new InvalidColumnSize();
 					}
 
 					rowSize += ddmFormLayoutColumn.getSize();
 				}
 
 				if (rowSize != _MAX_ROW_SIZE) {
-					throw new InvalidRowSizeLayoutValidationException(
-						"Invalid row size, the sum of all column sizes of a " +
-							"row must be less than maximum row size of 12");
+					throw new InvalidRowSize();
 				}
 			}
 		}
