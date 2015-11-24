@@ -15,7 +15,6 @@
 package com.liferay.dynamic.data.mapping.validator;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
-import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException;
 
 /**
  * @author Pablo Carvalho

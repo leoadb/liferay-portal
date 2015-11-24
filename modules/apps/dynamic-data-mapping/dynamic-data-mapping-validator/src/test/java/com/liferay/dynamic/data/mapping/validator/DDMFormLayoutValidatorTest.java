@@ -19,11 +19,11 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayoutColumn;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayoutPage;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayoutRow;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
-import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.DefaultLocaleNotSet;
-import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.DuplicateFieldName;
-import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.InvalidColumnSize;
-import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.InvalidDefaultLocaleSetForPageTitle;
-import com.liferay.dynamic.data.mapping.validator.exception.DDMFormLayoutValidationException.InvalidRowSize;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.DefaultLocaleNotSet;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.DuplicateFieldName;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.InvalidColumnSize;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.InvalidDefaultLocaleSetForPageTitle;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.InvalidRowSize;
 import com.liferay.dynamic.data.mapping.validator.internal.DDMFormLayoutValidatorImpl;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
