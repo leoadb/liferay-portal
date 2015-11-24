@@ -20,12 +20,12 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayoutPage;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayoutRow;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException;
-import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.DefaultLocaleNotSet;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.DuplicateFieldName;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.InvalidColumnSize;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.InvalidDefaultLocaleSetForPageTitle;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException.InvalidRowSize;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.portal.kernel.util.SetUtil;
 
 import java.util.HashSet;

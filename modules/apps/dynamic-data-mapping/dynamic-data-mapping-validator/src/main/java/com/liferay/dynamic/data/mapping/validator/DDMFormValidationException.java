@@ -52,7 +52,15 @@ public class DDMFormValidationException extends PortalException {
 					"The default locale %s should be set as a valid available" +
 						" locale",
 					defaultLocale));
+
+			_defaultLocale = defaultLocale;
 		}
+
+		public Locale getDefaultLocale() {
+			return _defaultLocale;
+		}
+
+		private final Locale _defaultLocale;
 
 	}
 
@@ -62,7 +70,15 @@ public class DDMFormValidationException extends PortalException {
 			super(
 				String.format(
 					"The field name %s was defined more than once", fieldName));
+
+			_fieldName = fieldName;
 		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
 
 	}
 
@@ -73,15 +89,34 @@ public class DDMFormValidationException extends PortalException {
 				String.format(
 					"At least one option should be set for field %s",
 						fieldName));
+
+			_fieldName = fieldName;
 		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
 
 	}
 
 	public static class FieldTypeNotSet extends DDMFormValidationException {
 
-		public FieldTypeNotSet() {
-			super("The field type was never set for DDM form field");
+		public FieldTypeNotSet(String fieldName) {
+			super(
+				String.format(
+					"The field type was never set for DDM form field %s",
+						fieldName));
+
+			_fieldName = fieldName;
 		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
 
 	}
 
@@ -96,7 +131,21 @@ public class DDMFormValidationException extends PortalException {
 					"Invalid available locales set for property '%s' of " +
 						"field name %s",
 					property, fieldName));
+
+			_fieldName = fieldName;
+			_property = property;
 		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		public String getProperty() {
+			return _property;
+		}
+
+		private String _fieldName;
+		private String _property;
 
 	}
 
@@ -108,7 +157,15 @@ public class DDMFormValidationException extends PortalException {
 				String.format(
 					"Invalid characters were defined for field name %s",
 						fieldName));
+
+			_fieldName = fieldName;
 		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
 
 	}
 
@@ -120,7 +177,15 @@ public class DDMFormValidationException extends PortalException {
 				String.format(
 					"Invalid characters were defined for field type %s",
 						fieldType));
+
+			_fieldType = fieldType;
 		}
+
+		public String getFieldType() {
+			return _fieldType;
+		}
+
+		private final String _fieldType;
 
 	}
 
@@ -135,7 +200,21 @@ public class DDMFormValidationException extends PortalException {
 					"Invalid default locale set for property '%s' of " +
 						"field name %s",
 					property, fieldName));
+
+			_fieldName = fieldName;
+			_property = property;
 		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		public String getProperty() {
+			return _property;
+		}
+
+		private String _fieldName;
+		private String _property;
 
 	}
 
@@ -145,7 +224,15 @@ public class DDMFormValidationException extends PortalException {
 			super(
 				String.format(
 					"Invalid index type set for field %s", fieldName));
+
+			_fieldName = fieldName;
 		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
 
 	}
 

@@ -20,7 +20,6 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException;
-import com.liferay.dynamic.data.mapping.validator.DDMFormValidator;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.AvailableLocalesNotSet;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.DefaultLocaleNotSet;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.DefaultLocaleNotSetAsAvailableLocale;
@@ -32,6 +31,7 @@ import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.Inv
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.InvalidCharactersSetForFieldType;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.InvalidDefaultLocaleSetForProperty;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.InvalidIndexTypeSet;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidator;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -198,7 +198,7 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		throws DDMFormValidationException {
 
 		if (Validator.isNull(ddmFormField.getType())) {
-			throw new FieldTypeNotSet();
+			throw new FieldTypeNotSet(ddmFormField.getName());
 		}
 
 		Matcher matcher = _ddmFormFieldTypePattern.matcher(
