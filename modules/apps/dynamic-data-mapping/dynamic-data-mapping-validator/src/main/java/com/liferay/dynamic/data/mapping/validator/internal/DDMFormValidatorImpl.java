@@ -20,6 +20,17 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.AvailableLocalesNotSet;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.DefaultLocaleNotSet;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.DefaultLocaleNotSetAsAvailableLocale;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.DuplicateFieldName;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.EmptyOptionSet;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.FieldTypeNotSet;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.InvalidAvailableLocalesSetForProperty;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.InvalidCharactersSetForFieldName;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.InvalidCharactersSetForFieldType;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.InvalidDefaultLocaleSetForProperty;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException.InvalidIndexTypeSet;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidator;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -58,14 +69,11 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		throws DDMFormValidationException {
 
 		if ((availableLocales == null) || availableLocales.isEmpty()) {
-			throw new DDMFormValidationException(
-				"The available locales property was never set for DDM form");
+			throw new AvailableLocalesNotSet();
 		}
 
 		if (!availableLocales.contains(defaultLocale)) {
-			throw new DDMFormValidationException(
-				"The default locale " + defaultLocale + " should be set as a " +
-					"valid available locale");
+			throw new DefaultLocaleNotSetAsAvailableLocale(defaultLocale);
 		}
 	}
 
@@ -75,8 +83,7 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		if (!ArrayUtil.contains(
 				_ddmFormFieldIndexTypes, ddmFormField.getIndexType())) {
 
-			throw new DDMFormValidationException(
-				"Invalid index type set for field " + ddmFormField.getName());
+			throw new InvalidIndexTypeSet(ddmFormField.getName());
 		}
 	}
 
@@ -88,17 +95,13 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 			ddmFormField.getName());
 
 		if (!matcher.matches()) {
-			throw new DDMFormValidationException(
-				"Invalid characters were defined for field name " +
-					ddmFormField.getName());
+			throw new InvalidCharactersSetForFieldName(ddmFormField.getName());
 		}
 
 		if (ddmFormFieldNames.contains(
 				StringUtil.toLowerCase(ddmFormField.getName()))) {
 
-			throw new DDMFormValidationException(
-				"The field name " + ddmFormField.getName() +
-					" was defined more than once");
+			throw new DuplicateFieldName(ddmFormField.getName());
 		}
 
 		ddmFormFieldNames.add(StringUtil.toLowerCase(ddmFormField.getName()));
@@ -127,9 +130,7 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		}
 
 		if (optionValues.isEmpty()) {
-			throw new DDMFormValidationException(
-				"At least one option should be set for field " +
-					ddmFormField.getName());
+			throw new EmptyOptionSet(ddmFormField.getName());
 		}
 
 		for (String optionValue : ddmFormFieldOptions.getOptionsValues()) {
@@ -148,17 +149,15 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		throws DDMFormValidationException {
 
 		if (!ddmFormDefaultLocale.equals(propertyValue.getDefaultLocale())) {
-			throw new DDMFormValidationException(
-				"Invalid default locale set for property \"" + propertyName +
-					"\" of field name " + fieldName);
+			throw new InvalidDefaultLocaleSetForProperty(
+				fieldName, propertyName);
 		}
 
 		if (!ddmFormAvailableLocales.equals(
 				propertyValue.getAvailableLocales())) {
 
-			throw new DDMFormValidationException(
-				"Invalid available locales set for property \"" +
-					propertyName + "\" of field name " + fieldName);
+			throw new InvalidAvailableLocalesSetForProperty(
+				fieldName, propertyName);
 		}
 	}
 
@@ -199,17 +198,14 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		throws DDMFormValidationException {
 
 		if (Validator.isNull(ddmFormField.getType())) {
-			throw new DDMFormValidationException(
-				"The field type was never set for DDM form field");
+			throw new FieldTypeNotSet(ddmFormField.getName());
 		}
 
 		Matcher matcher = _ddmFormFieldTypePattern.matcher(
 			ddmFormField.getType());
 
 		if (!matcher.matches()) {
-			throw new DDMFormValidationException(
-				"Invalid characters were defined for field type " +
-					ddmFormField.getType());
+			throw new InvalidCharactersSetForFieldType(ddmFormField.getType());
 		}
 	}
 
@@ -219,8 +215,7 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		Locale defaultLocale = ddmForm.getDefaultLocale();
 
 		if (defaultLocale == null) {
-			throw new DDMFormValidationException(
-				"The default locale property was never set for DDM form");
+			throw new DefaultLocaleNotSet();
 		}
 
 		validateDDMFormAvailableLocales(

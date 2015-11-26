@@ -18,25 +18,226 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.Locale;
+
 /**
  * @author Brian Wing Shun Chan
  */
 @ProviderType
 public class DDMFormValidationException extends PortalException {
 
-	public DDMFormValidationException() {
+	public static class AvailableLocalesNotSet
+		extends DDMFormValidationException {
+
+		public AvailableLocalesNotSet() {
+			super("The available locales property was never set for DDM form");
+		}
+
 	}
 
-	public DDMFormValidationException(String msg) {
-		super(msg);
+	public static class DefaultLocaleNotSet extends DDMFormValidationException {
+
+		public DefaultLocaleNotSet() {
+			super("The default locale property was never set for DDM form");
+		}
+
 	}
 
-	public DDMFormValidationException(String msg, Throwable cause) {
-		super(msg, cause);
+	public static class DefaultLocaleNotSetAsAvailableLocale
+		extends DDMFormValidationException {
+
+		public DefaultLocaleNotSetAsAvailableLocale(Locale defaultLocale) {
+			super(
+				String.format(
+					"The default locale %s should be set as a valid available" +
+						" locale",
+					defaultLocale));
+
+			_defaultLocale = defaultLocale;
+		}
+
+		public Locale getDefaultLocale() {
+			return _defaultLocale;
+		}
+
+		private final Locale _defaultLocale;
+
 	}
 
-	public DDMFormValidationException(Throwable cause) {
-		super(cause);
+	public static class DuplicateFieldName extends DDMFormValidationException {
+
+		public DuplicateFieldName(String fieldName) {
+			super(
+				String.format(
+					"The field name %s was defined more than once", fieldName));
+
+			_fieldName = fieldName;
+		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
+
+	}
+
+	public static class EmptyOptionSet extends DDMFormValidationException {
+
+		public EmptyOptionSet(String fieldName) {
+			super(
+				String.format(
+					"At least one option should be set for field %s",
+						fieldName));
+
+			_fieldName = fieldName;
+		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
+
+	}
+
+	public static class FieldTypeNotSet extends DDMFormValidationException {
+
+		public FieldTypeNotSet(String fieldName) {
+			super(
+				String.format(
+					"The field type was never set for DDM form field %s",
+						fieldName));
+
+			_fieldName = fieldName;
+		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
+
+	}
+
+	public static class InvalidAvailableLocalesSetForProperty
+		extends DDMFormValidationException {
+
+		public InvalidAvailableLocalesSetForProperty(
+			String fieldName, String property) {
+
+			super(
+				String.format(
+					"Invalid available locales set for property '%s' of " +
+						"field name %s",
+					property, fieldName));
+
+			_fieldName = fieldName;
+			_property = property;
+		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		public String getProperty() {
+			return _property;
+		}
+
+		private String _fieldName;
+		private String _property;
+
+	}
+
+	public static class InvalidCharactersSetForFieldName
+		extends DDMFormValidationException {
+
+		public InvalidCharactersSetForFieldName(String fieldName) {
+			super(
+				String.format(
+					"Invalid characters were defined for field name %s",
+						fieldName));
+
+			_fieldName = fieldName;
+		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
+
+	}
+
+	public static class InvalidCharactersSetForFieldType
+		extends DDMFormValidationException {
+
+		public InvalidCharactersSetForFieldType(String fieldType) {
+			super(
+				String.format(
+					"Invalid characters were defined for field type %s",
+						fieldType));
+
+			_fieldType = fieldType;
+		}
+
+		public String getFieldType() {
+			return _fieldType;
+		}
+
+		private final String _fieldType;
+
+	}
+
+	public static class InvalidDefaultLocaleSetForProperty
+		extends DDMFormValidationException {
+
+		public InvalidDefaultLocaleSetForProperty(
+			String fieldName, String property) {
+
+			super(
+				String.format(
+					"Invalid default locale set for property '%s' of " +
+						"field name %s",
+					property, fieldName));
+
+			_fieldName = fieldName;
+			_property = property;
+		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		public String getProperty() {
+			return _property;
+		}
+
+		private String _fieldName;
+		private String _property;
+
+	}
+
+	public static class InvalidIndexTypeSet extends DDMFormValidationException {
+
+		public InvalidIndexTypeSet(String fieldName) {
+			super(
+				String.format(
+					"Invalid index type set for field %s", fieldName));
+
+			_fieldName = fieldName;
+		}
+
+		public String getFieldName() {
+			return _fieldName;
+		}
+
+		private String _fieldName;
+
+	}
+
+	private DDMFormValidationException(String message) {
+		super(message);
 	}
 
 }

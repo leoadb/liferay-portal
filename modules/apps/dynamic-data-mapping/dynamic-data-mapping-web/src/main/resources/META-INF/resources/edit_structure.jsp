@@ -102,6 +102,8 @@ if (Validator.isNotNull(requestUpdateStructureURL)) {
 		<aui:input name="status" type="hidden" />
 		<aui:input name="saveAndContinue" type="hidden" value="<%= false %>" />
 
+		<%@ include file="/structure_validation_exceptions.jspf" %>
+
 		<liferay-ui:error exception="<%= LocaleException.class %>">
 
 			<%

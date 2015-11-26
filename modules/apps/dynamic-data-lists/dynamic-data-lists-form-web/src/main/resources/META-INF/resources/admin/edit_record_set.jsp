@@ -48,6 +48,8 @@ renderResponse.setTitle((recordSet == null) ? LanguageUtil.get(request, "new-for
 		<aui:input name="groupId" type="hidden" value="<%= groupId %>" />
 		<aui:input name="ddmStructureId" type="hidden" value="<%= ddmStructureId %>" />
 
+		<liferay-ui:error exception="<%= DDMFormValidationException.class %>" message="please-enter-a-valid-form-definition" />
+		<liferay-ui:error exception="<%= DDMFormLayoutValidationException %>" message="please-enter-a-valid-form-layout" />
 		<liferay-ui:error exception="<%= RecordSetNameException.class %>" message="please-enter-a-valid-form-name" />
 		<liferay-ui:error exception="<%= StructureDefinitionException .class %>" message="please-enter-a-valid-form-definition" />
 		<liferay-ui:error exception="<%= StructureLayoutException .class %>" message="please-enter-a-valid-form-layout" />

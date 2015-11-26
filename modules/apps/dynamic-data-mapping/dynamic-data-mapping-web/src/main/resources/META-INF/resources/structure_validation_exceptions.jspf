@@ -1,0 +1,90 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<liferay-ui:error exception="<%= DDMFormValidationException.AvailableLocalesNotSet.class %>" message="the-structure-available-locales-property-was-never-set" />
+<liferay-ui:error exception="<%= DDMFormValidationException.DefaultLocaleNotSet.class %>" message="the-definition-default-locale-property-was-never-set" />
+<liferay-ui:error exception="<%= DDMFormValidationException.DefaultLocaleNotSetAsAvailableLocale.class %>">
+
+	<%
+	DDMFormValidationException.DefaultLocaleNotSetAsAvailableLocale dlnsaal = (DDMFormValidationException.DefaultLocaleNotSetAsAvailableLocale)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= dlnsaal.getDefaultLocale() %>" key="the-definition-default-locale-x-should-be-set-as-a-valid-available-locale" translateArguments="<%= false %>" />
+</liferay-ui:error>
+<liferay-ui:error exception="<%= DDMFormValidationException.DuplicateFieldName.class %>">
+
+	<%
+	DDMFormValidationException.DuplicateFieldName dfn = (DDMFormValidationException.DuplicateFieldName)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= dfn.getFieldName() %>" key="the-definition-field-name-x-was-defined-more-than-once" translateArguments="<%= false %>" />
+</liferay-ui:error>
+<liferay-ui:error exception="<%= DDMFormValidationException.EmptyOptionSet.class %>">
+
+	<%
+	DDMFormValidationException.EmptyOptionSet eos = (DDMFormValidationException.EmptyOptionSet)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= eos.getFieldName() %>" key="at-least-one-option-should-be-set-for-field-x" translateArguments="<%= false %>" />
+</liferay-ui:error>
+<liferay-ui:error exception="<%= DDMFormValidationException.FieldTypeNotSet.class %>">
+
+	<%
+	DDMFormValidationException.FieldTypeNotSet ftns = (DDMFormValidationException.FieldTypeNotSet)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= ftns.getFieldName() %>" key="the-field-type-was-never-set-for-ddm-form-field-x" translateArguments="<%= false %>" />
+</liferay-ui:error>
+<liferay-ui:error exception="<%= DDMFormValidationException.InvalidAvailableLocalesSetForProperty.class %>">
+
+	<%
+	DDMFormValidationException.InvalidAvailableLocalesSetForProperty ialsfp = (DDMFormValidationException.InvalidAvailableLocalesSetForProperty)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= new Object[] {ialsfp.getFieldName(), ialsfp.getProperty()} %>" key="invalid-available-locales-set-for-property-x-of-field-name-x" translateArguments="<%= false %>" />
+</liferay-ui:error>
+<liferay-ui:error exception="<%= DDMFormValidationException.InvalidCharactersSetForFieldName.class %>">
+
+	<%
+	DDMFormValidationException.InvalidCharactersSetForFieldName icsffn = (DDMFormValidationException.InvalidCharactersSetForFieldName)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= icsffn.getFieldName() %>" key="invalid-characters-were-defined-for-field-name-x" translateArguments="<%= false %>" />
+</liferay-ui:error>
+<liferay-ui:error exception="<%= DDMFormValidationException.InvalidCharactersSetForFieldType.class %>">
+
+	<%
+	DDMFormValidationException.InvalidCharactersSetForFieldType icsfft = (DDMFormValidationException.InvalidCharactersSetForFieldType)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= icsfft.getFieldType() %>" key="invalid-characters-were-defined-for-field-type-x" translateArguments="<%= false %>" />
+</liferay-ui:error>
+<liferay-ui:error exception="<%= DDMFormValidationException.InvalidDefaultLocaleSetForProperty.class %>">
+
+	<%
+	DDMFormValidationException.InvalidDefaultLocaleSetForProperty idlsfp = (DDMFormValidationException.InvalidDefaultLocaleSetForProperty)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= new Object[] {idlsfp.getFieldName(), idlsfp.getProperty()} %>" key="invalid-default-locale-set-for-property-x-of-fiel-name-x" translateArguments="<%= false %>" />
+</liferay-ui:error>
+<liferay-ui:error exception="<%= DDMFormValidationException.InvalidIndexTypeSet.class %>">
+
+	<%
+	DDMFormValidationException.InvalidIndexTypeSet iits = (DDMFormValidationException.InvalidIndexTypeSet)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= iits.getFieldName() %>" key="invalid-index-type-set-for-field-x" translateArguments="<%= false %>" />
+</liferay-ui:error>

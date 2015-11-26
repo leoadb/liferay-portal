@@ -41,6 +41,7 @@ import com.liferay.dynamic.data.mapping.util.comparator.StructureIdComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureModifiedDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.TemplateIdComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.TemplateModifiedDateComparator;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -167,6 +168,9 @@ public class DDMImpl implements DDM {
 				portletRequest, "definition");
 
 			return DDMFormJSONDeserializerUtil.deserialize(definition);
+		}
+		catch (DDMFormValidationException ddmfve) {
+			throw ddmfve;
 		}
 		catch (PortalException pe) {
 			throw new StructureDefinitionException(pe);
