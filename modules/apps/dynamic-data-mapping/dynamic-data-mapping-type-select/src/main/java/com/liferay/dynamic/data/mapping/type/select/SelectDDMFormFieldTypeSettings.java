@@ -53,19 +53,11 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 public interface SelectDDMFormFieldTypeSettings
 	extends DefaultDDMFormFieldTypeSettings {
 
-	@DDMFormField(
-		label = "%multiple",
-		properties = {
-			"setting.category=advanced", "setting.weight=2",
-			"showAsSwitcher=true"
-		}
-	)
+	@DDMFormField(label = "%multiple", properties = { "showAsSwitcher=true" })
 	public boolean multiple();
 
 	@DDMFormField(
-		dataType = "ddm-options", label = "%options",
-		properties = {"setting.category=basic", "setting.weight=0"},
-		type = "options"
+		dataType = "ddm-options", label = "%options", type = "options"
 	)
 	public DDMFormFieldOptions options();
 

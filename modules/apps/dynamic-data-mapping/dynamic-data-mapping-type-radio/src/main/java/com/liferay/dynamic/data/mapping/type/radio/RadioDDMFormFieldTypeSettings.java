@@ -57,9 +57,7 @@ public interface RadioDDMFormFieldTypeSettings
 	public boolean inline();
 
 	@DDMFormField(
-		dataType = "ddm-options", label = "%options",
-		properties = {"setting.category=basic", "setting.weight=0"},
-		type = "options"
+		dataType = "ddm-options", label = "%options", type = "options"
 	)
 	public DDMFormFieldOptions options();
 
