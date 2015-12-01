@@ -79,36 +79,38 @@ public class AddDefaultSharedPortletLayoutAction extends SimpleAction {
 		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
 			group.getGroupId(), false, "/shared");
 
-		if (layout == null) {
-			ServiceContext serviceContext = new ServiceContext();
-
-			serviceContext.setAddGuestPermissions(true);
-			serviceContext.setAddGroupPermissions(true);
-			serviceContext.setAttribute(
-				"layout.instanceable.allowed", Boolean.TRUE);
-			serviceContext.setAttribute("layoutUpdateable", Boolean.FALSE);
-
-			serviceContext.setScopeGroupId(group.getGroupId());
-
-			long defaultUserId = _userLocalService.getDefaultUserId(companyId);
-
-			serviceContext.setUserId(defaultUserId);
-
-			layout = _layoutLocalService.addLayout(
-				defaultUserId, group.getGroupId(), false,
-				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, "shared",
-				StringPool.BLANK, StringPool.BLANK, "shared_portlet", true,
-				"/shared", serviceContext);
-
-			UnicodeProperties typeSettingsProperties =
-				layout.getTypeSettingsProperties();
-
-			typeSettingsProperties.setProperty("occult", "true");
-
-			_layoutLocalService.updateLayout(
-				group.getGroupId(), false, layout.getLayoutId(),
-				typeSettingsProperties.toString());
+		if (layout != null) {
+			return;
 		}
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setAddGuestPermissions(true);
+		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setAttribute(
+			"layout.instanceable.allowed", Boolean.TRUE);
+		serviceContext.setAttribute("layoutUpdateable", Boolean.FALSE);
+
+		serviceContext.setScopeGroupId(group.getGroupId());
+
+		long defaultUserId = _userLocalService.getDefaultUserId(companyId);
+
+		serviceContext.setUserId(defaultUserId);
+
+		layout = _layoutLocalService.addLayout(
+			defaultUserId, group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, "shared",
+			StringPool.BLANK, StringPool.BLANK, "shared_portlet", true,
+			"/shared", serviceContext);
+
+		UnicodeProperties typeSettingsProperties =
+			layout.getTypeSettingsProperties();
+
+		typeSettingsProperties.setProperty("occult", "true");
+
+		_layoutLocalService.updateLayout(
+			group.getGroupId(), false, layout.getLayoutId(),
+			typeSettingsProperties.toString());
 	}
 
 	@Reference(unbind = "-")
