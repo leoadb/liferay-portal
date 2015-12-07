@@ -168,28 +168,6 @@ public class DDLFormAdminDisplayContext {
 		return _displayViews;
 	}
 
-	public String getFormURL() throws PortalException {
-		if (_recordSet == null) {
-			return StringPool.BLANK;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		ThemeDisplay themeDisplay =
-			_ddlFormAdminRequestHelper.getThemeDisplay();
-
-		Group group = themeDisplay.getSiteGroup();
-
-		sb.append(themeDisplay.getPortalURL());
-		sb.append(group.getPathFriendlyURL(false, themeDisplay));
-		sb.append(group.getFriendlyURL());
-		sb.append(
-			String.format(
-				"/~/global/shared/-/form/%d", _recordSet.getRecordSetId()));
-
-		return sb.toString();
-	}
-
 	public PortletURL getPortletURL() {
 		PortletURL portletURL = _renderResponse.createRenderURL();
 
@@ -199,6 +177,27 @@ public class DDLFormAdminDisplayContext {
 			String.valueOf(_ddlFormAdminRequestHelper.getScopeGroupId()));
 
 		return portletURL;
+	}
+
+	public String getPublishedFormURL() throws PortalException {
+		if (_recordSet == null) {
+			return StringPool.BLANK;
+		}
+
+		StringBundler sb = new StringBundler(5);
+
+		ThemeDisplay themeDisplay =
+			_ddlFormAdminRequestHelper.getThemeDisplay();
+
+		Group group = themeDisplay.getSiteGroup();
+
+		sb.append(themeDisplay.getPortalURL());
+		sb.append(group.getPathFriendlyURL(false, themeDisplay));
+		sb.append(group.getFriendlyURL());
+		sb.append("/~/global/shared/-/form/");
+		sb.append(_recordSet.getRecordSetId());
+
+		return sb.toString();
 	}
 
 	public DDLRecordSet getRecordSet() throws PortalException {
