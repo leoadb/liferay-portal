@@ -42,7 +42,7 @@ public class SharedPortletLayoutTypeController
 
 	@Override
 	public String getType() {
-		return LayoutConstants.TYPE_PORTLET;
+		return LayoutConstants.TYPE_SHARED_PORTLET;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class SharedPortletLayoutTypeController
 
 	@Override
 	public boolean isBrowsable() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class SharedPortletLayoutTypeController
 
 	@Override
 	public boolean isFullPageDisplayable() {
-		return true;
+		return false;
 	}
 
 	@Override
