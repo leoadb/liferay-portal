@@ -391,6 +391,10 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		groupLocalService.updateSite(groupId, true);
 
+		if (layout.isTypeSharedPortlet()) {
+			return layout;
+		}
+
 		// Layout set
 
 		layoutSetLocalService.updatePageCount(groupId, privateLayout);
@@ -1016,9 +1020,11 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	public Layout fetchFirstLayout(
 		long groupId, boolean privateLayout, long parentLayoutId) {
 
-		return layoutPersistence.fetchByG_P_P_First(
-			groupId, privateLayout, parentLayoutId,
-			new LayoutPriorityComparator());
+		List<Layout> layouts = layoutPersistence.filterFindByG_P_P(
+			groupId, privateLayout, parentLayoutId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, new LayoutPriorityComparator());
+
+		return getNextVisibleLayout(layouts);
 	}
 
 	@Override
@@ -3039,6 +3045,24 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		throws PortalException {
 
 		throw new UnsupportedOperationException();
+	}
+
+	protected Layout getNextVisibleLayout(List<Layout> layouts) {
+		if ((layouts == null) || layouts.isEmpty()) {
+			return null;
+		}
+
+		Layout layout = layouts.get(0);
+
+		if (layout.isTypeSharedPortlet()) {
+			if (layouts.size() > 1) {
+				return layouts.get(1);
+			}
+
+			return null;
+		}
+
+		return layout;
 	}
 
 	protected void validateTypeSettingsProperties(
