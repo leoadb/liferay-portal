@@ -308,7 +308,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		if (className.equals(Group.class.getName())) {
 			if (!site && (liveGroupId == 0) &&
-				!groupKey.equals(GroupConstants.CONTROL_PANEL)) {
+				!(groupKey.equals(GroupConstants.CONTROL_PANEL) ||
+				  groupKey.equals("Forms"))) {
 
 				throw new IllegalArgumentException();
 			}
@@ -3729,7 +3730,9 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 			String groupKey = group.getGroupKey();
 
-			if (groupKey.equals(GroupConstants.CONTROL_PANEL)) {
+			if (groupKey.equals(GroupConstants.CONTROL_PANEL) ||
+				groupKey.equals("Forms")) {
+
 				iterator.remove();
 
 				continue;

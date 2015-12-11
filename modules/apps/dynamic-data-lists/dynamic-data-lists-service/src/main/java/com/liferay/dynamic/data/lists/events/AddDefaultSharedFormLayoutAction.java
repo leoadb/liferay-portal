@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.GroupConstants;
-import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.LayoutConstants;
 import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.service.CompanyLocalService;
@@ -76,19 +75,23 @@ public class AddDefaultSharedFormLayoutAction extends SimpleAction {
 		}
 	}
 
-	protected Group addFormsGroup(long companyId) throws PortalException {
+	protected void addFormsGroup(long companyId) throws PortalException {
 		long defaultUserId = _userLocalService.getDefaultUserId(companyId);
 
 		Map<Locale, String> nameMap = new HashMap<>();
 
 		nameMap.put(LocaleUtil.getDefault(), "Forms");
 
-		return _groupLocalService.addGroup(
+		Group group = _groupLocalService.addGroup(
 			defaultUserId, GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null,
 			GroupConstants.TYPE_SITE_PRIVATE, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, "/forms", true,
-			false, true, new ServiceContext());
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, "/forms", false,
+			false, true, null);
+
+		// Layout
+
+		addSharedLayout(companyId, group.getGroupId());
 	}
 
 	protected void addSharedLayout(long companyId, long groupId)
@@ -96,6 +99,8 @@ public class AddDefaultSharedFormLayoutAction extends SimpleAction {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setAddGuestPermissions(true);
+		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAttribute(
 			"layout.instanceable.allowed", Boolean.TRUE);
 		serviceContext.setAttribute("layoutUpdateable", Boolean.FALSE);
@@ -119,14 +124,7 @@ public class AddDefaultSharedFormLayoutAction extends SimpleAction {
 			companyId, "/forms");
 
 		if (group == null) {
-			group = addFormsGroup(companyId);
-		}
-
-		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-			group.getGroupId(), false, "/shared");
-
-		if (layout == null) {
-			addSharedLayout(companyId, group.getGroupId());
+			addFormsGroup(companyId);
 		}
 	}
 
