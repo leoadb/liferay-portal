@@ -88,11 +88,6 @@ public class DDLFormAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 	}
 
 	@Override
-	public DDMFormValuesReader getDDMFormValuesReader() {
-		return new DDLFormDDMFormValuesReader(_record);
-	}
-
-	@Override
 	public long getGroupId() {
 		return _record.getGroupId();
 	}

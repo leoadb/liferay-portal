@@ -98,11 +98,6 @@ public class DDLFormAssetRendererFactory
 	}
 
 	@Override
-	public ClassTypeReader getClassTypeReader() {
-		return new DDLFormClassTypeReader();
-	}
-
-	@Override
 	public String getIconCssClass() {
 		return "icon-file-2";
 	}
@@ -110,27 +105,6 @@ public class DDLFormAssetRendererFactory
 	@Override
 	public String getType() {
 		return TYPE;
-	}
-
-	@Override
-	public PortletURL getURLAdd(
-		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse, long classTypeId) {
-
-		return null;
-	}
-
-	@Override
-	public boolean hasAddPermission(
-			PermissionChecker permissionChecker, long groupId, long classTypeId)
-		throws Exception {
-
-		if (classTypeId == 0) {
-			return false;
-		}
-
-		return DDLRecordSetPermission.contains(
-			permissionChecker, classTypeId, DDLActionKeys.ADD_RECORD);
 	}
 
 	@Override
