@@ -19,6 +19,7 @@ import aQute.bnd.annotation.ProviderType;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PredicateFilter;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.asset.model.AssetRendererFactory;
 import com.liferay.registry.Registry;
@@ -30,8 +31,10 @@ import com.liferay.registry.ServiceTrackerCustomizer;
 import com.liferay.registry.collections.ServiceRegistrationMap;
 import com.liferay.registry.collections.ServiceRegistrationMapImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -54,6 +57,12 @@ public class AssetRendererFactoryRegistryUtil {
 		long companyId) {
 
 		return _instance._getAssetRendererFactories(companyId);
+	}
+
+	public static List<AssetRendererFactory<?>>
+		getAssetRendererFactoriesByClassName(String className) {
+
+		return _instance._assetRenderFactoriesMapByClassName.get(className);
 	}
 
 	public static <T> AssetRendererFactory<T> getAssetRendererFactoryByClass(
@@ -139,37 +148,72 @@ public class AssetRendererFactoryRegistryUtil {
 		_serviceTracker.open();
 	}
 
-	private Map<String, AssetRendererFactory<?>> _filterAssetRendererFactories(
-		long companyId,
-		Map<String, AssetRendererFactory<?>> assetRendererFactories,
+	private List<AssetRendererFactory<?>> _createListFromMapValues(
+		Map<String, List<AssetRendererFactory<?>>> map) {
+
+		List<AssetRendererFactory<?>> assetRendererFactories =
+			new ArrayList<>();
+
+		for (Map.Entry<String, List<AssetRendererFactory<?>>> entry :
+				map.entrySet()) {
+
+			assetRendererFactories.addAll(entry.getValue());
+		}
+
+		return assetRendererFactories;
+	}
+
+	private List<AssetRendererFactory<?>> _filterAssetRendererFactories(
+		long companyId, List<AssetRendererFactory<?>> assetRendererFactories,
 		boolean filterSelectable) {
 
-		Map<String, AssetRendererFactory<?>> filteredAssetRendererFactories =
-			new ConcurrentHashMap<>();
+		List<AssetRendererFactory<?>> filteredAssetRendererFactories =
+			new ArrayList<>();
 
-		for (String className : assetRendererFactories.keySet()) {
-			AssetRendererFactory<?> assetRendererFactory =
-				assetRendererFactories.get(className);
+		for (AssetRendererFactory<?> assetRendererFactory :
+				assetRendererFactories) {
 
 			if (assetRendererFactory.isActive(companyId) &&
 				(!filterSelectable || assetRendererFactory.isSelectable())) {
 
-				filteredAssetRendererFactories.put(
-					className, assetRendererFactory);
+				filteredAssetRendererFactories.add(assetRendererFactory);
 			}
 		}
 
 		return filteredAssetRendererFactories;
 	}
 
+	private Map<String, List<AssetRendererFactory<?>>>
+		_filterAssetRendererFactories(
+			long companyId,
+			Map<String, List<AssetRendererFactory<?>>> assetRendererFactories,
+			boolean filterSelectable) {
+
+		Map<String, List<AssetRendererFactory<?>>>
+			filteredAssetRendererFactories = new ConcurrentHashMap<>();
+
+		for (Map.Entry<String, List<AssetRendererFactory<?>>> entry :
+				assetRendererFactories.entrySet()) {
+
+			List<AssetRendererFactory<?>> value = entry.getValue();
+
+			filteredAssetRendererFactories.put(
+				entry.getKey(),
+				_filterAssetRendererFactories(
+					companyId, value, filterSelectable));
+		}
+
+		return filteredAssetRendererFactories;
+	}
+
 	private List<AssetRendererFactory<?>> _getAssetRendererFactories() {
-		return ListUtil.fromMapValues(_assetRenderFactoriesMapByClassName);
+		return _createListFromMapValues(_assetRenderFactoriesMapByClassName);
 	}
 
 	private List<AssetRendererFactory<?>> _getAssetRendererFactories(
 		long companyId) {
 
-		return ListUtil.fromMapValues(
+		return _createListFromMapValues(
 			_filterAssetRendererFactories(
 				companyId, _assetRenderFactoriesMapByClassName, false));
 	}
@@ -184,7 +228,14 @@ public class AssetRendererFactoryRegistryUtil {
 	private AssetRendererFactory<?> _getAssetRendererFactoryByClassName(
 		String className) {
 
-		return _assetRenderFactoriesMapByClassName.get(className);
+		List<AssetRendererFactory<?>> assetRendererFactories =
+			_assetRenderFactoriesMapByClassName.get(className);
+
+		if (!ListUtil.isEmpty(assetRendererFactories)) {
+			return assetRendererFactories.get(0);
+		}
+
+		return null;
 	}
 
 	private AssetRendererFactory<?> _getAssetRendererFactoryByClassNameId(
@@ -201,7 +252,7 @@ public class AssetRendererFactoryRegistryUtil {
 	}
 
 	private long[] _getClassNameIds(long companyId, boolean filterSelectable) {
-		Map<String, AssetRendererFactory<?>> assetRenderFactories =
+		Map<String, List<AssetRendererFactory<?>>> assetRenderFactories =
 			_assetRenderFactoriesMapByClassName;
 
 		if (companyId > 0) {
@@ -214,8 +265,11 @@ public class AssetRendererFactoryRegistryUtil {
 
 		int i = 0;
 
-		for (AssetRendererFactory<?> assetRendererFactory :
-				assetRenderFactories.values()) {
+		for (Entry<String, List<AssetRendererFactory<?>>> entry :
+				assetRenderFactories.entrySet()) {
+
+			AssetRendererFactory<?> assetRendererFactory =
+				entry.getValue().get(0);
 
 			classNameIds[i] = assetRendererFactory.getClassNameId();
 
@@ -251,7 +305,7 @@ public class AssetRendererFactoryRegistryUtil {
 	private static final AssetRendererFactoryRegistryUtil _instance =
 		new AssetRendererFactoryRegistryUtil();
 
-	private final Map<String, AssetRendererFactory<?>>
+	private final Map<String, List<AssetRendererFactory<?>>>
 		_assetRenderFactoriesMapByClassName = new ConcurrentHashMap<>();
 	private final Map<String, AssetRendererFactory<?>>
 		_assetRenderFactoriesMapByClassType = new ConcurrentHashMap<>();
@@ -276,20 +330,44 @@ public class AssetRendererFactoryRegistryUtil {
 
 			String className = assetRendererFactory.getClassName();
 
-			AssetRendererFactory<?> classNameAssetRendererFactory =
+			final String type = assetRendererFactory.getType();
+
+			List<AssetRendererFactory<?>> assetRendererFactories = null;
+
+			if (_assetRenderFactoriesMapByClassName.containsKey(className)) {
+				assetRendererFactories =
+					_assetRenderFactoriesMapByClassName.get(className);
+			}
+			else {
+				assetRendererFactories = new ArrayList<>();
 				_assetRenderFactoriesMapByClassName.put(
-					className, assetRendererFactory);
-
-			if (_log.isWarnEnabled() &&
-				(classNameAssetRendererFactory != null)) {
-
-				_log.warn(
-					"Replacing " + classNameAssetRendererFactory +
-						" for class name " + className + " with " +
-							assetRendererFactory);
+					className, assetRendererFactories);
 			}
 
-			String type = assetRendererFactory.getType();
+			if (_assetRenderFactoriesMapByClassType.containsKey(type)) {
+				PredicateFilter<AssetRendererFactory<?>> predicateFilter =
+					new PredicateFilter<AssetRendererFactory<?>>() {
+
+					@Override
+					public boolean filter(AssetRendererFactory<?> arf) {
+						return arf.getType().equals(type);
+					}
+				};
+
+				List<AssetRendererFactory<?>> found = ListUtil.filter(
+					assetRendererFactories, predicateFilter);
+
+				if (_log.isWarnEnabled() && !found.isEmpty()) {
+					_log.warn(
+						"Replacing " + found.get(0) +
+							" for class name " + className + " with " +
+								assetRendererFactory);
+				}
+
+				assetRendererFactories.removeAll(found);
+			}
+
+			assetRendererFactories.add(assetRendererFactory);
 
 			AssetRendererFactory<?> typeAssetRendererFactory =
 				_assetRenderFactoriesMapByClassType.put(
