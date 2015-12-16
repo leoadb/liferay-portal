@@ -199,6 +199,7 @@ String selectStyle = (String)request.getAttribute("configuration.jsp-selectStyle
 												<portlet:param name="className" value="<%= assetRendererFactory.getClassName() %>" />
 												<portlet:param name="classTypeId" value="<%= String.valueOf(classType.getClassTypeId()) %>" />
 												<portlet:param name="eventName" value='<%= renderResponse.getNamespace() + "selectDDMStructureField" %>' />
+												<portlet:param name="type" value="<%= assetRendererFactory.getType() %>" />
 											</liferay-portlet:renderURL>
 
 											<span class="asset-subtypefields-popup" id="<portlet:namespace /><%= classType.getClassTypeId() %>_<%= className %>PopUpButton">

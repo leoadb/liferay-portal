@@ -195,12 +195,14 @@ public class AssetRendererFactoryRegistryUtil {
 		for (Map.Entry<String, List<AssetRendererFactory<?>>> entry :
 				assetRendererFactories.entrySet()) {
 
-			List<AssetRendererFactory<?>> value = entry.getValue();
-
-			filteredAssetRendererFactories.put(
-				entry.getKey(),
+			List<AssetRendererFactory<?>> assRendererFactoryList =
 				_filterAssetRendererFactories(
-					companyId, value, filterSelectable));
+					companyId, entry.getValue(), filterSelectable);
+
+			if (!assRendererFactoryList.isEmpty()) {
+				filteredAssetRendererFactories.put(
+					entry.getKey(), assRendererFactoryList);
+			}
 		}
 
 		return filteredAssetRendererFactories;

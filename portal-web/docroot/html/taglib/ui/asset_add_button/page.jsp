@@ -47,9 +47,9 @@ for (long groupId : groupIds) {
 
 					Map.Entry<String, PortletURL> entry = iterator.next();
 
-					AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(_getClassName(entry.getKey()));
+					AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByType(_getType(entry.getKey()));
 
-					String message = _getMessage(entry.getKey(), addPortletURLs, locale);
+					String message = _getMessage(entry.getKey(), locale);
 
 					long curGroupId = groupId;
 
@@ -64,6 +64,7 @@ for (long groupId : groupIds) {
 						href="<%= _getURL(curGroupId, plid, entry.getValue(), assetRendererFactory.getPortletId(), message, addDisplayPageParameter, layout, pageContext, portletResponse) %>"
 						label='<%= LanguageUtil.format(request, (groupIds.length == 1) ? "add-x" : "add-x-in-x", new Object[] {HtmlUtil.escape(message), HtmlUtil.escape((GroupLocalServiceUtil.getGroup(groupId)).getDescriptiveName(locale))}, false) %>'
 					/>
+
 				</c:when>
 				<c:otherwise>
 					<aui:nav-item
@@ -73,9 +74,9 @@ for (long groupId : groupIds) {
 
 						<%
 						for (Map.Entry<String, PortletURL> entry : addPortletURLs.entrySet()) {
-							AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(_getClassName(entry.getKey()));
+							AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByType(_getType(entry.getKey()));
 
-							String message = _getMessage(entry.getKey(), addPortletURLs, locale);
+							String message = _getMessage(entry.getKey(), locale);
 
 							long curGroupId = groupId;
 
@@ -108,28 +109,28 @@ request.setAttribute("liferay-ui:asset-add-button:hasAddPortletURLs", hasAddPort
 %>
 
 <%!
-private String _getClassName(String className) {
-	int pos = className.indexOf(AssetUtil.CLASSNAME_SEPARATOR);
+private String _getType(String type) {
+	int pos = type.indexOf(AssetUtil.CLASSNAME_SEPARATOR);
 
 	if (pos != -1) {
-		className = className.substring(0, pos);
+		type = type.substring(0, pos);
 	}
 
-	return className;
+	return type;
 }
 
-private String _getMessage(String className, Map<String, PortletURL> addPortletURLs, Locale locale) {
+private String _getMessage(String type, Locale locale) {
 	String message = null;
 
-	int pos = className.indexOf(AssetUtil.CLASSNAME_SEPARATOR);
+	int pos = type.indexOf(AssetUtil.CLASSNAME_SEPARATOR);
 
 	if (pos != -1) {
-		message = className.substring(pos + AssetUtil.CLASSNAME_SEPARATOR.length());
+		message = type.substring(pos + AssetUtil.CLASSNAME_SEPARATOR.length());
 
-		className = className.substring(0, pos);
+		type = type.substring(0, pos);
 	}
 
-	AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(className);
+	AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByType(type);
 
 	if (pos == -1) {
 		message = assetRendererFactory.getTypeName(locale);

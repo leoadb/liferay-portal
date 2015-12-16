@@ -241,17 +241,14 @@ public class AssetUtil {
 	public static PortletURL getAddPortletURL(
 			LiferayPortletRequest liferayPortletRequest,
 			LiferayPortletResponse liferayPortletResponse, long groupId,
-			String className, long classTypeId, long[] allAssetCategoryIds,
-			String[] allAssetTagNames, String redirect)
+			long classTypeId, long[] allAssetCategoryIds,
+			String[] allAssetTagNames,
+			AssetRendererFactory<?> assetRendererFactory, String redirect)
 		throws Exception {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)liferayPortletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
-
-		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				className);
 
 		if ((assetRendererFactory == null) ||
 			!assetRendererFactory.hasAddPermission(
@@ -341,6 +338,23 @@ public class AssetUtil {
 		return addPortletURL;
 	}
 
+	public static PortletURL getAddPortletURL(
+			LiferayPortletRequest liferayPortletRequest,
+			LiferayPortletResponse liferayPortletResponse, long groupId,
+			String className, long classTypeId, long[] allAssetCategoryIds,
+			String[] allAssetTagNames, String redirect)
+		throws Exception {
+
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				className);
+
+		return getAddPortletURL(
+			liferayPortletRequest, liferayPortletResponse, groupId, classTypeId,
+			allAssetCategoryIds, allAssetTagNames, assetRendererFactory,
+			redirect);
+	}
+
 	/**
 	 * @deprecated As of 7.0.0, replaced by {@link
 	 *             #getAddPortletURL(LiferayPortletRequest,
@@ -383,58 +397,64 @@ public class AssetUtil {
 		for (long classNameId : classNameIds) {
 			String className = PortalUtil.getClassName(classNameId);
 
-			AssetRendererFactory<?> assetRendererFactory =
+			List<AssetRendererFactory<?>> assetRendererFactories =
 				AssetRendererFactoryRegistryUtil.
-					getAssetRendererFactoryByClassName(className);
+					getAssetRendererFactoriesByClassName(className);
 
-			if (Validator.isNull(assetRendererFactory.getPortletId())) {
-				continue;
-			}
+			for (AssetRendererFactory<?> assetRendererFactory :
+					assetRendererFactories) {
 
-			Portlet portlet = PortletLocalServiceUtil.getPortletById(
-				themeDisplay.getCompanyId(),
-				assetRendererFactory.getPortletId());
-
-			if (!portlet.isActive()) {
-				continue;
-			}
-
-			ClassTypeReader classTypeReader =
-				assetRendererFactory.getClassTypeReader();
-
-			List<ClassType> classTypes = classTypeReader.getAvailableClassTypes(
-				PortalUtil.getCurrentAndAncestorSiteGroupIds(
-					themeDisplay.getScopeGroupId()),
-				themeDisplay.getLocale());
-
-			if ((classTypeIds.length == 0) || classTypes.isEmpty()) {
-				PortletURL addPortletURL = getAddPortletURL(
-					liferayPortletRequest, liferayPortletResponse, groupId,
-					className, 0, allAssetCategoryIds, allAssetTagNames,
-					redirect);
-
-				if (addPortletURL != null) {
-					addPortletURLs.put(className, addPortletURL);
+				if (Validator.isNull(assetRendererFactory.getPortletId())) {
+					continue;
 				}
-			}
 
-			for (ClassType classType : classTypes) {
-				long classTypeId = classType.getClassTypeId();
+				Portlet portlet = PortletLocalServiceUtil.getPortletById(
+					themeDisplay.getCompanyId(),
+					assetRendererFactory.getPortletId());
 
-				if (ArrayUtil.contains(classTypeIds, classTypeId) ||
-					(classTypeIds.length == 0)) {
+				if (!portlet.isActive()) {
+					continue;
+				}
 
+				ClassTypeReader classTypeReader =
+					assetRendererFactory.getClassTypeReader();
+
+				List<ClassType> classTypes =
+					classTypeReader.getAvailableClassTypes(
+						PortalUtil.getCurrentAndAncestorSiteGroupIds(
+							themeDisplay.getScopeGroupId()),
+						themeDisplay.getLocale());
+
+				if ((classTypeIds.length == 0) || classTypes.isEmpty()) {
 					PortletURL addPortletURL = getAddPortletURL(
 						liferayPortletRequest, liferayPortletResponse, groupId,
-						className, classTypeId, allAssetCategoryIds,
-						allAssetTagNames, redirect);
+						0, allAssetCategoryIds, allAssetTagNames,
+						assetRendererFactory, redirect);
 
 					if (addPortletURL != null) {
-						String mesage =
-							className + CLASSNAME_SEPARATOR +
-								classType.getName();
+						addPortletURLs.put(
+							assetRendererFactory.getType(), addPortletURL);
+					}
+				}
 
-						addPortletURLs.put(mesage, addPortletURL);
+				for (ClassType classType : classTypes) {
+					long classTypeId = classType.getClassTypeId();
+
+					if (ArrayUtil.contains(classTypeIds, classTypeId) ||
+						(classTypeIds.length == 0)) {
+
+						PortletURL addPortletURL = getAddPortletURL(
+							liferayPortletRequest, liferayPortletResponse,
+							groupId, classTypeId, allAssetCategoryIds,
+							allAssetTagNames, assetRendererFactory, redirect);
+
+						if (addPortletURL != null) {
+							String message =
+								assetRendererFactory.getType() +
+									CLASSNAME_SEPARATOR + classType.getName();
+
+							addPortletURLs.put(message, addPortletURL);
+						}
 					}
 				}
 			}

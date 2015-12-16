@@ -23,8 +23,9 @@ long classTypeId = ParamUtil.getLong(request, "classTypeId");
 String ddmStructureFieldName = ParamUtil.getString(request, "ddmStructureFieldName");
 Serializable ddmStructureFieldValue = ParamUtil.getString(request, "ddmStructureFieldValue");
 String eventName = ParamUtil.getString(request, "eventName", liferayPortletResponse.getNamespace() + "selectDDMStructureField");
+String type = ParamUtil.getString(request, "type");
 
-AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(className);
+AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByType(type);
 
 ClassTypeReader classTypeReader = assetRendererFactory.getClassTypeReader();
 
@@ -36,6 +37,7 @@ portletURL.setParameter("mvcPath", "/select_structure_field.jsp");
 portletURL.setParameter("portletResource", portletResource);
 portletURL.setParameter("className", className);
 portletURL.setParameter("classTypeId", String.valueOf(classTypeId));
+portletURL.setParameter("type", type);
 %>
 
 <div class="alert alert-danger hide" id="<portlet:namespace />message">

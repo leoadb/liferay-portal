@@ -17,6 +17,8 @@ package com.liferay.dynamic.data.lists.web.asset;
 import com.liferay.dynamic.data.lists.constants.DDLActionKeys;
 import com.liferay.dynamic.data.lists.constants.DDLPortletKeys;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
+import com.liferay.dynamic.data.lists.model.DDLRecordSet;
+import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.model.DDLRecordVersion;
 import com.liferay.dynamic.data.lists.service.DDLRecordLocalService;
 import com.liferay.dynamic.data.lists.service.DDLRecordVersionLocalService;
@@ -87,6 +89,14 @@ public class DDLRecordAssetRendererFactory
 				throw new IllegalArgumentException(
 					"Unknown asset renderer type " + type);
 			}
+		}
+
+		DDLRecordSet recordSet = recordVersion.getRecordSet();
+
+		if (recordSet.getScope() !=
+				DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS) {
+
+			return null;
 		}
 
 		DDLRecordAssetRenderer ddlRecordAssetRenderer =
