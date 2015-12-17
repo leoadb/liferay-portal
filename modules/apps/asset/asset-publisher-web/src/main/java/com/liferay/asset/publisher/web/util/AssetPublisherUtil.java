@@ -60,7 +60,6 @@ import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.security.permission.ResourceActionsUtil;
 import com.liferay.portal.service.GroupLocalService;
 import com.liferay.portal.service.LayoutLocalService;
 import com.liferay.portal.service.PortletPreferencesLocalService;
@@ -1445,6 +1444,49 @@ public class AssetPublisherUtil {
 			getSubscriptionClassPK(plid, portletId));
 	}
 
+	protected static void addAssetEntryResults(
+		List<AssetEntryResult> assetEntryResults, List<AssetEntry> assetEntries,
+		Locale locale) {
+
+		Map<String, List<AssetEntry>> assetEntriesMap = new HashMap<>();
+
+		for (AssetEntry assetEntry : assetEntries) {
+			AssetRendererFactory<?> assetRendererFactory =
+				assetEntry.getAssetRendererFactory();
+
+			String type = assetRendererFactory.getType();
+
+			System.out.println("type: " + type);
+
+			List<AssetEntry> assetEntryList = null;
+
+			if (assetEntriesMap.containsKey(assetRendererFactory.getType())) {
+				assetEntryList = assetEntriesMap.get(type);
+			}
+			else {
+				assetEntryList = new ArrayList<>();
+
+				assetEntriesMap.put(type, assetEntryList);
+			}
+
+			assetEntryList.add(assetEntry);
+		}
+
+		for (Map.Entry<String, List<AssetEntry>> entry :
+				assetEntriesMap.entrySet()) {
+
+			if (!entry.getValue().isEmpty()) {
+				AssetEntry assetEntry = entry.getValue().get(0);
+
+				AssetRenderer<?> assetRenderer = assetEntry.getAssetRenderer();
+
+				assetEntryResults.add(
+					new AssetEntryResult(
+						assetRenderer.getTitle(locale), entry.getValue()));
+			}
+		}
+	}
+
 	protected static List<AssetEntryResult> getAssetEntryResultsByClassName(
 			SearchContainer searchContainer, AssetEntryQuery assetEntryQuery,
 			Layout layout, PortletPreferences portletPreferences,
@@ -1477,15 +1519,7 @@ public class AssetPublisherUtil {
 				baseModelSearchResult.getBaseModels();
 
 			if (!assetEntries.isEmpty() && (start < groupTotal)) {
-				AssetRendererFactory<?> groupAssetRendererFactory =
-					AssetRendererFactoryRegistryUtil.
-						getAssetRendererFactoryByClassNameId(classNameId);
-
-				String title = ResourceActionsUtil.getModelResource(
-					locale, groupAssetRendererFactory.getClassName());
-
-				assetEntryResults.add(
-					new AssetEntryResult(title, assetEntries));
+				addAssetEntryResults(assetEntryResults, assetEntries, locale);
 			}
 
 			if (!portletName.equals(AssetPublisherPortletKeys.RECENT_CONTENT)) {

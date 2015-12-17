@@ -12,10 +12,9 @@
  * details.
  */
 
-package com.liferay.dynamic.data.lists.web.asset;
+package com.liferay.dynamic.data.lists.form.web.asset;
 
-import com.liferay.dynamic.data.lists.constants.DDLActionKeys;
-import com.liferay.dynamic.data.lists.constants.DDLPortletKeys;
+import com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
@@ -23,20 +22,12 @@ import com.liferay.dynamic.data.lists.model.DDLRecordVersion;
 import com.liferay.dynamic.data.lists.service.DDLRecordLocalService;
 import com.liferay.dynamic.data.lists.service.DDLRecordVersionLocalService;
 import com.liferay.dynamic.data.lists.service.permission.DDLRecordPermission;
-import com.liferay.dynamic.data.lists.service.permission.DDLRecordSetPermission;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
-import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.asset.model.AssetRenderer;
 import com.liferay.portlet.asset.model.AssetRendererFactory;
 import com.liferay.portlet.asset.model.BaseAssetRendererFactory;
-import com.liferay.portlet.asset.model.ClassTypeReader;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 
 import javax.servlet.ServletContext;
 
@@ -44,22 +35,24 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Marcellus Tavares
+ * @author Leonardo Barros
  */
 @Component(
 	immediate = true,
-	property = {"javax.portlet.name=" + DDLPortletKeys.DYNAMIC_DATA_LISTS},
+	property = {
+		"javax.portlet.name=" + DDLFormPortletKeys.DYNAMIC_DATA_LISTS_FORM
+	},
 	service = AssetRendererFactory.class
 )
-public class DDLRecordAssetRendererFactory
+public class DDLFormAssetRendererFactory
 	extends BaseAssetRendererFactory<DDLRecord> {
 
-	public static final String TYPE = "record";
+	public static final String TYPE = "form";
 
-	public DDLRecordAssetRendererFactory() {
+	public DDLFormAssetRendererFactory() {
 		setCategorizable(false);
 		setClassName(DDLRecord.class.getName());
-		setPortletId(DDLPortletKeys.DYNAMIC_DATA_LISTS);
+		setPortletId(DDLFormPortletKeys.DYNAMIC_DATA_LISTS_FORM);
 		setSearchable(true);
 		setSelectable(true);
 	}
@@ -93,29 +86,16 @@ public class DDLRecordAssetRendererFactory
 
 		DDLRecordSet recordSet = recordVersion.getRecordSet();
 
-		if (recordSet.getScope() !=
-				DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS) {
-
+		if (recordSet.getScope() != DDLRecordSetConstants.SCOPE_FORMS) {
 			return null;
 		}
 
-		DDLRecordAssetRenderer ddlRecordAssetRenderer =
-			new DDLRecordAssetRenderer(record, recordVersion);
-
-		ddlRecordAssetRenderer.setAssetRendererType(type);
-		ddlRecordAssetRenderer.setServletContext(_servletContext);
-
-		return ddlRecordAssetRenderer;
+		return createAssetRenderer(record, recordVersion, type);
 	}
 
 	@Override
 	public String getClassName() {
 		return DDLRecord.class.getName();
-	}
-
-	@Override
-	public ClassTypeReader getClassTypeReader() {
-		return new DDLRecordSetClassTypeReader();
 	}
 
 	@Override
@@ -129,37 +109,6 @@ public class DDLRecordAssetRendererFactory
 	}
 
 	@Override
-	public PortletURL getURLAdd(
-		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse, long classTypeId) {
-
-		PortletURL portletURL = PortalUtil.getControlPanelPortletURL(
-			liferayPortletRequest, DDLPortletKeys.DYNAMIC_DATA_LISTS,
-			PortletRequest.RENDER_PHASE);
-
-		portletURL.setParameter("mvcPath", "/edit_record.jsp");
-
-		if (classTypeId > 0) {
-			portletURL.setParameter("recordSetId", String.valueOf(classTypeId));
-		}
-
-		return portletURL;
-	}
-
-	@Override
-	public boolean hasAddPermission(
-			PermissionChecker permissionChecker, long groupId, long classTypeId)
-		throws Exception {
-
-		if (classTypeId == 0) {
-			return false;
-		}
-
-		return DDLRecordSetPermission.contains(
-			permissionChecker, classTypeId, DDLActionKeys.ADD_RECORD);
-	}
-
-	@Override
 	public boolean hasPermission(
 			PermissionChecker permissionChecker, long classPK, String actionId)
 		throws Exception {
@@ -169,11 +118,24 @@ public class DDLRecordAssetRendererFactory
 	}
 
 	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.dynamic.data.lists.web)",
+		target =
+			"(osgi.web.symbolicname=com.liferay.dynamic.data.lists.form.web)",
 		unbind = "-"
 	)
 	public void setServletContext(ServletContext servletContext) {
 		_servletContext = servletContext;
+	}
+
+	protected AssetRenderer<DDLRecord> createAssetRenderer(
+		DDLRecord record, DDLRecordVersion recordVersion, int type) {
+
+		DDLFormAssetRenderer ddlFormAssetRenderer = new DDLFormAssetRenderer(
+			record, recordVersion);
+
+		ddlFormAssetRenderer.setAssetRendererType(type);
+		ddlFormAssetRenderer.setServletContext(_servletContext);
+
+		return ddlFormAssetRenderer;
 	}
 
 	@Override

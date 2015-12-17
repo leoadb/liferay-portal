@@ -18,9 +18,7 @@
 for (int assetEntryIndex = 0; assetEntryIndex < assetEntries.size(); assetEntryIndex++) {
 	AssetEntry assetEntry = (AssetEntry)assetEntries.get(assetEntryIndex);
 
-	long classPK = assetEntry.getClassPK();
-
-	AssetRendererFactory<?> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassNameId(assetEntry.getClassNameId());
+	AssetRendererFactory<?> assetRendererFactory = assetEntry.getAssetRendererFactory();
 
 	if (assetRendererFactory == null) {
 		continue;
@@ -29,7 +27,7 @@ for (int assetEntryIndex = 0; assetEntryIndex < assetEntries.size(); assetEntryI
 	AssetRenderer<?> assetRenderer = null;
 
 	try {
-		assetRenderer = assetRendererFactory.getAssetRenderer(classPK);
+		assetRenderer = assetEntry.getAssetRenderer();
 	}
 	catch (Exception e) {
 		if (_log.isWarnEnabled()) {

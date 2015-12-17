@@ -35,27 +35,42 @@ public class AssetEntryImpl extends AssetEntryBaseImpl {
 
 	@Override
 	public AssetRenderer<?> getAssetRenderer() {
-		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				getClassName());
+		List<AssetRendererFactory<?>> assetRendererFactories =
+			AssetRendererFactoryRegistryUtil.
+				getAssetRendererFactoriesByClassName(getClassName());
 
-		try {
-			return assetRendererFactory.getAssetRenderer(getClassPK());
-		}
-		catch (Exception e) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to get asset renderer", e);
+		AssetRenderer<?> assetRenderer = null;
+
+		for (AssetRendererFactory<?> assetRendererFactory :
+				assetRendererFactories) {
+
+			try {
+				assetRenderer = assetRendererFactory.getAssetRenderer(
+					getClassPK());
+			}
+			catch (Exception e) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to get asset renderer", e);
+				}
+			}
+
+			if (assetRenderer != null) {
+				break;
 			}
 		}
 
-		return null;
+		return assetRenderer;
 	}
 
 	@Override
 	public AssetRendererFactory<?> getAssetRendererFactory() {
-		return
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				getClassName());
+		AssetRenderer<?> assetRenderer = getAssetRenderer();
+
+		if (assetRenderer == null) {
+			return null;
+		}
+
+		return assetRenderer.getAssetRendererFactory();
 	}
 
 	@Override

@@ -12,16 +12,14 @@
  * details.
  */
 
-package com.liferay.dynamic.data.lists.web.asset;
+package com.liferay.dynamic.data.lists.form.web.asset;
 
-import com.liferay.dynamic.data.lists.constants.DDLPortletKeys;
 import com.liferay.dynamic.data.lists.constants.DDLWebKeys;
+import com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordVersion;
 import com.liferay.dynamic.data.lists.service.permission.DDLRecordSetPermission;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -33,7 +31,6 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.asset.model.AssetRendererFactory;
 import com.liferay.portlet.asset.model.BaseJSPAssetRenderer;
-import com.liferay.portlet.asset.model.DDMFormValuesReader;
 
 import java.util.Locale;
 
@@ -45,24 +42,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Marcellus Tavares
- * @author Sergio González
+ * @author Leonardo Barros
  */
-public class DDLRecordAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
+public class DDLFormAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 
-	public DDLRecordAssetRenderer(
+	public DDLFormAssetRenderer(
 		DDLRecord record, DDLRecordVersion recordVersion) {
 
 		_record = record;
 		_recordVersion = recordVersion;
 
-		DDMStructure ddmStructure = null;
 		DDLRecordSet recordSet = null;
 
 		try {
 			recordSet = record.getRecordSet();
-
-			ddmStructure = recordSet.getDDMStructure();
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
@@ -70,7 +63,6 @@ public class DDLRecordAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 			}
 		}
 
-		_ddmStructure = ddmStructure;
 		_recordSet = recordSet;
 	}
 
@@ -81,7 +73,7 @@ public class DDLRecordAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 
 	@Override
 	public AssetRendererFactory<DDLRecord> getAssetRendererFactory() {
-		return new DDLRecordAssetRendererFactory();
+		return new DDLFormAssetRendererFactory();
 	}
 
 	@Override
@@ -92,11 +84,6 @@ public class DDLRecordAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 	@Override
 	public long getClassPK() {
 		return _record.getRecordId();
-	}
-
-	@Override
-	public DDMFormValuesReader getDDMFormValuesReader() {
-		return new DDLRecordDDMFormValuesReader(_record);
 	}
 
 	@Override
@@ -130,13 +117,7 @@ public class DDLRecordAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 
 	@Override
 	public String getTitle(Locale locale) {
-		String ddmStructureName = _ddmStructure.getName(locale);
-
-		String recordSetName = _recordSet.getName(locale);
-
-		return LanguageUtil.format(
-			locale, "new-x-for-list-x",
-			new Object[] {ddmStructureName, recordSetName}, false);
+		return _recordSet.getName(locale);
 	}
 
 	@Override
@@ -146,13 +127,13 @@ public class DDLRecordAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 		throws Exception {
 
 		PortletURL portletURL = PortalUtil.getControlPanelPortletURL(
-			liferayPortletRequest, DDLPortletKeys.DYNAMIC_DATA_LISTS,
+			liferayPortletRequest,
+			DDLFormPortletKeys.DYNAMIC_DATA_LISTS_FORM_ADMIN,
 			PortletRequest.RENDER_PHASE);
 
-		portletURL.setParameter("mvcPath", "/edit_record.jsp");
+		portletURL.setParameter("mvcPath", "/admin/view_record.jsp");
 		portletURL.setParameter(
 			"recordId", String.valueOf(_record.getRecordId()));
-		portletURL.setParameter("version", _recordVersion.getVersion());
 
 		return portletURL;
 	}
@@ -201,8 +182,6 @@ public class DDLRecordAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 		throws Exception {
 
 		request.setAttribute(DDLWebKeys.DYNAMIC_DATA_LISTS_RECORD, _record);
-		request.setAttribute(
-			DDLWebKeys.DYNAMIC_DATA_LISTS_RECORD_VERSION, _recordVersion);
 
 		return super.include(request, response, template);
 	}
@@ -213,9 +192,8 @@ public class DDLRecordAssetRenderer extends BaseJSPAssetRenderer<DDLRecord> {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		DDLRecordAssetRenderer.class);
+		DDLFormAssetRenderer.class);
 
-	private final DDMStructure _ddmStructure;
 	private final DDLRecord _record;
 	private final DDLRecordSet _recordSet;
 	private final DDLRecordVersion _recordVersion;
