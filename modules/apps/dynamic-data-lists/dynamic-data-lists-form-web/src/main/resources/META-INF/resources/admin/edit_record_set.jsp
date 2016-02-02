@@ -150,9 +150,7 @@ renderResponse.setTitle((recordSet == null) ? LanguageUtil.get(request, "new-for
 			<div class="form-group">
 				<label><liferay-ui:message key="copy-this-url-to-share-the-form" /></label>
 
-				<div class="input-group">
-					<input class="form-control" type="text" readOnly value="<%= ddlFormAdminDisplayContext.getPublishedFormURL() %>" />
-				</div>
+				<input class="form-control" type="text" readOnly value="<%= ddlFormAdminDisplayContext.getPublishedFormURL() %>" />
 			</div>
 		</div>
 
