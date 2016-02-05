@@ -211,6 +211,7 @@ public class DDMDataProviderDisplayContext {
 
 	public String getUserPortraitURL(long userId) throws PortalException {
 		User user = _userLocalService.getUser(userId);
+
 		return user.getPortraitURL(
 			_ddmDataProviderRequestHelper.getThemeDisplay());
 	}
