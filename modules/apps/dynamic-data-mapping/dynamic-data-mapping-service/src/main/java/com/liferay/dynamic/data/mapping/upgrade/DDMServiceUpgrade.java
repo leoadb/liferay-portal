@@ -18,6 +18,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
+import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONSerializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormXSDDeserializer;
 import com.liferay.dynamic.data.mapping.upgrade.v1_0_0.UpgradeClassNames;
@@ -92,11 +93,12 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 				new UpgradeSchema(), new UpgradeClassNames(),
 				new UpgradeCompanyId(),
 				new UpgradeDynamicDataMapping(
-					_assetEntryLocalService, _ddmFormValuesJSONSerializer,
-					_ddmFormXSDDeserializer, _dlFileEntryLocalService,
-					_dlFileVersionLocalService, _dlFolderLocalService,
-					_expandoRowLocalService, _expandoTableLocalService,
-					_expandoValueLocalService, _resourceActionLocalService,
+					_assetEntryLocalService, _ddmFormValuesJSONDeserializer,
+					_ddmFormValuesJSONSerializer, _ddmFormXSDDeserializer,
+					_dlFileEntryLocalService, _dlFileVersionLocalService,
+					_dlFolderLocalService, _expandoRowLocalService,
+					_expandoTableLocalService, _expandoValueLocalService,
+					_resourceActionLocalService,
 					_resourcePermissionLocalService),
 				new UpgradeLastPublishDate()
 			});
@@ -107,6 +109,13 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 		AssetEntryLocalService assetEntryLocalService) {
 
 		_assetEntryLocalService = assetEntryLocalService;
+	}
+
+	@Reference(unbind = "-")
+	protected void setDDMFormValuesJSONDeserializer(
+		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer) {
+
+		_ddmFormValuesJSONDeserializer = ddmFormValuesJSONDeserializer;
 	}
 
 	@Reference(unbind = "-")
@@ -164,6 +173,7 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 	}
 
 	private AssetEntryLocalService _assetEntryLocalService;
+	private DDMFormValuesJSONDeserializer _ddmFormValuesJSONDeserializer;
 	private DDMFormValuesJSONSerializer _ddmFormValuesJSONSerializer;
 	private DDMFormXSDDeserializer _ddmFormXSDDeserializer;
 	private DLFileEntryLocalService _dlFileEntryLocalService;
