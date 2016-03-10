@@ -61,9 +61,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Michael C. Han
@@ -795,6 +799,22 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 			workflowTaskInstanceId, comment, dueDate, serviceContext);
 	}
 
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY,
+		unbind = "removeTaskAssignmentSelector"
+	)
+	protected void addTaskAssignmentSelector(
+		TaskAssignmentSelector taskAssignmentSelector,
+		Map<String, Object> properties) {
+
+		String assigneeClassName = (String)properties.get(
+			"assignee.class.name");
+
+		_taskAssignmentSelectors.put(assigneeClassName, taskAssignmentSelector);
+	}
+
 	protected List<KaleoTaskAssignment> getCalculatedKaleoTaskAssignments(
 			KaleoTaskInstanceToken kaleoTaskInstanceToken)
 		throws PortalException {
@@ -822,14 +842,30 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 		for (KaleoTaskAssignment configuredKaleoTaskAssignment :
 				configuredKaleoTaskAssignments) {
 
+			String assigneeClassName =
+				configuredKaleoTaskAssignment.getAssigneeClassName();
+
+			TaskAssignmentSelector taskAssignmentSelector =
+				_taskAssignmentSelectors.get(assigneeClassName);
+
 			Collection<KaleoTaskAssignment> kaleoTaskAssignments =
-				_taskAssignmentSelector.calculateTaskAssignments(
+				taskAssignmentSelector.calculateTaskAssignments(
 					configuredKaleoTaskAssignment, executionContext);
 
 			calculatedKaleoTaskAssignments.addAll(kaleoTaskAssignments);
 		}
 
 		return calculatedKaleoTaskAssignments;
+	}
+
+	protected void removeTaskAssignmentSelector(
+		TaskAssignmentSelector taskAssignmentSelector,
+		Map<String, Object> properties) {
+
+		String assigneeClassName = (String)properties.get(
+			"assignee.class.name");
+
+		_taskAssignmentSelectors.remove(assigneeClassName);
 	}
 
 	protected List<WorkflowTask> toWorkflowTasks(
@@ -857,6 +893,9 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 	@Reference
 	protected LockManager lockManager;
 
+	private static final Map<String, TaskAssignmentSelector>
+		_taskAssignmentSelectors = new ConcurrentHashMap<>();
+
 	@Reference
 	private KaleoSignaler _kaleoSignaler;
 
@@ -872,9 +911,6 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 
 	@Reference
 	private RoleLocalService _roleLocalService;
-
-	@Reference
-	private TaskAssignmentSelector _taskAssignmentSelector;
 
 	@Reference
 	private TaskManager _taskManager;
