@@ -135,7 +135,7 @@ public class DDMFormValuesValidatorTest {
 		_ddmFormValuesValidator.validate(ddmFormValues);
 	}
 
-	@Test(expected = RequiredValue.class)
+	@Test(expected = MustSetValidValues.class)
 	public void testValidationWithMissingNestedRequiredField()
 		throws Exception {
 
