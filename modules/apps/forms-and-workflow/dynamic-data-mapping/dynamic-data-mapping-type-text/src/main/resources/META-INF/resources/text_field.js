@@ -1,6 +1,8 @@
 AUI.add(
 	'liferay-ddm-form-field-text',
 	function(A) {
+		var Lang = A.Lang;
+
 		new A.TooltipDelegate(
 			{
 				position: 'left',
@@ -18,6 +20,10 @@ AUI.add(
 
 					dataProviderURL: {
 						valueFn: '_valueDataProviderURL'
+					},
+
+					dataProviderSelectedValue: {
+						value: ''
 					},
 
 					displayStyle: {
@@ -42,6 +48,22 @@ AUI.add(
 				NAME: 'liferay-ddm-form-field-text',
 
 				prototype: {
+					toJSON: function() {
+						var instance = this;
+
+						var json = TextField.superclass.toJSON.apply(instance, arguments);
+
+						if (!instance.get('ddmDataProviderInstanceId')) {
+							return json;
+						}
+
+						json.value[instance.get('locale')] = instance.get('dataProviderSelectedValue');
+
+						console.log(json);
+
+						return json;
+					},
+
 					getTemplateContext: function() {
 						var instance = this;
 
@@ -71,14 +93,60 @@ AUI.add(
 							textAreaNode.autosize._uiAutoSize();
 						}
 
+						if (instance.get('ddmDataProviderInstanceId') && !instance.get('builder')) {
+						    instance._getDataSourceData(instance._instatiateAutoComplete);
+						}
+
 						return instance;
+					},
+
+					_instatiateAutoComplete: function(options) {
+						var instance = this;
+
+						results = A.map(options,
+							function(item) {
+							var label = item.label;
+
+							if (Lang.isObject(label)) {
+								label = label[instance.get('locale')];
+							}
+
+							return [label, item.value];
+						});
+
+						this.autoComplete = new A.AutoCompleteDeprecated(
+							{
+								contentBox: instance.get('container'),
+								dataSource: results,
+								matchKey: 'label',
+								schema: {
+						          resultFields: ['label', 'value']
+						        },
+								input: instance.get('container').one('.form-control')
+							}
+					    ).render();
+
+					    this.autoComplete.on('itemSelect', function(event, data) {
+					    	instance.set('dataProviderSelectedValue', data.value);
+
+					    	instance.fire(
+								'valueChanged',
+								{
+									domEvent: event,
+									field: instance,
+									value: instance.getValue()
+								}
+							);
+					    });
 					},
 
 					_getDataSourceData: function(callback) {
 						var instance = this;
 
+						var url = instance.get('dataProviderURL');
+
 						A.io.request(
-							instance.get('dataProviderURL'),
+							url,
 							{
 								data: {
 									ddmDataProviderInstanceId: instance.get('ddmDataProviderInstanceId')
@@ -153,6 +221,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: ['aui-autosize-deprecated', 'aui-tooltip', 'liferay-ddm-form-renderer-field']
+		requires: ['aui-autocomplete-deprecated', 'aui-autocomplete', 'aui-autosize-deprecated', 'aui-tooltip', 'liferay-ddm-form-renderer-field']
 	}
 );
