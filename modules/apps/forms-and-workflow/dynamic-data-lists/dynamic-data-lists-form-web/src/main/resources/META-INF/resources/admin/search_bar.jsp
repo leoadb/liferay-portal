@@ -22,12 +22,13 @@ PortletURL portletURL = ddlFormAdminDisplayContext.getPortletURL();
 
 <aui:nav-bar cssClass="collapse-basic-search" id="toolbar" markupView="lexicon">
 	<aui:nav cssClass="navbar-nav">
-		<aui:nav-item label="forms" selected="<%= true %>" />
+		<aui:nav-item href="<%= portletURL.toString() %>" label="forms" selected="<%= ddlFormAdminDisplayContext.isFormsTabSelected() %>" />
+		<aui:nav-item href="<%= ddlFormFieldLibraryDisplayContext.getPortletURL().toString() %>" label="field-library" selected="<%= ddlFormAdminDisplayContext.isFieldLibraryTabSelected() %>" />
 	</aui:nav>
 
 	<c:if test="<%= ddlFormAdminDisplayContext.isShowSearch() %>">
 		<aui:nav-bar-search>
-			<aui:form action="<%= portletURL.toString() %>" method="post" name="fm1">
+			<aui:form action="<%= portletURL.toString() %>" method="post" name="fm">
 				<liferay-ui:input-search markupView="lexicon" />
 			</aui:form>
 		</aui:nav-bar-search>

@@ -72,6 +72,8 @@ page import="java.util.Map" %>
 
 <%
 DDLFormAdminDisplayContext ddlFormAdminDisplayContext = (DDLFormAdminDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+
+String tab = ParamUtil.getString(request, "tab", "forms");
 %>
 
 <%@ include file="/admin/init-ext.jsp" %>

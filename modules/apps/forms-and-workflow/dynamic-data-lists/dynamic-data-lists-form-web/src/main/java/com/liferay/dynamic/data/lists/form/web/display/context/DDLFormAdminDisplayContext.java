@@ -120,6 +120,10 @@ public class DDLFormAdminDisplayContext {
 
 		_ddlFormAdminRequestHelper = new DDLFormAdminRequestHelper(
 			renderRequest);
+
+		_ddlFormFieldLibraryDisplayContext =
+			new DDLFormFieldLibraryDisplayContext(
+				renderRequest, renderResponse);
 	}
 
 	public DDLFormViewRecordDisplayContext
@@ -218,6 +222,23 @@ public class DDLFormAdminDisplayContext {
 		portletURL.setParameter(
 			"groupId",
 			String.valueOf(_ddlFormAdminRequestHelper.getScopeGroupId()));
+		portletURL.setParameter(
+			"tab",
+			ParamUtil.getString(_renderRequest, "tab", "forms"));
+
+		return portletURL;
+	}
+
+	public PortletURL getPortletURL(String tab) {
+		PortletURL portletURL = null;
+
+		if (tab.equals("field-library")) {
+			portletURL = _ddlFormFieldLibraryDisplayContext.getPortletURL();
+		}
+		else {
+			portletURL = getPortletURL();
+			portletURL.setParameter("tab", "forms");
+		}
 
 		return portletURL;
 	}
@@ -376,6 +397,10 @@ public class DDLFormAdminDisplayContext {
 		return false;
 	}
 
+	public boolean isFieldLibraryTabSelected() {
+		return getSelectedTab().equals("field-library");
+	}
+
 	public boolean isFormPublished() throws PortalException {
 		DDLRecordSet recordSet = getRecordSet();
 
@@ -386,6 +411,10 @@ public class DDLFormAdminDisplayContext {
 		DDLRecordSetSettings recordSetSettings = recordSet.getSettingsModel();
 
 		return recordSetSettings.published();
+	}
+
+	public boolean isFormsTabSelected() {
+		return getSelectedTab().equals("forms");
 	}
 
 	public boolean isShowAddRecordSetButton() {
@@ -519,6 +548,10 @@ public class DDLFormAdminDisplayContext {
 		}
 	}
 
+	protected String getSelectedTab() {
+		return ParamUtil.getString(_renderRequest, "tab", "forms");
+	}
+
 	protected String getServletContextPath(Servlet servlet) {
 		ServletConfig servletConfig = servlet.getServletConfig();
 
@@ -600,6 +633,8 @@ public class DDLFormAdminDisplayContext {
 	private static final String[] _DISPLAY_VIEWS = {"descriptive", "list"};
 
 	private final DDLFormAdminRequestHelper _ddlFormAdminRequestHelper;
+	private final DDLFormFieldLibraryDisplayContext
+		_ddlFormFieldLibraryDisplayContext;
 	private final DDLFormWebConfiguration _ddlFormWebConfiguration;
 	private final DDLRecordLocalService _ddlRecordLocalService;
 	private final DDLRecordSetService _ddlRecordSetService;
