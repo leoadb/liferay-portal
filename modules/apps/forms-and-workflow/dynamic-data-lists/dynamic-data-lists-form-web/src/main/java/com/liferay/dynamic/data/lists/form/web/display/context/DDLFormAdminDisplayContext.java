@@ -45,6 +45,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.dynamic.data.mapping.storage.StorageEngine;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -97,7 +98,8 @@ public class DDLFormAdminDisplayContext {
 		DDMFormLayoutJSONSerializer ddmFormLayoutJSONSerializer,
 		DDMFormRenderer ddmFormRenderer,
 		DDMStructureLocalService ddmStructureLocalService,
-		JSONFactory jsonFactory, StorageEngine storageEngine,
+		DDMStructureService ddmStructureService, JSONFactory jsonFactory,
+		StorageEngine storageEngine,
 		WorkflowEngineManager workflowEngineManager) {
 
 		_renderRequest = renderRequest;
@@ -114,6 +116,7 @@ public class DDLFormAdminDisplayContext {
 		_ddmFormLayoutJSONSerializer = ddmFormLayoutJSONSerializer;
 		_ddmFormRenderer = ddmFormRenderer;
 		_ddmStructureLocalService = ddmStructureLocalService;
+		_ddmStructureService = ddmStructureService;
 		_jsonFactory = jsonFactory;
 		_storageEngine = storageEngine;
 		_workflowEngineManager = workflowEngineManager;
@@ -123,7 +126,8 @@ public class DDLFormAdminDisplayContext {
 
 		_ddlFormFieldLibraryDisplayContext =
 			new DDLFormFieldLibraryDisplayContext(
-				renderRequest, renderResponse);
+				renderRequest, renderResponse, _ddmStructureService,
+				getDisplayStyle());
 	}
 
 	public DDLFormFieldLibraryDisplayContext
@@ -639,6 +643,7 @@ public class DDLFormAdminDisplayContext {
 	private final DDMFormLayoutJSONSerializer _ddmFormLayoutJSONSerializer;
 	private final DDMFormRenderer _ddmFormRenderer;
 	private final DDMStructureLocalService _ddmStructureLocalService;
+	private final DDMStructureService _ddmStructureService;
 	private DDMStructure _ddmStucture;
 	private String _displayStyle;
 	private final JSONFactory _jsonFactory;

@@ -35,6 +35,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.StorageAdapter;
 import com.liferay.dynamic.data.mapping.storage.StorageAdapterRegistry;
@@ -379,6 +380,13 @@ public class DDLFormAdminPortlet extends MVCPortlet {
 	}
 
 	@Reference(unbind = "-")
+	protected void setDDMStructureService(
+		DDMStructureService ddmStructureService) {
+
+		_ddmStructureService = ddmStructureService;
+	}
+
+	@Reference(unbind = "-")
 	protected void setJSONFactory(JSONFactory jsonFactory) {
 		_jsonFactory = jsonFactory;
 	}
@@ -420,8 +428,8 @@ public class DDLFormAdminPortlet extends MVCPortlet {
 				_ddmFormFieldTypeServicesTracker,
 				_ddmFormFieldTypesJSONSerializer, _ddmFormJSONSerializer,
 				_ddmFormLayoutJSONSerializer, _ddmFormRenderer,
-				_ddmStructureLocalService, _jsonFactory, _storageEngine,
-				_workflowEngineManager);
+				_ddmStructureLocalService, _ddmStructureService, _jsonFactory,
+				_storageEngine, _workflowEngineManager);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT, ddlFormAdminDisplayContext);
@@ -469,6 +477,7 @@ public class DDLFormAdminPortlet extends MVCPortlet {
 	private DDMFormLayoutJSONSerializer _ddmFormLayoutJSONSerializer;
 	private DDMFormRenderer _ddmFormRenderer;
 	private DDMStructureLocalService _ddmStructureLocalService;
+	private DDMStructureService _ddmStructureService;
 	private JSONFactory _jsonFactory;
 	private StorageAdapterRegistry _storageAdapterRegistry;
 	private StorageEngine _storageEngine;
