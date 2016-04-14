@@ -28,6 +28,7 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.dynamic.data.lists.exception.RecordSetNameException" %><%@
 page import="com.liferay.dynamic.data.lists.form.web.display.context.DDLFormAdminDisplayContext" %><%@
+page import="com.liferay.dynamic.data.lists.form.web.display.context.DDLFormFieldLibraryDisplayContext" %><%@
 page import="com.liferay.dynamic.data.lists.form.web.display.context.DDLFormViewRecordsDisplayContext" %><%@
 page import="com.liferay.dynamic.data.lists.model.DDLRecord" %><%@
 page import="com.liferay.dynamic.data.lists.model.DDLRecordSet" %><%@
@@ -73,7 +74,7 @@ page import="java.util.Map" %>
 <%
 DDLFormAdminDisplayContext ddlFormAdminDisplayContext = (DDLFormAdminDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
-String tab = ParamUtil.getString(request, "tab", "forms");
+DDLFormFieldLibraryDisplayContext ddlFormFieldLibraryDisplayContext = ddlFormAdminDisplayContext.getDDLFormFieldLibraryDisplayContext();
 %>
 
 <%@ include file="/admin/init-ext.jsp" %>

@@ -126,6 +126,12 @@ public class DDLFormAdminDisplayContext {
 				renderRequest, renderResponse);
 	}
 
+	public DDLFormFieldLibraryDisplayContext
+		getDDLFormFieldLibraryDisplayContext() {
+
+		return _ddlFormFieldLibraryDisplayContext;
+	}
+
 	public DDLFormViewRecordDisplayContext
 		getDDLFormViewRecordDisplayContext() {
 
@@ -222,23 +228,7 @@ public class DDLFormAdminDisplayContext {
 		portletURL.setParameter(
 			"groupId",
 			String.valueOf(_ddlFormAdminRequestHelper.getScopeGroupId()));
-		portletURL.setParameter(
-			"tab",
-			ParamUtil.getString(_renderRequest, "tab", "forms"));
-
-		return portletURL;
-	}
-
-	public PortletURL getPortletURL(String tab) {
-		PortletURL portletURL = null;
-
-		if (tab.equals("field-library")) {
-			portletURL = _ddlFormFieldLibraryDisplayContext.getPortletURL();
-		}
-		else {
-			portletURL = getPortletURL();
-			portletURL.setParameter("tab", "forms");
-		}
+		portletURL.setParameter("tab", "forms");
 
 		return portletURL;
 	}

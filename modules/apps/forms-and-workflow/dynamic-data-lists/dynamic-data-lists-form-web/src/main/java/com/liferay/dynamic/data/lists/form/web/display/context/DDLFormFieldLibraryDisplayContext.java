@@ -15,7 +15,6 @@
 package com.liferay.dynamic.data.lists.form.web.display.context;
 
 import com.liferay.dynamic.data.lists.form.web.display.context.util.DDLFormFieldLibraryRequestHelper;
-import com.liferay.portal.kernel.util.ParamUtil;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
@@ -39,14 +38,12 @@ public class DDLFormFieldLibraryDisplayContext {
 	public PortletURL getPortletURL() {
 		PortletURL portletURL = _renderResponse.createRenderURL();
 
-		portletURL.setParameter("mvcPath", "/admin/view.jsp");
+		portletURL.setParameter("mvcPath", "/admin/view_field_library.jsp");
 		portletURL.setParameter(
 			"groupId",
 			String.valueOf(
 				_ddlFormFieldLibraryRequestHelper.getScopeGroupId()));
-		portletURL.setParameter(
-			"tab",
-			ParamUtil.getString(_renderRequest, "tab", "field-library"));
+		portletURL.setParameter("tab", "field-library");
 
 		return portletURL;
 	}
