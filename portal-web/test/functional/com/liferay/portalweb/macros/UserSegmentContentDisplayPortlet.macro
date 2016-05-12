@@ -1,6 +1,6 @@
 <definition>
 	<command name="configureDisplayContent">
-		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION" />
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION_DIALOG" />
 
 		<var method="selenium#getNumberDecrement('${rowNumber}')" name="rowIndexNumber" />
 
@@ -195,49 +195,58 @@
 	</command>
 
 	<command name="viewEntryPG">
+		<execute macro="ContentTargeting#expandPreview">
+			<var name="portletName" value="User Segment Content Display" />
+		</execute>
+
 		<if>
 			<isset var="viewUserSegmentSelected" />
 			<then>
-				<var name="key_viewUserSegmentSelected" value="${viewUserSegmentSelected}" />
-				<execute function="AssertElementPresent" locator1="UserSegmentContentDisplay#PREVIEW_USER_SEGMENT_SELECTED" value1="${viewUserSegmentSelected}" />
+				<var name="key_viewEntrySelected" value="${viewUserSegmentSelected}" />
+
+				<execute function="AssertElementPresent" locator1="ContentTargeting#PREVIEW_ENTRY_SELECTED" />
 			</then>
 		</if>
 
 		<if>
-			<isset var="entryContentText" />
+			<isset var="previewUserSegmentList" />
 			<then>
-				<execute function="AssertTextEquals" locator1="UserSegmentContentDisplay#ENTRY_CONTENT" value1="${entryContentText}" />
-			</then>
-		</if>
+				<for list="${previewUserSegmentList}" param="previewEntry">
+					<execute macro="ContentTargeting#expandPreview">
+						<var name="portletName" value="User Segment Content Display" />
+					</execute>
 
-		<if>
-			<isset var="preview1Text" />
-			<then>
-				<execute function="MouseOver" locator1="ContentTargeting#PREVIEW_1" />
-				<execute function="AssertTextEquals" locator1="ContentTargeting#PREVIEW_1" value1="${preview1Text}" />
-			</then>
-		</if>
+					<var name="key_previewEntry" value="${previewEntry}" />
 
-		<execute function="Pause" locator1="5000" />
+					<execute function="AssertClick" locator1="ContentTargeting#PREVIEW" value1="${previewEntry}" />
 
-		<if>
-			<isset var="preview2Text" />
-			<then>
-				<execute function="MouseOver" locator1="ContentTargeting#PREVIEW_2" />
-				<execute function="AssertTextEquals" locator1="ContentTargeting#PREVIEW_2" value1="${preview2Text}" />
-			</then>
-		</if>
+					<if>
+						<and>
+							<isset var="entryContentText" />
+							<not>
+								<equals arg1="${previewEntry}" arg2="default" />
+							</not>
+						</and>
+						<then>
+							<execute function="AssertTextEquals" locator1="UserSegmentContentDisplay#ENTRY_CONTENT" value1="${entryContentText}" />
+						</then>
+					</if>
 
-		<if>
-			<isset var="viewDontDisplay" />
-			<then>
-				<execute function="MouseOverNoError" locator1="PGUsersegmentcontentdisplay#${viewDontDisplay}" />
-				<execute function="AssertTextEquals" locator1="UserSegmentContentDisplay#ENTRY_CONTENT" value1="" />
+					<if>
+						<and>
+							<equals arg1="viewDontDisplay" arg2="true" />
+							<equals arg1="${previewEntry}" arg2="default" />
+						</and>
+						<then>
+							<execute function="AssertTextEquals" locator1="UserSegmentContentDisplay#ENTRY_CONTENT" value1="There are no matching rules" />
+						</then>
+					</if>
+				</for>
 			</then>
 		</if>
 	</command>
 
 	<command name="viewNoContentPG">
-		<execute function="AssertTextEquals" locator1="UserSegmentContentDisplay#ENTRY_CONTENT" value1="" />
+		<execute function="AssertTextEquals" locator1="UserSegmentContentDisplay#ENTRY_CONTENT" value1="There are no matching rules" />
 	</command>
 </definition>

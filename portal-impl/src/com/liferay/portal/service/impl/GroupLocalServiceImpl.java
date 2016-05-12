@@ -288,14 +288,15 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		if (staging) {
 			groupKey = groupKey.concat("-staging");
 
-			for (Locale locale : nameMap.keySet()) {
-				String name = nameMap.get(locale);
+			for (Map.Entry<Locale, String> entry : nameMap.entrySet()) {
+				String name = entry.getValue();
 
 				if (Validator.isNull(name)) {
 					continue;
 				}
 
-				nameMap.put(locale, name.concat(ORGANIZATION_STAGING_SUFFIX));
+				nameMap.put(
+					entry.getKey(), name.concat(ORGANIZATION_STAGING_SUFFIX));
 			}
 
 			friendlyURL = getFriendlyURL(friendlyURL.concat("-staging"));
@@ -833,7 +834,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 							scopeableWorkflowHandler.getClassName(), 0, 0,
 							true);
 
-				if (workflowDefinitionLink == null) {
+				if ((workflowDefinitionLink == null) ||
+					(workflowDefinitionLink.getGroupId() ==
+						group.getLiveGroupId())) {
+
 					continue;
 				}
 

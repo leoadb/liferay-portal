@@ -107,14 +107,14 @@ public class CalendarBookingLocalServiceImpl
 
 		long calendarBookingId = counterLocalService.increment();
 
-		for (Locale locale : descriptionMap.keySet()) {
+		for (Map.Entry<Locale, String> entry : descriptionMap.entrySet()) {
 			String sanitizedDescription = SanitizerUtil.sanitize(
 				calendar.getCompanyId(), calendar.getGroupId(), userId,
 				CalendarBooking.class.getName(), calendarBookingId,
-				ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
-				descriptionMap.get(locale), null);
+				ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL, entry.getValue(),
+				null);
 
-			descriptionMap.put(locale, sanitizedDescription);
+			descriptionMap.put(entry.getKey(), sanitizedDescription);
 		}
 
 		java.util.Calendar startTimeJCalendar = JCalendarUtil.getJCalendar(
@@ -167,7 +167,8 @@ public class CalendarBookingLocalServiceImpl
 
 		calendarBooking.setVEventUid(vEventUid);
 		calendarBooking.setTitleMap(titleMap, serviceContext.getLocale());
-		calendarBooking.setDescriptionMap(descriptionMap);
+		calendarBooking.setDescriptionMap(
+			descriptionMap, serviceContext.getLocale());
 		calendarBooking.setLocation(location);
 		calendarBooking.setStartTime(startTimeJCalendar.getTimeInMillis());
 		calendarBooking.setEndTime(endTimeJCalendar.getTimeInMillis());
@@ -815,14 +816,14 @@ public class CalendarBookingLocalServiceImpl
 		CalendarBooking calendarBooking =
 			calendarBookingPersistence.findByPrimaryKey(calendarBookingId);
 
-		for (Locale locale : descriptionMap.keySet()) {
+		for (Map.Entry<Locale, String> entry : descriptionMap.entrySet()) {
 			String sanitizedDescription = SanitizerUtil.sanitize(
 				calendar.getCompanyId(), calendar.getGroupId(), userId,
 				CalendarBooking.class.getName(), calendarBookingId,
-				ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
-				descriptionMap.get(locale), null);
+				ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL, entry.getValue(),
+				null);
 
-			descriptionMap.put(locale, sanitizedDescription);
+			descriptionMap.put(entry.getKey(), sanitizedDescription);
 		}
 
 		java.util.Calendar startTimeJCalendar = JCalendarUtil.getJCalendar(
@@ -862,7 +863,8 @@ public class CalendarBookingLocalServiceImpl
 
 		updatedDescriptionMap.putAll(descriptionMap);
 
-		calendarBooking.setDescriptionMap(updatedDescriptionMap);
+		calendarBooking.setDescriptionMap(
+			updatedDescriptionMap, serviceContext.getLocale());
 
 		calendarBooking.setLocation(location);
 		calendarBooking.setStartTime(startTimeJCalendar.getTimeInMillis());
