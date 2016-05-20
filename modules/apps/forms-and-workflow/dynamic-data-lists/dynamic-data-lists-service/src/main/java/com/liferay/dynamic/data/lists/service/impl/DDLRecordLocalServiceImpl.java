@@ -768,10 +768,6 @@ public class DDLRecordLocalServiceImpl extends DDLRecordLocalServiceBaseImpl {
 			visible = false;
 		}
 
-		if (scope == DDLRecordSetConstants.SCOPE_FORMS) {
-			visible = false;
-		}
-
 		DDMStructure ddmStructure = recordSet.getDDMStructure();
 
 		String ddmStructureName = ddmStructure.getName(locale);
