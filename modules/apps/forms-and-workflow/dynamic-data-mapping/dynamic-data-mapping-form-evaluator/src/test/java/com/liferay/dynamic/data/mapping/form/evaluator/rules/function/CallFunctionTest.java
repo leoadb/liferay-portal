@@ -64,19 +64,19 @@ public class CallFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Test
 	public void testDataProvider1() throws Exception {
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
+		DDMForm ddmForm = new DDMForm();
 
 		DDMFormField fieldDDMFormField0 = new DDMFormField("cep", "text");
 
-		ddmFormFields.add(fieldDDMFormField0);
+		ddmForm.addDDMFormField(fieldDDMFormField0);
 
 		DDMFormField fieldDDMFormField1 = new DDMFormField("rua", "text");
 
-		ddmFormFields.add(fieldDDMFormField1);
+		ddmForm.addDDMFormField(fieldDDMFormField1);
 
 		DDMFormField fieldDDMFormField2 = new DDMFormField("cidade", "text");
 
-		ddmFormFields.add(fieldDDMFormField2);
+		ddmForm.addDDMFormField(fieldDDMFormField2);
 
 		DDMFormValues ddmFormValues = createDDMFormValues();
 
@@ -103,7 +103,7 @@ public class CallFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
-			createDDMFormRuleEvaluatorContext(ddmFormFields, ddmFormValues);
+			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
 
 		Map<String, DDMFormFieldEvaluationResult>
 			ddmFormFieldEvaluationResults =
@@ -134,7 +134,7 @@ public class CallFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		CallFunction callFunction = new CallFunction();
 
 		when(
-			_ddmDataProvider, "doGet", Matchers.any(
+			ddmDataProvider, "doGet", Matchers.any(
 				DDMDataProviderContext.class)).thenReturn(jsonArray);
 
 		String expression = callFunction.execute(
@@ -144,27 +144,27 @@ public class CallFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 		Assert.assertEquals(3, ddmFormFieldEvaluationResults.size());
 
-		DDMFormFieldEvaluationResult ddmFormFieldRuleEvaluationResult =
+		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
 			ddmFormFieldEvaluationResults.get("rua");
 
 		Assert.assertEquals(
 			jsonObject.get("logradouro"),
-			ddmFormFieldRuleEvaluationResult.getValue());
+			ddmFormFieldEvaluationResult.getValue());
 
-		ddmFormFieldRuleEvaluationResult = ddmFormFieldEvaluationResults.get(
+		ddmFormFieldEvaluationResult = ddmFormFieldEvaluationResults.get(
 			"cidade");
 
 		Assert.assertEquals(
 			jsonObject.get("localidade"),
-			ddmFormFieldRuleEvaluationResult.getValue());
+			ddmFormFieldEvaluationResult.getValue());
 	}
 
 	@Test(expected = DDMFormEvaluationException.class)
 	public void testInvalidParameters() throws Exception {
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
+		DDMForm ddmForm = new DDMForm();
 		DDMFormValues ddmFormValues = createDDMFormValues();
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
-			createDDMFormRuleEvaluatorContext(ddmFormFields, ddmFormValues);
+			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
 		CallFunction callFunction = new CallFunction();
 
 		callFunction.execute(
@@ -173,56 +173,56 @@ public class CallFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Override
 	protected DDMFormRuleEvaluatorContext createDDMFormRuleEvaluatorContext(
-			List<DDMFormField> ddmFormFields, DDMFormValues ddmFormValues)
+			DDMForm ddmForm, DDMFormValues ddmFormValues)
 		throws Exception {
 
 		mockStatic(DDMFormFactory.class);
 
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
 			new DDMFormRuleEvaluatorContext(
-				_ddmDataProviderInstanceService, _ddmDataProviderTracker,
-				new DDMExpressionFactoryImpl(), ddmFormFields, ddmFormValues,
-				_ddmFormValuesJSONDeserializer, LocaleUtil.US);
+				ddmDataProviderInstanceService, ddmDataProviderTracker,
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues,
+				ddmFormValuesJSONDeserializer, LocaleUtil.US);
 
 		when(
-			_ddmDataProviderInstanceService, "getDataProviderInstance",
-			Matchers.anyLong()).thenReturn(_ddmDataProviderInstance);
+			ddmDataProviderInstanceService, "getDataProviderInstance",
+			Matchers.anyLong()).thenReturn(ddmDataProviderInstance);
 
 		when(
-			_ddmDataProviderTracker, "getDDMDataProvider",
-			Matchers.anyString()).thenReturn(_ddmDataProvider);
+			ddmDataProviderTracker, "getDDMDataProvider",
+			Matchers.anyString()).thenReturn(ddmDataProvider);
 
 		when(
 			DDMFormFactory.class, "create",
-			Matchers.any()).thenReturn(_ddmForm);
+			Matchers.any()).thenReturn(ddmFormMock);
 
 		when(
-			_ddmFormValuesJSONDeserializer, "deserialize",
+			ddmFormValuesJSONDeserializer, "deserialize",
 			Matchers.any(DDMForm.class),
-			Matchers.anyString()).thenReturn(_ddmFormValues);
+			Matchers.anyString()).thenReturn(ddmFormValuesMock);
 
 		return ddmFormRuleEvaluatorContext;
 	}
 
 	@Mock
-	private DDMDataProvider _ddmDataProvider;
+	protected DDMDataProvider ddmDataProvider;
 
 	@Mock
-	private DDMDataProviderInstance _ddmDataProviderInstance;
+	protected DDMDataProviderInstance ddmDataProviderInstance;
 
 	@Mock
-	private DDMDataProviderInstanceService _ddmDataProviderInstanceService;
+	protected DDMDataProviderInstanceService ddmDataProviderInstanceService;
 
 	@Mock
-	private DDMDataProviderTracker _ddmDataProviderTracker;
+	protected DDMDataProviderTracker ddmDataProviderTracker;
 
 	@Mock
-	private DDMForm _ddmForm;
+	protected DDMForm ddmFormMock;
 
 	@Mock
-	private DDMFormValues _ddmFormValues;
+	protected DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer;
 
 	@Mock
-	private DDMFormValuesJSONDeserializer _ddmFormValuesJSONDeserializer;
+	protected DDMFormValues ddmFormValuesMock;
 
 }

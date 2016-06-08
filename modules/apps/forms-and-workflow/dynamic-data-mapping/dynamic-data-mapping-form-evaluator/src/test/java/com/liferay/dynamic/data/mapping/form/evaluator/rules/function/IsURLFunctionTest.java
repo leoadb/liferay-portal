@@ -17,7 +17,7 @@ package com.liferay.dynamic.data.mapping.form.evaluator.rules.function;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.DDMFormRuleEvaluatorContext;
-import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.function.VisibilityFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.function.IsURLFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.rules.DDMFormRuleEvaluatorBaseTest;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -41,7 +41,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  * @author Leonardo Barros
  */
 @RunWith(PowerMockRunner.class)
-public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
+public class IsURLFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Test(expected = DDMFormEvaluationException.class)
 	public void testInvalidParameters() throws Exception {
@@ -50,14 +50,14 @@ public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
 			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
 
-		VisibilityFunction visibleFunction = new VisibilityFunction();
+		IsURLFunction isURLFunction = new IsURLFunction();
 
-		visibleFunction.execute(
+		isURLFunction.execute(
 			ddmFormRuleEvaluatorContext, ListUtil.fromArray(new String[0]));
 	}
 
 	@Test
-	public void testNotReadOnly() throws Exception {
+	public void testIsNotURL() throws Exception {
 		DDMForm ddmForm = new DDMForm();
 
 		DDMFormField fieldDDMFormField0 = new DDMFormField("field1", "text");
@@ -68,7 +68,7 @@ public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 		DDMFormFieldValue fieldDDMFormFieldValue0 =
 			DDMFormValuesTestUtil.createDDMFormFieldValue(
-				"field1_instanceId", "field1", new UnlocalizedValue("value1"));
+				"field1_instanceId", "field1", new UnlocalizedValue("value"));
 
 		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
 
@@ -89,24 +89,24 @@ public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
 			ddmFormFieldEvaluationResults.get("field1");
 
-		ddmFormFieldEvaluationResult.setVisible(false);
+		ddmFormFieldEvaluationResult.setReadOnly(false);
 
 		List<String> parameters = ListUtil.fromArray(
-			new String[] {"isVisible(field1)", "isVisible", "field1"});
+			new String[] {"isURL(field1)", "isURL", "field1"});
 
-		VisibilityFunction visibleFunction = new VisibilityFunction();
+		IsURLFunction isURLFunction = new IsURLFunction();
 
-		String expression = visibleFunction.execute(
+		String expression = isURLFunction.execute(
 			ddmFormRuleEvaluatorContext, parameters);
 
 		Assert.assertEquals("FALSE", expression);
 	}
 
 	@Test
-	public void testReadOnly() throws Exception {
+	public void testIsURL() throws Exception {
 		DDMForm ddmForm = new DDMForm();
 
-		DDMFormField fieldDDMFormField0 = new DDMFormField("field0", "text");
+		DDMFormField fieldDDMFormField0 = new DDMFormField("field1", "text");
 
 		ddmForm.addDDMFormField(fieldDDMFormField0);
 
@@ -114,7 +114,8 @@ public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 		DDMFormFieldValue fieldDDMFormFieldValue0 =
 			DDMFormValuesTestUtil.createDDMFormFieldValue(
-				"field0_instanceId", "field0", new UnlocalizedValue("value0"));
+				"field1_instanceId", "field1",
+				new UnlocalizedValue("http://www.liferay.com"));
 
 		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
 
@@ -133,16 +134,16 @@ public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField0, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field0");
+			ddmFormFieldEvaluationResults.get("field1");
 
-		ddmFormFieldEvaluationResult.setVisible(true);
+		ddmFormFieldEvaluationResult.setReadOnly(false);
 
 		List<String> parameters = ListUtil.fromArray(
-			new String[] {"isVisible(field0)", "isVisible", "field0"});
+			new String[] {"isURL(field1)", "isURL", "field1"});
 
-		VisibilityFunction visibleFunction = new VisibilityFunction();
+		IsURLFunction isURLFunction = new IsURLFunction();
 
-		String expression = visibleFunction.execute(
+		String expression = isURLFunction.execute(
 			ddmFormRuleEvaluatorContext, parameters);
 
 		Assert.assertEquals("TRUE", expression);

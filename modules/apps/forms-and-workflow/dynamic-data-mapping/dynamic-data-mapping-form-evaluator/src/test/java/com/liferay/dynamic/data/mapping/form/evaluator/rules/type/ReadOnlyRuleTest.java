@@ -12,12 +12,11 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.rules.function;
+package com.liferay.dynamic.data.mapping.form.evaluator.rules.type;
 
-import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.DDMFormRuleEvaluatorContext;
-import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.function.VisibilityFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.type.ReadOnlyRule;
 import com.liferay.dynamic.data.mapping.form.evaluator.rules.DDMFormRuleEvaluatorBaseTest;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -25,7 +24,7 @@ import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
-import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,28 +32,11 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * @author Leonardo Barros
  */
-@RunWith(PowerMockRunner.class)
-public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
-
-	@Test(expected = DDMFormEvaluationException.class)
-	public void testInvalidParameters() throws Exception {
-		DDMForm ddmForm = new DDMForm();
-		DDMFormValues ddmFormValues = createDDMFormValues();
-		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
-			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
-
-		VisibilityFunction visibleFunction = new VisibilityFunction();
-
-		visibleFunction.execute(
-			ddmFormRuleEvaluatorContext, ListUtil.fromArray(new String[0]));
-	}
+public class ReadOnlyRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Test
 	public void testNotReadOnly() throws Exception {
@@ -64,15 +46,37 @@ public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmForm.addDDMFormField(fieldDDMFormField0);
 
-		DDMFormValues ddmFormValues = createDDMFormValues();
+		DDMFormField fieldDDMFormField1 = new DDMFormField("field2", "text");
 
-		DDMFormFieldValue fieldDDMFormFieldValue0 =
-			DDMFormValuesTestUtil.createDDMFormFieldValue(
-				"field1_instanceId", "field1", new UnlocalizedValue("value1"));
+		ddmForm.addDDMFormField(fieldDDMFormField1);
+
+		DDMFormField fieldDDMFormField2 = new DDMFormField("field3", "text");
+
+		ddmForm.addDDMFormField(fieldDDMFormField2);
+
+		DDMFormValues ddmFormValues = createDDMFormValues();
 
 		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
 
+		DDMFormFieldValue fieldDDMFormFieldValue0 =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"field1_instanceId", "field1", new UnlocalizedValue("3"));
+
 		ddmFormFieldValues.add(fieldDDMFormFieldValue0);
+
+		DDMFormFieldValue fieldDDMFormFieldValue1 =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"field2_instanceId", "field2",
+				new UnlocalizedValue("simple text"));
+
+		ddmFormFieldValues.add(fieldDDMFormFieldValue1);
+
+		DDMFormFieldValue fieldDDMFormFieldValue2 =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"field3_instanceId", "field3",
+				new UnlocalizedValue("simple text"));
+
+		ddmFormFieldValues.add(fieldDDMFormFieldValue2);
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
@@ -86,39 +90,52 @@ public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		createDDMFormFieldEvaluationResult(
 			fieldDDMFormField0, ddmFormValues, ddmFormFieldEvaluationResults);
 
+		createDDMFormFieldEvaluationResult(
+			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
+
+		createDDMFormFieldEvaluationResult(
+			fieldDDMFormField2, ddmFormValues, ddmFormFieldEvaluationResults);
+
+		ReadOnlyRule readOnlyRule = new ReadOnlyRule(
+			"field1", StringPool.BLANK,
+			"between(field1, 5, 10) && equals(field2, field3)",
+			ddmFormRuleEvaluatorContext);
+
+		readOnlyRule.execute();
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
 			ddmFormFieldEvaluationResults.get("field1");
 
-		ddmFormFieldEvaluationResult.setVisible(false);
-
-		List<String> parameters = ListUtil.fromArray(
-			new String[] {"isVisible(field1)", "isVisible", "field1"});
-
-		VisibilityFunction visibleFunction = new VisibilityFunction();
-
-		String expression = visibleFunction.execute(
-			ddmFormRuleEvaluatorContext, parameters);
-
-		Assert.assertEquals("FALSE", expression);
+		Assert.assertFalse(ddmFormFieldEvaluationResult.isReadOnly());
 	}
 
 	@Test
 	public void testReadOnly() throws Exception {
 		DDMForm ddmForm = new DDMForm();
 
-		DDMFormField fieldDDMFormField0 = new DDMFormField("field0", "text");
+		DDMFormField fieldDDMFormField0 = new DDMFormField("field1", "text");
 
 		ddmForm.addDDMFormField(fieldDDMFormField0);
 
-		DDMFormValues ddmFormValues = createDDMFormValues();
+		DDMFormField fieldDDMFormField1 = new DDMFormField("field2", "text");
 
-		DDMFormFieldValue fieldDDMFormFieldValue0 =
-			DDMFormValuesTestUtil.createDDMFormFieldValue(
-				"field0_instanceId", "field0", new UnlocalizedValue("value0"));
+		ddmForm.addDDMFormField(fieldDDMFormField1);
+
+		DDMFormValues ddmFormValues = createDDMFormValues();
 
 		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
 
+		DDMFormFieldValue fieldDDMFormFieldValue0 =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"field1_instanceId", "field1", new UnlocalizedValue("3"));
+
 		ddmFormFieldValues.add(fieldDDMFormFieldValue0);
+
+		DDMFormFieldValue fieldDDMFormFieldValue1 =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"field2_instanceId", "field2", new UnlocalizedValue("7"));
+
+		ddmFormFieldValues.add(fieldDDMFormFieldValue1);
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
@@ -132,20 +149,19 @@ public class VisibleFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		createDDMFormFieldEvaluationResult(
 			fieldDDMFormField0, ddmFormValues, ddmFormFieldEvaluationResults);
 
+		createDDMFormFieldEvaluationResult(
+			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
+
+		ReadOnlyRule readOnlyRule = new ReadOnlyRule(
+			"field1", StringPool.BLANK, "10 >= (field1 + field2)",
+			ddmFormRuleEvaluatorContext);
+
+		readOnlyRule.execute();
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field0");
+			ddmFormFieldEvaluationResults.get("field1");
 
-		ddmFormFieldEvaluationResult.setVisible(true);
-
-		List<String> parameters = ListUtil.fromArray(
-			new String[] {"isVisible(field0)", "isVisible", "field0"});
-
-		VisibilityFunction visibleFunction = new VisibilityFunction();
-
-		String expression = visibleFunction.execute(
-			ddmFormRuleEvaluatorContext, parameters);
-
-		Assert.assertEquals("TRUE", expression);
+		Assert.assertTrue(ddmFormFieldEvaluationResult.isReadOnly());
 	}
 
 }

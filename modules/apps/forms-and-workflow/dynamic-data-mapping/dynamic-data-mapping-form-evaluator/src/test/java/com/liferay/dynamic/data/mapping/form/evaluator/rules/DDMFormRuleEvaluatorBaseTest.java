@@ -22,6 +22,8 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
@@ -30,6 +32,7 @@ import java.util.Map;
 
 import org.junit.Before;
 
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import org.powermock.api.mockito.PowerMockito;
@@ -42,6 +45,7 @@ public abstract class DDMFormRuleEvaluatorBaseTest extends PowerMockito {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		setUpLanguageUtil();
 	}
 
 	protected void createDDMFormFieldEvaluationResult(
@@ -73,12 +77,12 @@ public abstract class DDMFormRuleEvaluatorBaseTest extends PowerMockito {
 	}
 
 	protected DDMFormRuleEvaluatorContext createDDMFormRuleEvaluatorContext(
-			List<DDMFormField> ddmFormFields, DDMFormValues ddmFormValues)
+			DDMForm ddmForm, DDMFormValues ddmFormValues)
 		throws Exception {
 
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
 			new DDMFormRuleEvaluatorContext(
-				null, null, new DDMExpressionFactoryImpl(), ddmFormFields,
+				null, null, new DDMExpressionFactoryImpl(), ddmForm,
 				ddmFormValues, null, LocaleUtil.US);
 
 		return ddmFormRuleEvaluatorContext;
@@ -88,5 +92,14 @@ public abstract class DDMFormRuleEvaluatorBaseTest extends PowerMockito {
 		DDMForm ddmForm = new DDMForm();
 		return DDMFormValuesTestUtil.createDDMFormValues(ddmForm);
 	}
+
+	protected void setUpLanguageUtil() {
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		languageUtil.setLanguage(_language);
+	}
+
+	@Mock
+	private Language _language;
 
 }

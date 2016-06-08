@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.DDMFormRul
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.function.ContainsFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.function.EqualsFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.rules.DDMFormRuleEvaluatorBaseTest;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
@@ -45,10 +46,10 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Test(expected = DDMFormEvaluationException.class)
 	public void testInvalidParameters() throws Exception {
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
+		DDMForm ddmForm = new DDMForm();
 		DDMFormValues ddmFormValues = createDDMFormValues();
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
-			createDDMFormRuleEvaluatorContext(ddmFormFields, ddmFormValues);
+			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
 
 		EqualsFunction equalsFunction = new EqualsFunction();
 
@@ -58,11 +59,11 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Test
 	public void testWithConstants() throws Exception {
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
+		DDMForm ddmForm = new DDMForm();
 
 		DDMFormField fieldDDMFormField0 = new DDMFormField("field0", "text");
 
-		ddmFormFields.add(fieldDDMFormField0);
+		ddmForm.addDDMFormField(fieldDDMFormField0);
 
 		DDMFormValues ddmFormValues = createDDMFormValues();
 
@@ -77,7 +78,7 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
-			createDDMFormRuleEvaluatorContext(ddmFormFields, ddmFormValues);
+			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
 
 		Map<String, DDMFormFieldEvaluationResult>
 			ddmFormFieldEvaluationResults =
@@ -101,11 +102,11 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Test
 	public void testWithConstants2() throws Exception {
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
+		DDMForm ddmForm = new DDMForm();
 
 		DDMFormField fieldDDMFormField0 = new DDMFormField("field0", "text");
 
-		ddmFormFields.add(fieldDDMFormField0);
+		ddmForm.addDDMFormField(fieldDDMFormField0);
 
 		DDMFormValues ddmFormValues = createDDMFormValues();
 
@@ -120,7 +121,7 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
-			createDDMFormRuleEvaluatorContext(ddmFormFields, ddmFormValues);
+			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
 
 		Map<String, DDMFormFieldEvaluationResult>
 			ddmFormFieldEvaluationResults =
@@ -144,15 +145,15 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Test
 	public void testWithOtherField() throws Exception {
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
+		DDMForm ddmForm = new DDMForm();
 
 		DDMFormField fieldDDMFormField0 = new DDMFormField("field0", "text");
 
-		ddmFormFields.add(fieldDDMFormField0);
+		ddmForm.addDDMFormField(fieldDDMFormField0);
 
 		DDMFormField fieldDDMFormField1 = new DDMFormField("field1", "text");
 
-		ddmFormFields.add(fieldDDMFormField1);
+		ddmForm.addDDMFormField(fieldDDMFormField1);
 
 		DDMFormValues ddmFormValues = createDDMFormValues();
 
@@ -175,7 +176,7 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
-			createDDMFormRuleEvaluatorContext(ddmFormFields, ddmFormValues);
+			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
 
 		Map<String, DDMFormFieldEvaluationResult>
 			ddmFormFieldEvaluationResults =
@@ -202,15 +203,15 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 	@Test
 	public void testWithOtherField2() throws Exception {
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
+		DDMForm ddmForm = new DDMForm();
 
 		DDMFormField fieldDDMFormField0 = new DDMFormField("field0", "text");
 
-		ddmFormFields.add(fieldDDMFormField0);
+		ddmForm.addDDMFormField(fieldDDMFormField0);
 
 		DDMFormField fieldDDMFormField1 = new DDMFormField("field1", "text");
 
-		ddmFormFields.add(fieldDDMFormField1);
+		ddmForm.addDDMFormField(fieldDDMFormField1);
 
 		DDMFormValues ddmFormValues = createDDMFormValues();
 
@@ -233,7 +234,7 @@ public class EqualsFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		DDMFormRuleEvaluatorContext ddmFormRuleEvaluatorContext =
-			createDDMFormRuleEvaluatorContext(ddmFormFields, ddmFormValues);
+			createDDMFormRuleEvaluatorContext(ddmForm, ddmFormValues);
 
 		Map<String, DDMFormFieldEvaluationResult>
 			ddmFormFieldEvaluationResults =
