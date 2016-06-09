@@ -32,14 +32,17 @@ public class FunctionFactory {
 		else if(name.equals(_EQUALS)) {
 			return _equalsFunction;
 		}
+		else if(name.equals(_IS_EMAIL_ADDRESS)) {
+			return _isEmailAddressFunction;
+		}
 		else if(name.equals(_IS_READ_ONLY)) {
 			return _readOnlyFunction;
 		}
-		else if(name.equals(_IS_VISIBLE)) {
-			return _visibilityFunction;
-		}
 		else if(name.equals(_IS_URL)) {
 			return _isUrlFunction;
+		}
+		else if(name.equals(_IS_VISIBLE)) {
+			return _visibilityFunction;
 		}
 
 		throw new IllegalArgumentException("Invalid function name");
@@ -63,7 +66,9 @@ public class FunctionFactory {
 	}
 
 	public static String[] getValidationFunctionPatterns() {
-		return new String[] {_isUrlFunction.getPattern()};
+		return new String[] {
+			_isEmailAddressFunction.getPattern(), _isUrlFunction.getPattern()
+		};
 	}
 
 	public static String[] getValueFunctionPatterns() {
@@ -87,6 +92,8 @@ public class FunctionFactory {
 
 	private static final String _EQUALS = "equals";
 
+	private static final String _IS_EMAIL_ADDRESS = "isEmailAddress";
+
 	private static final String _IS_READ_ONLY = "isReadOnly";
 
 	private static final String _IS_URL = "isURL";
@@ -97,6 +104,8 @@ public class FunctionFactory {
 	private static final Function _callFunction = new CallFunction();
 	private static final Function _containsFunction = new ContainsFunction();
 	private static final Function _equalsFunction = new EqualsFunction();
+	private static final Function _isEmailAddressFunction =
+		new IsEmailAddress();
 	private static final Function _isUrlFunction = new IsURLFunction();
 	private static final Function _readOnlyFunction = new ReadOnlyFunction();
 	private static final Function _visibilityFunction =
