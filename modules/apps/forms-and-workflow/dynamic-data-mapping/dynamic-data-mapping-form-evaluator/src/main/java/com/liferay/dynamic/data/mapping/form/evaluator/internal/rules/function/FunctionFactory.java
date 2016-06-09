@@ -19,6 +19,12 @@ package com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.function;
  */
 public class FunctionFactory {
 
+	public static String[] getDataProviderFunctionPatterns() {
+		return new String[] {
+			_callFunction.getPattern(), _getOptionsFunction.getPattern()
+		};
+	}
+
 	public static Function getFunction(String name) {
 		if (name.equals(_BETWEEN)) {
 			return _betweenFunction;
@@ -31,6 +37,9 @@ public class FunctionFactory {
 		}
 		else if(name.equals(_EQUALS)) {
 			return _equalsFunction;
+		}
+		else if(name.equals(_GET_OPTIONS)) {
+			return _getOptionsFunction;
 		}
 		else if(name.equals(_IS_EMAIL_ADDRESS)) {
 			return _isEmailAddressFunction;
@@ -56,6 +65,7 @@ public class FunctionFactory {
 			_ALL_FUNCTIONS_PATTERNS = new String[] {
 				_betweenFunction.getPattern(), _callFunction.getPattern(),
 				_containsFunction.getPattern(), _equalsFunction.getPattern(),
+				_getOptionsFunction.getPattern(),
 				_isEmailAddressFunction.getPattern(),
 				_isNumberFunction.getPattern(), _isUrlFunction.getPattern(),
 				_readOnlyFunction.getPattern(), _visibilityFunction.getPattern()
@@ -97,6 +107,8 @@ public class FunctionFactory {
 
 	private static final String _EQUALS = "equals";
 
+	private static final String _GET_OPTIONS = "getOptions";
+
 	private static final String _IS_EMAIL_ADDRESS = "isEmailAddress";
 
 	private static final String _IS_NUMBER = "isNumber";
@@ -111,6 +123,8 @@ public class FunctionFactory {
 	private static final Function _callFunction = new CallFunction();
 	private static final Function _containsFunction = new ContainsFunction();
 	private static final Function _equalsFunction = new EqualsFunction();
+	private static final Function _getOptionsFunction =
+		new GetOptionsFunction();
 	private static final Function _isEmailAddressFunction =
 		new IsEmailAddress();
 	private static final Function _isNumberFunction = new isNumberFunction();

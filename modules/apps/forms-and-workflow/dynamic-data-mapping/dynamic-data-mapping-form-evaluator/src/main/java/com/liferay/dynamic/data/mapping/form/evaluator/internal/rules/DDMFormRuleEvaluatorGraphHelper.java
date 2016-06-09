@@ -62,6 +62,7 @@ public class DDMFormRuleEvaluatorGraphHelper {
 
 		Set<DDMFormRuleEvaluatorNode> edges = new HashSet<>();
 
+		edges.addAll(createDataProviderEdges(expression));
 		edges.addAll(createVisibilityEdges(expression));
 		edges.addAll(createReadOnlyEdges(expression));
 		edges.addAll(createValidationEdges(expression));
@@ -115,6 +116,23 @@ public class DDMFormRuleEvaluatorGraphHelper {
 		}
 
 		return false;
+	}
+
+	protected Set<DDMFormRuleEvaluatorNode> createDataProviderEdges(
+		String expression) {
+
+		Set<DDMFormRuleEvaluatorNode> edges = new HashSet<>();
+
+		for (String patternStr :
+				FunctionFactory.getDataProviderFunctionPatterns()) {
+
+			edges.addAll(
+				createEdges(
+					expression, patternStr,
+					DDMFormFieldRuleType.DATA_PROVIDER));
+		}
+
+		return edges;
 	}
 
 	protected void createDDMFormFieldRuleEvaluationResult(
