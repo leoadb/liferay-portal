@@ -38,6 +38,9 @@ public class FunctionFactory {
 		else if(name.equals(_IS_VISIBLE)) {
 			return _visibilityFunction;
 		}
+		else if(name.equals(_IS_URL)) {
+			return _isUrlFunction;
+		}
 
 		throw new IllegalArgumentException("Invalid function name");
 	}
@@ -47,7 +50,8 @@ public class FunctionFactory {
 			_ALL_FUNCTIONS_PATTERNS = new String[] {
 				_betweenFunction.getPattern(), _callFunction.getPattern(),
 				_containsFunction.getPattern(), _equalsFunction.getPattern(),
-				_readOnlyFunction.getPattern(), _visibilityFunction.getPattern()
+				_isUrlFunction.getPattern(), _readOnlyFunction.getPattern(),
+				_visibilityFunction.getPattern()
 			};
 		}
 
@@ -56,6 +60,10 @@ public class FunctionFactory {
 
 	public static String getReadOnlyFunctionPattern() {
 		return _readOnlyFunction.getPattern();
+	}
+
+	public static String[] getValidationFunctionPatterns() {
+		return new String[] {_isUrlFunction.getPattern()};
 	}
 
 	public static String[] getValueFunctionPatterns() {
@@ -81,12 +89,15 @@ public class FunctionFactory {
 
 	private static final String _IS_READ_ONLY = "isReadOnly";
 
+	private static final String _IS_URL = "isURL";
+
 	private static final String _IS_VISIBLE = "isVisible";
 
 	private static final Function _betweenFunction = new BetweenFunction();
 	private static final Function _callFunction = new CallFunction();
 	private static final Function _containsFunction = new ContainsFunction();
 	private static final Function _equalsFunction = new EqualsFunction();
+	private static final Function _isUrlFunction = new IsURLFunction();
 	private static final Function _readOnlyFunction = new ReadOnlyFunction();
 	private static final Function _visibilityFunction =
 		new VisibilityFunction();
