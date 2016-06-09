@@ -35,6 +35,9 @@ public class FunctionFactory {
 		else if(name.equals(_IS_EMAIL_ADDRESS)) {
 			return _isEmailAddressFunction;
 		}
+		else if(name.equals(_IS_NUMBER)) {
+			return _isNumberFunction;
+		}
 		else if(name.equals(_IS_READ_ONLY)) {
 			return _readOnlyFunction;
 		}
@@ -53,8 +56,9 @@ public class FunctionFactory {
 			_ALL_FUNCTIONS_PATTERNS = new String[] {
 				_betweenFunction.getPattern(), _callFunction.getPattern(),
 				_containsFunction.getPattern(), _equalsFunction.getPattern(),
-				_isUrlFunction.getPattern(), _readOnlyFunction.getPattern(),
-				_visibilityFunction.getPattern()
+				_isEmailAddressFunction.getPattern(),
+				_isNumberFunction.getPattern(), _isUrlFunction.getPattern(),
+				_readOnlyFunction.getPattern(), _visibilityFunction.getPattern()
 			};
 		}
 
@@ -67,7 +71,8 @@ public class FunctionFactory {
 
 	public static String[] getValidationFunctionPatterns() {
 		return new String[] {
-			_isEmailAddressFunction.getPattern(), _isUrlFunction.getPattern()
+			_isEmailAddressFunction.getPattern(),
+			_isNumberFunction.getPattern(), _isUrlFunction.getPattern()
 		};
 	}
 
@@ -94,6 +99,8 @@ public class FunctionFactory {
 
 	private static final String _IS_EMAIL_ADDRESS = "isEmailAddress";
 
+	private static final String _IS_NUMBER = "isNumber";
+
 	private static final String _IS_READ_ONLY = "isReadOnly";
 
 	private static final String _IS_URL = "isURL";
@@ -106,6 +113,7 @@ public class FunctionFactory {
 	private static final Function _equalsFunction = new EqualsFunction();
 	private static final Function _isEmailAddressFunction =
 		new IsEmailAddress();
+	private static final Function _isNumberFunction = new isNumberFunction();
 	private static final Function _isUrlFunction = new IsURLFunction();
 	private static final Function _readOnlyFunction = new ReadOnlyFunction();
 	private static final Function _visibilityFunction =
