@@ -234,13 +234,16 @@ public class DDMFormRuleEvaluatorGraphHelper {
 		return _ddmFormRuleEvaluatorContext.getDDMExpressionFactory();
 	}
 
+	protected DDMForm getDDMForm() {
+		return _ddmFormRuleEvaluatorContext.getDDMForm();
+	}
+
 	protected List<DDMFormField> getDDMFormFields() {
 		return _ddmFormRuleEvaluatorContext.getDDMFormFields();
 	}
 
 	protected Map<String, DDMFormField> getDDMFormFieldsMap() {
-		List<DDMFormField> ddmFormFields = getDDMFormFields();
-		DDMForm ddmForm = ddmFormFields.get(0).getDDMForm();
+		DDMForm ddmForm = getDDMForm();
 
 		return ddmForm.getDDMFormFieldsMap(true);
 	}

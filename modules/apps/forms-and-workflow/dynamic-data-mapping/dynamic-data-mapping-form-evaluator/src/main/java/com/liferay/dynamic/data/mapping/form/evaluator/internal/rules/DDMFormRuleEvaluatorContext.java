@@ -18,6 +18,7 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
@@ -35,15 +36,15 @@ public class DDMFormRuleEvaluatorContext {
 	public DDMFormRuleEvaluatorContext(
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
-		DDMExpressionFactory ddmExpressionFactory,
-		List<DDMFormField> ddmFormFields, DDMFormValues ddmFormValues,
+		DDMExpressionFactory ddmExpressionFactory, DDMForm ddmForm,
+		DDMFormValues ddmFormValues,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 		Locale locale) {
 
 		_ddmDataProviderInstanceService = ddmDataProviderInstanceService;
 		_ddmDataProviderTracker = ddmDataProviderTracker;
 		_ddmExpressionFactory = ddmExpressionFactory;
-		_ddmFormFields = ddmFormFields;
+		_ddmForm = ddmForm;
 		_ddmFormValues = ddmFormValues;
 		_ddmFormValuesJSONDeserializer = ddmFormValuesJSONDeserializer;
 		_locale = locale;
@@ -61,6 +62,10 @@ public class DDMFormRuleEvaluatorContext {
 		return _ddmExpressionFactory;
 	}
 
+	public DDMForm getDDMForm() {
+		return _ddmForm;
+	}
+
 	public Map<String, DDMFormFieldEvaluationResult>
 		getDDMFormFieldEvaluationResults() {
 
@@ -68,7 +73,7 @@ public class DDMFormRuleEvaluatorContext {
 	}
 
 	public List<DDMFormField> getDDMFormFields() {
-		return _ddmFormFields;
+		return _ddmForm.getDDMFormFields();
 	}
 
 	public DDMFormValues getDDMFormValues() {
@@ -87,9 +92,9 @@ public class DDMFormRuleEvaluatorContext {
 		_ddmDataProviderInstanceService;
 	private final DDMDataProviderTracker _ddmDataProviderTracker;
 	private final DDMExpressionFactory _ddmExpressionFactory;
+	private final DDMForm _ddmForm;
 	private final Map<String, DDMFormFieldEvaluationResult>
 		_ddmFormFieldEvaluationResults = new HashMap<>();
-	private final List<DDMFormField> _ddmFormFields;
 	private final DDMFormValues _ddmFormValues;
 	private final DDMFormValuesJSONDeserializer _ddmFormValuesJSONDeserializer;
 	private final Locale _locale;
