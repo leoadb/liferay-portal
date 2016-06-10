@@ -247,6 +247,6 @@ public class CallFunction extends BaseFunction {
 	}
 
 	private static final String _PATTERN =
-		"((call)\\((\\d+),\"(.+)\",\"(.+)\"\\))";
+		"((call)\\((\\d+),\"(.*)\",\"(.+)\"\\))";
 
 }
