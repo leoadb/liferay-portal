@@ -72,7 +72,7 @@ AUI.add(
 					getTemplateContext: function() {
 						var instance = this;
 
-						var value = instance.getContextValue();
+						var value = instance.get('value');
 
 						return A.merge(
 							DateField.superclass.getTemplateContext.apply(instance, arguments),

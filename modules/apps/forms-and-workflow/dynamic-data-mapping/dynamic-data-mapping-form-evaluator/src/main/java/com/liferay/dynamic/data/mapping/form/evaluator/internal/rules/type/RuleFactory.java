@@ -18,9 +18,13 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldRule;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
+import com.liferay.portal.kernel.util.StringPool;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,10 +38,12 @@ public class RuleFactory {
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
 		Map<String, DDMFormFieldEvaluationResult>
-			ddmFormFieldEvaluationResults, String ddmFormFieldName,
+			ddmFormFieldEvaluationResults, DDMFormField ddmFormField,
 		DDMFormFieldRuleType ddmFormFieldRuleType,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 		String instanceId, Locale locale) {
+
+		String ddmFormFieldName = ddmFormField.getName();
 
 		if (ddmFormFieldRuleType == DDMFormFieldRuleType.DATA_PROVIDER) {
 			return new DataProviderRule(
@@ -54,8 +60,21 @@ public class RuleFactory {
 				ddmFormValuesJSONDeserializer, instanceId);
 		}
 		else if(ddmFormFieldRuleType == DDMFormFieldRuleType.VALIDATION) {
+			List<DDMFormFieldRule> ddmFormFieldRules =
+				ddmFormField.getDDMFormFieldRules();
+			
+			String errorMessage = StringPool.BLANK;
+			
+			for (DDMFormFieldRule ddmFormFieldRule : ddmFormFieldRules) {
+				if (ddmFormFieldRuleType.equals(
+					ddmFormFieldRule.getDDMFormFieldRuleType())) {
+
+					errorMessage = ddmFormFieldRule.getErrorMessage();
+				}
+			}
+			
 			return new ValidationRule(
-				expression, ddmExpressionFactory,
+				errorMessage, expression, ddmExpressionFactory,
 				ddmDataProviderInstanceService, ddmDataProviderTracker,
 				ddmFormFieldEvaluationResults, ddmFormFieldName,
 				ddmFormValuesJSONDeserializer, instanceId);

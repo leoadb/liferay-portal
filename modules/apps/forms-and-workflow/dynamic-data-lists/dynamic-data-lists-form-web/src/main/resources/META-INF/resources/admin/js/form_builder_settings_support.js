@@ -70,7 +70,10 @@ AUI.add(
 					}
 				);
 
+				settings.dataType = instance.get('dataType');
+				settings.readOnly = true;
 				settings.type = instance.get('type');
+				settings.value = '';
 				settings.visible = true;
 
 				settings.context = A.clone(settings);
@@ -179,7 +182,11 @@ AUI.add(
 							name = 'fieldName';
 						}
 
-						item.set('value', instance.get(name));
+						var context = instance.get('context');
+
+						if (context.hasOwnProperty(name)) {
+							item.set('value', context[name]);
+						}
 					}
 				);
 			},

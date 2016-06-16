@@ -30,7 +30,7 @@ AUI.add(
 						return new A.Promise(
 							function(resolve, reject) {
 								if (CACHE[type]) {
-									resolve(CACHE[type]);
+									resolve(A.merge(CACHE[type], {}));
 								}
 								else {
 									var payload = {

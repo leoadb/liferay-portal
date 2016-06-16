@@ -1,6 +1,8 @@
 AUI.add(
 	'liferay-ddm-form-field-options',
 	function(A) {
+		var Lang = A.Lang;
+
 		var AArray = A.Array;
 
 		var TPL_DRAG_HANDLE = '<div class="drag-handle icon-reorder"><span aria-hidden="true"></span></div>';
@@ -26,6 +28,11 @@ AUI.add(
 
 					type: {
 						value: 'options'
+					},
+
+					value: {
+						repaint: false,
+						value: []
 					}
 				},
 
@@ -181,11 +188,10 @@ AUI.add(
 						return instance;
 					},
 
-					setValue: function(optionsValues) {
+					setValue: function() {
 						var instance = this;
 
-						instance._clearRepetitions();
-						instance._renderFields(optionsValues);
+						instance.render();
 					},
 
 					showErrorMessage: function(errorMessage) {
@@ -306,6 +312,7 @@ AUI.add(
 							}
 						);
 
+						mainField.set('key', '');
 						mainField.set('repetitions', [mainField]);
 					},
 
@@ -321,7 +328,8 @@ AUI.add(
 							repeatable: true,
 							repeatedIndex: 0,
 							showLabel: false,
-							visible: true
+							visible: true,
+							value: ''
 						};
 
 						config.context = A.clone(config);

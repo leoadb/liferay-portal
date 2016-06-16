@@ -207,16 +207,18 @@ AUI.add(
 
 						var name = key;
 
-						do {
-							if (counter > 0) {
-								name = key + counter;
+						if (name) {
+							do {
+								if (counter > 0) {
+									name = key + counter;
+								}
+
+								existingField = builder.getField(name);
+
+								counter++;
 							}
-
-							existingField = builder.getField(name);
-
-							counter++;
+							while (existingField !== undefined && existingField !== field);
 						}
-						while (existingField !== undefined && existingField !== field);
 
 						return name;
 					},
@@ -244,8 +246,6 @@ AUI.add(
 
 						if (!!sameNameField && sameNameField !== field) {
 							nameField.showErrorMessage(Liferay.Language.get('field-name-is-already-in-use'));
-							nameField.showValidationStatus();
-							nameField.focus();
 
 							hasErrors = true;
 						}

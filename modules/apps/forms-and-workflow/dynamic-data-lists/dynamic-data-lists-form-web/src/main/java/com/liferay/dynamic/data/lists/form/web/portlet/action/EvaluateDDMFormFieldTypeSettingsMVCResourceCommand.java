@@ -67,6 +67,8 @@ public class EvaluateDDMFormFieldTypeSettingsMVCResourceCommand
 		ddmFormRenderingContext.setHttpServletResponse(
 			PortalUtil.getHttpServletResponse(resourceResponse));
 		ddmFormRenderingContext.setLocale(resourceRequest.getLocale());
+		ddmFormRenderingContext.setPortletNamespace(
+			resourceResponse.getNamespace());
 
 		return ddmFormRenderingContext;
 	}

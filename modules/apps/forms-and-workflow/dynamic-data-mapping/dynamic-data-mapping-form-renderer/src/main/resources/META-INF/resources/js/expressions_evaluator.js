@@ -23,9 +23,27 @@ AUI.add(
 					initializer: function() {
 						var instance = this;
 
+						instance._cache = new A.Map();
 						instance._queue = new A.Queue();
 
+						instance.publish(
+							{
+								'evaluate': {
+									defaultFn: A.debounce(instance._evaluate, 300, instance)
+								},
+								start: {
+									defaultFn: A.debounce(instance._fireStart, 300, instance)
+								}
+							}
+						)
+
 						instance.after('evaluationEnded', instance._afterEvaluationEnded);
+					},
+
+					destructor: function() {
+						var instance = this;
+
+						instance._cache.destroy();
 					},
 
 					evaluate: function(trigger, callback) {
@@ -35,41 +53,65 @@ AUI.add(
 
 						var form = instance.get('form');
 
-						if (instance.isEvaluating()) {
-							instance.stop();
-						}
-
 						if (enabled && form) {
-							instance._queue.add(trigger);
+							if (instance.isEvaluating()) {
+								instance.stop();
+							}
+
+							instance._evaluating = true;
 
 							instance.fire(
-								'evaluationStarted',
+								'start',
 								{
 									trigger: trigger
 								}
 							);
 
-							form.disableSubmitButton();
+							instance._queue.add(trigger);
 
-							instance._evaluate(
-								function(result) {
-									form.enableSubmitButton();
+							instance.fire(
+								'evaluate',
+								{
+									callback: function(result) {
+										instance._evaluating = false;
 
-									while (instance._queue.size() > 0) {
-										var next = instance._queue.next();
+										var triggers = {};
 
-										instance.fire(
-											'evaluationEnded',
-											{
-												result: result,
-												trigger: next
+										while (instance._queue.size() > 0) {
+											var next = instance._queue.next();
+
+											if (!triggers[next.get('name')]) {
+												instance.fire(
+													'evaluationEnded',
+													{
+														result: result,
+														trigger: next
+													}
+												);
 											}
-										);
-									}
 
-									if (callback) {
-										callback.apply(instance, arguments);
+											triggers[next.get('name')] = true;
+										}
+
+										if (callback) {
+											callback.apply(instance, arguments);
+										}
 									}
+								}
+							);
+						}
+					},
+
+					_fireStart: function(event) {
+						var instance = this;
+
+						if (instance.isEvaluating()) {
+							var form = instance.get('form');
+
+							instance.fire(
+								'evaluationStarted',
+								{
+									trigger: event.trigger
 								}
 							);
 						}
@@ -78,7 +120,7 @@ AUI.add(
 					isEvaluating: function() {
 						var instance = this;
 
-						return instance._request !== undefined;
+						return instance._evaluating;
 					},
 
 					stop: function() {
@@ -97,37 +139,55 @@ AUI.add(
 						instance.stop();
 					},
 
-					_evaluate: function(callback) {
+					_evaluate: function(event) {
 						var instance = this;
+
+						var callback = event.callback;
 
 						var form = instance.get('form');
 
 						var payload = form.getEvaluationPayload();
 
-						var portletNamespace = form.get('portletNamespace');
+						var cacheKey = JSON.stringify(payload);
 
-						instance._request = A.io.request(
-							instance.get('evaluatorURL'),
-							{
-								data: Liferay.Util.ns(portletNamespace, payload),
-								dataType: 'JSON',
-								method: 'POST',
-								on: {
-									failure: function(event) {
-										if (event.details[1].statusText !== 'abort') {
-											callback.call(instance, null);
+						var cached = instance._cache.getValue(cacheKey);
+
+						if (cached) {
+							callback.call(instance, cached);
+						}
+						else {
+							var portletNamespace = form.get('portletNamespace');
+
+							instance._request = A.io.request(
+								instance.get('evaluatorURL'),
+								{
+									data: Liferay.Util.ns(portletNamespace, payload),
+									dataType: 'JSON',
+									method: 'POST',
+									on: {
+										failure: function(event) {
+											if (event.details[1].statusText !== 'abort') {
+												callback.call(instance, null);
+											}
+											else {
+												callback.call(instance, {});
+											}
+										},
+										success: function() {
+											var result = this.get('responseData');
+
+											if (instance._cache.size() > 10) {
+												instance._cache.remove(instance._cache.keys()[0]);
+											}
+
+											instance._cache.put(cacheKey, result);
+
+											callback.call(instance, result);
 										}
-
-										callback.call(instance, {});
-									},
-									success: function() {
-										var result = this.get('responseData');
-
-										callback.call(instance, result);
 									}
 								}
-							}
-						);
+							);
+						}
 					},
 
 					_getEnabled: function(enabled) {
@@ -157,6 +217,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: ['aui-component', 'aui-io-request', 'queue']
+		requires: ['aui-component', 'aui-io-request', 'aui-map', 'queue']
 	}
 );

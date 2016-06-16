@@ -68,6 +68,8 @@ public class EvaluateRecordSetMVCResourceCommand
 			PortalUtil.getHttpServletResponse(resourceResponse));
 		ddmFormRenderingContext.setRecordSetId(recordSetId);
 		ddmFormRenderingContext.setLocale(resourceRequest.getLocale());
+		ddmFormRenderingContext.setPortletNamespace(
+			resourceResponse.getNamespace());
 
 		return ddmFormRenderingContext;
 	}

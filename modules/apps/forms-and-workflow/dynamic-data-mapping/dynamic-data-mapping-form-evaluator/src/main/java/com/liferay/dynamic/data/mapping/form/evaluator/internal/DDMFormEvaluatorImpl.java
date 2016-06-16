@@ -132,6 +132,13 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 
 				ddmFormFieldEvaluationResult.setValid(false);
 			}
+			else if (!ddmFormField.isRequired() &&
+				isDDMFormFieldValueEmpty(
+					ddmFormField, ddmFormFieldEvaluationResult, locale)) {
+
+				ddmFormFieldEvaluationResult.setErrorMessage("");
+				ddmFormFieldEvaluationResult.setValid(true);
+			}
 		}
 	}
 

@@ -254,6 +254,7 @@ public class DDMFormJSONSerializerImpl implements DDMFormJSONSerializer {
 	protected JSONObject toJSONObject(DDMFormFieldRule ddmFormFieldRule) {
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
+		jsonObject.put("errorMessage", ddmFormFieldRule.getErrorMessage());
 		jsonObject.put("expression", ddmFormFieldRule.getExpression());
 		jsonObject.put("type", ddmFormFieldRule.getDDMFormFieldRuleType());
 

@@ -72,7 +72,7 @@ public class DDMFormRendererHelper {
 
 		DDMFormRenderingContext ddmFormRenderingContext =
 			new DDMFormRenderingContext();
-		
+
 		ResourceURL resourceURL = _renderResponse.createResourceURL();
 
 		resourceURL.setParameter("pid", _configurationModel.getID());

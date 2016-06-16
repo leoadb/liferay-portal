@@ -103,10 +103,13 @@ AUI.add(
 							}
 						);
 
+						instance._deserializeFieldRules(context);
+
 						context.fieldName = context.name;
 						context.portletNamespace = builder.get('portletNamespace');
 						context.readOnly = true;
 						context.visible = true;
+						context.value = '';
 
 						delete context.name;
 
@@ -122,6 +125,28 @@ AUI.add(
 								parent: builder
 							}
 						);
+					},
+
+					_deserializeFieldRules: function(context) {
+						var instance = this;
+
+						var rules = context.rules || [];
+
+						rules.forEach(
+							function(rule) {
+								if (rule.type === 'VALIDATION') {
+									context.validation = {
+										errorMessage: rule.errorMessage,
+										expression: rule.expression
+									};
+								}
+								else if (rule.type === 'VISIBILITY') {
+									context.visibilityExpression = rule.expression;
+								}
+							}
+						);
+
+						delete context.rules;
 					},
 
 					_deserializeFields: function(deserializedColumn, fieldNames) {

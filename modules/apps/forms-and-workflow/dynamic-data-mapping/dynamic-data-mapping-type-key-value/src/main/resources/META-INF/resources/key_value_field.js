@@ -55,8 +55,7 @@ AUI.add(
 							{
 								editing: instance.get('editing'),
 								key: instance.get('key'),
-								strings: instance.get('strings'),
-								tooltip: instance.get('tooltip')
+								strings: instance.get('strings')
 							}
 						);
 					},
@@ -245,7 +244,7 @@ AUI.add(
 					_valueKey: function() {
 						var instance = this;
 
-						var value = instance.get('value');
+						var value = instance.get('value') || '';
 
 						return instance.normalizeKey(value);
 					}

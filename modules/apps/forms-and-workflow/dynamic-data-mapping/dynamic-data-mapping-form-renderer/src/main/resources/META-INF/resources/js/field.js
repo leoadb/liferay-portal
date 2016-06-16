@@ -22,7 +22,8 @@ AUI.add(
 					},
 
 					context: {
-						validator: Lang.isObject
+						validator: Lang.isObject,
+						value: {}
 					},
 
 					dataType: {
@@ -34,12 +35,14 @@ AUI.add(
 						value: ''
 					},
 
-					instanceId: {
-						valueFn: '_valueInstanceId'
+					name: {
+						value: '',
+						repaint: false
 					},
 
-					label: {
-						value: ''
+					instanceId: {
+						repaint: false,
+						valueFn: '_valueInstanceId'
 					},
 
 					locale: {
@@ -55,7 +58,11 @@ AUI.add(
 					},
 
 					predefinedValue: {
-						valueFn: '_getDefaultValue'
+						value: ''
+					},
+
+					readOnly: {
+						value: false
 					},
 
 					rendered: {
@@ -71,16 +78,21 @@ AUI.add(
 					},
 
 					value: {
-						valueFn: '_getDefaultValue'
+						repaint: false,
+						value: ''
+					},
+
+					visible: {
+						value: true
 					}
 				},
 
 				AUGMENTS: [
+					Renderer.FieldEvaluationSupport,
 					Renderer.FieldEventsSupport,
 					Renderer.FieldFeedbackSupport,
 					Renderer.FieldRepetitionSupport,
 					Renderer.FieldValidationSupport,
-					Renderer.FieldVisibilitySupport,
 					Renderer.NestedFieldsSupport
 				],
 
@@ -161,20 +173,6 @@ AUI.add(
 						).join('');
 					},
 
-					getContextValue: function() {
-						var instance = this;
-
-						var predefinedValue = instance.get('predefinedValue');
-
-						var value = instance.get('value');
-
-						if (!value && predefinedValue && !instance.get('readOnly')) {
-							value = predefinedValue;
-						}
-
-						return value;
-					},
-
 					getInputNode: function() {
 						var instance = this;
 
@@ -187,14 +185,6 @@ AUI.add(
 						var qualifiedName = instance.getQualifiedName().replace(/\$/ig, '\\$');
 
 						return '[name="' + qualifiedName + '"]';
-					},
-
-					getLabel: function() {
-						var instance = this;
-
-						var label = instance.get('context.label');
-
-						return label || instance.get('fieldName');
 					},
 
 					getQualifiedName: function() {
@@ -227,9 +217,8 @@ AUI.add(
 						return A.merge(
 							instance.get('context'),
 							{
-								label: instance.getLabel(),
 								name: instance.getQualifiedName(),
-								value: instance.getContextValue() || ''
+								value: instance.get('value')
 							}
 						);
 					},
@@ -256,6 +245,14 @@ AUI.add(
 						var inputNode = instance.getInputNode();
 
 						return Lang.String.unescapeHTML(inputNode.val());
+					},
+
+					hasFocus: function() {
+						var instance = this;
+
+						var container = instance.get('container');
+
+						return container.contains(document.activeElement);
 					},
 
 					render: function(target) {
@@ -318,22 +315,31 @@ AUI.add(
 						var instance = this;
 
 						if (instance.get('rendered')) {
-							var changed = false;
+							var repaint = false;
 
 							var newContext = event.newVal;
 							var oldContext = event.prevVal;
 
-							A.each(
-								newContext,
-								function(value, name) {
-									if (value !== oldContext[name]) {
-										changed = true;
+							for (var name in newContext) {
+								if (!Util.compare(newContext[name], oldContext[name])) {
+									if (instance.isRepaintable(name)) {
+										console.log(
+											'[', instance.get('fieldName'), ']',
+											'repainted because', name,
+											'went from', oldContext[name],
+											'to', newContext[name]);
+
+										repaint = true;
+									}
+
+									if (instance.attrAdded(name)) {
+										instance.set(name, newContext[name]);
 									}
 								}
-							);
+							}
 
-							if (changed) {
-								A.later(0, instance, instance.render);
+							if (repaint) {
+								instance.render();
 							}
 						}
 					},
@@ -405,14 +411,6 @@ AUI.add(
 						return dataType;
 					},
 
-					_getDefaultValue: function() {
-						var instance = this;
-
-						var value = instance.get('predefinedValue');
-
-						return value || '';
-					},
-
 					_setParent: function(val) {
 						var instance = this;
 
@@ -455,6 +453,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: ['aui-datatype', 'aui-node', 'liferay-ddm-form-renderer', 'liferay-ddm-form-renderer-field-events', 'liferay-ddm-form-renderer-field-feedback', 'liferay-ddm-form-renderer-field-repetition', 'liferay-ddm-form-renderer-field-validation', 'liferay-ddm-form-renderer-field-visibility', 'liferay-ddm-form-renderer-nested-fields', 'liferay-ddm-form-renderer-types', 'liferay-ddm-form-renderer-util']
+		requires: ['aui-datatype', 'aui-node', 'liferay-ddm-form-renderer', 'liferay-ddm-form-renderer-field-evaluation', 'liferay-ddm-form-renderer-field-events', 'liferay-ddm-form-renderer-field-feedback', 'liferay-ddm-form-renderer-field-repetition', 'liferay-ddm-form-renderer-field-validation', 'liferay-ddm-form-renderer-nested-fields', 'liferay-ddm-form-renderer-types', 'liferay-ddm-form-renderer-util']
 	}
 );

@@ -12,31 +12,34 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.type.options;
+package com.liferay.dynamic.data.mapping.type.validation;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateContextContributor;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Marcellus Tavares
+ * @author Bruno Basto
  */
 @Component(
-	immediate = true, property = "ddm.form.field.type.name=options",
+	immediate = true, property = "ddm.form.field.type.name=validation",
 	service = {
-		OptionsDDMFormFieldTemplateContextContributor.class,
+		ValidationDDMFormFieldTemplateContextContributor.class,
 		DDMFormFieldTemplateContextContributor.class
 	}
 )
-public class OptionsDDMFormFieldTemplateContextContributor
+public class ValidationDDMFormFieldTemplateContextContributor
 	implements DDMFormFieldTemplateContextContributor {
 
 	public Map<String, Object> getParameters(
@@ -51,15 +54,34 @@ public class OptionsDDMFormFieldTemplateContextContributor
 		return parameters;
 	}
 
-	protected List<Object> getValue(
+	protected Map<String, String> getValue(
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
-		OptionsDDMFormFieldContextHelper optionsDDMFormFieldContextHelper =
-			new OptionsDDMFormFieldContextHelper(
-				jsonFactory, ddmFormFieldRenderingContext.getValue());
+		Map<String, String> value = new HashMap<>();
 
-		return optionsDDMFormFieldContextHelper.getValue();
+		String valueString = ddmFormFieldRenderingContext.getValue();
+
+		if (Validator.isNotNull(valueString)) {
+			try {
+				JSONObject valueJSONObject = jsonFactory.createJSONObject(
+					valueString);
+
+				value.put(
+					"errorMessage", valueJSONObject.getString("errorMessage"));
+				value.put(
+					"expression", valueJSONObject.getString("expression"));
+			}
+			catch (JSONException jsone) {
+				jsone.printStackTrace();
+			}
+		}
+		else {
+			value.put("errorMessage", StringPool.BLANK);
+			value.put("expression", StringPool.BLANK);
+		}
+
+		return value;
 	}
 
 	@Reference

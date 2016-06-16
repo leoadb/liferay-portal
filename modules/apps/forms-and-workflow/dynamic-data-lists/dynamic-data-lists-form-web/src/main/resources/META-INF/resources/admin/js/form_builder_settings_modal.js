@@ -115,7 +115,13 @@ AUI.add(
 								instance._toggleLoadingAnimation(false);
 								instance._showDefaultToolbar();
 
-								settingsForm.render();
+								try {
+									settingsForm.render();
+								}
+								catch(e) {
+									console.log(e.stack);
+									throw e;
+								}
 
 								instance._modal.show();
 								instance.align();
@@ -125,6 +131,7 @@ AUI.add(
 								instance._previousSettings = JSON.stringify(settings);
 							},
 							function(error) {
+								console.log(error.stack);
 								throw error;
 							}
 						);

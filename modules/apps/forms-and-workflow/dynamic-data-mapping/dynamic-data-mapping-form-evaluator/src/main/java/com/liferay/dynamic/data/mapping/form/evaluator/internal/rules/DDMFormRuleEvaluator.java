@@ -23,10 +23,13 @@ import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.type.RuleF
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldRule;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;
+import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
@@ -98,11 +101,19 @@ public class DDMFormRuleEvaluator {
 					ddmFormField.getName(), ddmFormFieldValue.getInstanceId());
 
 			ddmFormFieldEvaluationResult.setErrorMessage(StringPool.BLANK);
-			ddmFormFieldEvaluationResult.setReadOnly(false);
+			ddmFormFieldEvaluationResult.setReadOnly(ddmFormField.isReadOnly());
 			ddmFormFieldEvaluationResult.setValid(true);
 			ddmFormFieldEvaluationResult.setVisible(true);
-			ddmFormFieldEvaluationResult.setValue(
-				ddmFormFieldValue.getValue().getString(_locale));
+			
+			Value value = ddmFormFieldValue.getValue();
+			
+			String valueString = StringPool.BLANK;
+			
+			if (value != null) {
+				valueString = GetterUtil.getString(value.getString(_locale));
+			}
+			
+			ddmFormFieldEvaluationResult.setValue(valueString);
 
 			_ddmFormFieldEvaluationResults.put(
 				ddmFormField.getName(), ddmFormFieldEvaluationResult);
@@ -119,16 +130,21 @@ public class DDMFormRuleEvaluator {
 			node.getDDMFormFieldRuleType();
 
 		String ddmFormFieldName = node.getDDMFormFieldName();
-
+		
+		Map<String, DDMFormField> ddmFormFieldsMap =
+			_ddmForm.getDDMFormFieldsMap(true);
+		 
+		DDMFormField ddmFormField = ddmFormFieldsMap.get(ddmFormFieldName);
+		
 		String instanceId = node.getInstanceId();
 
-		Rule ddmFormFieldRule = RuleFactory.createDDMFormFieldRule(
+		Rule rule = RuleFactory.createDDMFormFieldRule(
 			expression, _ddmExpressionFactory, _ddmDataProviderInstanceService,
 			_ddmDataProviderTracker, _ddmFormFieldEvaluationResults,
-			ddmFormFieldName, ddmFormFieldRuleType,
+			ddmFormField, ddmFormFieldRuleType,
 			_ddmFormValuesJSONDeserializer, instanceId, _locale);
 
-		ddmFormFieldRule.evaluate();
+		rule.evaluate();
 	}
 
 	private final DDMDataProviderInstanceService

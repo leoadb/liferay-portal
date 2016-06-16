@@ -13,9 +13,11 @@ AUI.add(
 				);
 
 				instance._domEvents = [];
+
+				instance._bindDefaultEvents();
 			},
 
-			bindContainerEvent: function(eventName, callback, selector) {
+			bindContainerEvent: function(eventName, callback, selector, volatile) {
 				var instance = this;
 
 				var container = instance.get('container');
@@ -33,17 +35,22 @@ AUI.add(
 						callback: callback,
 						handler: handler,
 						name: eventName,
-						selector: selector
+						selector: selector,
+						volatile: volatile
 					}
 				);
 
 				return handler;
 			},
 
-			bindInputEvent: function(eventName, callback) {
+			bindInputEvent: function(eventName, callback, volatile) {
 				var instance = this;
 
-				return instance.bindContainerEvent(eventName, callback, instance.getInputSelector);
+				return instance.bindContainerEvent(eventName, callback, instance.getInputSelector, volatile);
+			},
+
+			getChangeEventName: function() {
+				return 'change';
 			},
 
 			_afterEventsRender: function() {
@@ -60,7 +67,9 @@ AUI.add(
 
 					event.handler.detach();
 
-					instance.bindContainerEvent(event.name, event.callback, event.selector);
+					if (!event.volatile) {
+						instance.bindContainerEvent(event.name, event.callback, event.selector);
+					}
 				}
 
 				instance._bindDefaultEvents();
@@ -69,30 +78,8 @@ AUI.add(
 			_bindDefaultEvents: function() {
 				var instance = this;
 
-				instance.bindInputEvent('blur', instance._onInputBlur);
-
-				if (instance._isTextType()) {
-					instance.bindInputEvent('input', A.debounce(instance._onValueChange, 150, instance));
-				}
-				else {
-					instance.bindInputEvent('change', instance._onValueChange);
-				}
-			},
-
-			_isTextType: function() {
-				var instance = this;
-
-				var inputNode = instance.getInputNode();
-
-				var textType = false;
-
-				if (inputNode) {
-					var tagName = inputNode.get('tagName');
-
-					textType = inputNode.get('type') === 'text' || tagName.toLowerCase() === 'textarea';
-				}
-
-				return textType;
+				instance.bindInputEvent('blur', instance._onInputBlur, true);
+				instance.bindInputEvent(instance.getChangeEventName(), instance._onValueChange, true);
 			},
 
 			_onInputBlur: function(event) {

@@ -23,23 +23,6 @@ AUI.add(
 				NAME: 'liferay-ddm-form-field-radio',
 
 				prototype: {
-					getContextValue: function() {
-						var instance = this;
-
-						var value = RadioField.superclass.getContextValue.apply(instance, arguments);
-
-						if (!Array.isArray(value)) {
-							try {
-								value = JSON.parse(value);
-							}
-							catch (e) {
-								value = [value];
-							}
-						}
-
-						return value[0];
-					},
-
 					getInputNode: function() {
 						var instance = this;
 
@@ -97,14 +80,6 @@ AUI.add(
 
 						if (radioToCheck) {
 							radioToCheck.attr('checked', true);
-
-							instance.fire(
-								'valueChanged',
-								{
-									field: instance,
-									value: value
-								}
-							);
 						}
 					},
 

@@ -81,7 +81,7 @@ AUI.add(
 				);
 			},
 
-			getField: function(name) {
+			getField: function(name, instanceId) {
 				var instance = this;
 
 				var field;
@@ -90,6 +90,12 @@ AUI.add(
 					function(item) {
 						if (item.get('fieldName') === name) {
 							field = item;
+						}
+
+						if (field && instanceId &&
+							instanceId !== field.get('instanceId')) {
+
+							field = undefined;
 						}
 
 						return field !== undefined;

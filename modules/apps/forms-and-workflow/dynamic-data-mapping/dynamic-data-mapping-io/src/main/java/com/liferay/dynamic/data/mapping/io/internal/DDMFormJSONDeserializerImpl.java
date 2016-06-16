@@ -232,7 +232,14 @@ public class DDMFormJSONDeserializerImpl implements DDMFormJSONDeserializer {
 		DDMFormFieldRuleType ddmFormFieldRuleType = DDMFormFieldRuleType.parse(
 			jsonObject.getString("type"));
 
-		return new DDMFormFieldRule(expression, ddmFormFieldRuleType);
+		DDMFormFieldRule ddmFormFieldRule = new DDMFormFieldRule(
+			expression, ddmFormFieldRuleType);
+
+		String errorMessage = jsonObject.getString("errorMessage");
+
+		ddmFormFieldRule.setErrorMessage(errorMessage);
+
+		return ddmFormFieldRule;
 	}
 
 	protected List<DDMFormFieldRule> getDDMFormFieldRules(JSONArray jsonArray) {

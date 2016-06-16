@@ -31,19 +31,22 @@ import java.util.Map;
 public class ValidationRule extends BaseRule {
 
 	public ValidationRule(
-		String expression, DDMExpressionFactory ddmExpressionFactory,
+		String errorMessage, String expression,
+		DDMExpressionFactory ddmExpressionFactory,
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
 		Map<String, DDMFormFieldEvaluationResult>
 			ddmFormFieldEvaluationResults, String ddmFormFieldName,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 		String instanceId) {
-
+		
 		super(
 			expression, ddmExpressionFactory, ddmDataProviderInstanceService,
 			ddmDataProviderTracker, ddmFormFieldEvaluationResults,
 			ddmFormFieldName, DDMFormFieldRuleType.VALIDATION,
 			ddmFormValuesJSONDeserializer, instanceId);
+		
+		this._errorMessage = errorMessage;
 	}
 
 	@Override
@@ -57,7 +60,10 @@ public class ValidationRule extends BaseRule {
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
 			ddmFormFieldEvaluationResults.get(getDDMFormFieldName());
 
+		ddmFormFieldEvaluationResult.setErrorMessage(_errorMessage);
 		ddmFormFieldEvaluationResult.setValid(expressionResult);
 	}
+	
+	private String _errorMessage;
 
 }

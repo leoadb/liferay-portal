@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
@@ -85,6 +86,8 @@ public class SelectDDMFormFieldTemplateContextContributor
 			LanguageUtil.get(resourceBundle, "choose-an-option"));
 
 		parameters.put("strings", stringsMap);
+		parameters.put(
+			"value", getValue(ddmFormField, ddmFormFieldRenderingContext));
 
 		return parameters;
 	}
@@ -118,7 +121,24 @@ public class SelectDDMFormFieldTemplateContextContributor
 			ddmFormField.getProperty("dataSourceType"), "manual");
 
 		if (Objects.equals(dataSourceType, "manual")) {
-			return ddmFormField.getDDMFormFieldOptions();
+			DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
+
+			List<Map<String, String>> keyValuePairs =
+				(List<Map<String, String>>)
+					ddmFormFieldRenderingContext.getProperty("options");
+
+			if (keyValuePairs.size() == 0) {
+				return ddmFormField.getDDMFormFieldOptions();
+			}
+
+			for (Map<String, String> keyValuePair : keyValuePairs) {
+				ddmFormFieldOptions.addOptionLabel(
+					keyValuePair.get("value"),
+					ddmFormFieldRenderingContext.getLocale(),
+					keyValuePair.get("label"));
+			}
+
+			return ddmFormFieldOptions;
 		}
 
 		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
@@ -198,6 +218,26 @@ public class SelectDDMFormFieldTemplateContextContributor
 
 		return ResourceBundleUtil.getBundle(
 			"content.Language", locale, clazz.getClassLoader());
+	}
+
+	protected List<String> getValue(
+		DDMFormField ddmFormField,
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
+
+		SelectDDMFormFieldContextHelper selectDDMFormFieldContextHelper =
+			new SelectDDMFormFieldContextHelper(
+				jsonFactory,
+				getDDMFormFieldOptions(
+					ddmFormField, ddmFormFieldRenderingContext),
+				ddmFormFieldRenderingContext.getValue(),
+				ddmFormField.getPredefinedValue(),
+				ddmFormFieldRenderingContext.getLocale());
+
+		String[] valuesStringArray =
+			selectDDMFormFieldContextHelper.toStringArray(
+				ddmFormFieldRenderingContext.getValue());
+
+		return ListUtil.toList(valuesStringArray);
 	}
 
 	@Reference

@@ -3,7 +3,7 @@ AUI.add(
 	function(A) {
 		var Renderer = Liferay.DDM.Renderer;
 
-		var Util = Renderer.Util;
+		var FieldClassFactory = Renderer.FieldClassFactory;
 
 		var SELECTOR_REPEAT_BUTTONS = '.lfr-ddm-form-field-repeatable-add-button, .lfr-ddm-form-field-repeatable-delete-button';
 
@@ -93,7 +93,7 @@ AUI.add(
 
 				var type = instance.get('type');
 
-				var fieldClass = Util.getFieldClass(type, config.context);
+				var fieldClass = FieldClassFactory.getFieldClass(type, config.context);
 
 				var field = new fieldClass(config).render();
 
@@ -168,7 +168,9 @@ AUI.add(
 				config.context = A.clone(context);
 
 				delete config.context.name;
+				delete config.context.value;
 				delete config.name;
+				delete config.value;
 
 				return config;
 			},

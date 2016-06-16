@@ -273,6 +273,8 @@ AUI.add(
 								}
 							);
 						}
+
+						return validation;
 					},
 
 					_syncValidationUI: function(event) {
