@@ -17,8 +17,8 @@ package com.liferay.dynamic.data.lists.form.web.portlet.action;
 import com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetService;
-import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationResult;
-import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluator;
+import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
+import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -30,6 +30,9 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+
+import java.util.Map;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
@@ -51,6 +54,24 @@ import org.osgi.service.component.annotations.Reference;
 public class EvaluateRecordSetMVCResourceCommand
 	extends BaseMVCResourceCommand {
 
+	protected DDMFormRenderingContext createDDMFormRenderingContext(
+		ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
+
+		long recordSetId = ParamUtil.getLong(resourceRequest, "recordSetId");
+
+		DDMFormRenderingContext ddmFormRenderingContext =
+			new DDMFormRenderingContext();
+
+		ddmFormRenderingContext.setHttpServletRequest(
+			PortalUtil.getHttpServletRequest(resourceRequest));
+		ddmFormRenderingContext.setHttpServletResponse(
+			PortalUtil.getHttpServletResponse(resourceResponse));
+		ddmFormRenderingContext.setRecordSetId(recordSetId);
+		ddmFormRenderingContext.setLocale(resourceRequest.getLocale());
+
+		return ddmFormRenderingContext;
+	}
+
 	protected void doServeResource(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
@@ -70,17 +91,24 @@ public class EvaluateRecordSetMVCResourceCommand
 			_ddmFormValuesJSONDeserializer.deserialize(
 				ddmForm, serializedDDMFormValues);
 
-		DDMFormEvaluationResult ddmFormEvaluationResult =
-			_ddmFormEvaluator.evaluate(
-				ddmForm, ddmFormValues, resourceRequest.getLocale());
+		DDMFormRenderingContext ddmFormRenderingContext =
+			createDDMFormRenderingContext(resourceRequest, resourceResponse);
+
+		ddmFormRenderingContext.setDDMFormValues(ddmFormValues);
+
+		Map<String, Object> templateContext =
+			_ddmFormTemplateContextFactory.create(
+				ddmForm, ddmStructure.getDDMFormLayout(),
+				ddmFormRenderingContext);
+
+		Object pages = templateContext.get("pages");
 
 		resourceResponse.setContentType(ContentTypes.APPLICATION_JSON);
 
 		JSONSerializer jsonSerializer = _jsonFactory.createJSONSerializer();
 
 		PortletResponseUtil.write(
-			resourceResponse,
-			jsonSerializer.serializeDeep(ddmFormEvaluationResult));
+			resourceResponse, jsonSerializer.serializeDeep(pages));
 
 		resourceResponse.flushBuffer();
 	}
@@ -89,7 +117,7 @@ public class EvaluateRecordSetMVCResourceCommand
 	private DDLRecordSetService _ddlRecordSetService;
 
 	@Reference
-	private DDMFormEvaluator _ddmFormEvaluator;
+	private DDMFormTemplateContextFactory _ddmFormTemplateContextFactory;
 
 	@Reference
 	private DDMFormValuesJSONDeserializer _ddmFormValuesJSONDeserializer;

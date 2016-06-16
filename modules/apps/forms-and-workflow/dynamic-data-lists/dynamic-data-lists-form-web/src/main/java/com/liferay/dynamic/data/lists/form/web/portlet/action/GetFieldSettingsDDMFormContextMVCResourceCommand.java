@@ -21,13 +21,7 @@ import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.io.DDMFormJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
-import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
-import com.liferay.dynamic.data.mapping.model.LocalizedValue;
-import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
-import com.liferay.dynamic.data.mapping.model.Value;
-import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
-import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
 import com.liferay.dynamic.data.mapping.util.DDMFormLayoutFactory;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -39,7 +33,6 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import java.util.Locale;
 import java.util.Map;
 
 import javax.portlet.ResourceRequest;
@@ -62,50 +55,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class GetFieldSettingsDDMFormContextMVCResourceCommand
 	extends BaseMVCResourceCommand {
-
-	protected DDMFormFieldValue createDDMFormFieldTypeSettingsDDMFormFieldValue(
-		Object property, DDMFormField ddmFormFieldTypeSetting, Locale locale) {
-
-		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
-
-		ddmFormFieldValue.setName(ddmFormFieldTypeSetting.getName());
-
-		Value value = new UnlocalizedValue(String.valueOf(property));
-
-		if (ddmFormFieldTypeSetting.isLocalizable()) {
-			LocalizedValue localizedValue = (LocalizedValue)property;
-
-			value.addString(locale, localizedValue.getString(locale));
-		}
-
-		ddmFormFieldValue.setValue(value);
-
-		return ddmFormFieldValue;
-	}
-
-	protected DDMFormValues createDDMFormFieldTypeSettingsDDMFormValues(
-		ResourceRequest resourceRequest, DDMFormField ddmFormField,
-		DDMForm ddmFormFieldTypeSettingsDDMForm, Locale locale) {
-
-		DDMFormValues ddmFormValues = new DDMFormValues(
-			ddmFormFieldTypeSettingsDDMForm);
-
-		ddmFormValues.addAvailableLocale(resourceRequest.getLocale());
-		ddmFormValues.setDefaultLocale(resourceRequest.getLocale());
-
-		for (DDMFormField ddmFormFieldTypeSetting :
-				ddmFormFieldTypeSettingsDDMForm.getDDMFormFields()) {
-
-			Object property = ddmFormField.getProperty(
-				ddmFormFieldTypeSetting.getName());
-
-			ddmFormValues.addDDMFormFieldValue(
-				createDDMFormFieldTypeSettingsDDMFormFieldValue(
-					property, ddmFormFieldTypeSetting, locale));
-		}
-
-		return ddmFormValues;
-	}
 
 	protected void doServeResource(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)

@@ -114,7 +114,7 @@ public class DDMDataProviderDisplayContext {
 		resourceURL.setResourceID("evaluateDataProviderSettings");
 
 		ddmFormRenderingContext.setEvaluatorURL(resourceURL.toString());
-		
+
 		if (_ddmDataProviderInstance != null) {
 			DDMFormValues ddmFormValues =
 				_ddmFormValuesJSONDeserializer.deserialize(
