@@ -39,13 +39,13 @@ public class ValidationRule extends BaseRule {
 			ddmFormFieldEvaluationResults, String ddmFormFieldName,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 		String instanceId) {
-		
+
 		super(
 			expression, ddmExpressionFactory, ddmDataProviderInstanceService,
 			ddmDataProviderTracker, ddmFormFieldEvaluationResults,
 			ddmFormFieldName, DDMFormFieldRuleType.VALIDATION,
 			ddmFormValuesJSONDeserializer, instanceId);
-		
+
 		this._errorMessage = errorMessage;
 	}
 
@@ -63,7 +63,7 @@ public class ValidationRule extends BaseRule {
 		ddmFormFieldEvaluationResult.setErrorMessage(_errorMessage);
 		ddmFormFieldEvaluationResult.setValid(expressionResult);
 	}
-	
-	private String _errorMessage;
+
+	private final String _errorMessage;
 
 }

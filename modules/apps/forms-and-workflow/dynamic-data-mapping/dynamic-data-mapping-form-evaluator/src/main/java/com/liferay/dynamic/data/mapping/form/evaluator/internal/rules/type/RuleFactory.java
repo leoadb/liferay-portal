@@ -62,17 +62,17 @@ public class RuleFactory {
 		else if(ddmFormFieldRuleType == DDMFormFieldRuleType.VALIDATION) {
 			List<DDMFormFieldRule> ddmFormFieldRules =
 				ddmFormField.getDDMFormFieldRules();
-			
+
 			String errorMessage = StringPool.BLANK;
-			
+
 			for (DDMFormFieldRule ddmFormFieldRule : ddmFormFieldRules) {
 				if (ddmFormFieldRuleType.equals(
-					ddmFormFieldRule.getDDMFormFieldRuleType())) {
+						ddmFormFieldRule.getDDMFormFieldRuleType())) {
 
 					errorMessage = ddmFormFieldRule.getErrorMessage();
 				}
 			}
-			
+
 			return new ValidationRule(
 				errorMessage, expression, ddmExpressionFactory,
 				ddmDataProviderInstanceService, ddmDataProviderTracker,
