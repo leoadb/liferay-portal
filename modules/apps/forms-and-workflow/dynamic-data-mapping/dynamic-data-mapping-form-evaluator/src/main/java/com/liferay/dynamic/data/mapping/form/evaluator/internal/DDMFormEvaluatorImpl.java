@@ -51,7 +51,8 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 
 		try {
 			DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
-				new DDMFormRuleEvaluatorHelper(_ddmExpressionFactory, ddmForm);
+				new DDMFormRuleEvaluatorHelper(
+					_ddmExpressionFactory, ddmForm, ddmFormValues);
 
 			DDMFormRuleEvaluator ddmFormRuleEvaluator =
 				new DDMFormRuleEvaluator(

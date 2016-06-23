@@ -37,7 +37,7 @@ public class RuleFactory {
 		String expression, DDMExpressionFactory ddmExpressionFactory,
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults, DDMFormField ddmFormField,
 		DDMFormFieldRuleType ddmFormFieldRuleType,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
@@ -60,18 +60,8 @@ public class RuleFactory {
 				ddmFormValuesJSONDeserializer, instanceId);
 		}
 		else if(ddmFormFieldRuleType == DDMFormFieldRuleType.VALIDATION) {
-			List<DDMFormFieldRule> ddmFormFieldRules =
-				ddmFormField.getDDMFormFieldRules();
-
-			String errorMessage = StringPool.BLANK;
-
-			for (DDMFormFieldRule ddmFormFieldRule : ddmFormFieldRules) {
-				if (ddmFormFieldRuleType.equals(
-						ddmFormFieldRule.getDDMFormFieldRuleType())) {
-
-					errorMessage = ddmFormFieldRule.getErrorMessage();
-				}
-			}
+			String errorMessage = extractErrorMessage(
+				ddmFormField, ddmFormFieldRuleType);
 
 			return new ValidationRule(
 				errorMessage, expression, ddmExpressionFactory,
@@ -95,6 +85,23 @@ public class RuleFactory {
 		}
 
 		return null;
+	}
+
+	protected static String extractErrorMessage(
+		DDMFormField ddmFormField, DDMFormFieldRuleType ddmFormFieldRuleType) {
+
+		List<DDMFormFieldRule> ddmFormFieldRules =
+			ddmFormField.getDDMFormFieldRules();
+
+		for (DDMFormFieldRule ddmFormFieldRule : ddmFormFieldRules) {
+			if (ddmFormFieldRuleType.equals(
+					ddmFormFieldRule.getDDMFormFieldRuleType())) {
+
+				return ddmFormFieldRule.getErrorMessage();
+			}
+		}
+
+		return StringPool.BLANK;
 	}
 
 }

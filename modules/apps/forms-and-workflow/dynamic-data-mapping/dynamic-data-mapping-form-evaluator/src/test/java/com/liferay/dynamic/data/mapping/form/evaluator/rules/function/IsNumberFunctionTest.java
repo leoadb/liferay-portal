@@ -71,14 +71,18 @@ public class IsNumberFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
 			fieldDDMFormField0, ddmFormValues, ddmFormFieldEvaluationResults);
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		ddmFormFieldEvaluationResult.setReadOnly(false);
 
@@ -113,14 +117,18 @@ public class IsNumberFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
 			fieldDDMFormField0, ddmFormValues, ddmFormFieldEvaluationResults);
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field0");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field0");
+			ddmFormFieldEvaluationResultMap.get("field0_instanceId");
 
 		ddmFormFieldEvaluationResult.setReadOnly(true);
 

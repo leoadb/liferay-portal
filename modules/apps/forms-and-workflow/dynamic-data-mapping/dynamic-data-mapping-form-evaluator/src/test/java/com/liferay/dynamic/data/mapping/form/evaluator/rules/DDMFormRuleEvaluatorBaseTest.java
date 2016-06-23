@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class DDMFormRuleEvaluatorBaseTest extends PowerMockito {
 
 	protected void createDDMFormFieldEvaluationResult(
 		DDMFormField ddmFormField, DDMFormValues ddmFormValues,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults) {
 
 		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
@@ -56,6 +57,12 @@ public class DDMFormRuleEvaluatorBaseTest extends PowerMockito {
 
 		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
 			ddmFormField.getName());
+
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultInstanceMap = new HashMap<>();
+
+		ddmFormFieldEvaluationResults.put(
+			ddmFormField.getName(), ddmFormFieldEvaluationResultInstanceMap);
 
 		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
 			DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
@@ -69,8 +76,9 @@ public class DDMFormRuleEvaluatorBaseTest extends PowerMockito {
 			ddmFormFieldEvaluationResult.setValue(
 				ddmFormFieldValue.getValue().getString(LocaleUtil.US));
 
-			ddmFormFieldEvaluationResults.put(
-				ddmFormField.getName(), ddmFormFieldEvaluationResult);
+			ddmFormFieldEvaluationResultInstanceMap.put(
+				ddmFormFieldValue.getInstanceId(),
+				ddmFormFieldEvaluationResult);
 		}
 	}
 

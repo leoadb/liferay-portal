@@ -23,7 +23,6 @@ import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +79,7 @@ public class ReadOnlyRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -95,12 +94,16 @@ public class ReadOnlyRuleTest extends DDMFormRuleEvaluatorBaseTest {
 		ReadOnlyRule readOnlyRule = new ReadOnlyRule(
 			"between(field1, 5, 10) && equals(field2, field3)",
 			new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field1", null, StringPool.BLANK);
+			ddmFormFieldEvaluationResults, "field1", null, "field1_instanceId");
 
 		readOnlyRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertFalse(ddmFormFieldEvaluationResult.isReadOnly());
 	}
@@ -135,7 +138,7 @@ public class ReadOnlyRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -147,12 +150,16 @@ public class ReadOnlyRuleTest extends DDMFormRuleEvaluatorBaseTest {
 		ReadOnlyRule readOnlyRule = new ReadOnlyRule(
 			"10 >= (field1 + field2)", new DDMExpressionFactoryImpl(), null,
 			null, ddmFormFieldEvaluationResults, "field1", null,
-			StringPool.BLANK);
+			"field1_instanceId");
 
 		readOnlyRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertTrue(ddmFormFieldEvaluationResult.isReadOnly());
 	}

@@ -32,7 +32,7 @@ public class DataProviderRule extends BaseRule {
 		String expression, DDMExpressionFactory ddmExpressionFactory,
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults, String ddmFormFieldName,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 		String instanceId) {

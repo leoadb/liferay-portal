@@ -107,7 +107,7 @@ public class CallFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -147,19 +147,26 @@ public class CallFunctionTest extends DDMFormRuleEvaluatorBaseTest {
 
 		Assert.assertEquals(3, ddmFormFieldEvaluationResults.size());
 
-		DDMFormFieldEvaluationResult ddmFormFieldRuleEvaluationResult =
-			ddmFormFieldEvaluationResults.get("rua");
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"rua");
+
+		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
+			ddmFormFieldEvaluationResultMap.get("rua_instanceId");
 
 		Assert.assertEquals(
 			jsonObject.get("logradouro"),
-			ddmFormFieldRuleEvaluationResult.getValue());
+			ddmFormFieldEvaluationResult.getValue());
 
-		ddmFormFieldRuleEvaluationResult = ddmFormFieldEvaluationResults.get(
+		ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
 			"cidade");
+
+		ddmFormFieldEvaluationResult = ddmFormFieldEvaluationResultMap.get(
+			"cidade_instanceId");
 
 		Assert.assertEquals(
 			jsonObject.get("localidade"),
-			ddmFormFieldRuleEvaluationResult.getValue());
+			ddmFormFieldEvaluationResult.getValue());
 	}
 
 	@Test(expected = DDMFormEvaluationException.class)

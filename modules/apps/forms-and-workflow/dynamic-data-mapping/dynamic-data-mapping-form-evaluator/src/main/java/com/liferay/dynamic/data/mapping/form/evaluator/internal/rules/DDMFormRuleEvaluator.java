@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -73,7 +74,17 @@ public class DDMFormRuleEvaluator {
 			evaluateDDMFormRuleEvaluatorNode(node);
 		}
 
-		return ListUtil.fromCollection(_ddmFormFieldEvaluationResults.values());
+		List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults =
+			new ArrayList<>();
+
+		for (Map.Entry<String, Map<String, DDMFormFieldEvaluationResult>>
+				entry: _ddmFormFieldEvaluationResults.entrySet()) {
+
+			ddmFormFieldEvaluationResults.addAll(
+				ListUtil.fromCollection(entry.getValue().values()));
+		}
+
+		return ddmFormFieldEvaluationResults;
 	}
 
 	protected void addDDMFormFieldRuleEvaluationResults() {
@@ -93,6 +104,12 @@ public class DDMFormRuleEvaluator {
 
 		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
 			ddmFormField.getName());
+
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultInstanceMap = new HashMap<>();
+
+		_ddmFormFieldEvaluationResults.put(
+			ddmFormField.getName(), ddmFormFieldEvaluationResultInstanceMap);
 
 		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
 			DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
@@ -114,8 +131,9 @@ public class DDMFormRuleEvaluator {
 
 			ddmFormFieldEvaluationResult.setValue(valueString);
 
-			_ddmFormFieldEvaluationResults.put(
-				ddmFormField.getName(), ddmFormFieldEvaluationResult);
+			ddmFormFieldEvaluationResultInstanceMap.put(
+				ddmFormFieldValue.getInstanceId(),
+				ddmFormFieldEvaluationResult);
 		}
 	}
 
@@ -151,7 +169,7 @@ public class DDMFormRuleEvaluator {
 	private final DDMDataProviderTracker _ddmDataProviderTracker;
 	private final DDMExpressionFactory _ddmExpressionFactory;
 	private final DDMForm _ddmForm;
-	private final Map<String, DDMFormFieldEvaluationResult>
+	private final Map<String, Map<String, DDMFormFieldEvaluationResult>>
 		_ddmFormFieldEvaluationResults = new HashMap<>();
 	private final DDMFormRuleEvaluatorGraph _ddmFormRuleEvaluatorGraph;
 	private final DDMFormValues _ddmFormValues;

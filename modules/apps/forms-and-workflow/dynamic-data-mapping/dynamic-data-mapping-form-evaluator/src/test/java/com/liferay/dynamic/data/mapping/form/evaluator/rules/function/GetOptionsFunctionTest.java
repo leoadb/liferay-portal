@@ -74,7 +74,7 @@ public class GetOptionsFunctionTest extends CallFunctionTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -127,8 +127,12 @@ public class GetOptionsFunctionTest extends CallFunctionTest {
 
 		Assert.assertEquals(1, ddmFormFieldEvaluationResults.size());
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"country");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("country");
+			ddmFormFieldEvaluationResultMap.get("country_instanceId");
 
 		List<KeyValuePair> options = ddmFormFieldEvaluationResult.getOptions();
 

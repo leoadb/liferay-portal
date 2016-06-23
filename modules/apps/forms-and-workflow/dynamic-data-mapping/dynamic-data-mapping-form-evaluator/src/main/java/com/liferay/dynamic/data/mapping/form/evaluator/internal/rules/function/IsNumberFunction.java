@@ -21,6 +21,7 @@ import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class IsNumberFunction extends BaseFunction {
 	public String execute(
 			DDMDataProviderInstanceService ddmDataProviderInstanceService,
 			DDMDataProviderTracker ddmDataProviderTracker,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResults,
 			DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 			List<String> parameters)
@@ -45,8 +46,16 @@ public class IsNumberFunction extends BaseFunction {
 
 		String ddmFormFieldName = parameters.get(2);
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				ddmFormFieldName);
+
+		Iterator<DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultIterator =
+				ddmFormFieldEvaluationResultMap.values().iterator();
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get(ddmFormFieldName);
+			ddmFormFieldEvaluationResultIterator.next();
 
 		String actualValue = ddmFormFieldEvaluationResult.getValue().toString();
 

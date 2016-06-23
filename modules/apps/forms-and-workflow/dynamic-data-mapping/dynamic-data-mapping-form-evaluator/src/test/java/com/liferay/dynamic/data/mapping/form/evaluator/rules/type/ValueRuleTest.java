@@ -84,7 +84,7 @@ public class ValueRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -98,13 +98,17 @@ public class ValueRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ValueRule valueRule = new ValueRule(
 			"field1 * field2", new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field3", null, StringPool.BLANK,
+			ddmFormFieldEvaluationResults, "field3", null, "field3_instanceId",
 			LocaleUtil.US);
 
 		valueRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field3");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field3");
+			ddmFormFieldEvaluationResultMap.get("field3_instanceId");
 
 		Assert.assertEquals("30.0", ddmFormFieldEvaluationResult.getValue());
 	}
@@ -149,7 +153,7 @@ public class ValueRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -163,13 +167,17 @@ public class ValueRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ValueRule valueRule = new ValueRule(
 			"field1 + field2", new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field3", null, StringPool.BLANK,
+			ddmFormFieldEvaluationResults, "field3", null, "field3_instanceId",
 			LocaleUtil.US);
 
 		valueRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field3");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field3");
+			ddmFormFieldEvaluationResultMap.get("field3_instanceId");
 
 		Assert.assertEquals(
 			StringPool.BLANK, ddmFormFieldEvaluationResult.getValue());

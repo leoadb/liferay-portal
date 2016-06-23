@@ -21,6 +21,8 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldRule;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldRuleType;
+import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
+import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -38,10 +40,12 @@ import java.util.regex.Pattern;
 public class DDMFormRuleEvaluatorHelper {
 
 	public DDMFormRuleEvaluatorHelper(
-		DDMExpressionFactory ddmExpressionFactory, DDMForm ddmForm) {
+		DDMExpressionFactory ddmExpressionFactory, DDMForm ddmForm,
+		DDMFormValues ddmFormValues) {
 
 		_ddmExpressionFactory = ddmExpressionFactory;
 		_ddmForm = ddmForm;
+		_ddmFormValues = ddmFormValues;
 	}
 
 	public DDMFormRuleEvaluatorGraph createDDMFormRuleEvaluatorGraph()
@@ -72,16 +76,29 @@ public class DDMFormRuleEvaluatorHelper {
 		return edges;
 	}
 
-	protected DDMFormRuleEvaluatorNode createDDMFormRuleEvaluatorNode(
+	protected Set<DDMFormRuleEvaluatorNode> createDDMFormRuleEvaluatorNode(
 		DDMFormField ddmFormField, DDMFormFieldRule ddmFormFieldRule) {
 
-		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode =
-			new DDMFormRuleEvaluatorNode(
-				ddmFormFieldRule.getExpression(),
-				ddmFormFieldRule.getDDMFormFieldRuleType(),
-				ddmFormField.getName(), StringPool.BLANK);
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			_ddmFormValues.getDDMFormFieldValuesMap();
 
-		return ddmFormRuleEvaluatorNode;
+		Set<DDMFormRuleEvaluatorNode> ddmFormRuleEvaluatorNodes =
+			new HashSet<>();
+
+		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
+			ddmFormField.getName());
+
+		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
+			DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode =
+				new DDMFormRuleEvaluatorNode(
+					ddmFormFieldRule.getExpression(),
+					ddmFormFieldRule.getDDMFormFieldRuleType(),
+					ddmFormField.getName(), ddmFormFieldValue.getInstanceId());
+
+			ddmFormRuleEvaluatorNodes.add(ddmFormRuleEvaluatorNode);
+		}
+
+		return ddmFormRuleEvaluatorNodes;
 	}
 
 	protected Set<DDMFormRuleEvaluatorNode>
@@ -109,7 +126,7 @@ public class DDMFormRuleEvaluatorHelper {
 			ddmFormFieldRules = ddmFormField.getDDMFormFieldRules();
 
 			for (DDMFormFieldRule ddmFormFieldRule : ddmFormFieldRules) {
-				nodes.add(
+				nodes.addAll(
 					createDDMFormRuleEvaluatorNode(
 						ddmFormField, ddmFormFieldRule));
 			}
@@ -177,17 +194,26 @@ public class DDMFormRuleEvaluatorHelper {
 
 		Matcher matcher = pattern.matcher(expression);
 
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			_ddmFormValues.getDDMFormFieldValuesMap();
+
 		while (matcher.find()) {
 			Set<String> ddmFormFieldNames = extractDDMFormFieldName(
 				matcher.group(1));
 
 			for (String ddmFormFieldName : ddmFormFieldNames) {
-				DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode =
-					new DDMFormRuleEvaluatorNode(
-						StringPool.BLANK, ddmFormFieldRuleType,
-						ddmFormFieldName, StringPool.BLANK);
+				List<DDMFormFieldValue> ddmFormFieldValues =
+					ddmFormFieldValuesMap.get(ddmFormFieldName);
 
-				edges.add(ddmFormRuleEvaluatorNode);
+				for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
+					DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode =
+						new DDMFormRuleEvaluatorNode(
+							StringPool.BLANK, ddmFormFieldRuleType,
+							ddmFormFieldName,
+							ddmFormFieldValue.getInstanceId());
+
+					edges.add(ddmFormRuleEvaluatorNode);
+				}
 			}
 		}
 
@@ -324,5 +350,6 @@ public class DDMFormRuleEvaluatorHelper {
 
 	private final DDMExpressionFactory _ddmExpressionFactory;
 	private final DDMForm _ddmForm;
+	private final DDMFormValues _ddmFormValues;
 
 }

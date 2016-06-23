@@ -26,6 +26,7 @@ import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class ValueRule extends BaseRule {
 		String expression, DDMExpressionFactory ddmExpressionFactory,
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults, String ddmFormFieldName,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 		String instanceId, Locale locale) {
@@ -58,8 +59,12 @@ public class ValueRule extends BaseRule {
 			return;
 		}
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				getDDMFormFieldName());
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get(getDDMFormFieldName());
+			ddmFormFieldEvaluationResultMap.get(getInstanceId());
 
 		Class<?> expressionClass = Boolean.class;
 
@@ -80,9 +85,18 @@ public class ValueRule extends BaseRule {
 				if (ddmFormFieldEvaluationResults.containsKey(variableName)) {
 					currentFieldName = variableName;
 
+					Map<String, DDMFormFieldEvaluationResult>
+						dependentDDMFormFieldEvaluationResultMap =
+							ddmFormFieldEvaluationResults.get(variableName);
+
+					Iterator<DDMFormFieldEvaluationResult>
+						ddmFormFieldEvaluationResultIterator =
+							dependentDDMFormFieldEvaluationResultMap.values().
+								iterator();
+
 					DDMFormFieldEvaluationResult
 						dependentDDMFormFieldRuleEvaluationResult =
-							ddmFormFieldEvaluationResults.get(variableName);
+							ddmFormFieldEvaluationResultIterator.next();
 
 					String dependentValue =
 						dependentDDMFormFieldRuleEvaluationResult.getValue().

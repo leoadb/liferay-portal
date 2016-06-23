@@ -23,7 +23,6 @@ import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +77,7 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -93,12 +92,16 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 		VisibilityRule visibilityRule = new VisibilityRule(
 			"field3 > (field1 + field2)", new DDMExpressionFactoryImpl(), null,
 			null, ddmFormFieldEvaluationResults, "field3", null,
-			StringPool.BLANK);
+			"field3_instanceId");
 
 		visibilityRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field3");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field3");
+			ddmFormFieldEvaluationResultMap.get("field3_instanceId");
 
 		Assert.assertFalse(ddmFormFieldEvaluationResult.isVisible());
 	}
@@ -153,7 +156,7 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -171,12 +174,16 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 		VisibilityRule visibilityRule = new VisibilityRule(
 			"field1 * field2 >= (field3 + field4)",
 			new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field3", null, StringPool.BLANK);
+			ddmFormFieldEvaluationResults, "field3", null, "field3_instanceId");
 
 		visibilityRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field3");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field3");
+			ddmFormFieldEvaluationResultMap.get("field3_instanceId");
 
 		Assert.assertFalse(ddmFormFieldEvaluationResult.isVisible());
 	}
@@ -211,7 +218,7 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -223,12 +230,16 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 		VisibilityRule visibilityRule = new VisibilityRule(
 			"equals(field1,\"value1\")", new DDMExpressionFactoryImpl(), null,
 			null, ddmFormFieldEvaluationResults, "field2", null,
-			StringPool.BLANK);
+			"field2_instanceId");
 
 		visibilityRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field2");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field2");
+			ddmFormFieldEvaluationResultMap.get("field2_instanceId");
 
 		Assert.assertTrue(ddmFormFieldEvaluationResult.isVisible());
 	}
@@ -273,7 +284,7 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -285,20 +296,27 @@ public class VisibilityRuleTest extends DDMFormRuleEvaluatorBaseTest {
 		createDDMFormFieldEvaluationResult(
 			fieldDDMFormField2, ddmFormValues, ddmFormFieldEvaluationResults);
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field3");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field3");
+			ddmFormFieldEvaluationResultMap.get("field3_instanceId");
 
 		ddmFormFieldEvaluationResult.setReadOnly(false);
 
 		VisibilityRule visibilityRule = new VisibilityRule(
 			"equals(field1,\"value1\") && not(isReadOnly(field3))",
 			new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field2", null, StringPool.BLANK);
+			ddmFormFieldEvaluationResults, "field2", null, "field2_instanceId");
 
 		visibilityRule.evaluate();
 
-		ddmFormFieldEvaluationResult = ddmFormFieldEvaluationResults.get(
+		ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
 			"field2");
+
+		ddmFormFieldEvaluationResult = ddmFormFieldEvaluationResultMap.get(
+			"field2_instanceId");
 
 		Assert.assertTrue(ddmFormFieldEvaluationResult.isVisible());
 	}

@@ -34,7 +34,7 @@ public interface Function {
 	public String execute(
 			DDMDataProviderInstanceService ddmDataProviderInstanceService,
 			DDMDataProviderTracker ddmDataProviderTracker,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResults,
 			DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 			List<String> parameters)

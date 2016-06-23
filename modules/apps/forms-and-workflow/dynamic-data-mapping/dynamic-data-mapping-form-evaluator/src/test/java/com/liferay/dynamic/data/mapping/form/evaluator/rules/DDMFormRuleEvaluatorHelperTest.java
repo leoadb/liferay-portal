@@ -28,7 +28,6 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +90,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
 			new DDMFormRuleEvaluatorHelper(
-				new DDMExpressionFactoryImpl(), ddmForm);
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues);
 
 		DDMFormRuleEvaluatorGraph ddmFormRuleEvaluatorGraph =
 			ddmFormRuleEvaluatorHelper.createDDMFormRuleEvaluatorGraph();
@@ -102,7 +101,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode0 =
 			new DDMFormRuleEvaluatorNode(
 				"between(field1,10,field0)", DDMFormFieldRuleType.READ_ONLY,
-				"field1", StringPool.BLANK);
+				"field1", "field1_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode0));
 
@@ -111,7 +110,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode1 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field0", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field0", "field0_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(
@@ -119,7 +118,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode2 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field1", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field1", "field1_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(
@@ -173,7 +172,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
 			new DDMFormRuleEvaluatorHelper(
-				new DDMExpressionFactoryImpl(), ddmForm);
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues);
 
 		DDMFormRuleEvaluatorGraph ddmFormRuleEvaluatorGraph =
 			ddmFormRuleEvaluatorHelper.createDDMFormRuleEvaluatorGraph();
@@ -184,7 +183,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode0 =
 			new DDMFormRuleEvaluatorNode(
 				"field1 * field2", DDMFormFieldRuleType.VALUE, "field0",
-				StringPool.BLANK);
+				"field0_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode0));
 
@@ -193,7 +192,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode1 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field1", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field1", "field1_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(
@@ -201,7 +200,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode2 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field2", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field2", "field2_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(
@@ -245,7 +244,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
 			new DDMFormRuleEvaluatorHelper(
-				new DDMExpressionFactoryImpl(), ddmForm);
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues);
 
 		DDMFormRuleEvaluatorGraph ddmFormRuleEvaluatorGraph =
 			ddmFormRuleEvaluatorHelper.createDDMFormRuleEvaluatorGraph();
@@ -256,7 +255,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode0 =
 			new DDMFormRuleEvaluatorNode(
 				"contains(field1,\"val\")", DDMFormFieldRuleType.READ_ONLY,
-				"field0", StringPool.BLANK);
+				"field0", "field0_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode0));
 
@@ -265,7 +264,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode1 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field1", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field1", "field1_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(
@@ -309,7 +308,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
 			new DDMFormRuleEvaluatorHelper(
-				new DDMExpressionFactoryImpl(), ddmForm);
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues);
 
 		DDMFormRuleEvaluatorGraph ddmFormRuleEvaluatorGraph =
 			ddmFormRuleEvaluatorHelper.createDDMFormRuleEvaluatorGraph();
@@ -320,7 +319,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode0 =
 			new DDMFormRuleEvaluatorNode(
 				"equals(field1,\"value1\")", DDMFormFieldRuleType.READ_ONLY,
-				"field0", StringPool.BLANK);
+				"field0", "field0_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode0));
 
@@ -329,7 +328,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode1 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field1", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field1", "field1_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(
@@ -384,7 +383,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
 			new DDMFormRuleEvaluatorHelper(
-				new DDMExpressionFactoryImpl(), ddmForm);
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues);
 
 		DDMFormRuleEvaluatorGraph ddmFormRuleEvaluatorGraph =
 			ddmFormRuleEvaluatorHelper.createDDMFormRuleEvaluatorGraph();
@@ -395,21 +394,21 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode0 =
 			new DDMFormRuleEvaluatorNode(
 				"isReadOnly(field0)", DDMFormFieldRuleType.READ_ONLY, "field1",
-				StringPool.BLANK);
+				"field1_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode0));
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode1 =
 			new DDMFormRuleEvaluatorNode(
 				"contains(field1,\"nothing\")", DDMFormFieldRuleType.VISIBILITY,
-				"field1", StringPool.BLANK);
+				"field1", "field1_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode1));
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode2 =
 			new DDMFormRuleEvaluatorNode(
 				"equals(field0,\"read-only\")", DDMFormFieldRuleType.READ_ONLY,
-				"field0", StringPool.BLANK);
+				"field0", "field0_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode2));
 
@@ -418,7 +417,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode3 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field1", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field1", "field1_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode1.getEdges().contains(
@@ -429,7 +428,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode4 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field0", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field0", "field0_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode2.getEdges().contains(
@@ -488,7 +487,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
 			new DDMFormRuleEvaluatorHelper(
-				new DDMExpressionFactoryImpl(), ddmForm);
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues);
 
 		DDMFormRuleEvaluatorGraph ddmFormRuleEvaluatorGraph =
 			ddmFormRuleEvaluatorHelper.createDDMFormRuleEvaluatorGraph();
@@ -499,7 +498,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode0 =
 			new DDMFormRuleEvaluatorNode(
 				"isVisible(field1)", DDMFormFieldRuleType.VISIBILITY, "field2",
-				StringPool.BLANK);
+				"field2_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode0));
 
@@ -509,7 +508,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode1 =
 			new DDMFormRuleEvaluatorNode(
 				"equals(field0,\"test\")", DDMFormFieldRuleType.VISIBILITY,
-				"field1", StringPool.BLANK);
+				"field1", "field1_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(
@@ -520,7 +519,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode3 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field0", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field0", "field0_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode1.getEdges().contains(
@@ -576,7 +575,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
 			new DDMFormRuleEvaluatorHelper(
-				new DDMExpressionFactoryImpl(), ddmForm);
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues);
 
 		DDMFormRuleEvaluatorGraph ddmFormRuleEvaluatorGraph =
 			ddmFormRuleEvaluatorHelper.createDDMFormRuleEvaluatorGraph();
@@ -587,7 +586,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode0 =
 			new DDMFormRuleEvaluatorNode(
 				"equals(field1,\"test\") && not(contains(field2,\"hello\"))",
-				DDMFormFieldRuleType.VISIBILITY, "field0", StringPool.BLANK);
+				DDMFormFieldRuleType.VISIBILITY, "field0", "field0_instanceId");
 
 		Assert.assertTrue(nodes.contains(ddmFormRuleEvaluatorNode0));
 
@@ -596,7 +595,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode1 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field1", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field1", "field1_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(
@@ -604,7 +603,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		DDMFormRuleEvaluatorNode ddmFormRuleEvaluatorNode2 =
 			new DDMFormRuleEvaluatorNode(
-				"", DDMFormFieldRuleType.VALUE, "field2", StringPool.BLANK);
+				"", DDMFormFieldRuleType.VALUE, "field2", "field2_instanceId");
 
 		Assert.assertTrue(
 			ddmFormRuleEvaluatorNode0.getEdges().contains(

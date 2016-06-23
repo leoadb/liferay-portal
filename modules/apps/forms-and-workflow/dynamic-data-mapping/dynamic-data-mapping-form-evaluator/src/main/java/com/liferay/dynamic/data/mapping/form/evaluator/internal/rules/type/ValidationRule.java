@@ -35,7 +35,7 @@ public class ValidationRule extends BaseRule {
 		DDMExpressionFactory ddmExpressionFactory,
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults, String ddmFormFieldName,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 		String instanceId) {
@@ -57,8 +57,12 @@ public class ValidationRule extends BaseRule {
 
 		boolean expressionResult = executeExpression(Boolean.class);
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				getDDMFormFieldName());
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get(getDDMFormFieldName());
+			ddmFormFieldEvaluationResultMap.get(getInstanceId());
 
 		ddmFormFieldEvaluationResult.setErrorMessage(_errorMessage);
 		ddmFormFieldEvaluationResult.setValid(expressionResult);

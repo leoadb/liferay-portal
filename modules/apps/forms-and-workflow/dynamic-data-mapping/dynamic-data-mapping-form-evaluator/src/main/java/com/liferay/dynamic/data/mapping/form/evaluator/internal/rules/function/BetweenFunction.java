@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationRes
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -34,7 +35,7 @@ public class BetweenFunction extends BaseFunction {
 	public String execute(
 			DDMDataProviderInstanceService ddmDataProviderInstanceService,
 			DDMDataProviderTracker ddmDataProviderTracker,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResults,
 			DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 			List<String> parameters)
@@ -48,8 +49,16 @@ public class BetweenFunction extends BaseFunction {
 		String expression1 = parameters.get(3);
 		String expression2 = parameters.get(4);
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				ddmFormFieldName);
+
+		Iterator<DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultIterator =
+				ddmFormFieldEvaluationResultMap.values().iterator();
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get(ddmFormFieldName);
+			ddmFormFieldEvaluationResultIterator.next();
 
 		try {
 			double actualValue = Double.parseDouble(
@@ -67,16 +76,27 @@ public class BetweenFunction extends BaseFunction {
 				Matcher variableMatcher = variablePattern.matcher(expression1);
 				while (variableMatcher.find()) {
 					String variable = variableMatcher.group(1);
-					DDMFormFieldEvaluationResult fieldEvaluationResult1 =
-						ddmFormFieldEvaluationResults.get(variable);
 
-					if (fieldEvaluationResult1 == null) {
+					Map<String, DDMFormFieldEvaluationResult>
+						dependentDDMFormFieldEvaluationResultMap =
+							ddmFormFieldEvaluationResults.get(variable);
+
+					ddmFormFieldEvaluationResultIterator =
+						dependentDDMFormFieldEvaluationResultMap.values().
+							iterator();
+
+					DDMFormFieldEvaluationResult
+						dependentDDMFormFieldRuleEvaluationResult =
+							ddmFormFieldEvaluationResultIterator.next();
+
+					if (dependentDDMFormFieldRuleEvaluationResult == null) {
 						throw new DDMFormEvaluationException(
 							"Invalid expression");
 					}
 
 					value1 = Double.parseDouble(
-						fieldEvaluationResult1.getValue().toString());
+						dependentDDMFormFieldRuleEvaluationResult.getValue().
+							toString());
 				}
 			}
 
@@ -87,16 +107,27 @@ public class BetweenFunction extends BaseFunction {
 				Matcher variableMatcher = variablePattern.matcher(expression2);
 				while (variableMatcher.find()) {
 					String variable = variableMatcher.group(1);
-					DDMFormFieldEvaluationResult fieldEvaluationResult2 =
-						ddmFormFieldEvaluationResults.get(variable);
 
-					if (fieldEvaluationResult2 == null) {
+					Map<String, DDMFormFieldEvaluationResult>
+						dependentDDMFormFieldEvaluationResultMap =
+							ddmFormFieldEvaluationResults.get(variable);
+
+					ddmFormFieldEvaluationResultIterator =
+						dependentDDMFormFieldEvaluationResultMap.values().
+							iterator();
+
+					DDMFormFieldEvaluationResult
+						dependentDDMFormFieldRuleEvaluationResult =
+							ddmFormFieldEvaluationResultIterator.next();
+
+					if (dependentDDMFormFieldRuleEvaluationResult == null) {
 						throw new DDMFormEvaluationException(
 							"Invalid expression");
 					}
 
 					value2 = Double.parseDouble(
-						fieldEvaluationResult2.getValue().toString());
+						dependentDDMFormFieldRuleEvaluationResult.getValue().
+							toString());
 				}
 			}
 

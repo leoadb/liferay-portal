@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationRes
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class ContainsFunction extends BaseFunction {
 	public String execute(
 			DDMDataProviderInstanceService ddmDataProviderInstanceService,
 			DDMDataProviderTracker ddmDataProviderTracker,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResults,
 			DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 			List<String> parameters)
@@ -46,14 +47,30 @@ public class ContainsFunction extends BaseFunction {
 		String value = parameters.get(3);
 
 		if (ddmFormFieldEvaluationResults.containsKey(value)) {
+			Map<String, DDMFormFieldEvaluationResult>
+				ddmFormFieldEvaluationResultMap =
+					ddmFormFieldEvaluationResults.get(value);
+
+			Iterator<DDMFormFieldEvaluationResult>
+				ddmFormFieldEvaluationResultIterator =
+					ddmFormFieldEvaluationResultMap.values().iterator();
+
 			DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-				ddmFormFieldEvaluationResults.get(value);
+				ddmFormFieldEvaluationResultIterator.next();
 
 			value = ddmFormFieldEvaluationResult.getValue().toString();
 		}
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				ddmFormFieldName);
+
+		Iterator<DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultIterator =
+				ddmFormFieldEvaluationResultMap.values().iterator();
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get(ddmFormFieldName);
+			ddmFormFieldEvaluationResultIterator.next();
 
 		String actualValue = ddmFormFieldEvaluationResult.getValue().toString();
 

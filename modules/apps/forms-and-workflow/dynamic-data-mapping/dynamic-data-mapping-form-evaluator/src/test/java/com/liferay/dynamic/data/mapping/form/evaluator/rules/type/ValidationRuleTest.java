@@ -69,7 +69,7 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -79,15 +79,22 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		ValidationRule validationRule = new ValidationRule(
-			"isURL(field2)", new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field1", null, StringPool.BLANK);
+			"Error message", "isURL(field2)", new DDMExpressionFactoryImpl(),
+			null, null, ddmFormFieldEvaluationResults, "field1", null,
+			"field1_instanceId");
 
 		validationRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertFalse(ddmFormFieldEvaluationResult.isValid());
+		Assert.assertEquals(
+			"Error message", ddmFormFieldEvaluationResult.getErrorMessage());
 	}
 
 	@Test
@@ -120,7 +127,7 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -130,16 +137,23 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		ValidationRule validationRule = new ValidationRule(
-			"isEmailAddress(field2)", new DDMExpressionFactoryImpl(), null,
-			null, ddmFormFieldEvaluationResults, "field1", null,
-			StringPool.BLANK);
+			"Custom error message", "isEmailAddress(field2)",
+			new DDMExpressionFactoryImpl(), null, null,
+			ddmFormFieldEvaluationResults, "field1", null, "field1_instanceId");
 
 		validationRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertFalse(ddmFormFieldEvaluationResult.isValid());
+		Assert.assertEquals(
+			"Custom error message",
+			ddmFormFieldEvaluationResult.getErrorMessage());
 	}
 
 	@Test
@@ -182,7 +196,7 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -195,16 +209,24 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField2, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		ValidationRule validationRule = new ValidationRule(
+			"Validation error message",
 			"isURL(field2) || isEmailAddress(field1) || isNumber(field3)",
 			new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field1", null, StringPool.BLANK);
+			ddmFormFieldEvaluationResults, "field1", null, "field1_instanceId");
 
 		validationRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertFalse(ddmFormFieldEvaluationResult.isValid());
+		Assert.assertEquals(
+			"Validation error message",
+			ddmFormFieldEvaluationResult.getErrorMessage());
 	}
 
 	@Test
@@ -238,7 +260,7 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -248,15 +270,22 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		ValidationRule validationRule = new ValidationRule(
-			"isURL(field2)", new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field1", null, StringPool.BLANK);
+			StringPool.BLANK, "isURL(field2)", new DDMExpressionFactoryImpl(),
+			null, null, ddmFormFieldEvaluationResults, "field1", null,
+			"field1_instanceId");
 
 		validationRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertTrue(ddmFormFieldEvaluationResult.isValid());
+		Assert.assertEquals(
+			StringPool.BLANK, ddmFormFieldEvaluationResult.getErrorMessage());
 	}
 
 	@Test
@@ -290,7 +319,7 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -300,16 +329,22 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		ValidationRule validationRule = new ValidationRule(
-			"isEmailAddress(field2)", new DDMExpressionFactoryImpl(), null,
-			null, ddmFormFieldEvaluationResults, "field1", null,
-			StringPool.BLANK);
+			StringPool.BLANK, "isEmailAddress(field2)",
+			new DDMExpressionFactoryImpl(), null, null,
+			ddmFormFieldEvaluationResults, "field1", null, "field1_instanceId");
 
 		validationRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertTrue(ddmFormFieldEvaluationResult.isValid());
+		Assert.assertEquals(
+			StringPool.BLANK, ddmFormFieldEvaluationResult.getErrorMessage());
 	}
 
 	@Test
@@ -344,7 +379,7 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -354,16 +389,22 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		ValidationRule validationRule = new ValidationRule(
-			"isEmailAddress(field2) && isURL(field1)",
+			StringPool.BLANK, "isEmailAddress(field2) && isURL(field1)",
 			new DDMExpressionFactoryImpl(), null, null,
-			ddmFormFieldEvaluationResults, "field1", null, StringPool.BLANK);
+			ddmFormFieldEvaluationResults, "field1", null, "field1_instanceId");
 
 		validationRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertTrue(ddmFormFieldEvaluationResult.isValid());
+		Assert.assertEquals(
+			StringPool.BLANK, ddmFormFieldEvaluationResult.getErrorMessage());
 	}
 
 	@Test
@@ -396,7 +437,7 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults = new HashMap<>();
 
 		createDDMFormFieldEvaluationResult(
@@ -406,16 +447,22 @@ public class ValidationRuleTest extends DDMFormRuleEvaluatorBaseTest {
 			fieldDDMFormField1, ddmFormValues, ddmFormFieldEvaluationResults);
 
 		ValidationRule validationRule = new ValidationRule(
-			"isURL(field1) || isNumber(field2)", new DDMExpressionFactoryImpl(),
-			null, null, ddmFormFieldEvaluationResults, "field1", null,
-			StringPool.BLANK);
+			StringPool.BLANK, "isURL(field1) || isNumber(field2)",
+			new DDMExpressionFactoryImpl(), null, null,
+			ddmFormFieldEvaluationResults, "field1", null, "field1_instanceId");
 
 		validationRule.evaluate();
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				"field1");
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get("field1");
+			ddmFormFieldEvaluationResultMap.get("field1_instanceId");
 
 		Assert.assertTrue(ddmFormFieldEvaluationResult.isValid());
+		Assert.assertEquals(
+			StringPool.BLANK, ddmFormFieldEvaluationResult.getErrorMessage());
 	}
 
 }

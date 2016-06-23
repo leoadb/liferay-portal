@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.StringPool;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +38,7 @@ public class GetOptionsFunction extends CallFunction {
 	public String execute(
 			DDMDataProviderInstanceService ddmDataProviderInstanceService,
 			DDMDataProviderTracker ddmDataProviderTracker,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResults,
 			DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 			List<String> parameters)
@@ -83,12 +84,20 @@ public class GetOptionsFunction extends CallFunction {
 	}
 
 	protected DDMFormFieldEvaluationResult getDDMFormFieldEvaluationResult(
-		Map<String, DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults,
-		Map<String, String> resultMap) {
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
+			ddmFormFieldEvaluationResults, Map<String, String> resultMap) {
 
 		String ddmFormFieldName = getDDMFormFieldName(resultMap);
 
-		return ddmFormFieldEvaluationResults.get(ddmFormFieldName);
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				ddmFormFieldName);
+
+		Iterator<DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultIterator =
+				ddmFormFieldEvaluationResultMap.values().iterator();
+
+		return ddmFormFieldEvaluationResultIterator.next();
 	}
 
 	protected String getDDMFormFieldName(Map<String, String> resultMap) {

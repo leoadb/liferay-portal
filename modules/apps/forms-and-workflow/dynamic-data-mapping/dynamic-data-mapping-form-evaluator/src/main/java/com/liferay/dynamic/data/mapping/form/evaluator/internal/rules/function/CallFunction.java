@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class CallFunction extends BaseFunction {
 	public String execute(
 			DDMDataProviderInstanceService ddmDataProviderInstanceService,
 			DDMDataProviderTracker ddmDataProviderTracker,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResults,
 			DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 			List<String> parameters)
@@ -89,7 +90,7 @@ public class CallFunction extends BaseFunction {
 
 	protected void addDDMDataProviderContextParameters(
 		DDMDataProviderContext ddmDataProviderContext,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults, String paramsExpression) {
 
 		Map<String, String> parameters = extractParameters(
@@ -106,7 +107,7 @@ public class CallFunction extends BaseFunction {
 			Long ddmDataProviderInstanceId,
 			DDMDataProviderInstanceService ddmDataProviderInstanceService,
 			DDMDataProviderTracker ddmDataProviderTracker,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResults,
 			DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 			String paramsExpression)
@@ -137,7 +138,7 @@ public class CallFunction extends BaseFunction {
 
 	protected void extractDDMFormFieldValue(
 		String expression,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults, Map<String, String> paramsMap) {
 
 		String[] tokens = StringUtil.split(expression, CharPool.EQUAL);
@@ -150,7 +151,7 @@ public class CallFunction extends BaseFunction {
 
 	protected Map<String, String> extractParameters(
 		String expression,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults) {
 
 		Map<String, String> paramsMap = new HashMap<>();
@@ -202,11 +203,19 @@ public class CallFunction extends BaseFunction {
 	}
 
 	protected String getDDMFormFieldValue(
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults, String ddmFormFieldName) {
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				ddmFormFieldName);
+
+		Iterator<DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultIterator =
+				ddmFormFieldEvaluationResultMap.values().iterator();
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get(ddmFormFieldName);
+			ddmFormFieldEvaluationResultIterator.next();
 
 		Object value = ddmFormFieldEvaluationResult.getValue();
 
@@ -218,19 +227,28 @@ public class CallFunction extends BaseFunction {
 	}
 
 	protected void setDDMFormFieldValue(
-		Map<String, DDMFormFieldEvaluationResult>
-			ddmFormFieldRuleEvaluationMap, String ddmFormFieldName,
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
+			ddmFormFieldEvaluationResults, String ddmFormFieldName,
 		Object value) {
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				ddmFormFieldName);
+
+		Iterator<DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultIterator =
+				ddmFormFieldEvaluationResultMap.values().iterator();
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldRuleEvaluationMap.get(ddmFormFieldName);
+			ddmFormFieldEvaluationResultIterator.next();
 
 		ddmFormFieldEvaluationResult.setValue(value);
 	}
 
 	protected void setDDMFormFieldValues(
-		Map<String, DDMFormFieldEvaluationResult> ddmFormFieldRuleEvaluationMap,
-		JSONObject jsonObject, Map<String, String> resultMap) {
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
+			ddmFormFieldRuleEvaluationMap, JSONObject jsonObject,
+		Map<String, String> resultMap) {
 
 		for (Map.Entry<String, String> entry : resultMap.entrySet()) {
 			setDDMFormFieldValue(

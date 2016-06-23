@@ -28,6 +28,7 @@ import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -42,7 +43,7 @@ public abstract class BaseRule implements Rule {
 		String expression, DDMExpressionFactory ddmExpressionFactory,
 		DDMDataProviderInstanceService ddmDataProviderInstanceService,
 		DDMDataProviderTracker ddmDataProviderTracker,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults, String ddmFormFieldName,
 		DDMFormFieldRuleType ddmFormFieldRuleType,
 		DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
@@ -124,8 +125,16 @@ public abstract class BaseRule implements Rule {
 
 			for (String variableName : dependenciesMap.keySet()) {
 				if (ddmFormFieldEvaluationResults.containsKey(variableName)) {
+					Map<String, DDMFormFieldEvaluationResult>
+						ddmFormFieldEvaluationResultMap =
+							ddmFormFieldEvaluationResults.get(variableName);
+
+					Iterator<DDMFormFieldEvaluationResult>
+						ddmFormFieldEvaluationResultIterator =
+							ddmFormFieldEvaluationResultMap.values().iterator();
+
 					DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-						ddmFormFieldEvaluationResults.get(variableName);
+						ddmFormFieldEvaluationResultIterator.next();
 
 					ddmExpression.setStringVariableValue(
 						variableName,
@@ -193,7 +202,7 @@ public abstract class BaseRule implements Rule {
 		ddmDataProviderInstanceService;
 	protected final DDMDataProviderTracker ddmDataProviderTracker;
 	protected final DDMExpressionFactory ddmExpressionFactory;
-	protected final Map<String, DDMFormFieldEvaluationResult>
+	protected final Map<String, Map<String, DDMFormFieldEvaluationResult>>
 		ddmFormFieldEvaluationResults;
 	protected final String ddmFormFieldName;
 	protected final DDMFormFieldRuleType ddmFormFieldRuleType;

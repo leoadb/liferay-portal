@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationRes
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class VisibilityFunction extends BaseFunction {
 	public String execute(
 			DDMDataProviderInstanceService ddmDataProviderInstanceService,
 			DDMDataProviderTracker ddmDataProviderTracker,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResults,
 			DDMFormValuesJSONDeserializer ddmFormValuesJSONDeserializer,
 			List<String> parameters)
@@ -44,8 +45,16 @@ public class VisibilityFunction extends BaseFunction {
 
 		String ddmFormFieldName = parameters.get(2);
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultMap = ddmFormFieldEvaluationResults.get(
+				ddmFormFieldName);
+
+		Iterator<DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultIterator =
+				ddmFormFieldEvaluationResultMap.values().iterator();
+
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			ddmFormFieldEvaluationResults.get(ddmFormFieldName);
+			ddmFormFieldEvaluationResultIterator.next();
 
 		if (ddmFormFieldEvaluationResult.isVisible()) {
 			return "TRUE";

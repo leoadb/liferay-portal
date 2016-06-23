@@ -117,7 +117,7 @@ public class DDMFormRuleEvaluatorTest extends DDMFormRuleEvaluatorBaseTest {
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		DDMFormRuleEvaluator ddmFormRuleEvaluator = createDDMFormRuleEvaluator(
-			ddmForm);
+			ddmForm, ddmFormValues);
 
 		ddmFormRuleEvaluator.evaluate();
 	}
@@ -144,8 +144,6 @@ public class DDMFormRuleEvaluatorTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmForm.addDDMFormField(fieldDDMFormField1);
 
-		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
-
 		DDMFormFieldValue fieldDDMFormFieldValue0 =
 			DDMFormValuesTestUtil.createDDMFormFieldValue(
 				"field0_instanceId", "field0", new UnlocalizedValue("value0"));
@@ -160,19 +158,22 @@ public class DDMFormRuleEvaluatorTest extends DDMFormRuleEvaluatorBaseTest {
 
 		ddmFormFieldValues.add(fieldDDMFormFieldValue1);
 
+		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
+
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		DDMFormRuleEvaluator ddmFormRuleEvaluator = createDDMFormRuleEvaluator(
-			ddmForm);
+			ddmForm, ddmFormValues);
 
 		ddmFormRuleEvaluator.evaluate();
 	}
 
-	protected DDMFormRuleEvaluator createDDMFormRuleEvaluator(DDMForm ddmForm)
+	protected DDMFormRuleEvaluator createDDMFormRuleEvaluator(
+			DDMForm ddmForm, DDMFormValues ddmFormValues)
 		throws Exception {
 
 		DDMFormRuleEvaluatorGraph ddmFormRuleEvaluatorGraph =
-			createDDMFormRuleEvaluatorGraph(ddmForm);
+			createDDMFormRuleEvaluatorGraph(ddmForm, ddmFormValues);
 
 		return new DDMFormRuleEvaluator(
 			_ddmDataProviderInstanceService, _ddmDataProviderTracker,
@@ -181,12 +182,12 @@ public class DDMFormRuleEvaluatorTest extends DDMFormRuleEvaluatorBaseTest {
 	}
 
 	protected DDMFormRuleEvaluatorGraph createDDMFormRuleEvaluatorGraph(
-			DDMForm ddmForm)
+			DDMForm ddmForm, DDMFormValues ddmFormValues)
 		throws Exception {
 
 		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
 			new DDMFormRuleEvaluatorHelper(
-				new DDMExpressionFactoryImpl(), ddmForm);
+				new DDMExpressionFactoryImpl(), ddmForm, ddmFormValues);
 
 		return ddmFormRuleEvaluatorHelper.createDDMFormRuleEvaluatorGraph();
 	}
