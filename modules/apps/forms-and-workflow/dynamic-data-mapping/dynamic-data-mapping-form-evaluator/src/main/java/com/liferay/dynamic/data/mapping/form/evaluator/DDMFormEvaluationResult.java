@@ -33,10 +33,10 @@ public class DDMFormEvaluationResult {
 		return _ddmFormFieldEvaluationResults;
 	}
 
-	public Map<String, DDMFormFieldEvaluationResult>
+	public Map<String, Map<String, DDMFormFieldEvaluationResult>>
 		getDDMFormFieldEvaluationResultsMap() {
 
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResultsMap = new HashMap<>();
 
 		populateDDMFormFieldEvaluationResultsMap(
@@ -53,14 +53,31 @@ public class DDMFormEvaluationResult {
 
 	protected void populateDDMFormFieldEvaluationResultsMap(
 		List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults,
-		Map<String, DDMFormFieldEvaluationResult>
+		Map<String, Map<String, DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResultsMap) {
 
 		for (DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult :
 				ddmFormFieldEvaluationResults) {
 
-			ddmFormFieldEvaluationResultsMap.put(
-				ddmFormFieldEvaluationResult.getName(),
+			Map<String, DDMFormFieldEvaluationResult>
+				ddmFormFieldInstanceEvaluationResultMap = null;
+
+			if (!ddmFormFieldEvaluationResultsMap.containsKey(
+					ddmFormFieldEvaluationResult.getName())) {
+
+				ddmFormFieldInstanceEvaluationResultMap = new HashMap<>();
+				ddmFormFieldEvaluationResultsMap.put(
+					ddmFormFieldEvaluationResult.getName(),
+					ddmFormFieldInstanceEvaluationResultMap);
+			}
+			else {
+				ddmFormFieldInstanceEvaluationResultMap =
+					ddmFormFieldEvaluationResultsMap.get(
+						ddmFormFieldEvaluationResult.getName());
+			}
+
+			ddmFormFieldInstanceEvaluationResultMap.put(
+				ddmFormFieldEvaluationResult.getInstanceId(),
 				ddmFormFieldEvaluationResult);
 
 			populateDDMFormFieldEvaluationResultsMap(

@@ -81,6 +81,12 @@ public class DDMFormFieldTemplateContextFactoryTest {
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
 			new DDMFormFieldEvaluationResult(instanceId, "Field1");
 
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldInstanceEvaluationResultMap = new HashMap<>();
+
+		ddmFormFieldInstanceEvaluationResultMap.put(
+			instanceId, ddmFormFieldEvaluationResult);
+
 		ddmFormFieldEvaluationResult.setVisible(true);
 
 		// DDM form values
@@ -97,8 +103,8 @@ public class DDMFormFieldTemplateContextFactoryTest {
 
 		DDMFormFieldTemplateContextFactory ddmFormFieldTemplateContextFactory =
 			createDDMFormFieldTemplateContextFactory(
-				ddmForm, ddmFormFieldEvaluationResult, ddmFormFieldValues, true,
-				getTextDDMFormFieldRenderer(),
+				ddmForm, ddmFormFieldInstanceEvaluationResultMap,
+				ddmFormFieldValues, true, getTextDDMFormFieldRenderer(),
 				getTextDDMFormFieldTemplateContextContributor());
 
 		List<Object> fields = ddmFormFieldTemplateContextFactory.create();
@@ -134,6 +140,13 @@ public class DDMFormFieldTemplateContextFactoryTest {
 			new DDMFormFieldEvaluationResult(instanceId, "Field1");
 
 		ddmFormFieldEvaluationResult.setVisible(true);
+		ddmFormFieldEvaluationResult.setReadOnly(true);
+
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldInstanceEvaluationResultMap = new HashMap<>();
+
+		ddmFormFieldInstanceEvaluationResultMap.put(
+			instanceId, ddmFormFieldEvaluationResult);
 
 		// DDM form values
 
@@ -149,8 +162,8 @@ public class DDMFormFieldTemplateContextFactoryTest {
 
 		DDMFormFieldTemplateContextFactory ddmFormFieldTemplateContextFactory =
 			createDDMFormFieldTemplateContextFactory(
-				ddmForm, ddmFormFieldEvaluationResult, ddmFormFieldValues,
-				false, getTextDDMFormFieldRenderer(),
+				ddmForm, ddmFormFieldInstanceEvaluationResultMap,
+				ddmFormFieldValues, false, getTextDDMFormFieldRenderer(),
 				getTextDDMFormFieldTemplateContextContributor());
 
 		List<Object> fields = ddmFormFieldTemplateContextFactory.create();
@@ -194,6 +207,13 @@ public class DDMFormFieldTemplateContextFactoryTest {
 
 		ddmFormFieldEvaluationResult.setValid(true);
 		ddmFormFieldEvaluationResult.setVisible(true);
+		ddmFormFieldEvaluationResult.setValue("Value 1");
+
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldInstanceEvaluationResultMap = new HashMap<>();
+
+		ddmFormFieldInstanceEvaluationResultMap.put(
+			instanceId, ddmFormFieldEvaluationResult);
 
 		// DDM form values
 
@@ -209,8 +229,8 @@ public class DDMFormFieldTemplateContextFactoryTest {
 
 		DDMFormFieldTemplateContextFactory ddmFormFieldTemplateContextFactory =
 			createDDMFormFieldTemplateContextFactory(
-				ddmForm, ddmFormFieldEvaluationResult, ddmFormFieldValues,
-				false, getTextDDMFormFieldRenderer(),
+				ddmForm, ddmFormFieldInstanceEvaluationResultMap,
+				ddmFormFieldValues, false, getTextDDMFormFieldRenderer(),
 				getTextDDMFormFieldTemplateContextContributor());
 
 		List<Object> fields = ddmFormFieldTemplateContextFactory.create();
@@ -231,9 +251,6 @@ public class DDMFormFieldTemplateContextFactoryTest {
 			false, MapUtil.getBoolean(fieldTemplateContext, "repeatable"));
 		Assert.assertEquals(
 			true, MapUtil.getBoolean(fieldTemplateContext, "required"));
-		Assert.assertEquals(
-			"ddm.text",
-			MapUtil.getString(fieldTemplateContext, "templateNamespace"));
 		Assert.assertEquals(
 			"This is a tip.",
 			MapUtil.getString(fieldTemplateContext, "tip"));
@@ -257,7 +274,8 @@ public class DDMFormFieldTemplateContextFactoryTest {
 	protected DDMFormFieldTemplateContextFactory
 		createDDMFormFieldTemplateContextFactory(
 			DDMForm ddmForm,
-			DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult,
+			Map<String, DDMFormFieldEvaluationResult>
+				ddmFormFieldEvaluationResultMap,
 			List<DDMFormFieldValue> ddmFormFieldValues, boolean ddmFormReadOnly,
 			DDMFormFieldRenderer ddmFormFieldRenderer,
 			DDMFormFieldTemplateContextContributor
@@ -272,8 +290,9 @@ public class DDMFormFieldTemplateContextFactoryTest {
 
 		DDMFormFieldTemplateContextFactory ddmFormFieldTemplateContextFactory =
 			new DDMFormFieldTemplateContextFactory(
-				ddmForm.getDDMFormFieldsMap(true), ddmFormFieldEvaluationResult,
-				ddmFormFieldValues, ddmFormRenderingContext);
+				ddmForm.getDDMFormFieldsMap(true),
+				ddmFormFieldEvaluationResultMap, ddmFormFieldValues,
+				ddmFormRenderingContext);
 
 		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker =
 			mockDDMFormFieldTypeServicesTracker(

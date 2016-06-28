@@ -122,15 +122,11 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 			DDMFormEvaluationResult ddmFormEvaluationResult)
 		throws DDMFormValuesValidationException {
 
-		Map<String, DDMFormFieldEvaluationResult>
-			ddmFormFieldEvaluationResultsMap =
-				ddmFormEvaluationResult.getDDMFormFieldEvaluationResultsMap();
-
 		List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults =
 			new ArrayList<>();
 
 		for (DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult :
-				ddmFormFieldEvaluationResultsMap.values()) {
+				ddmFormEvaluationResult.getDDMFormFieldEvaluationResults()) {
 
 			if (!ddmFormFieldEvaluationResult.isValid()) {
 				ddmFormFieldEvaluationResults.add(ddmFormFieldEvaluationResult);
@@ -189,7 +185,7 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 	protected void traverseDDMFormFieldValues(
 			List<DDMFormFieldValue> ddmFormFieldValues,
 			Map<String, DDMFormField> ddmFormFieldsMap,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResultsMap)
 		throws DDMFormValuesValidationException {
 
@@ -249,7 +245,7 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 
 	protected void validateDDMFormFieldValue(
 			DDMFormField ddmFormField, DDMFormFieldValue ddmFormFieldValue,
-			Map<String, DDMFormFieldEvaluationResult>
+			Map<String, Map<String, DDMFormFieldEvaluationResult>>
 				ddmFormFieldEvaluationResultsMap)
 		throws DDMFormValuesValidationException {
 
@@ -259,10 +255,17 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 
 		DDMFormValues ddmFormValues = ddmFormFieldValue.getDDMFormValues();
 
+		String instanceId = ddmFormFieldValue.getInstanceId();
+
+		Map<String, DDMFormFieldEvaluationResult>
+			ddmFormFieldInstanceEvaluationResultsMap =
+				ddmFormFieldEvaluationResultsMap.get(
+					ddmFormFieldValue.getName());
+
 		validateDDMFormFieldValue(
 			ddmFormField, ddmFormValues.getAvailableLocales(),
 			ddmFormValues.getDefaultLocale(), ddmFormFieldValue.getValue(),
-			ddmFormFieldEvaluationResultsMap.get(ddmFormFieldValue.getName()));
+			ddmFormFieldInstanceEvaluationResultsMap.get(instanceId));
 
 		traverseDDMFormFieldValues(
 			ddmFormFieldValue.getNestedDDMFormFieldValues(),

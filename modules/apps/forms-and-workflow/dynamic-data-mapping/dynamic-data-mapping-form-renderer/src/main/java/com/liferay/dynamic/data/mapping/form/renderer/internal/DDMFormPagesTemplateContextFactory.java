@@ -119,7 +119,7 @@ public class DDMFormPagesTemplateContextFactory {
 		return columnTemplateContext;
 	}
 
-	protected Map<String, DDMFormFieldEvaluationResult>
+	protected Map<String, Map<String, DDMFormFieldEvaluationResult>>
 		createDDMFormFieldEvaluationResultsMap() {
 
 		try {
@@ -289,7 +289,7 @@ public class DDMFormPagesTemplateContextFactory {
 
 	private final DDMForm _ddmForm;
 	private DDMFormEvaluator _ddmFormEvaluator;
-	private Map<String, DDMFormFieldEvaluationResult>
+	private Map<String, Map<String, DDMFormFieldEvaluationResult>>
 		_ddmFormFieldEvaluationResultMap;
 	private final Map<String, DDMFormField> _ddmFormFieldsMap;
 	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;
