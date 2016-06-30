@@ -19,39 +19,35 @@ import java.io.Serializable;
 /**
  * @author Leonardo Barros
  */
-public class DDMFormFieldRule implements Serializable {
+public class DDMFormRule implements Serializable {
 
-	public DDMFormFieldRule(DDMFormFieldRule ddmFormFieldRule) {
-		_expression = ddmFormFieldRule._expression;
-		_ddmFormFieldRuleType = ddmFormFieldRule._ddmFormFieldRuleType;
+	public DDMFormRule(DDMFormRule ddmFormRule) {
+		_expression = ddmFormRule._expression;
+		_ddmFormRuleType = ddmFormRule._ddmFormRuleType;
 	}
 
-	public DDMFormFieldRule(
-		String expression, DDMFormFieldRuleType ddmFormFieldRuleType) {
-
+	public DDMFormRule(String expression, DDMFormRuleType ddmFormRuleType) {
 		_expression = expression;
-		_ddmFormFieldRuleType = ddmFormFieldRuleType;
+		_ddmFormRuleType = ddmFormRuleType;
 	}
 
-	public DDMFormFieldRuleType getDDMFormFieldRuleType() {
-		return _ddmFormFieldRuleType;
+	public DDMFormRuleType getDDMFormFieldRuleType() {
+		return _ddmFormRuleType;
 	}
 
 	public String getExpression() {
 		return _expression;
 	}
 
-	public void setDDMFormFieldRuleType(
-		DDMFormFieldRuleType ddmFormFieldRuleType) {
-
-		_ddmFormFieldRuleType = ddmFormFieldRuleType;
+	public void setDDMFormRuleType(DDMFormRuleType ddmFormRuleType) {
+		_ddmFormRuleType = ddmFormRuleType;
 	}
 
 	public void setExpression(String expression) {
 		_expression = expression;
 	}
 
-	private DDMFormFieldRuleType _ddmFormFieldRuleType;
+	private DDMFormRuleType _ddmFormRuleType;
 	private String _expression;
 
 }
