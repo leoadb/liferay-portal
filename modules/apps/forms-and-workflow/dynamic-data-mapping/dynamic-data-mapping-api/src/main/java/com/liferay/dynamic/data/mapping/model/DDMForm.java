@@ -42,6 +42,10 @@ public class DDMForm implements Serializable {
 		for (DDMFormField ddmFormField : ddmForm._ddmFormFields) {
 			addDDMFormField(new DDMFormField(ddmFormField));
 		}
+
+		for (DDMFormFieldRule ddmFormFieldRule : ddmForm._ddmFormFieldRules) {
+			addDDMFormFieldRule(new DDMFormFieldRule(ddmFormFieldRule));
+		}
 	}
 
 	public void addAvailableLocale(Locale locale) {
@@ -52,6 +56,10 @@ public class DDMForm implements Serializable {
 		ddmFormField.setDDMForm(this);
 
 		_ddmFormFields.add(ddmFormField);
+	}
+
+	public void addDDMFormFieldRule(DDMFormFieldRule ddmFormFieldRule) {
+		_ddmFormFieldRules.add(ddmFormFieldRule);
 	}
 
 	@Override
@@ -79,6 +87,10 @@ public class DDMForm implements Serializable {
 
 	public Set<Locale> getAvailableLocales() {
 		return _availableLocales;
+	}
+
+	public List<DDMFormFieldRule> getDDMFormFieldRules() {
+		return _ddmFormFieldRules;
 	}
 
 	public List<DDMFormField> getDDMFormFields() {
@@ -119,6 +131,10 @@ public class DDMForm implements Serializable {
 		_availableLocales = availableLocales;
 	}
 
+	public void setDDMFormFieldRules(List<DDMFormFieldRule> ddmFormFieldRules) {
+		_ddmFormFieldRules = ddmFormFieldRules;
+	}
+
 	public void setDDMFormFields(List<DDMFormField> ddmFormFields) {
 		for (DDMFormField ddmFormField : ddmFormFields) {
 			ddmFormField.setDDMForm(this);
@@ -132,6 +148,7 @@ public class DDMForm implements Serializable {
 	}
 
 	private Set<Locale> _availableLocales = new LinkedHashSet<>();
+	private List<DDMFormFieldRule> _ddmFormFieldRules = new ArrayList<>();
 	private List<DDMFormField> _ddmFormFields = new ArrayList<>();
 	private Locale _defaultLocale;
 
