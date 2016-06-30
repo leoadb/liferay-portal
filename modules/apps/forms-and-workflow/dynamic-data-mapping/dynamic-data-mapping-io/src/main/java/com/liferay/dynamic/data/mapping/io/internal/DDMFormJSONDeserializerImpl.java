@@ -261,7 +261,7 @@ public class DDMFormJSONDeserializerImpl implements DDMFormJSONDeserializer {
 		JSONArray actionJSONArray = jsonObject.getJSONArray("actions");
 		List<String> actions = new ArrayList<>();
 
-		if (Validator.isNotNull(actions)) {
+		if (Validator.isNotNull(actionJSONArray)) {
 			for (int i = 0; i < actionJSONArray.length(); i++) {
 				actions.add(actionJSONArray.getString(i));
 			}

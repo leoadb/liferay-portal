@@ -56,7 +56,7 @@ public class DDMFormRule implements Serializable {
 		return _condition;
 	}
 
-	public DDMFormRuleType getDDMFormFieldRuleType() {
+	public DDMFormRuleType getDDMFormRuleType() {
 		return _ddmFormRuleType;
 	}
 

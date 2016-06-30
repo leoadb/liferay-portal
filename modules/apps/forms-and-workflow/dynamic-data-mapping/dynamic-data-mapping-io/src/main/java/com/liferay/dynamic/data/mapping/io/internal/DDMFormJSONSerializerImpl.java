@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 import java.util.Locale;
@@ -279,13 +280,13 @@ public class DDMFormJSONSerializerImpl implements DDMFormJSONSerializer {
 
 		List<String> actions = ddmFormRule.getActions();
 
-		if (!actions.isEmpty()) {
+		if (Validator.isNotNull(actions)) {
 			jsonObject.put("actions", ruleActionsToJSONArray(actions));
 		}
 
 		jsonObject.put("condition", ddmFormRule.getCondition());
 		jsonObject.put("message", ddmFormRule.getMessage());
-		jsonObject.put("type", ddmFormRule.getDDMFormFieldRuleType());
+		jsonObject.put("type", ddmFormRule.getDDMFormRuleType());
 
 		return jsonObject;
 	}
