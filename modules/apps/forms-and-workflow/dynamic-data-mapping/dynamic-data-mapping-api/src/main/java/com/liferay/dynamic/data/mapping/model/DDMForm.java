@@ -43,8 +43,8 @@ public class DDMForm implements Serializable {
 			addDDMFormField(new DDMFormField(ddmFormField));
 		}
 
-		for (DDMFormFieldRule ddmFormFieldRule : ddmForm._ddmFormFieldRules) {
-			addDDMFormFieldRule(new DDMFormFieldRule(ddmFormFieldRule));
+		for (DDMFormRule ddmFormRule : ddmForm._ddmFormRules) {
+			addDDMFormRule(new DDMFormRule(ddmFormRule));
 		}
 	}
 
@@ -58,8 +58,8 @@ public class DDMForm implements Serializable {
 		_ddmFormFields.add(ddmFormField);
 	}
 
-	public void addDDMFormFieldRule(DDMFormFieldRule ddmFormFieldRule) {
-		_ddmFormFieldRules.add(ddmFormFieldRule);
+	public void addDDMFormRule(DDMFormRule ddmFormRule) {
+		_ddmFormRules.add(ddmFormRule);
 	}
 
 	@Override
@@ -89,10 +89,6 @@ public class DDMForm implements Serializable {
 		return _availableLocales;
 	}
 
-	public List<DDMFormFieldRule> getDDMFormFieldRules() {
-		return _ddmFormFieldRules;
-	}
-
 	public List<DDMFormField> getDDMFormFields() {
 		return _ddmFormFields;
 	}
@@ -114,6 +110,10 @@ public class DDMForm implements Serializable {
 		return ddmFormFieldsMap;
 	}
 
+	public List<DDMFormRule> getDDMFormRules() {
+		return _ddmFormRules;
+	}
+
 	public Locale getDefaultLocale() {
 		return _defaultLocale;
 	}
@@ -131,10 +131,6 @@ public class DDMForm implements Serializable {
 		_availableLocales = availableLocales;
 	}
 
-	public void setDDMFormFieldRules(List<DDMFormFieldRule> ddmFormFieldRules) {
-		_ddmFormFieldRules = ddmFormFieldRules;
-	}
-
 	public void setDDMFormFields(List<DDMFormField> ddmFormFields) {
 		for (DDMFormField ddmFormField : ddmFormFields) {
 			ddmFormField.setDDMForm(this);
@@ -143,13 +139,17 @@ public class DDMForm implements Serializable {
 		_ddmFormFields = ddmFormFields;
 	}
 
+	public void setDDMFormRules(List<DDMFormRule> ddmFormRules) {
+		_ddmFormRules = ddmFormRules;
+	}
+
 	public void setDefaultLocale(Locale defaultLocale) {
 		_defaultLocale = defaultLocale;
 	}
 
 	private Set<Locale> _availableLocales = new LinkedHashSet<>();
-	private List<DDMFormFieldRule> _ddmFormFieldRules = new ArrayList<>();
 	private List<DDMFormField> _ddmFormFields = new ArrayList<>();
+	private List<DDMFormRule> _ddmFormRules = new ArrayList<>();
 	private Locale _defaultLocale;
 
 }
