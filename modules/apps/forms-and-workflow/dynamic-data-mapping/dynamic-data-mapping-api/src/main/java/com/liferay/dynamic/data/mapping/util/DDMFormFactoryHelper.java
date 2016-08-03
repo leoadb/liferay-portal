@@ -74,6 +74,18 @@ public class DDMFormFactoryHelper {
 		}
 	}
 
+	protected void collectDDMFormAnnotationsMap(
+			Class<?> clazz, Map<String, DDMForm> classesMap) {
+
+		for (Class<?> interfaceClass : clazz.getInterfaces()) {
+			collectDDMFormAnnotationsMap(interfaceClass, classesMap);
+		}
+
+		if (clazz.isAnnotationPresent(_DDM_FORM_ANNOTATION)) {
+			classesMap.put(clazz.getName(), clazz.getAnnotation(DDMForm.class));
+		}
+	}
+
 	protected Set<Locale> getAvailableLocales() {
 		if (Validator.isNull(_ddmForm.availableLanguageIds())) {
 			Locale defaultLocale = getDefaultLocale();
@@ -91,6 +103,14 @@ public class DDMFormFactoryHelper {
 		}
 
 		return availableLocales;
+	}
+
+	protected Collection<DDMForm> getDDMFormAnnotations() {
+		Map<String, DDMForm> classesMap = new HashMap<>();
+
+		collectDDMFormAnnotationsMap(_clazz, classesMap);
+
+		return classesMap.values();
 	}
 
 	protected Collection<Method> getDDMFormFieldMethods() {
@@ -126,11 +146,15 @@ public class DDMFormFactoryHelper {
 		List<com.liferay.dynamic.data.mapping.model.DDMFormRule> ddmFormRules =
 			new ArrayList<>();
 
-		for (DDMFormRule ddmFormRule : _ddmForm.rules()) {
-			ddmFormRules.add(
-				new com.liferay.dynamic.data.mapping.model.DDMFormRule(
-					ddmFormRule.condition(),
-					ListUtil.fromArray(ddmFormRule.actions())));
+		for (DDMForm ddmFormAnnotation : getDDMFormAnnotations()) {
+
+			for (DDMFormRule ddmFormRule : ddmFormAnnotation.rules()) {
+				ddmFormRules.add(
+					new com.liferay.dynamic.data.mapping.model.DDMFormRule(
+						ddmFormRule.condition(),
+						ListUtil.fromArray(ddmFormRule.actions())));
+			}
+
 		}
 
 		return ddmFormRules;
@@ -149,6 +173,10 @@ public class DDMFormFactoryHelper {
 
 		return LocaleUtil.fromLanguageId(_ddmForm.defaultLanguageId());
 	}
+
+	private static final Class<? extends Annotation>
+		_DDM_FORM_ANNOTATION =
+			com.liferay.dynamic.data.mapping.annotations.DDMForm.class;
 
 	private static final Class<? extends Annotation>
 		_DDM_FORM_FIELD_ANNOTATION =
