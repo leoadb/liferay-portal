@@ -137,6 +137,20 @@ public class SyncAdminPortlet extends BaseSyncPortlet {
 			SyncServiceConfigurationKeys.SYNC_CLIENT_MAX_CONNECTIONS,
 			String.valueOf(maxConnections));
 
+		int maxDownloadRate = ParamUtil.getInteger(
+			actionRequest, "maxDownloadRate");
+
+		portletPreferences.setValue(
+			SyncServiceConfigurationKeys.SYNC_CLIENT_MAX_DOWNLOAD_RATE,
+			String.valueOf(maxDownloadRate));
+
+		int maxUploadRate = ParamUtil.getInteger(
+			actionRequest, "maxUploadRate");
+
+		portletPreferences.setValue(
+			SyncServiceConfigurationKeys.SYNC_CLIENT_MAX_UPLOAD_RATE,
+			String.valueOf(maxUploadRate));
+
 		boolean oAuthEnabled = ParamUtil.getBoolean(
 			actionRequest, "oAuthEnabled");
 
@@ -148,6 +162,10 @@ public class SyncAdminPortlet extends BaseSyncPortlet {
 		portletPreferences.setValue(
 			SyncServiceConfigurationKeys.SYNC_CLIENT_POLL_INTERVAL,
 			String.valueOf(pollInterval));
+
+		portletPreferences.setValue(
+			SyncConstants.SYNC_CONTEXT_MODIFIED_TIME,
+			String.valueOf(System.currentTimeMillis()));
 
 		portletPreferences.store();
 

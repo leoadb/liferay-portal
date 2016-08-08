@@ -47,6 +47,7 @@ import com.liferay.journal.exception.FeedTargetLayoutFriendlyUrlException;
 import com.liferay.journal.exception.FeedTargetPortletIdException;
 import com.liferay.journal.exception.FolderNameException;
 import com.liferay.journal.exception.InvalidDDMStructureException;
+import com.liferay.journal.exception.MaxAddMenuFavItemsException;
 import com.liferay.journal.exception.NoSuchArticleException;
 import com.liferay.journal.exception.NoSuchFeedException;
 import com.liferay.journal.exception.NoSuchFolderException;
@@ -64,6 +65,7 @@ import com.liferay.journal.util.impl.JournalUtil;
 import com.liferay.journal.web.asset.JournalArticleAssetRenderer;
 import com.liferay.journal.web.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.portlet.action.ActionUtil;
+import com.liferay.journal.web.util.JournalPortletUtil;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.diff.CompareVersionsException;
 import com.liferay.portal.kernel.exception.LocaleException;
@@ -74,6 +76,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletProvider.Action;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
@@ -91,6 +94,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.LiferayFileItemException;
 import com.liferay.portal.kernel.upload.UploadException;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
@@ -113,7 +117,6 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -181,6 +184,41 @@ import org.osgi.service.component.annotations.Reference;
 public class JournalPortlet extends MVCPortlet {
 
 	public static final String VERSION_SEPARATOR = "_version_";
+
+	public void addAddMenuFavItem(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		String ddmStructureKey = ParamUtil.getString(
+			actionRequest, "ddmStructureKey");
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(actionRequest);
+
+		String key = JournalPortletUtil.getAddMenuFavItemKey(
+			actionRequest, actionResponse);
+
+		String[] addMenuFavItems = portalPreferences.getValues(
+			JournalPortletKeys.JOURNAL, key, new String[0]);
+
+		if (addMenuFavItems.length >=
+				_journalWebConfiguration.maxAddMenuItems()) {
+
+			hideDefaultErrorMessage(actionRequest);
+
+			throw new MaxAddMenuFavItemsException();
+		}
+
+		portalPreferences.setValues(
+			JournalPortletKeys.JOURNAL, key,
+			ArrayUtil.append(addMenuFavItems, ddmStructureKey));
+
+		SessionMessages.add(
+			actionRequest,
+			PortalUtil.getPortletId(actionRequest) +
+				SessionMessages.KEY_SUFFIX_REFRESH_PORTLET,
+			JournalPortletKeys.JOURNAL);
+	}
 
 	public void addArticle(
 			ActionRequest actionRequest, ActionResponse actionResponse)
@@ -387,6 +425,33 @@ public class JournalPortlet extends MVCPortlet {
 		throws Exception {
 
 		updateArticle(actionRequest, actionResponse);
+	}
+
+	public void removeAddMenuFavItem(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		String ddmStructureKey = ParamUtil.getString(
+			actionRequest, "ddmStructureKey");
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(actionRequest);
+
+		String key = JournalPortletUtil.getAddMenuFavItemKey(
+			actionRequest, actionResponse);
+
+		String[] addMenuFavItems = portalPreferences.getValues(
+			JournalPortletKeys.JOURNAL, key);
+
+		portalPreferences.setValues(
+			JournalPortletKeys.JOURNAL, key,
+			ArrayUtil.remove(addMenuFavItems, ddmStructureKey));
+
+		SessionMessages.add(
+			actionRequest,
+			PortalUtil.getPortletId(actionRequest) +
+				SessionMessages.KEY_SUFFIX_REFRESH_PORTLET,
+			JournalPortletKeys.JOURNAL);
 	}
 
 	@Override
@@ -626,18 +691,7 @@ public class JournalPortlet extends MVCPortlet {
 		Fields fields = DDMUtil.getFields(
 			ddmStructure.getStructureId(), serviceContext);
 
-		String structureContent = _journalConverter.getContent(
-			ddmStructure, fields);
-
-		Map<String, byte[]> structureImages = ActionUtil.getImages(
-			structureContent, fields);
-
-		Object[] contentAndImages =
-			new Object[] {structureContent, structureImages};
-
-		String content = (String)contentAndImages[0];
-		Map<String, byte[]> images =
-			(HashMap<String, byte[]>)contentAndImages[1];
+		String content = _journalConverter.getContent(ddmStructure, fields);
 
 		String ddmTemplateKey = ParamUtil.getString(
 			uploadPortletRequest, "ddmTemplateKey");
@@ -733,7 +787,7 @@ public class JournalPortlet extends MVCPortlet {
 				expirationDateYear, expirationDateHour, expirationDateMinute,
 				neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear,
 				reviewDateHour, reviewDateMinute, neverReview, indexable,
-				smallImage, smallImageURL, smallFile, images, articleURL,
+				smallImage, smallImageURL, smallFile, null, articleURL,
 				serviceContext);
 		}
 		else {
@@ -757,7 +811,7 @@ public class JournalPortlet extends MVCPortlet {
 					expirationDateHour, expirationDateMinute, neverExpire,
 					reviewDateMonth, reviewDateDay, reviewDateYear,
 					reviewDateHour, reviewDateMinute, neverReview, indexable,
-					smallImage, smallImageURL, smallFile, images, articleURL,
+					smallImage, smallImageURL, smallFile, null, articleURL,
 					serviceContext);
 			}
 
@@ -1154,6 +1208,7 @@ public class JournalPortlet extends MVCPortlet {
 			cause instanceof FileSizeException ||
 			cause instanceof LiferayFileItemException ||
 			cause instanceof LocaleException ||
+			cause instanceof MaxAddMenuFavItemsException ||
 			cause instanceof StorageFieldRequiredException ||
 			super.isSessionErrorException(cause)) {
 

@@ -153,12 +153,11 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 			Parameters parameters = OSGiHeader.parseHeader(
 				bundleSymbolicNameAttributeValue);
 
-			Set<String> bundleSymbolicNameSet = parameters.keySet();
+			Set<String> set = parameters.keySet();
 
-			Iterator<String> bundleSymbolicNameIterator =
-				bundleSymbolicNameSet.iterator();
+			Iterator<String> iterator = set.iterator();
 
-			String bundleSymbolicName = bundleSymbolicNameIterator.next();
+			String bundleSymbolicName = iterator.next();
 
 			String bundleVersionAttributeValue = attributes.getValue(
 				Constants.BUNDLE_VERSION);
@@ -609,7 +608,15 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 
 			unsyncBufferedInputStream.mark(1024 * 1000);
 
-			Bundle bundle = getBundle(bundleContext, unsyncBufferedInputStream);
+			Bundle bundle = null;
+
+			if (location.startsWith("reference:")) {
+				bundle = _getStaticBundle(
+					bundleContext, unsyncBufferedInputStream);
+			}
+			else {
+				bundle = getBundle(bundleContext, unsyncBufferedInputStream);
+			}
 
 			try {
 				unsyncBufferedInputStream.reset();
@@ -767,6 +774,64 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 		properties.put(ServicePropsKeys.VENDOR, ReleaseInfo.getVendor());
 
 		return properties;
+	}
+
+	private Bundle _getStaticBundle(
+			BundleContext bundleContext, InputStream inputStream)
+		throws PortalException {
+
+		try {
+			JarInputStream jarInputStream = new JarInputStream(inputStream);
+
+			Manifest manifest = jarInputStream.getManifest();
+
+			Attributes attributes = manifest.getMainAttributes();
+
+			String bundleSymbolicNameAttributeValue = attributes.getValue(
+				Constants.BUNDLE_SYMBOLICNAME);
+
+			Parameters parameters = OSGiHeader.parseHeader(
+				bundleSymbolicNameAttributeValue);
+
+			Set<String> set = parameters.keySet();
+
+			Iterator<String> iterator = set.iterator();
+
+			String bundleSymbolicName = iterator.next();
+
+			String bundleVersionAttributeValue = attributes.getValue(
+				Constants.BUNDLE_VERSION);
+
+			Version bundleVersion = Version.parseVersion(
+				bundleVersionAttributeValue);
+
+			for (Bundle bundle : bundleContext.getBundles()) {
+				if (bundleSymbolicName.equals(bundle.getSymbolicName())) {
+					Version curBundleVersion = Version.parseVersion(
+						String.valueOf(bundle.getVersion()));
+
+					if (bundleVersion.equals(curBundleVersion)) {
+						return bundle;
+					}
+					else {
+						bundle.uninstall();
+
+						FrameworkWiring frameworkWiring = _framework.adapt(
+							FrameworkWiring.class);
+
+						frameworkWiring.refreshBundles(
+							Collections.singletonList(bundle));
+
+						return null;
+					}
+				}
+			}
+
+			return null;
+		}
+		catch (Exception e) {
+			throw new PortalException(e);
+		}
 	}
 
 	private String _getSystemPackagesExtra() {
@@ -1071,18 +1136,56 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 
 		Collections.sort(jarPaths);
 
-		Set<String> overwrittenFileNames = new HashSet<>();
+		String prefix = "reference:".concat(_STATIC_JAR);
+
+		List<Bundle> refreshBundles = new ArrayList<>();
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			String location = bundle.getLocation();
+
+			if (!location.startsWith(prefix)) {
+				continue;
+			}
+
+			Path filePath = Paths.get(location.substring(prefix.length()));
+
+			if (jarPaths.contains(filePath)) {
+				bundles.add(bundle);
+
+				continue;
+			}
+
+			bundle.uninstall();
+
+			refreshBundles.add(bundle);
+
+			if (_log.isInfoEnabled()) {
+				_log.info(
+					"Uninstalled orphan overriding static JAR bundle " +
+						location);
+			}
+		}
+
+		FrameworkWiring frameworkWiring = _framework.adapt(
+			FrameworkWiring.class);
+
+		frameworkWiring.refreshBundles(refreshBundles);
+
+		refreshBundles.clear();
+
+		Set<String> overrideFileNames = new HashSet<>();
 
 		for (Path jarPath : jarPaths) {
 			try (InputStream inputStream = Files.newInputStream(jarPath)) {
 				String path = jarPath.toString();
 
-				Bundle bundle = _installInitialBundle(path, inputStream);
+				Bundle bundle = _installInitialBundle(
+					_STATIC_JAR.concat(path), inputStream);
 
 				if (bundle != null) {
 					bundles.add(bundle);
 
-					overwrittenFileNames.add(
+					overrideFileNames.add(
 						path.substring(path.lastIndexOf(StringPool.SLASH) + 1));
 				}
 			}
@@ -1138,14 +1241,14 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 							String fileName =
 								matcher.group(1) + matcher.group(4);
 
-							if (overwrittenFileNames.contains(fileName)) {
+							if (overrideFileNames.contains(fileName)) {
 								if (_log.isInfoEnabled()) {
 									StringBundler sb = new StringBundler(7);
 
 									sb.append(zipFile);
 									sb.append(":");
 									sb.append(zipEntry);
-									sb.append(" is overwritten by ");
+									sb.append(" is overridden by ");
 									sb.append(
 										PropsValues.MODULE_FRAMEWORK_BASE_DIR);
 									sb.append("/static/");
@@ -1244,18 +1347,13 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 			hostBundleSymbolicNames.add(fragmentHost);
 		}
 
-		List<Bundle> hostBundles = new ArrayList<>();
-
 		for (Bundle bundle : installedBundles) {
 			if (hostBundleSymbolicNames.contains(bundle.getSymbolicName())) {
-				hostBundles.add(bundle);
+				refreshBundles.add(bundle);
 			}
 		}
 
-		FrameworkWiring frameworkWiring = _framework.adapt(
-			FrameworkWiring.class);
-
-		frameworkWiring.refreshBundles(hostBundles);
+		frameworkWiring.refreshBundles(refreshBundles);
 
 		return new HashSet<>(Arrays.asList(initialBundles));
 	}
@@ -1372,6 +1470,8 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 			}
 		}
 	}
+
+	private static final String _STATIC_JAR = "Static-Jar::";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ModuleFrameworkImpl.class);

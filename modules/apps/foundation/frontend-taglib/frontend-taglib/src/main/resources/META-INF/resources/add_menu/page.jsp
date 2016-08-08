@@ -20,11 +20,13 @@
 int menuItemsCount = GetterUtil.getInteger(request.getAttribute("liferay-frontend:add-menu:menuItemsCount"));
 int maxItems = GetterUtil.getInteger(request.getAttribute("liferay-frontend:add-menu:maxItems"));
 List<MenuItemGroup> menuItemGroups = (List<MenuItemGroup>)request.getAttribute("liferay-frontend:add-menu:menuItemGroups");
+int numMenuItems = GetterUtil.getInteger(request.getAttribute("liferay-frontend:add-menu:numMenuItems"));
+int total = GetterUtil.getInteger(request.getAttribute("liferay-frontend:add-menu:total"));
 String viewMoreURL = (String)request.getAttribute("liferay-frontend:add-menu:viewMoreURL");
 %>
 
 <c:choose>
-	<c:when test="<%= menuItemsCount == 1 %>">
+	<c:when test="<%= total == 1 %>">
 
 		<%
 		MenuItemGroup menuItemGroup = menuItemGroups.get(0);
@@ -106,7 +108,7 @@ String viewMoreURL = (String)request.getAttribute("liferay-frontend:add-menu:vie
 						<%
 							index++;
 
-							if (index >= maxItems) {
+							if (index >= numMenuItems) {
 								break;
 							}
 						}
@@ -118,7 +120,7 @@ String viewMoreURL = (String)request.getAttribute("liferay-frontend:add-menu:vie
 					</c:if>
 
 				<%
-					if (index >= maxItems) {
+					if (index >= numMenuItems) {
 						break;
 					}
 				}
@@ -146,7 +148,7 @@ String viewMoreURL = (String)request.getAttribute("liferay-frontend:add-menu:vie
 								function(event) {
 									Liferay.Store('com.liferay.addmenu_customizeAddMenuAdviceMessage', true);
 
-									Liferay.Util.selectEntity(
+									Liferay.Util.openWindow(
 										{
 											dialog: {
 												destroyOnHide: true,
@@ -155,11 +157,6 @@ String viewMoreURL = (String)request.getAttribute("liferay-frontend:add-menu:vie
 											id: '<%= namespace %>selectAddMenuItem',
 											title: '<liferay-ui:message key="more" />',
 											uri: '<%= viewMoreURL %>'
-										},
-										function(event) {
-											event.preventDefault();
-
-											location.href = event.url;
 										}
 									);
 								}

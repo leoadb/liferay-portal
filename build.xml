@@ -38,36 +38,22 @@
 				</gradle-execute>
 			</sequential>
 
-			<delete dir="${doc.dir}" />
-
-			<delete>
-				<fileset dir="." includes="*.ear,*.jar,*.war,*.zip" />
-			</delete>
-
 			<delete failonerror="false" includeemptydirs="true">
-				<fileset
-					dir="${app.server.bin.dir}"
-					includes="*.log*"
-				/>
+				<fileset dir="." includes="*.ear,*.jar,*.war,*.zip" />
+				<fileset dir="test-coverage" />
+				<fileset dir="test-results" />
+				<fileset dir="${doc.dir}" />
+				<fileset dir="${app.server.bin.dir}" includes="*.log*" />
+				<fileset dir="${app.server.classes.portal.dir}" includes="portal-*.properties,system-*.properties" />
+				<fileset dir="${app.server.deploy.dir}" includes="*-ext/**,*-ext.war/**,*-hook/**,*-hook.war/**,*-layouttpl/**,*-layouttpl.war/**,*-portlet/**,*-portlet.war/**,*-theme/**,*-theme.war/**,*-web/**,*-web.war/**" />
+				<fileset dir="${app.server.lib.global.dir}" excludes="${jdbc.drivers}" />
+				<fileset dir="${liferay.home}" includes=".liferay-home" />
+				<fileset dir="${liferay.home}/data/elasticsearch" />
+				<fileset dir="${liferay.home}/data/hypersonic" includes="${database.name}.*" />
+				<fileset dir="${liferay.home}/deploy" />
+				<fileset dir="${liferay.home}/osgi" />
+				<fileset dir="${liferay.home}/work" />
 			</delete>
-
-			<delete file="${liferay.home}/.liferay-home" />
-
-			<delete dir="${liferay.home}/data/elasticsearch" />
-
-			<delete failonerror="false">
-				<fileset
-					dir="${liferay.home}/data/hypersonic"
-					includes="${database.name}.*"
-				/>
-			</delete>
-
-			<delete dir="${liferay.home}/deploy" failonerror="false" />
-			<delete dir="${liferay.home}/osgi" failonerror="false" />
-			<delete dir="${liferay.home}/work" failonerror="false" />
-
-			<delete dir="test-coverage" />
-			<delete dir="test-results" />
 
 			<if>
 				<available file="support-${app.server.type}" />
@@ -75,27 +61,6 @@
 					<ant dir="support-${app.server.type}" inheritAll="false" target="clean" />
 				</then>
 			</if>
-
-			<delete failonerror="false">
-				<fileset
-					dir="${app.server.classes.portal.dir}"
-					includes="portal-*.properties,system-*.properties"
-				/>
-			</delete>
-
-			<delete failonerror="false" includeemptydirs="true">
-				<fileset
-					dir="${app.server.deploy.dir}"
-					includes="*-ext/**,*-ext.war/**,*-hook/**,*-hook.war/**,*-layouttpl/**,*-layouttpl.war/**,*-portlet/**,*-portlet.war/**,*-theme/**,*-theme.war/**,*-web/**,*-web.war/**"
-				/>
-			</delete>
-
-			<delete failonerror="false">
-				<fileset
-					dir="${app.server.lib.global.dir}"
-					excludes="${jdbc.drivers}"
-				/>
-			</delete>
 
 			<if>
 				<equals arg1="${clean.log.dir}" arg2="true" />
@@ -324,12 +289,28 @@
 					<arg value="-Dportal.build=true" />
 				</gradle-execute>
 
-				<gradle-execute dir="${project.dir}/modules" task="deployTool">
-					<arg value="--parallel" />
-					<arg value="-Dportal.build=true" />
-					<arg value="deployAppServerLib" />
-					<arg value="deployConfigs" />
-				</gradle-execute>
+				<pathconvert property="build.app.server.lib.marker.files" setonempty="false">
+					<fileset dir="${project.dir}/modules" includes="**/.lfrbuild-app-server-lib" />
+				</pathconvert>
+
+				<if>
+					<isset property="build.app.server.lib.marker.files" />
+					<then>
+						<gradle-execute dir="${project.dir}/modules" task="deployTool">
+							<arg value="--parallel" />
+							<arg value="-Dportal.build=true" />
+							<arg value="deployAppServerLib" />
+							<arg value="deployConfigs" />
+						</gradle-execute>
+					</then>
+					<else>
+						<gradle-execute dir="${project.dir}/modules" task="deployTool">
+							<arg value="--parallel" />
+							<arg value="-Dportal.build=true" />
+							<arg value="deployConfigs" />
+						</gradle-execute>
+					</else>
+				</if>
 
 				<if>
 					<equals arg1="${jsp.precompile}" arg2="on" />
@@ -367,6 +348,8 @@
 				<move file="${app.server.portal.war.name}-tmp" tofile="${app.server.portal.war.name}" />
 			</then>
 		</if>
+
+		<copy file="tools/osgi-marketplace-override-README.markdown" tofile="${liferay.home}/osgi/marketplace/override/README.markdown" />
 
 		<print-current-time />
 	</target>
@@ -613,7 +596,6 @@
 			<param name="generated.description" value="" />
 			<param name="module.dir" value="util-slf4j" />
 		</antcall>
-
 	</target>
 
 	<target name="javadoc-cmd">
