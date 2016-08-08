@@ -18,12 +18,14 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
+import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.internal.upgrade.v1_0_0.UpgradeCompanyId;
 import com.liferay.dynamic.data.mapping.internal.upgrade.v1_0_0.UpgradeDynamicDataMapping;
 import com.liferay.dynamic.data.mapping.internal.upgrade.v1_0_0.UpgradeKernelPackage;
 import com.liferay.dynamic.data.mapping.internal.upgrade.v1_0_0.UpgradeLastPublishDate;
 import com.liferay.dynamic.data.mapping.internal.upgrade.v1_0_0.UpgradeSchema;
 import com.liferay.dynamic.data.mapping.internal.upgrade.v1_0_1.UpgradeResourcePermission;
+import com.liferay.dynamic.data.mapping.internal.upgrade.v1_0_2.UpgradeVisibilityExpression;
 import com.liferay.dynamic.data.mapping.io.DDMFormJSONDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormJSONSerializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutJSONSerializer;
@@ -78,6 +80,12 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 		registry.register(
 			"com.liferay.dynamic.data.mapping.service", "1.0.0", "1.0.1",
 			new UpgradeResourcePermission(_resourceActions));
+
+		registry.register(
+			"com.liferay.dynamic.data.mapping.service", "1.0.1", "1.0.2",
+			new UpgradeVisibilityExpression(
+				_ddmExpressionFactory, _ddmFormJSONDeserializer,
+				_ddmFormJSONSerializer));
 	}
 
 	@Reference(unbind = "-")
@@ -111,6 +119,13 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 	@Reference(unbind = "-")
 	protected void setDDM(DDM ddm) {
 		_ddm = ddm;
+	}
+
+	@Reference(unbind = "-")
+	protected void setDDMExpressionFactory(
+		DDMExpressionFactory ddmExpressionFactory) {
+
+		_ddmExpressionFactory = ddmExpressionFactory;
 	}
 
 	@Reference(unbind = "-")
@@ -197,6 +212,7 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 
 	private AssetEntryLocalService _assetEntryLocalService;
 	private DDM _ddm;
+	private DDMExpressionFactory _ddmExpressionFactory;
 	private DDMFormJSONDeserializer _ddmFormJSONDeserializer;
 	private DDMFormJSONSerializer _ddmFormJSONSerializer;
 	private DDMFormLayoutJSONSerializer _ddmFormLayoutJSONSerializer;
