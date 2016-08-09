@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -176,6 +177,13 @@ public class DDLFormPortlet extends MVCPortlet {
 			portletSession.setAttribute("recordSetId", recordSetId);
 			portletSession.setAttribute("shared", true);
 		}
+	}
+
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.dynamic.data.mapping.service)(release.schema.version=1.0.2))",
+		unbind = "-"
+	)
+	protected void setRelease(Release release) {
 	}
 
 	protected void setRenderRequestAttributes(
