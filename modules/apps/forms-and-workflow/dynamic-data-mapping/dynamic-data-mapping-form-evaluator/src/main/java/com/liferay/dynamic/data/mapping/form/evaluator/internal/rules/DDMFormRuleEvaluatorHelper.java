@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -141,6 +142,14 @@ public class DDMFormRuleEvaluatorHelper {
 		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
 			_ddmFormValues.getDDMFormFieldValuesMap();
 
+		if (!ddmFormFieldValuesMap.containsKey(ddmFormField.getName())) {
+			DDMFormFieldValue ddmFormFieldValue =
+				createDefaultDDMFormFieldValue(ddmFormField);
+
+			ddmFormFieldValuesMap.put(
+				ddmFormField.getName(), Arrays.asList(ddmFormFieldValue));
+		}
+
 		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
 			ddmFormField.getName());
 
@@ -154,23 +163,31 @@ public class DDMFormRuleEvaluatorHelper {
 		}
 	}
 
+	protected DDMFormFieldValue createDefaultDDMFormFieldValue(
+		DDMFormField ddmFormField) {
+
+		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
+
+		ddmFormFieldValue.setName(ddmFormField.getName());
+
+		Value value = new UnlocalizedValue(StringPool.BLANK);
+
+		if (ddmFormField.isLocalizable()) {
+			value = new LocalizedValue(_locale);
+
+			value.addString(_locale, StringPool.BLANK);
+		}
+
+		ddmFormFieldValue.setValue(value);
+		return ddmFormFieldValue;
+	}
+
 	protected DDMFormValues createEmptyDDMFormValues(DDMForm ddmForm) {
 		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
 
 		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
-			DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
-
-			ddmFormFieldValue.setName(ddmFormField.getName());
-
-			Value value = new UnlocalizedValue(StringPool.BLANK);
-
-			if (ddmFormField.isLocalizable()) {
-				value = new LocalizedValue(_locale);
-
-				value.addString(_locale, StringPool.BLANK);
-			}
-
-			ddmFormFieldValue.setValue(value);
+			DDMFormFieldValue ddmFormFieldValue =
+				createDefaultDDMFormFieldValue(ddmFormField);
 
 			ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 		}
@@ -228,6 +245,7 @@ public class DDMFormRuleEvaluatorHelper {
 
 				if (Validator.isNotNull(visibilityExpressionProperty) &&
 					!visibilityExpressionProperty.equals("TRUE")) {
+
 					String visibilityExpression = String.valueOf(
 						visibilityExpressionProperty);
 
