@@ -248,6 +248,7 @@ public class DDMFormRuleEvaluatorHelper {
 
 					String visibilityExpression = String.valueOf(
 						visibilityExpressionProperty);
+					
 					_createDDMFormRule(
 						ddmFormField.getName(), visibilityExpression);
 				}
@@ -308,6 +309,8 @@ public class DDMFormRuleEvaluatorHelper {
 	}
 
 	private String _translateExpression(String expressionStr) throws Exception {
+		_log.info(String.format("Expression: '%s'", expressionStr));
+		
 		DDMExpression<Boolean> expression =
 			_ddmExpressionFactory.createBooleanDDMExpression(expressionStr);
 
