@@ -321,9 +321,9 @@ public class DDMFormRuleEvaluatorHelper {
 		for (String variable : variableDependenciesMap.keySet()) {
 			if (_ddmFormFieldEvaluationResults.containsKey(variable)) {
 				expressionStr = expressionStr.replaceAll(
-					String.format("([,\\s\\(]+)(%s)([,\\s\\)]+)", variable),
+					String.format("([,\\s\\(]?)(%s)([,\\s\\)]?)", variable),
 					String.format(
-						"$1get(fieldAt(\"%s\",0),\"value\")$3", variable));
+						"$1get(fieldAt(\"%s\", 0), \"value\")$3", variable));
 			}
 		}
 
