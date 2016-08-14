@@ -287,7 +287,9 @@ public class DDMFormRuleEvaluatorHelper {
 
 		String action = String.format(
 			"set(fieldAt(\"%s\", 0), \"valid\", %s, \"%s\")", ddmFormFieldName,
-			_translateExpression(validation.getExpression()), errorMessage);
+			_translateExpression(
+				String.format(" %s ", validation.getExpression())), 
+			errorMessage);
 
 		List<String> actions = new ArrayList<>();
 		actions.add(action);
@@ -302,7 +304,7 @@ public class DDMFormRuleEvaluatorHelper {
 
 		String action = String.format(
 			"set(fieldAt(\"%s\", 0), \"visible\", %s)", ddmFormFieldName,
-			_translateExpression(visibilityExpression));
+			_translateExpression(String.format(" %s ", visibilityExpression)));
 
 		List<String> actions = new ArrayList<>();
 		actions.add(action);
@@ -321,7 +323,7 @@ public class DDMFormRuleEvaluatorHelper {
 		for (String variable : variableDependenciesMap.keySet()) {
 			if (_ddmFormFieldEvaluationResults.containsKey(variable)) {
 				expressionStr = expressionStr.replaceAll(
-					String.format("([,\\s\\(]?)(%s)([,\\s\\)]?)", variable),
+					String.format("([,\\s\\(]+)(%s)([,\\s\\)]+)", variable),
 					String.format(
 						"$1get(fieldAt(\"%s\", 0), \"value\")$3", variable));
 			}
