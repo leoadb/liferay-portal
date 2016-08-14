@@ -123,6 +123,9 @@ public class DDMFormRuleEvaluatorHelper {
 		if (ddmFormField.getDataType().equals(FieldConstants.NUMBER)) {
 			ddmFormFieldEvaluationResult.setValue(Double.valueOf(valueString));
 		}
+		else if (ddmFormField.getDataType().equals(FieldConstants.BOOLEAN)) {
+			ddmFormFieldEvaluationResult.setValue(Boolean.valueOf(valueString));
+		}
 		else {
 			ddmFormFieldEvaluationResult.setValue(valueString);
 		}
