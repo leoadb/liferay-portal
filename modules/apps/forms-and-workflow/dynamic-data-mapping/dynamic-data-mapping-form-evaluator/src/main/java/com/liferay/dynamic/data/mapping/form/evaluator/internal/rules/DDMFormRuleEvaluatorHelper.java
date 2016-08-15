@@ -14,11 +14,14 @@
 
 package com.liferay.dynamic.data.mapping.form.evaluator.internal.rules;
 
+import com.liferay.dynamic.data.mapping.expression.DDMExpression;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
+import com.liferay.dynamic.data.mapping.expression.VariableDependencies;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.DDMFormRule;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
@@ -26,12 +29,15 @@ import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.FieldConstants;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -63,6 +69,8 @@ public class DDMFormRuleEvaluatorHelper {
 		throws DDMFormEvaluationException {
 
 		addDDMFormFieldRuleEvaluationResults();
+
+		_addDDMFormRuleForVisibilityAndValidation();
 
 		List<DDMFormRule> ddmFormRules = _ddmForm.getDDMFormRules();
 
@@ -115,6 +123,9 @@ public class DDMFormRuleEvaluatorHelper {
 		if (ddmFormField.getDataType().equals(FieldConstants.NUMBER)) {
 			ddmFormFieldEvaluationResult.setValue(Double.valueOf(valueString));
 		}
+		else if (ddmFormField.getDataType().equals(FieldConstants.BOOLEAN)) {
+			ddmFormFieldEvaluationResult.setValue(Boolean.valueOf(valueString));
+		}
 		else {
 			ddmFormFieldEvaluationResult.setValue(valueString);
 		}
@@ -134,6 +145,14 @@ public class DDMFormRuleEvaluatorHelper {
 		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
 			_ddmFormValues.getDDMFormFieldValuesMap();
 
+		if (!ddmFormFieldValuesMap.containsKey(ddmFormField.getName())) {
+			DDMFormFieldValue ddmFormFieldValue =
+				createDefaultDDMFormFieldValue(ddmFormField);
+
+			ddmFormFieldValuesMap.put(
+				ddmFormField.getName(), Arrays.asList(ddmFormFieldValue));
+		}
+
 		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
 			ddmFormField.getName());
 
@@ -147,23 +166,31 @@ public class DDMFormRuleEvaluatorHelper {
 		}
 	}
 
+	protected DDMFormFieldValue createDefaultDDMFormFieldValue(
+		DDMFormField ddmFormField) {
+
+		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
+
+		ddmFormFieldValue.setName(ddmFormField.getName());
+
+		Value value = new UnlocalizedValue(StringPool.BLANK);
+
+		if (ddmFormField.isLocalizable()) {
+			value = new LocalizedValue(_locale);
+
+			value.addString(_locale, StringPool.BLANK);
+		}
+
+		ddmFormFieldValue.setValue(value);
+		return ddmFormFieldValue;
+	}
+
 	protected DDMFormValues createEmptyDDMFormValues(DDMForm ddmForm) {
 		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
 
 		for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
-			DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
-
-			ddmFormFieldValue.setName(ddmFormField.getName());
-
-			Value value = new UnlocalizedValue(StringPool.BLANK);
-
-			if (ddmFormField.isLocalizable()) {
-				value = new LocalizedValue(_locale);
-
-				value.addString(_locale, StringPool.BLANK);
-			}
-
-			ddmFormFieldValue.setValue(value);
+			DDMFormFieldValue ddmFormFieldValue =
+				createDefaultDDMFormFieldValue(ddmFormField);
 
 			ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 		}
@@ -209,6 +236,104 @@ public class DDMFormRuleEvaluatorHelper {
 
 		return ddmFormFieldEvaluationResults;
 	}
+
+	private void _addDDMFormRuleForVisibilityAndValidation() {
+		Map<String, DDMFormField> ddmFormFieldMap =
+			_ddmForm.getDDMFormFieldsMap(true);
+
+		try {
+			for (DDMFormField ddmFormField : ddmFormFieldMap.values()) {
+				String visibilityExpressionProperty =
+					ddmFormField.getVisibilityExpression();
+
+				if (Validator.isNotNull(visibilityExpressionProperty) &&
+					!visibilityExpressionProperty.equals("TRUE")) {
+
+					String visibilityExpression = String.valueOf(
+						visibilityExpressionProperty);
+
+					_createDDMFormRule(
+						ddmFormField.getName(), visibilityExpression);
+				}
+
+				DDMFormFieldValidation validationProperty =
+					ddmFormField.getDDMFormFieldValidation();
+
+				if (validationProperty != null) {
+					_createDDMFormRule(
+						ddmFormField.getName(), validationProperty);
+				}
+			}
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e);
+			}
+		}
+	}
+
+	private void _createDDMFormRule(
+			String ddmFormFieldName, DDMFormFieldValidation validation)
+		throws Exception {
+
+		if (Validator.isNull(validation.getExpression())) {
+			return;
+		}
+
+		String errorMessage = validation.getErrorMessage();
+
+		errorMessage = errorMessage.replace(
+			StringPool.QUOTE, StringPool.DOUBLE_APOSTROPHE);
+
+		String action = String.format(
+			"set(fieldAt(\"%s\", 0), \"valid\", %s, \"%s\")", ddmFormFieldName,
+			_translateExpression(
+				String.format(" %s ", validation.getExpression())), 
+			errorMessage);
+
+		List<String> actions = new ArrayList<>();
+		actions.add(action);
+
+		DDMFormRule ddmFormRule = new DDMFormRule("TRUE", actions);
+		_ddmForm.addDDMFormRule(ddmFormRule);
+	}
+
+	private void _createDDMFormRule(
+			String ddmFormFieldName, String visibilityExpression)
+		throws Exception {
+
+		String action = String.format(
+			"set(fieldAt(\"%s\", 0), \"visible\", %s)", ddmFormFieldName,
+			_translateExpression(String.format(" %s ", visibilityExpression)));
+
+		List<String> actions = new ArrayList<>();
+		actions.add(action);
+
+		DDMFormRule ddmFormRule = new DDMFormRule("TRUE", actions);
+		_ddmForm.addDDMFormRule(ddmFormRule);
+	}
+
+	private String _translateExpression(String expressionStr) throws Exception {
+		DDMExpression<Boolean> expression =
+			_ddmExpressionFactory.createBooleanDDMExpression(expressionStr);
+
+		Map<String, VariableDependencies> variableDependenciesMap =
+			expression.getVariableDependenciesMap();
+
+		for (String variable : variableDependenciesMap.keySet()) {
+			if (_ddmFormFieldEvaluationResults.containsKey(variable)) {
+				expressionStr = expressionStr.replaceAll(
+					String.format("([,\\s\\(]+)(%s)([,\\s\\)]+)", variable),
+					String.format(
+						"$1get(fieldAt(\"%s\", 0), \"value\")$3", variable));
+			}
+		}
+
+		return expressionStr;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DDMFormRuleEvaluatorHelper.class);
 
 	private final DDMExpressionFactory _ddmExpressionFactory;
 	private final DDMForm _ddmForm;

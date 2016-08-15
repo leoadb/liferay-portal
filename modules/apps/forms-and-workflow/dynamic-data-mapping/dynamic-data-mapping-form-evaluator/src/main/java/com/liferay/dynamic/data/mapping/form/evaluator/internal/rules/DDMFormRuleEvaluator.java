@@ -22,6 +22,8 @@ import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationRes
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.functions.FieldAtFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.functions.PropertyGetFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.rules.functions.PropertySetFunction;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,7 @@ public class DDMFormRuleEvaluator {
 			return ddmExpression.evaluate();
 		}
 		catch (DDMExpressionException ddmee) {
+			_log.error("Expression: " + _expression);
 			throw new DDMFormEvaluationException(ddmee);
 		}
 	}
@@ -65,6 +68,7 @@ public class DDMFormRuleEvaluator {
 			ddmExpression.evaluate();
 		}
 		catch (DDMExpressionException ddmee) {
+			_log.error("Expression: " + _expression);
 			throw new DDMFormEvaluationException(ddmee);
 		}
 	}
@@ -78,6 +82,8 @@ public class DDMFormRuleEvaluator {
 			"set", new PropertySetFunction(_ddmFormFieldEvaluationResults));
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		DDMFormRuleEvaluator.class);
 	private final DDMExpressionFactory _ddmExpressionFactory;
 	private final Map<String, List<DDMFormFieldEvaluationResult>>
 		_ddmFormFieldEvaluationResults;
