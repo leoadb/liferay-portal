@@ -51,6 +51,8 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 				new DDMFormRuleEvaluatorHelper(
 					_ddmExpressionFactory, ddmForm, ddmFormValues, locale);
 
+			ddmFormRuleEvaluatorHelper.setJSONFactory(_jsonFactory);
+
 			List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults =
 				ddmFormRuleEvaluatorHelper.evaluate();
 

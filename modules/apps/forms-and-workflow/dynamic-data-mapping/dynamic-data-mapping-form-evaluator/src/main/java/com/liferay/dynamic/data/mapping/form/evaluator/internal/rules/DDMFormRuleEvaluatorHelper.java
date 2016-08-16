@@ -29,6 +29,9 @@ import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.FieldConstants;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -89,6 +92,10 @@ public class DDMFormRuleEvaluatorHelper {
 		return getDDMFormFieldEvaluationResults();
 	}
 
+	public void setJSONFactory(JSONFactory jsonFactory) {
+		_jsonFactory = jsonFactory;
+	}
+
 	protected void addDDMFormFieldRuleEvaluationResults() {
 		List<DDMFormField> ddmFormFields = _ddmForm.getDDMFormFields();
 
@@ -111,11 +118,7 @@ public class DDMFormRuleEvaluatorHelper {
 
 		Value value = ddmFormFieldValue.getValue();
 
-		String valueString = StringPool.BLANK;
-
-		if (value != null) {
-			valueString = GetterUtil.getString(value.getString(_locale));
-		}
+		String valueString = _getValueString(value, ddmFormField.getType());
 
 		if (ddmFormField.getDataType().equals(FieldConstants.NUMBER)) {
 			ddmFormFieldEvaluationResult.setValue(Double.valueOf(valueString));
@@ -377,6 +380,31 @@ public class DDMFormRuleEvaluatorHelper {
 		_ddmForm.addDDMFormRule(ddmFormRule);
 	}
 
+	private String _getJSONArrayValueString(String valueString) {
+		try {
+			JSONArray jsonArray = _jsonFactory.createJSONArray(valueString);
+
+			return jsonArray.getString(0);
+		}
+		catch (JSONException jsone) {
+			return valueString;
+		}
+	}
+
+	private String _getValueString(Value value, String type) {
+		if (value == null) {
+			return null;
+		}
+
+		String valueString = GetterUtil.getString(value.getString(_locale));
+
+		if (type.equals("select") || type.equals("radio")) {
+			valueString = _getJSONArrayValueString(valueString);
+		}
+
+		return valueString;
+	}
+
 	private String _translateExpression(String expressionStr) throws Exception {
 		DDMExpression<Boolean> expression =
 			_ddmExpressionFactory.createBooleanDDMExpression(expressionStr);
@@ -405,6 +433,7 @@ public class DDMFormRuleEvaluatorHelper {
 	private final Map<String, List<DDMFormFieldEvaluationResult>>
 		_ddmFormFieldEvaluationResults = new HashMap<>();
 	private Map<String, List<DDMFormFieldValue>> _ddmFormFieldValuesMap;
+	private JSONFactory _jsonFactory;
 	private final Locale _locale;
 
 }
