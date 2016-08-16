@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Pablo Carvalho
  */
-@Component(immediate = true)
+@Component(immediate = true, service = DDMFormEvaluator.class)
 public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 
 	@Override
@@ -58,7 +58,7 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 			List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults =
 				ddmFormRuleEvaluatorHelper.evaluate();
 
-			_validateRequired(ddmForm, ddmFormFieldEvaluationResults, locale);
+			validateRequired(ddmForm, ddmFormFieldEvaluationResults, locale);
 
 			DDMFormEvaluationResult ddmFormEvaluationResult =
 				new DDMFormEvaluationResult();
@@ -73,7 +73,7 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 		}
 	}
 
-	private boolean _isDDMFormFieldValueEmpty(
+	protected boolean isDDMFormFieldValueEmpty(
 		DDMFormField ddmFormField,
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult) {
 
@@ -100,7 +100,7 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 		return false;
 	}
 
-	private void _validateRequired(
+	protected void validateRequired(
 		DDMForm ddmForm,
 		List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults,
 		Locale locale) {
@@ -115,7 +115,7 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 
 			if (ddmFormField.isRequired() &&
 				ddmFormFieldEvaluationResult.isVisible() &&
-				_isDDMFormFieldValueEmpty(
+				isDDMFormFieldValueEmpty(
 					ddmFormField, ddmFormFieldEvaluationResult)) {
 
 				ddmFormFieldEvaluationResult.setErrorMessage(
@@ -124,7 +124,7 @@ public class DDMFormEvaluatorImpl implements DDMFormEvaluator {
 				ddmFormFieldEvaluationResult.setValid(false);
 			}
 			else if (!ddmFormField.isRequired() &&
-					 _isDDMFormFieldValueEmpty(
+					 isDDMFormFieldValueEmpty(
 						 ddmFormField, ddmFormFieldEvaluationResult)) {
 
 				ddmFormFieldEvaluationResult.setErrorMessage("");
