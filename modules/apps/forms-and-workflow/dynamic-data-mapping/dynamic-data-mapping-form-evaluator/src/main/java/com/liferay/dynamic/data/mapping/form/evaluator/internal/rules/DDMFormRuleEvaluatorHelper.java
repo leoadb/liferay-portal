@@ -172,10 +172,20 @@ public class DDMFormRuleEvaluatorHelper {
 		DDMFormField ddmFormField) {
 
 		List<DDMFormFieldEvaluationResult>
+			ddmFormFieldEvaluationResultInstances = null;
+
+		if (!_ddmFormFieldEvaluationResults.containsKey(
+				ddmFormField.getName())) {
+
 			ddmFormFieldEvaluationResultInstances = new ArrayList<>();
 
-		_ddmFormFieldEvaluationResults.put(
-			ddmFormField.getName(), ddmFormFieldEvaluationResultInstances);
+			_ddmFormFieldEvaluationResults.put(
+				ddmFormField.getName(), ddmFormFieldEvaluationResultInstances);
+		}
+		else {
+			ddmFormFieldEvaluationResultInstances =
+				_ddmFormFieldEvaluationResults.get(ddmFormField.getName());
+		}
 
 		List<DDMFormFieldValue> ddmFormFieldValues = _ddmFormFieldValuesMap.get(
 			ddmFormField.getName());
@@ -189,13 +199,12 @@ public class DDMFormRuleEvaluatorHelper {
 				createDDMFormFieldEvaluationResult(
 					ddmFormField, ddmFormFieldValue);
 
-			ddmFormFieldEvaluationResultInstances.add(
-				ddmFormFieldEvaluationResult);
+			if (!ddmFormFieldEvaluationResultInstances.contains(
+					ddmFormFieldEvaluationResult)) {
 
-			List<DDMFormFieldEvaluationResult>
-				nestedDDMFormFieldEvaluationResults =
-					ddmFormFieldEvaluationResult.
-						getNestedDDMFormFieldEvaluationResults();
+				ddmFormFieldEvaluationResultInstances.add(
+					ddmFormFieldEvaluationResult);
+			}
 
 			for (DDMFormFieldValue nestedDDMFormFieldValue :
 					ddmFormFieldValue.getNestedDDMFormFieldValues()) {
@@ -203,35 +212,7 @@ public class DDMFormRuleEvaluatorHelper {
 				DDMFormField nestedDDMFormField =
 					nestedDDMFormFieldValue.getDDMFormField();
 
-				List<DDMFormFieldEvaluationResult>
-					nestedDDMFormFieldEvaluationResultInstances;
-
-				if (!_ddmFormFieldEvaluationResults.containsKey(
-						nestedDDMFormField.getName())) {
-
-					nestedDDMFormFieldEvaluationResultInstances =
-						new ArrayList<>();
-
-					_ddmFormFieldEvaluationResults.put(
-						nestedDDMFormField.getName(),
-						nestedDDMFormFieldEvaluationResultInstances);
-				}
-				else {
-					nestedDDMFormFieldEvaluationResultInstances =
-						_ddmFormFieldEvaluationResults.get(
-							nestedDDMFormField.getName());
-				}
-
-				DDMFormFieldEvaluationResult
-					nestedDDMFormFieldEvaluationResult =
-						createDDMFormFieldEvaluationResult(
-							nestedDDMFormField, nestedDDMFormFieldValue);
-
-				nestedDDMFormFieldEvaluationResults.add(
-					nestedDDMFormFieldEvaluationResult);
-
-				nestedDDMFormFieldEvaluationResultInstances.add(
-					nestedDDMFormFieldEvaluationResult);
+				createDDMFormFieldRuleEvaluationResult(nestedDDMFormField);
 			}
 		}
 	}
@@ -323,11 +304,12 @@ public class DDMFormRuleEvaluatorHelper {
 		List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults =
 			new ArrayList<>();
 
-		List<DDMFormField> ddmFormFields = _ddmForm.getDDMFormFields();
+		for (List<DDMFormFieldEvaluationResult>
+				ddmFormFieldEvaluationResultInstances :
+					_ddmFormFieldEvaluationResults.values()) {
 
-		for (DDMFormField ddmFormField : ddmFormFields) {
 			ddmFormFieldEvaluationResults.addAll(
-				_ddmFormFieldEvaluationResults.get(ddmFormField.getName()));
+				ddmFormFieldEvaluationResultInstances);
 		}
 
 		return ddmFormFieldEvaluationResults;
