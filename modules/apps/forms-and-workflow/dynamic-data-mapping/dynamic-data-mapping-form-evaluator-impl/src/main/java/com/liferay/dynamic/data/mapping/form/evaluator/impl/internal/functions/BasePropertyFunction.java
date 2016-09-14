@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions;
+package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions;
 
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
@@ -27,31 +27,12 @@ public abstract class BasePropertyFunction implements DDMExpressionFunction {
 
 	public BasePropertyFunction(
 		Map<String, List<DDMFormFieldEvaluationResult>>
-			ddmFormFieldEvaluationResultsMap) {
+			ddmFormFieldEvaluationResults) {
 
-		this.ddmFormFieldEvaluationResultsMap =
-			ddmFormFieldEvaluationResultsMap;
-	}
-
-	protected DDMFormFieldEvaluationResult getDDMFormFieldEvaluationResult(
-		String ddmFormFieldName, int index) {
-
-		if (!ddmFormFieldEvaluationResultsMap.containsKey(ddmFormFieldName)) {
-			throw new IllegalArgumentException("Invalid field name");
-		}
-
-		List<DDMFormFieldEvaluationResult>
-			ddmFormFieldEvaluationInstanceResults =
-				ddmFormFieldEvaluationResultsMap.get(ddmFormFieldName);
-
-		if (ddmFormFieldEvaluationInstanceResults.size() <= index) {
-			throw new IllegalArgumentException("Invalid field instance");
-		}
-
-		return ddmFormFieldEvaluationInstanceResults.get(index);
+		this.ddmFormFieldEvaluationResults = ddmFormFieldEvaluationResults;
 	}
 
 	protected final Map<String, List<DDMFormFieldEvaluationResult>>
-		ddmFormFieldEvaluationResultsMap;
+		ddmFormFieldEvaluationResults;
 
 }

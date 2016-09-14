@@ -22,11 +22,8 @@ import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationExceptio
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.CallFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.EnableFunction;
-import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.FieldAtFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.GetValueFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.HideFunction;
-import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.PropertyGetFunction;
-import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.PropertySetFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.SetInvalidFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.SetValidFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.SetValueFunction;
@@ -100,15 +97,9 @@ public class DDMFormRuleEvaluator {
 		ddmExpression.setDDMExpressionFunction(
 			"enable", new EnableFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
-			"fieldAt", new FieldAtFunction());
-		ddmExpression.setDDMExpressionFunction(
-			"get", new PropertyGetFunction(_ddmFormFieldEvaluationResults));
-		ddmExpression.setDDMExpressionFunction(
 			"getValue", new GetValueFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
 			"hide", new HideFunction(_ddmFormFieldEvaluationResults));
-		ddmExpression.setDDMExpressionFunction(
-			"set", new PropertySetFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
 			"setInvalid",
 			new SetInvalidFunction(_ddmFormFieldEvaluationResults));
