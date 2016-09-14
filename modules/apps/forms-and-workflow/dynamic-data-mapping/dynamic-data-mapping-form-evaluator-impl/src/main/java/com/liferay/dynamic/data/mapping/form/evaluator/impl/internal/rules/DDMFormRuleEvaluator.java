@@ -21,6 +21,7 @@ import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.CallFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.EnableFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.FieldAtFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.HideFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.PropertyGetFunction;
@@ -91,15 +92,19 @@ public class DDMFormRuleEvaluator {
 				_ddmDataProviderInstanceService, _ddmFormFieldEvaluationResults,
 				_ddmFormValuesJSONDeserializer, _jsonFactory));
 		ddmExpression.setDDMExpressionFunction(
+			"disable", new EnableFunction(_ddmFormFieldEvaluationResults));
+		ddmExpression.setDDMExpressionFunction(
+			"enable", new EnableFunction(_ddmFormFieldEvaluationResults));
+		ddmExpression.setDDMExpressionFunction(
 			"fieldAt", new FieldAtFunction());
 		ddmExpression.setDDMExpressionFunction(
 			"get", new PropertyGetFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
+			"hide", new HideFunction(_ddmFormFieldEvaluationResults));
+		ddmExpression.setDDMExpressionFunction(
 			"set", new PropertySetFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
 			"show", new ShowFunction(_ddmFormFieldEvaluationResults));
-		ddmExpression.setDDMExpressionFunction(
-			"hide", new HideFunction(_ddmFormFieldEvaluationResults));
 	}
 
 	private final DDMDataProviderConsumerTracker
