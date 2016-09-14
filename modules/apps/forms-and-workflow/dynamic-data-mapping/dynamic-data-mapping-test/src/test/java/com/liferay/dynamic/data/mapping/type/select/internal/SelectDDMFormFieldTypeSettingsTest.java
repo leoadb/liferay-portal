@@ -47,7 +47,7 @@ public class SelectDDMFormFieldTypeSettingsTest
 
 		List<DDMFormRule> ddmFormRules = ddmForm.getDDMFormRules();
 
-		Assert.assertEquals(1, ddmFormRules.size());
+		Assert.assertEquals(3, ddmFormRules.size());
 
 		DDMFormRule ddmFormRule = ddmFormRules.get(0);
 
@@ -56,14 +56,34 @@ public class SelectDDMFormFieldTypeSettingsTest
 		List<String> ddmFormRuleActions = ddmFormRule.getActions();
 
 		Assert.assertArrayEquals(
+			new String[] {"hide(\"validation\")"},
+			ddmFormRuleActions.toArray());
+
+		ddmFormRule = ddmFormRules.get(1);
+
+		Assert.assertEquals(
+			"equals(getValue(\"dataSourceType\"), \"manual\")",
+			ddmFormRule.getCondition());
+
+		ddmFormRuleActions = ddmFormRule.getActions();
+
+		Assert.assertArrayEquals(
 			new String[] {
-				"set(fieldAt(\"ddmDataProviderInstanceId\", 0), \"visible\", " +
-					"equals(get(fieldAt(\"dataSourceType\", 0), \"value\"), " +
-						"\"data-provider\"))",
-				"set(fieldAt(\"options\", 0), \"visible\", " +
-					"equals(get(fieldAt(\"dataSourceType\", 0), \"value\"), " +
-						"\"manual\"))",
-				"set(fieldAt(\"validation\", 0), \"visible\", false)"
+				"hide(\"ddmDataProviderInstanceId\")", "show(\"options\")"
+			},
+			ddmFormRuleActions.toArray());
+
+		ddmFormRule = ddmFormRules.get(2);
+
+		Assert.assertEquals(
+			"equals(getValue(\"dataSourceType\"), \"data-provider\")",
+			ddmFormRule.getCondition());
+
+		ddmFormRuleActions = ddmFormRule.getActions();
+
+		Assert.assertArrayEquals(
+			new String[] {
+				"show(\"ddmDataProviderInstanceId\")", "hide(\"options\")"
 			},
 			ddmFormRuleActions.toArray());
 

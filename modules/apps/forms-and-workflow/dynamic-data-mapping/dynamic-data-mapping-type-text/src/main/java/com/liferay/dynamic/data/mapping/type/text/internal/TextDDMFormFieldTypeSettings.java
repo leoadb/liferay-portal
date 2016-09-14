@@ -28,13 +28,7 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 /**
  * @author Lino Alves
  */
-@DDMForm(
-	rules = {
-		@DDMFormRule(
-			actions = {"set(fieldAt(\"tooltip\", 0), \"visible\", false)"}
-		)
-	}
-)
+@DDMForm(rules = {@DDMFormRule(actions = {"hide(\"tooltip\")"})})
 @DDMFormLayout(
 	paginationMode = com.liferay.dynamic.data.mapping.model.DDMFormLayout.TABBED_MODE,
 	value = {

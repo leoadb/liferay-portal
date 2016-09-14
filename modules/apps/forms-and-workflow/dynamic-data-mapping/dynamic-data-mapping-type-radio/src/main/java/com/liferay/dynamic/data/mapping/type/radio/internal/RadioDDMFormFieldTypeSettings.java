@@ -28,13 +28,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 /**
  * @author Marcellus Tavares
  */
-@DDMForm(
-	rules = {
-		@DDMFormRule(
-			actions = {"set(fieldAt(\"validation\", 0), \"visible\", false)"}
-		)
-	}
-)
+@DDMForm(rules = {@DDMFormRule(actions = {"hide(\"validation\")"})})
 @DDMFormLayout(
 	paginationMode = com.liferay.dynamic.data.mapping.model.DDMFormLayout.TABBED_MODE,
 	value = {

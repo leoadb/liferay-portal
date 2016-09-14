@@ -30,12 +30,18 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
  */
 @DDMForm(
 	rules = {
+		@DDMFormRule(actions = {"hide(\"validation\")"}),
 		@DDMFormRule(
 			actions = {
-				"set(fieldAt(\"ddmDataProviderInstanceId\", 0), \"visible\", equals(get(fieldAt(\"dataSourceType\", 0), \"value\"), \"data-provider\"))",
-				"set(fieldAt(\"options\", 0), \"visible\", equals(get(fieldAt(\"dataSourceType\", 0), \"value\"), \"manual\"))",
-				"set(fieldAt(\"validation\", 0), \"visible\", false)"
-			}
+				"hide(\"ddmDataProviderInstanceId\")", "show(\"options\")"
+			},
+			condition = "equals(getValue(\"dataSourceType\"), \"manual\")"
+		),
+		@DDMFormRule(
+			actions = {
+				"show(\"ddmDataProviderInstanceId\")", "hide(\"options\")"
+			},
+			condition = "equals(getValue(\"dataSourceType\"), \"data-provider\")"
 		)
 	}
 )

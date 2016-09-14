@@ -95,14 +95,12 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 
 		List<String> actions = ListUtil.fromArray(
 			new String[] {
-				"set(fieldAt(\"field2\", 0), \"value\", " +
-					"get(fieldAt(\"field0\", 0), \"value\") * " +
-						"get(fieldAt(\"field1\", 0), \"value\"))"
+				"setValue(\"field2\", " +
+					"getValue(\"field0\") * getValue(\"field1\")))"
 			});
 
 		String condition =
-			"get(fieldAt(\"field0\", 0), \"value\") > 0 && " +
-				"get(fieldAt(\"field1\", 0), \"value\") > 0";
+			"getValue(\"field0\") > 0 && getValue(\"field1\") > 0";
 
 		DDMFormRule ddmFormRule = new DDMFormRule(condition, actions);
 
@@ -183,7 +181,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		List<String> actions = ListUtil.fromArray(
-			new String[] {"set(fieldAt(\"field1\", 0), \"visible\", false)"});
+			new String[] {"hide(\"field1\")"});
 
 		DDMFormRule ddmFormRule = new DDMFormRule("TRUE", actions);
 
@@ -271,12 +269,9 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 
 		List<String> actions = ListUtil.fromArray(
-			new String[] {
-				"set(fieldAt(\"field1\", 0), \"visible\", false)",
-				"set(fieldAt(\"field2\", 0), \"readOnly\", true)"
-			});
+			new String[] {"hide(\"field1\")", "disable(\"field2\")"});
 
-		String condition = "get(fieldAt(\"field0\", 0), \"value\") >= 30";
+		String condition = "getValue(\"field0\") >= 30";
 
 		DDMFormRule ddmFormRule = new DDMFormRule(condition, actions);
 

@@ -56,10 +56,7 @@ public class CheckboxDDMFormFieldTypeSettingsTest
 		List<String> ddmFormRuleActions = ddmFormRule.getActions();
 
 		Assert.assertArrayEquals(
-			new String[] {
-				"set(fieldAt(\"repeatable\", 0), \"visible\", false)",
-				"set(fieldAt(\"validation\", 0), \"visible\", false)"
-			},
+			new String[] {"hide(\"repeatable\")", "hide(\"validation\")"},
 			ddmFormRuleActions.toArray());
 
 		Map<String, DDMFormField> ddmFormFieldsMap =

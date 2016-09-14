@@ -27,14 +27,20 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormRule;
  */
 @DDMForm(
 	rules = {
+		@DDMFormRule(actions = {"hide(\"published\")"}),
 		@DDMFormRule(
 			actions = {
-				"set(fieldAt(\"emailFromAddress\", 0), \"visible\", equals(get(fieldAt(\"sendEmailNotification\", 0), \"value\"), true))",
-				"set(fieldAt(\"emailFromName\", 0), \"visible\", equals(get(fieldAt(\"sendEmailNotification\", 0), \"value\"), true))",
-				"set(fieldAt(\"emailSubject\", 0), \"visible\", equals(get(fieldAt(\"sendEmailNotification\", 0), \"value\"), true))",
-				"set(fieldAt(\"emailToAddress\", 0), \"visible\", equals(get(fieldAt(\"sendEmailNotification\", 0), \"value\"), true))",
-				"set(fieldAt(\"published\", 0), \"visible\", false)"
-			}
+				"show(\"emailFromAddress\")", "show(\"emailFromName\")",
+				"show(\"emailSubject\")", "show(\"emailToAddress\")"
+			},
+			condition = "equals(getValue(\"sendEmailNotification\"), true)"
+		),
+		@DDMFormRule(
+			actions = {
+				"hide(\"emailFromAddress\")", "hide(\"emailFromName\")",
+				"hide(\"emailSubject\")", "hide(\"emailToAddress\")"
+			},
+			condition = "equals(getValue(\"sendEmailNotification\"), false)"
 		)
 	}
 )

@@ -28,11 +28,7 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormRule;
 @DDMForm(
 	rules = {
 		@DDMFormRule(
-			actions = {
-				"set(fieldAt(\"dataType\", 0), \"visible\", false)",
-				"set(fieldAt(\"name\", 0), \"visible\", false)",
-				"set(fieldAt(\"type\", 0), \"visible\", false)"
-			}
+			actions = {"hide(\"dataType\")", "hide(\"name\")", "hide(\"type\")"}
 		)
 	}
 )

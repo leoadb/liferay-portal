@@ -76,9 +76,7 @@ public class DDMFormRuleEvaluatorTest extends PowerMockito {
 
 		DDMFormRuleEvaluator ddmFormRuleEvaluator = new DDMFormRuleEvaluator(
 			null, null, _ddmExpressionFactory, ddmFormFieldEvaluationResultsMap,
-			null,
-			"sum(get(fieldAt(\"field1\", 0), \"value\"), " +
-				"get(fieldAt(\"field2\", 0), \"value\")) > 25",
+			null, "sum(getValue(\"field1\"), getValue(\"field2\")) > 25",
 			_jsonFactory);
 
 		Map<String, DDMExpressionFunction> functionMap =
@@ -126,8 +124,7 @@ public class DDMFormRuleEvaluatorTest extends PowerMockito {
 
 		DDMFormRuleEvaluator ddmFormRuleEvaluator = new DDMFormRuleEvaluator(
 			null, null, _ddmExpressionFactory, ddmFormFieldEvaluationResultsMap,
-			null, "set(fieldAt(\"field1\", 0), \"readOnly\", true)",
-			_jsonFactory);
+			null, "disable(\"field1\")", _jsonFactory);
 
 		ddmFormRuleEvaluator.execute();
 
@@ -152,8 +149,7 @@ public class DDMFormRuleEvaluatorTest extends PowerMockito {
 
 		DDMFormRuleEvaluator ddmFormRuleEvaluator = new DDMFormRuleEvaluator(
 			null, null, _ddmExpressionFactory, ddmFormFieldEvaluationResults,
-			null, "set(fieldAt(\"field1\", 0), \"visible\", true)",
-			_jsonFactory);
+			null, "show(\"field1\")", _jsonFactory);
 
 		ddmFormRuleEvaluator.execute();
 
@@ -178,8 +174,7 @@ public class DDMFormRuleEvaluatorTest extends PowerMockito {
 
 		DDMFormRuleEvaluator ddmFormRuleEvaluator = new DDMFormRuleEvaluator(
 			null, null, _ddmExpressionFactory, ddmFormFieldEvaluationResults,
-			null, "set(fieldAt(\"field1\", 0), \"valid\", false, \"error\")",
-			_jsonFactory);
+			null, "setInvalid(\"field1\", \"error\")", _jsonFactory);
 
 		ddmFormRuleEvaluator.execute();
 
@@ -206,7 +201,7 @@ public class DDMFormRuleEvaluatorTest extends PowerMockito {
 
 		DDMFormRuleEvaluator ddmFormRuleEvaluator = new DDMFormRuleEvaluator(
 			null, null, _ddmExpressionFactory, ddmFormFieldEvaluationResults,
-			null, "set(fieldAt(\"field1\",0),\"value\",2.7)", _jsonFactory);
+			null, "setValue(\"field1\", 2.7)", _jsonFactory);
 
 		ddmFormRuleEvaluator.execute();
 

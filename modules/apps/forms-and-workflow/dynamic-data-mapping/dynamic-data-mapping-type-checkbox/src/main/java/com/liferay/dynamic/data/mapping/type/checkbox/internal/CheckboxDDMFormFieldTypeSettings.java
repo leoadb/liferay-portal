@@ -30,12 +30,7 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
  */
 @DDMForm(
 	rules = {
-		@DDMFormRule(
-			actions = {
-				"set(fieldAt(\"repeatable\", 0), \"visible\", false)",
-				"set(fieldAt(\"validation\", 0), \"visible\", false)"
-			}
-		)
+		@DDMFormRule(actions = {"hide(\"repeatable\")", "hide(\"validation\")"})
 	}
 )
 @DDMFormLayout(

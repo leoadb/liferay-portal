@@ -56,8 +56,7 @@ public class KeyValueDDMFormFieldTypeSettingsTest
 		List<String> ddmFormRuleActions = ddmFormRule.getActions();
 
 		Assert.assertArrayEquals(
-			new String[] {"set(fieldAt(\"tooltip\", 0), \"visible\", false)"},
-			ddmFormRuleActions.toArray());
+			new String[] {"hide(\"tooltip\")"}, ddmFormRuleActions.toArray());
 
 		Map<String, DDMFormField> ddmFormFieldsMap =
 			ddmForm.getDDMFormFieldsMap(false);
