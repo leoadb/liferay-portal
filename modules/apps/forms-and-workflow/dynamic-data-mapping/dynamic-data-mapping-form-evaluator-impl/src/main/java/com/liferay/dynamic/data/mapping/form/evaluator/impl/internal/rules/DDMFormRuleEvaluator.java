@@ -23,6 +23,7 @@ import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationRes
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.CallFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.EnableFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.FieldAtFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.GetValueFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.HideFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.PropertyGetFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.PropertySetFunction;
@@ -99,6 +100,8 @@ public class DDMFormRuleEvaluator {
 			"fieldAt", new FieldAtFunction());
 		ddmExpression.setDDMExpressionFunction(
 			"get", new PropertyGetFunction(_ddmFormFieldEvaluationResults));
+		ddmExpression.setDDMExpressionFunction(
+			"getValue", new GetValueFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
 			"hide", new HideFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
