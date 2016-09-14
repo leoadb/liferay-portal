@@ -22,8 +22,10 @@ import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationExceptio
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.CallFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.FieldAtFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.HideFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.PropertyGetFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.PropertySetFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.ShowFunction;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -94,6 +96,10 @@ public class DDMFormRuleEvaluator {
 			"get", new PropertyGetFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
 			"set", new PropertySetFunction(_ddmFormFieldEvaluationResults));
+		ddmExpression.setDDMExpressionFunction(
+			"show", new ShowFunction(_ddmFormFieldEvaluationResults));
+		ddmExpression.setDDMExpressionFunction(
+			"hide", new HideFunction(_ddmFormFieldEvaluationResults));
 	}
 
 	private final DDMDataProviderConsumerTracker
