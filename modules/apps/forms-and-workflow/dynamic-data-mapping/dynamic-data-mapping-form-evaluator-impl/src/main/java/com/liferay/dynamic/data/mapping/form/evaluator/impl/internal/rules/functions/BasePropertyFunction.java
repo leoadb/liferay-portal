@@ -32,24 +32,6 @@ public abstract class BasePropertyFunction implements DDMExpressionFunction {
 		this.ddmFormFieldEvaluationResults = ddmFormFieldEvaluationResults;
 	}
 
-	protected DDMFormFieldEvaluationResult getDDMFormFieldEvaluationResult(
-		String ddmFormFieldName, int index) {
-
-		if (!ddmFormFieldEvaluationResults.containsKey(ddmFormFieldName)) {
-			throw new IllegalArgumentException("Invalid field name");
-		}
-
-		List<DDMFormFieldEvaluationResult>
-			ddmFormFieldEvaluationInstanceResults =
-				ddmFormFieldEvaluationResults.get(ddmFormFieldName);
-
-		if (ddmFormFieldEvaluationInstanceResults.size() <= index) {
-			throw new IllegalArgumentException("Field's instance not found");
-		}
-
-		return ddmFormFieldEvaluationInstanceResults.get(index);
-	}
-
 	protected final Map<String, List<DDMFormFieldEvaluationResult>>
 		ddmFormFieldEvaluationResults;
 
