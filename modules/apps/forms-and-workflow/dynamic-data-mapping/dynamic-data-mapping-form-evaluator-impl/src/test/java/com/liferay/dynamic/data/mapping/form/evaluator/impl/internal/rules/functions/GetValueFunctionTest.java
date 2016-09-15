@@ -50,9 +50,9 @@ public class GetValueFunctionTest {
 		GetValueFunction getValueFunction = new GetValueFunction(
 			ddmFormFieldEvaluationResults);
 
-		getValueFunction.evaluate("field0");
+		Object value = getValueFunction.evaluate("field0");
 
-		Assert.assertEquals(3, ddmFormFieldEvaluationResult1.getValue());
+		Assert.assertEquals(3, value);
 	}
 
 	@Test
@@ -76,9 +76,9 @@ public class GetValueFunctionTest {
 		GetValueFunction getValueFunction = new GetValueFunction(
 			ddmFormFieldEvaluationResults);
 
-		getValueFunction.evaluate("not_available");
+		Object value = getValueFunction.evaluate("not_available");
 
-		Assert.assertNull(ddmFormFieldEvaluationResult1.getValue());
+		Assert.assertNull(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

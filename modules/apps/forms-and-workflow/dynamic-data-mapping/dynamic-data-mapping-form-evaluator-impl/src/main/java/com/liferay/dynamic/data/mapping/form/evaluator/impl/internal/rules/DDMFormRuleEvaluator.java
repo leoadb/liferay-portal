@@ -21,6 +21,7 @@ import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationException;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.CallFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.DisableFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.EnableFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.GetValueFunction;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions.HideFunction;
@@ -93,7 +94,7 @@ public class DDMFormRuleEvaluator {
 				_ddmDataProviderInstanceService, _ddmFormFieldEvaluationResults,
 				_ddmFormValuesJSONDeserializer, _jsonFactory));
 		ddmExpression.setDDMExpressionFunction(
-			"disable", new EnableFunction(_ddmFormFieldEvaluationResults));
+			"disable", new DisableFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
 			"enable", new EnableFunction(_ddmFormFieldEvaluationResults));
 		ddmExpression.setDDMExpressionFunction(
