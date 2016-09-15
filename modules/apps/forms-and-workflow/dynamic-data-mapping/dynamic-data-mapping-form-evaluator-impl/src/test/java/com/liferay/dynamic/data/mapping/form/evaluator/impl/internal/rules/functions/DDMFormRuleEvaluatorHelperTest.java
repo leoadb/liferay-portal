@@ -96,7 +96,7 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 		List<String> actions = ListUtil.fromArray(
 			new String[] {
 				"setValue(\"field2\", " +
-					"getValue(\"field0\") * getValue(\"field1\")))"
+					"getValue(\"field0\") * getValue(\"field1\"))"
 			});
 
 		String condition =
