@@ -295,6 +295,77 @@ public class DDMFormRuleEvaluatorHelperTest extends PowerMockito {
 	}
 
 	@Test
+	public void testDefaultValidState() throws Exception {
+		DDMForm ddmForm = new DDMForm();
+
+		DDMFormField fieldDDMFormField0 = new DDMFormField("field0", "text");
+
+		fieldDDMFormField0.setDataType(FieldConstants.NUMBER);
+
+		ddmForm.addDDMFormField(fieldDDMFormField0);
+
+		DDMFormField fieldDDMFormField1 = new DDMFormField("field1", "text");
+
+		fieldDDMFormField1.setDataType(FieldConstants.NUMBER);
+
+		ddmForm.addDDMFormField(fieldDDMFormField1);
+
+		DDMFormField fieldDDMFormField2 = new DDMFormField("field2", "text");
+
+		fieldDDMFormField2.setDataType(FieldConstants.NUMBER);
+
+		ddmForm.addDDMFormField(fieldDDMFormField2);
+
+		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
+
+		DDMFormFieldValue fieldDDMFormFieldValue0 =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"field0_instanceId", "field0", new UnlocalizedValue("3"));
+
+		DDMFormFieldValue fieldDDMFormFieldValue1 =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"field1_instanceId", "field1", new UnlocalizedValue("2"));
+
+		DDMFormFieldValue fieldDDMFormFieldValue2 =
+			DDMFormValuesTestUtil.createDDMFormFieldValue(
+				"field2_instanceId", "field2", new UnlocalizedValue("1"));
+
+		ddmFormValues.addDDMFormFieldValue(fieldDDMFormFieldValue0);
+		ddmFormValues.addDDMFormFieldValue(fieldDDMFormFieldValue1);
+		ddmFormValues.addDDMFormFieldValue(fieldDDMFormFieldValue2);
+
+		List<String> actions = ListUtil.fromArray(
+			new String[] {"setInvalid(\"field1\")", "setValid(\"field2\")"});
+
+		String condition = "getValue(\"field0\") == 0";
+
+		DDMFormRule ddmFormRule = new DDMFormRule(condition, actions);
+
+		ddmForm.addDDMFormRule(ddmFormRule);
+
+		DDMFormRuleEvaluatorHelper ddmFormRuleEvaluatorHelper =
+			new DDMFormRuleEvaluatorHelper(
+				null, null, _ddmExpressionFactory, ddmForm, ddmFormValues, null,
+				_jsonFactory, LocaleUtil.US);
+
+		List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResults =
+			ddmFormRuleEvaluatorHelper.evaluate();
+
+		Assert.assertEquals(3, ddmFormFieldEvaluationResults.size());
+
+		for (DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult :
+			ddmFormFieldEvaluationResults) {
+
+			if ("field1".equals(ddmFormFieldEvaluationResult.getName())) {
+				Assert.assertTrue(ddmFormFieldEvaluationResult.isValid());
+			}
+			else if ("field2".equals(ddmFormFieldEvaluationResult.getName())) {
+				Assert.assertFalse(ddmFormFieldEvaluationResult.isValid());
+			}
+		}
+	}
+
+	@Test
 	public void testMissingDDMFormFieldValues() throws Exception {
 		DDMForm ddmForm = new DDMForm();
 

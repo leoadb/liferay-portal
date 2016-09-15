@@ -335,6 +335,28 @@ public class DDMFormRuleEvaluatorHelper {
 		return ddmFormField.isReadOnly();
 	}
 
+	protected boolean getDefaultValidState(String ddmFormFieldName) {
+		List<DDMFormRule> ddmFormRules = _ddmForm.getDDMFormRules();
+
+		String setValidAction = String.format(
+			"setValid(\"%s\")", ddmFormFieldName);
+		String setInvalidAction = String.format(
+			"setInvalid(\"%s\")", ddmFormFieldName);
+
+		for (DDMFormRule ddmFormRule : ddmFormRules) {
+			for (String action : ddmFormRule.getActions()) {
+				if (setValidAction.equals(action)) {
+					return false;
+				}
+				else if (setInvalidAction.equals(action)) {
+					return true;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	protected boolean getDefaultVisibility(String ddmFormFieldName) {
 		List<DDMFormRule> ddmFormRules = _ddmForm.getDDMFormRules();
 
@@ -469,6 +491,10 @@ public class DDMFormRuleEvaluatorHelper {
 			ddmFormField.getDDMFormFieldValidation();
 
 		if (ddmFormFieldValidation == null) {
+			boolean valid = getDefaultValidState(ddmFormField.getName());
+
+			ddmFormFieldEvaluationResult.setValid(valid);
+
 			return;
 		}
 
