@@ -311,6 +311,26 @@ public class DDMFormRuleEvaluatorHelper {
 		return ddmFormFieldEvaluationResults;
 	}
 
+	protected boolean getDefaultVisibility(String ddmFormFieldName) {
+		List<DDMFormRule> ddmFormRules = _ddmForm.getDDMFormRules();
+
+		String showAction = String.format("show(\"%s\")", ddmFormFieldName);
+		String hideAction = String.format("hide(\"%s\")", ddmFormFieldName);
+
+		for (DDMFormRule ddmFormRule : ddmFormRules) {
+			for (String action : ddmFormRule.getActions()) {
+				if (showAction.equals(action)) {
+					return false;
+				}
+				else if (hideAction.equals(action)) {
+					return true;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	protected String getJSONArrayValueString(String valueString) {
 		try {
 			JSONArray jsonArray = _jsonFactory.createJSONArray(valueString);
@@ -469,6 +489,10 @@ public class DDMFormRuleEvaluatorHelper {
 
 		if (Validator.isNull(visibilityExpression) ||
 			visibilityExpression.equals("TRUE")) {
+
+			boolean visible = getDefaultVisibility(ddmFormField.getName());
+
+			ddmFormFieldEvaluationResult.setVisible(visible);
 
 			return;
 		}
