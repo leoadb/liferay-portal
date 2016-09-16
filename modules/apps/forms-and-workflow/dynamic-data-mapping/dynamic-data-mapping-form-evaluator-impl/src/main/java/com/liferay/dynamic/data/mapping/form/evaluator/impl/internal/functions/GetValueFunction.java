@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions;
+package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -24,9 +24,9 @@ import java.util.Map;
 /**
  * @author Leonardo Barros
  */
-public class SetValueFunction extends BasePropertyFunction {
+public class GetValueFunction extends BasePropertyFunction {
 
-	public SetValueFunction(
+	public GetValueFunction(
 		Map<String, List<DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults) {
 
@@ -35,8 +35,8 @@ public class SetValueFunction extends BasePropertyFunction {
 
 	@Override
 	public Object evaluate(Object... parameters) {
-		if (ArrayUtil.isEmpty(parameters) || (parameters.length != 2)) {
-			throw new IllegalArgumentException("Expected 2 parameter.");
+		if (ArrayUtil.isEmpty(parameters) || (parameters.length != 1)) {
+			throw new IllegalArgumentException("Expected 1 parameter.");
 		}
 
 		String fieldName = String.valueOf(parameters[0]);
@@ -51,9 +51,7 @@ public class SetValueFunction extends BasePropertyFunction {
 		DDMFormFieldEvaluationResult formFieldEvaluationResult =
 			formFieldEvaluationResults.get(0);
 
-		formFieldEvaluationResult.setValue(parameters[1]);
-
-		return true;
+		return formFieldEvaluationResult.getValue();
 	}
 
 }

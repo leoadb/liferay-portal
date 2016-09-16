@@ -12,9 +12,10 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions;
+package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
+import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +83,8 @@ public class SetInvalidFunctionTest {
 		setInvalidFunction.evaluate("not_available", "error");
 
 		Assert.assertTrue(ddmFormFieldEvaluationResult1.isValid());
-		Assert.assertNull(ddmFormFieldEvaluationResult1.getErrorMessage());
+		Assert.assertEquals(
+			StringPool.BLANK, ddmFormFieldEvaluationResult1.getErrorMessage());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

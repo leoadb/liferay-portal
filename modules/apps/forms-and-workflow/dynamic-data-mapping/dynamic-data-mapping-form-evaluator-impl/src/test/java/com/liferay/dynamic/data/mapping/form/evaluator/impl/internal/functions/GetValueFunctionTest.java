@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions;
+package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 
@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class SetValueFunctionTest {
+public class GetValueFunctionTest {
 
 	@Test
 	public void testEvaluate() throws Exception {
@@ -40,19 +40,19 @@ public class SetValueFunctionTest {
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult1 =
 			new DDMFormFieldEvaluationResult("field0", null);
 
-		ddmFormFieldEvaluationResult1.setValue(1);
+		ddmFormFieldEvaluationResult1.setValue(3);
 
 		ddmFormFieldEvaluationResultList.add(ddmFormFieldEvaluationResult1);
 
 		ddmFormFieldEvaluationResults.put(
 			"field0", ddmFormFieldEvaluationResultList);
 
-		SetValueFunction setValueFunction = new SetValueFunction(
+		GetValueFunction getValueFunction = new GetValueFunction(
 			ddmFormFieldEvaluationResults);
 
-		setValueFunction.evaluate("field0", 2);
+		Object value = getValueFunction.evaluate("field0");
 
-		Assert.assertEquals(2, ddmFormFieldEvaluationResult1.getValue());
+		Assert.assertEquals(3, value);
 	}
 
 	@Test
@@ -73,19 +73,26 @@ public class SetValueFunctionTest {
 		ddmFormFieldEvaluationResults.put(
 			"field1", ddmFormFieldEvaluationResultList);
 
-		SetValueFunction setValueFunction = new SetValueFunction(
+		GetValueFunction getValueFunction = new GetValueFunction(
 			ddmFormFieldEvaluationResults);
 
-		setValueFunction.evaluate("not_available", "");
+		Object value = getValueFunction.evaluate("not_available");
 
-		Assert.assertEquals("EMPTY", ddmFormFieldEvaluationResult1.getValue());
+		Assert.assertNull(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testIllegalArgument() throws Exception {
-		SetValueFunction setValueFunction = new SetValueFunction(null);
+	public void testIllegalArgument1() throws Exception {
+		GetValueFunction getValueFunction = new GetValueFunction(null);
 
-		setValueFunction.evaluate("param1");
+		getValueFunction.evaluate();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIllegalArgument2() throws Exception {
+		GetValueFunction getValueFunction = new GetValueFunction(null);
+
+		getValueFunction.evaluate("param1", "param2");
 	}
 
 }

@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions;
+package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 
@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class DisableFunctionTest {
+public class SetValueFunctionTest {
 
 	@Test
 	public void testEvaluate() throws Exception {
@@ -40,53 +40,20 @@ public class DisableFunctionTest {
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult1 =
 			new DDMFormFieldEvaluationResult("field0", null);
 
-		ddmFormFieldEvaluationResult1.setReadOnly(false);
+		ddmFormFieldEvaluationResult1.setValue(1);
 
 		ddmFormFieldEvaluationResultList.add(ddmFormFieldEvaluationResult1);
 
 		ddmFormFieldEvaluationResults.put(
 			"field0", ddmFormFieldEvaluationResultList);
 
-		DisableFunction disableFunction = new DisableFunction(
+		SetValueFunction setValueFunction = new SetValueFunction(
 			ddmFormFieldEvaluationResults);
 
-		disableFunction.evaluate("field0");
+		setValueFunction.evaluate("field0", 2);
 
-		Assert.assertTrue(ddmFormFieldEvaluationResult1.isReadOnly());
-	}
-
-	@Test
-	public void testEvaluateWithMultipleInstance() throws Exception {
-		Map<String, List<DDMFormFieldEvaluationResult>>
-			ddmFormFieldEvaluationResults = new HashMap<>();
-
-		List<DDMFormFieldEvaluationResult> ddmFormFieldEvaluationResultList =
-			new ArrayList<>();
-
-		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult1 =
-			new DDMFormFieldEvaluationResult("field0", "i1");
-
-		ddmFormFieldEvaluationResult1.setReadOnly(false);
-
-		ddmFormFieldEvaluationResultList.add(ddmFormFieldEvaluationResult1);
-
-		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult2 =
-			new DDMFormFieldEvaluationResult("field0", "i2");
-
-		ddmFormFieldEvaluationResult2.setReadOnly(false);
-
-		ddmFormFieldEvaluationResultList.add(ddmFormFieldEvaluationResult2);
-
-		ddmFormFieldEvaluationResults.put(
-			"field0", ddmFormFieldEvaluationResultList);
-
-		DisableFunction disableFunction = new DisableFunction(
-			ddmFormFieldEvaluationResults);
-
-		disableFunction.evaluate("field0");
-
-		Assert.assertTrue(ddmFormFieldEvaluationResult1.isReadOnly());
-		Assert.assertTrue(ddmFormFieldEvaluationResult2.isReadOnly());
+		Assert.assertEquals(
+			Integer.valueOf(2), ddmFormFieldEvaluationResult1.getValue());
 	}
 
 	@Test
@@ -100,33 +67,26 @@ public class DisableFunctionTest {
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult1 =
 			new DDMFormFieldEvaluationResult("field1", null);
 
-		ddmFormFieldEvaluationResult1.setReadOnly(false);
+		ddmFormFieldEvaluationResult1.setValue("EMPTY");
 
 		ddmFormFieldEvaluationResultList.add(ddmFormFieldEvaluationResult1);
 
 		ddmFormFieldEvaluationResults.put(
 			"field1", ddmFormFieldEvaluationResultList);
 
-		DisableFunction disableFunction = new DisableFunction(
+		SetValueFunction setValueFunction = new SetValueFunction(
 			ddmFormFieldEvaluationResults);
 
-		disableFunction.evaluate("not_available");
+		setValueFunction.evaluate("not_available", "");
 
-		Assert.assertFalse(ddmFormFieldEvaluationResult1.isReadOnly());
+		Assert.assertEquals("EMPTY", ddmFormFieldEvaluationResult1.getValue());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testIllegalArgument1() throws Exception {
-		DisableFunction disableFunction = new DisableFunction(null);
+	public void testIllegalArgument() throws Exception {
+		SetValueFunction setValueFunction = new SetValueFunction(null);
 
-		disableFunction.evaluate();
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testIllegalArgument2() throws Exception {
-		DisableFunction disableFunction = new DisableFunction(null);
-
-		disableFunction.evaluate("param1", "param2");
+		setValueFunction.evaluate("param1");
 	}
 
 }

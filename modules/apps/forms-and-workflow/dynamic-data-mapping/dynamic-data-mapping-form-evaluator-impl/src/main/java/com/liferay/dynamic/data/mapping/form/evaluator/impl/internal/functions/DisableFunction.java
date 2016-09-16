@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions;
+package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 
@@ -22,13 +22,13 @@ import java.util.Map;
 /**
  * @author Leonardo Barros
  */
-public class SetInvalidFunction extends BaseValidFunction {
+public class DisableFunction extends BaseReadOnlyFunction {
 
-	public SetInvalidFunction(
+	public DisableFunction(
 		Map<String, List<DDMFormFieldEvaluationResult>>
 			ddmFormFieldEvaluationResults) {
 
-		super(ddmFormFieldEvaluationResults, false);
+		super(ddmFormFieldEvaluationResults, true);
 	}
 
 }

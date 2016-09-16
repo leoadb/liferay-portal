@@ -22,9 +22,14 @@ import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationExceptio
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.CallFunction;
-import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.FieldAtFunction;
-import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.PropertyGetFunction;
-import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.PropertySetFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.DisableFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.EnableFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.GetValueFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.HideFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.SetInvalidFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.SetValidFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.SetValueFunction;
+import com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions.ShowFunction;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -340,11 +345,25 @@ public class DDMFormEvaluatorHelper {
 				_ddmFormFieldEvaluationResultsMap,
 				_ddmFormValuesJSONDeserializer, _jsonFactory));
 		ddmFormRuleEvaluator.setDDMExpressionFunction(
-			"fieldAt", new FieldAtFunction(_ddmFormFieldEvaluationResultsMap));
+			"disable", new DisableFunction(_ddmFormFieldEvaluationResultsMap));
 		ddmFormRuleEvaluator.setDDMExpressionFunction(
-			"get", new PropertyGetFunction());
+			"enable", new EnableFunction(_ddmFormFieldEvaluationResultsMap));
 		ddmFormRuleEvaluator.setDDMExpressionFunction(
-			"set", new PropertySetFunction());
+			"getValue",
+			new GetValueFunction(_ddmFormFieldEvaluationResultsMap));
+		ddmFormRuleEvaluator.setDDMExpressionFunction(
+			"hide", new HideFunction(_ddmFormFieldEvaluationResultsMap));
+		ddmFormRuleEvaluator.setDDMExpressionFunction(
+			"setInvalid",
+			new SetInvalidFunction(_ddmFormFieldEvaluationResultsMap));
+		ddmFormRuleEvaluator.setDDMExpressionFunction(
+			"setValid",
+			new SetValidFunction(_ddmFormFieldEvaluationResultsMap));
+		ddmFormRuleEvaluator.setDDMExpressionFunction(
+			"setValue",
+			new SetValueFunction(_ddmFormFieldEvaluationResultsMap));
+		ddmFormRuleEvaluator.setDDMExpressionFunction(
+			"show", new ShowFunction(_ddmFormFieldEvaluationResultsMap));
 	}
 
 	protected void setDDMExpressionVariables(

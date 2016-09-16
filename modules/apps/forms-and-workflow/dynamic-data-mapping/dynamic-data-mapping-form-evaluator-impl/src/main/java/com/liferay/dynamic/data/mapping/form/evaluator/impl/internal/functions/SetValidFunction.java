@@ -22,29 +22,13 @@ import java.util.Map;
 /**
  * @author Leonardo Barros
  */
-public class FieldAtFunction extends BasePropertyFunction {
+public class SetValidFunction extends BaseValidFunction {
 
-	public FieldAtFunction(
+	public SetValidFunction(
 		Map<String, List<DDMFormFieldEvaluationResult>>
-			ddmFormFieldEvaluationResultsMap) {
+			ddmFormFieldEvaluationResults) {
 
-		super(ddmFormFieldEvaluationResultsMap);
-	}
-
-	@Override
-	public Object evaluate(Object... parameters) {
-		if (parameters.length != 2) {
-			throw new IllegalArgumentException("Two parameters are expected");
-		}
-
-		String fieldNameParameter = parameters[0].toString();
-		Number fieldIndexParameter = (Number)parameters[1];
-
-		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
-			getDDMFormFieldEvaluationResult(
-				fieldNameParameter, fieldIndexParameter.intValue());
-
-		return ddmFormFieldEvaluationResult;
+		super(ddmFormFieldEvaluationResults, true);
 	}
 
 }

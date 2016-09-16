@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.rules.functions;
+package com.liferay.dynamic.data.mapping.form.evaluator.impl.internal.functions;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -24,28 +24,19 @@ import java.util.Map;
 /**
  * @author Leonardo Barros
  */
-public abstract class BaseValidFunction extends BasePropertyFunction {
+public class SetValueFunction extends BasePropertyFunction {
 
-	public BaseValidFunction(
+	public SetValueFunction(
 		Map<String, List<DDMFormFieldEvaluationResult>>
-			ddmFormFieldEvaluationResults, boolean valid) {
+			ddmFormFieldEvaluationResults) {
 
 		super(ddmFormFieldEvaluationResults);
-		_valid = valid;
 	}
 
 	@Override
 	public Object evaluate(Object... parameters) {
-		if (_valid &&
-			(ArrayUtil.isEmpty(parameters) || (parameters.length != 1))) {
-
-			throw new IllegalArgumentException("Expected 1 parameter.");
-		}
-
-		if (!_valid &&
-			(ArrayUtil.isEmpty(parameters) || (parameters.length != 2))) {
-
-			throw new IllegalArgumentException("Expected 2 parameters.");
+		if (ArrayUtil.isEmpty(parameters) || (parameters.length != 2)) {
+			throw new IllegalArgumentException("Expected 2 parameter.");
 		}
 
 		String fieldName = String.valueOf(parameters[0]);
@@ -54,23 +45,15 @@ public abstract class BaseValidFunction extends BasePropertyFunction {
 			ddmFormFieldEvaluationResults.get(fieldName);
 
 		if (ListUtil.isEmpty(formFieldEvaluationResults)) {
-			return true;
+			return null;
 		}
 
-		for (DDMFormFieldEvaluationResult formFieldEvaluationResult :
-				formFieldEvaluationResults) {
+		DDMFormFieldEvaluationResult formFieldEvaluationResult =
+			formFieldEvaluationResults.get(0);
 
-			formFieldEvaluationResult.setValid(_valid);
-
-			if (!_valid) {
-				formFieldEvaluationResult.setErrorMessage(
-					String.valueOf(parameters[1]));
-			}
-		}
+		formFieldEvaluationResult.setValue(parameters[1]);
 
 		return true;
 	}
-
-	private final boolean _valid;
 
 }
