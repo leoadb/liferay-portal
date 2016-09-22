@@ -181,6 +181,8 @@ public class DDMFormTemplateSynchonizerTest extends BaseDDMTestCase {
 
 		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
 
+		ddmFormFieldOptions.setDefaultLocale(LocaleUtil.US);
+
 		for (int i = 1; i <= availableOptions; i++) {
 			ddmFormFieldOptions.addOptionLabel(
 				"Value " + i, LocaleUtil.US, "Option " + i);
