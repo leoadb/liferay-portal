@@ -65,13 +65,6 @@ public class SelectDDMFormFieldTypeSettingsTest
 			"equals(dataSourceType, \"data-provider\")",
 			ddmDataProviderInstanceIdDDMFormField.getVisibilityExpression());
 
-		DDMFormField multipleDDMFormField = ddmFormFieldsMap.get("multiple");
-
-		Assert.assertNotNull(multipleDDMFormField);
-		Assert.assertNotNull(multipleDDMFormField.getLabel());
-		Assert.assertEquals(
-			"true", multipleDDMFormField.getProperty("showAsSwitcher"));
-
 		DDMFormField optionsDDMFormField = ddmFormFieldsMap.get("options");
 
 		Assert.assertNotNull(optionsDDMFormField);
