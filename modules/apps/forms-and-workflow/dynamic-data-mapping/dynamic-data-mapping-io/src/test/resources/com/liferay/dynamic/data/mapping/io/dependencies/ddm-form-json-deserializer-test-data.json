@@ -10,7 +10,6 @@
 				"pt_BR": "Booleano"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Boolean2282",
 			"predefinedValue": {
 				"en_US": "false",
@@ -40,7 +39,6 @@
 				"pt_BR": "Data"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Date2510",
 			"predefinedValue": {
 				"en_US": "",
@@ -66,7 +64,6 @@
 				"pt_BR": "Decimal"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Decimal3479",
 			"predefinedValue": {
 				"en_US": "",
@@ -91,7 +88,6 @@
 				"pt_BR": "Biblioteca de Documentos"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Documents_and_Media4036",
 			"predefinedValue": {
 				"en_US": "",
@@ -117,7 +113,6 @@
 				"pt_BR": "Geolocalizacao"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Geolocation4273",
 			"predefinedValue": {
 				"en_US": "",
@@ -143,7 +138,6 @@
 				"pt_BR": "HTML"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "HTML4512",
 			"predefinedValue": {
 				"en_US": "",
@@ -169,7 +163,6 @@
 				"pt_BR": "Imagem"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Image4751",
 			"predefinedValue": {
 				"en_US": "",
@@ -195,7 +188,6 @@
 				"pt_BR": "Inteiro"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Integer4987",
 			"predefinedValue": {
 				"en_US": "",
@@ -221,7 +213,6 @@
 				"pt_BR": "Link para Pagina"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Link_to_Page5224",
 			"predefinedValue": {
 				"en_US": "",
@@ -248,7 +239,6 @@
 				"pt_BR": "Numero"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Number5460",
 			"predefinedValue": {
 				"en_US": "",
@@ -273,7 +263,6 @@
 				"pt_BR": "Radio"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Radio5699",
 			"options": [
 				{
@@ -321,7 +310,6 @@
 				"pt_BR": "Select"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Select5979",
 			"options": [
 				{
@@ -369,7 +357,6 @@
 				"pt_BR": "Separador"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Separator6279",
 			"predefinedValue": {
 				"en_US": "",
@@ -398,7 +385,6 @@
 				"pt_BR": "Texto"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Text6513",
 			"predefinedValue": {
 				"en_US": "",
@@ -423,7 +409,6 @@
 				"pt_BR": "Caixa de Texto"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Text_Box6748",
 			"predefinedValue": {
 				"en_US": "",
@@ -448,7 +433,6 @@
 				"pt_BR": "Texto"
 			},
 			"localizable": true,
-			"multiple": false,
 			"name": "Text6980",
 			"nestedFields": [
 				{
@@ -459,7 +443,6 @@
 						"pt_BR": "Separador"
 					},
 					"localizable": true,
-					"multiple": false,
 					"name": "Separator7211",
 					"nestedFields": [
 						{
@@ -470,7 +453,6 @@
 								"pt_BR": "Select"
 							},
 							"localizable": true,
-							"multiple": false,
 							"name": "Select7450",
 							"options": [
 								{

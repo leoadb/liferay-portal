@@ -58,7 +58,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 								"predefinedValue", "visibilityExpression",
 								"validation", "fieldNamespace", "indexType",
 								"localizable", "readOnly", "dataType", "type",
-								"name", "showLabel", "repeatable", "multiple"
+								"name", "showLabel", "repeatable"
 							}
 						)
 					}
@@ -83,9 +83,6 @@ public interface SelectDDMFormFieldTypeSettings
 		visibilityExpression = "equals(dataSourceType, \"data-provider\")"
 	)
 	public long ddmDataProviderInstanceId();
-
-	@DDMFormField(label = "%multiple", properties = {"showAsSwitcher=true"})
-	public boolean multiple();
 
 	@DDMFormField(
 		dataType = "ddm-options", label = "%options",

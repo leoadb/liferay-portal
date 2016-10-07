@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <root available-locales="en_US" default-locale="en_US">
-<dynamic-element dataType="string" indexType="keyword" localizable="true" multiple="true" name="Supported-Versions" readOnly="false" repeatable="false" required="false" showLabel="true" type="select" width="">
+<dynamic-element dataType="string" indexType="keyword" localizable="true" name="Supported-Versions" readOnly="false" repeatable="false" required="false" showLabel="true" type="select" width="">
 	<dynamic-element name="CE61GA2" type="option" value="CE61GA2">
 		<meta-data locale="en_US">
 			<entry name="label"><![CDATA[Liferay Portal 6.1 CE GA2 (6.1.1+)]]></entry>

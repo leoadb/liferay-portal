@@ -77,7 +77,7 @@ public class UpgradeCheckboxFieldToCheckboxMultipleField
 						"structureId = ?")) {
 
 			ps1.setInt(1, _SCOPE_FORMS);
-			ps1.setString(2, "%checkbox%");
+			ps1.setString(2, getFieldTypeFilter());
 
 			try (ResultSet rs = ps1.executeQuery()) {
 				while (rs.next()) {
@@ -103,6 +103,10 @@ public class UpgradeCheckboxFieldToCheckboxMultipleField
 				ps2.executeBatch();
 			}
 		}
+	}
+
+	protected String getFieldTypeFilter() {
+		return "%checkbox%";
 	}
 
 	protected JSONArray getOptionsJSONArray(
@@ -152,9 +156,7 @@ public class UpgradeCheckboxFieldToCheckboxMultipleField
 		return newPredefinedValueJSONObject;
 	}
 
-	protected void transformCheckboxDDMFormField(
-		JSONObject checkboxFieldJSONObject) {
-
+	protected void transformDDMFormField(JSONObject checkboxFieldJSONObject) {
 		checkboxFieldJSONObject.put("dataType", "string");
 		checkboxFieldJSONObject.put(
 			"options", getOptionsJSONArray(checkboxFieldJSONObject));
@@ -163,15 +165,16 @@ public class UpgradeCheckboxFieldToCheckboxMultipleField
 		checkboxFieldJSONObject.put("type", "checkbox_multiple");
 	}
 
-	protected void transformCheckboxDDMFormFieldValues(
-			DDMFormValues ddmFormValues)
+	protected void transformDDMFormFieldValues(DDMFormValues ddmFormValues)
 		throws Exception {
 
 		DDMFormValuesTransformer ddmFormValuesTransformer =
 			new DDMFormValuesTransformer(ddmFormValues);
 
-		ddmFormValuesTransformer.addTransformer(
-			new CheckboxDDMFormFieldValueTransformer(_jsonFactory));
+		DDMFormFieldValueTransformer ddmFormFieldValueTransformer =
+			new CheckboxDDMFormFieldValueTransformer(_jsonFactory);
+
+		ddmFormValuesTransformer.addTransformer(ddmFormFieldValueTransformer);
 
 		ddmFormValuesTransformer.transform();
 	}
@@ -204,7 +207,7 @@ public class UpgradeCheckboxFieldToCheckboxMultipleField
 						_ddmFormValuesJSONDeserializer.deserialize(
 							ddmForm, data_);
 
-					transformCheckboxDDMFormFieldValues(ddmFormValues);
+					transformDDMFormFieldValues(ddmFormValues);
 
 					ps2.setString(
 						1,
@@ -240,7 +243,7 @@ public class UpgradeCheckboxFieldToCheckboxMultipleField
 			String type = fieldJSONObject.getString("type");
 
 			if (type.equals("checkbox")) {
-				transformCheckboxDDMFormField(fieldJSONObject);
+				transformDDMFormField(fieldJSONObject);
 			}
 
 			JSONArray nestedFieldsJSONArray = fieldJSONObject.getJSONArray(

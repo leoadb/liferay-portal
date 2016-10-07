@@ -123,7 +123,6 @@ public class DDMFormXSDDeserializerImpl implements DDMFormXSDDeserializer {
 		setDDMFormFieldDataType(dynamicElementElement, ddmFormField);
 		setDDMFormFieldIndexType(dynamicElementElement, ddmFormField);
 		setDDMFormFieldLocalizable(dynamicElementElement, ddmFormField);
-		setDDMFormFieldMultiple(dynamicElementElement, ddmFormField);
 		setDDMFormFieldNamespace(dynamicElementElement, ddmFormField);
 		setDDMFormFieldReadOnly(dynamicElementElement, ddmFormField);
 		setDDMFormFieldRepeatable(dynamicElementElement, ddmFormField);
@@ -302,15 +301,6 @@ public class DDMFormXSDDeserializerImpl implements DDMFormXSDDeserializer {
 
 			tip.addString(locale, tipElement.getText());
 		}
-	}
-
-	protected void setDDMFormFieldMultiple(
-		Element dynamicElementElement, DDMFormField ddmFormField) {
-
-		boolean multiple = GetterUtil.getBoolean(
-			dynamicElementElement.attributeValue("multiple"));
-
-		ddmFormField.setMultiple(multiple);
 	}
 
 	protected void setDDMFormFieldNamespace(

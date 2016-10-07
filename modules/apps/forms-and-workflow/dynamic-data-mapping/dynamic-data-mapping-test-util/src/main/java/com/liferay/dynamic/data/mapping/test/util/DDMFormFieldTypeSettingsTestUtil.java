@@ -43,11 +43,10 @@ public class DDMFormFieldTypeSettingsTestUtil {
 							@DDMFormLayoutColumn(
 								{
 									"dataType", "fieldNamespace", "indexType",
-									"label", "localizable", "name", "multiple",
-									"options", "predefinedValue", "readOnly",
-									"repeatable", "required", "showLabel",
-									"tip", "type", "validation",
-									"visibilityExpression"
+									"label", "localizable", "name", "options",
+									"predefinedValue", "readOnly", "repeatable",
+									"required", "showLabel", "tip", "type",
+									"validation", "visibilityExpression"
 								}
 							)
 						}
@@ -58,9 +57,6 @@ public class DDMFormFieldTypeSettingsTestUtil {
 	)
 	private interface AllBasicPropertiesSettings
 		extends DefaultDDMFormFieldTypeSettings {
-
-		@DDMFormField
-		public boolean multiple();
 
 		@DDMFormField(dataType = "ddm-options", type = "select")
 		public DDMFormFieldOptions options();
