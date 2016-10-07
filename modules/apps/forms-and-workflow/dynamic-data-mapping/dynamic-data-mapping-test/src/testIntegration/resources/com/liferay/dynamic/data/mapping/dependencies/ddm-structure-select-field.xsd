@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <root available-locales="en_US" default-locale="en_US">
-    <dynamic-element dataType="string" indexType="" multiple="true" name="select" repeatable="true" required="false" type="select">
+    <dynamic-element dataType="string" indexType="" name="select" repeatable="true" required="false" type="select">
         <dynamic-element name="option4128" type="option" value="value 1">
             <meta-data locale="en_US">
                 <entry name="label"><![CDATA[option 1]]></entry>

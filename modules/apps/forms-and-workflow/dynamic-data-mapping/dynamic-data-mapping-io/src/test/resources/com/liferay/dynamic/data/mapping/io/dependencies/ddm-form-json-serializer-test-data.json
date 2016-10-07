@@ -16,7 +16,6 @@
 					"dataType": "string",
 					"indexType": "",
 					"localizable": false,
-					"multiple": true,
 					"name": "ChildField",
 					"options": [
 						{
@@ -96,7 +95,6 @@
 			"dataType": "string",
 			"indexType": "",
 			"localizable": false,
-			"multiple": true,
 			"name": "SelectField",
 			"options": [
 				{
