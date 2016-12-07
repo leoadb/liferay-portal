@@ -14,6 +14,7 @@
 
 package com.liferay.dynamic.data.lists.form.web.internal.portlet.configuration.icon;
 
+import com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -38,7 +39,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	immediate = true,
-	property = {"javax.portlet.name=" + com.liferay.dynamic.data.lists.form.web.constants.DDLFormPortletKeys.DYNAMIC_DATA_LISTS_FORM_ADMIN},
+	property = {"javax.portlet.name=" + DDLFormPortletKeys.DYNAMIC_DATA_LISTS_FORM_ADMIN},
 	service = PortletConfigurationIcon.class
 )
 public class DDMDataProviderPortletConfigurationIcon
@@ -56,6 +57,10 @@ public class DDMDataProviderPortletConfigurationIcon
 	public String getURL(
 		PortletRequest portletRequest, PortletResponse portletResponse) {
 
+		PortletURL formsPortletURL = PortletURLFactoryUtil.create(
+			portletRequest, DDLFormPortletKeys.DYNAMIC_DATA_LISTS_FORM_ADMIN,
+			PortletRequest.RENDER_PHASE);
+
 		String portletId = PortletProviderUtil.getPortletId(
 			DDMDataProviderInstance.class.getName(),
 			PortletProvider.Action.EDIT);
@@ -64,13 +69,13 @@ public class DDMDataProviderPortletConfigurationIcon
 			portletRequest, portletId, PortletRequest.RENDER_PHASE);
 
 		try {
-			portletURL.setWindowState(LiferayWindowState.POP_UP);
+			portletURL.setWindowState(LiferayWindowState.NORMAL);
+			portletURL.setParameter("redirect", formsPortletURL.toString());
 		}
 		catch (WindowStateException wse) {
 		}
 
-		return "javascript:Liferay.DDL.Portlet.openDDMDataProvider('" +
-			portletURL.toString() + "');";
+		return portletURL.toString();
 	}
 
 	@Override
