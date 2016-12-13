@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * @author Marcellus Tavares
@@ -120,7 +121,7 @@ public class DDMFormFieldTemplateContextFactory {
 		setDDMFormFieldTemplateContextName(
 			ddmFormFieldTemplateContext, ddmFormFieldParameterName);
 
-		List<Object> nestedDDMFormFieldTemplateContext =
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContext =
 			createNestedDDMFormFieldTemplateContext(
 				ddmFormFieldValue, ddmFormFieldParameterName);
 
@@ -181,15 +182,15 @@ public class DDMFormFieldTemplateContextFactory {
 		return ddmFormFieldTemplateContexts;
 	}
 
-	protected List<Object> createNestedDDMFormFieldTemplateContext(
+	protected Map<String, List<Object>> createNestedDDMFormFieldTemplateContext(
 		DDMFormFieldValue parentDDMFormFieldValue,
 		String parentDDMFormFieldParameterName) {
 
 		Map<String, List<DDMFormFieldValue>> nestedDDMFormFieldValuesMap =
 			parentDDMFormFieldValue.getNestedDDMFormFieldValuesMap();
 
-		List<Object> nestedDDMFormFieldTemplateContext = new ArrayList<>(
-			nestedDDMFormFieldValuesMap.size());
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContext =
+			new TreeMap<>();
 
 		for (DDMFormFieldValue nestedDDMFormFieldValue :
 				parentDDMFormFieldValue.getNestedDDMFormFieldValues()) {
@@ -198,7 +199,8 @@ public class DDMFormFieldTemplateContextFactory {
 				nestedDDMFormFieldValuesMap.get(
 					nestedDDMFormFieldValue.getName());
 
-			nestedDDMFormFieldTemplateContext.addAll(
+			nestedDDMFormFieldTemplateContext.put(
+				nestedDDMFormFieldValue.getName(),
 				createDDMFormFieldTemplateContexts(
 					nestedDDMFormFieldValues, parentDDMFormFieldParameterName));
 		}
@@ -328,7 +330,7 @@ public class DDMFormFieldTemplateContextFactory {
 
 	protected void setDDMFormFieldTemplateContextNestedTemplateContexts(
 		Map<String, Object> ddmFormFieldRenderingContext,
-		List<Object> nestedDDMFormFieldTemplateContexts) {
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContexts) {
 
 		if (nestedDDMFormFieldTemplateContexts.isEmpty()) {
 			return;

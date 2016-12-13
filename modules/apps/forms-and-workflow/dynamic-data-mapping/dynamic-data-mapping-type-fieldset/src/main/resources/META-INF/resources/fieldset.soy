@@ -10,40 +10,54 @@
 /**
  * Prints a column.
  *
- * @param columnSize
- * @param field
+ * @param column
  */
 {template .fieldset_column autoescape="deprecated-contextual"}
-	<div class="col-md-{$columnSize}">
-		{let $variant: $field.type /}
+	<div class="col-md-{$column.size}">
 
-		{delcall ddm.field variant="$variant" data="$field" /}
+		{foreach $field in $column.fields}
+			{let $variant: $field.type /}
+
+			{delcall ddm.field variant="$variant" data="$field" /}
+		{/foreach}
 	</div>
 {/template}
 
 /**
  * Prints all columns.
  *
- * @param columnSize
- * @param fields
+ * @param columns
  */
 {template .fieldset_columns autoescape="deprecated-contextual"}
-	{foreach $field in $fields}
+	{foreach $column in $columns}
 
 		{call ddm.fieldset_column data="all"}
-			{param columnSize: $columnSize /}
-			{param field: $field /}
+			{param column: $column /}
 		{/call}
+	{/foreach}
+{/template}
+
+/**
+ * Prints all rows.
+ *
+ * @param rows
+ */
+{template .fieldset_rows autoescape="deprecated-contextual"}
+	{foreach $row in $rows}
+		<div class="row">
+			{call ddm.fieldset_columns data="all"}
+				{param columns: $row.columns /}
+			{/call}
+		</div>
 	{/foreach}
 {/template}
 
 /**
  * Prints the DDM form fieldset field.
  *
- * @param columnSize
  * @param name
- * @param fields
  * @param? label
+ * @param rows
  * @param tip
  * @param visible
  */
@@ -57,9 +71,8 @@
 		<fieldset>
 			<legend>{$label}</legend>
 
-			{call ddm.fieldset_columns data="all"}
-				{param columnSize: $columnSize /}
-				{param fields: $fields /}
+			{call ddm.fieldset_rows data="all"}
+				{param rows: $rows /}
 			{/call}
 		</fieldset>
 	</div>

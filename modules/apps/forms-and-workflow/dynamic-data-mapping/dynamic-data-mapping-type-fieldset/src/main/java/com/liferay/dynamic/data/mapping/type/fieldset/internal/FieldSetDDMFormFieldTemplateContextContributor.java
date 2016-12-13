@@ -16,9 +16,12 @@ package com.liferay.dynamic.data.mapping.type.fieldset.internal;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateContextContributor;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormLayoutColumn;
+import com.liferay.dynamic.data.mapping.model.DDMFormLayoutRow;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,30 +48,146 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 
 		Map<String, Object> parameters = new HashMap<>();
 
-		List<Object> nestedFields =
-			(List<Object>)ddmFormFieldRenderingContext.getProperty(
+		Map<String, Object> properties = ddmFormField.getProperties();
+
+		Map<String, Object> renderingContextProperties =
+			ddmFormFieldRenderingContext.getProperties();
+
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContexts =
+			(Map<String, List<Object>>)renderingContextProperties.get(
 				"nestedFields");
 
 		LocalizedValue label = ddmFormField.getLabel();
 
-		parameters.put("columnSize", getColumnSize(nestedFields));
-
 		if (label != null) {
 			parameters.put("label", label.getString(
 				ddmFormFieldRenderingContext.getLocale()));
+			parameters.put("showLabel", true);
 		}
 
-		parameters.put("fields", nestedFields);
+		if (nestedDDMFormFieldTemplateContexts == null) {
+			return parameters;
+		}
+
+		List<DDMFormLayoutRow> ddmFormLayoutRows = null;
+
+		if (properties.containsKey("rows")) {
+			ddmFormLayoutRows = (List<DDMFormLayoutRow>)properties.get("rows");
+		}
+		else {
+			ddmFormLayoutRows = createDefaultDDMFormLayoutRowList(
+				nestedDDMFormFieldTemplateContexts);
+		}
+
+		parameters.put(
+			"rows",
+			createRowsContext(
+				ddmFormLayoutRows, nestedDDMFormFieldTemplateContexts));
 
 		return parameters;
 	}
 
-	protected int getColumnSize(List<Object> nestedFields) {
-		if (nestedFields.isEmpty()) {
+	protected Map<String, Object> createColumnContext(
+		DDMFormLayoutColumn ddmFormLayoutColumn,
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContexts) {
+
+		Map<String, Object> columnMap = new HashMap<>();
+		List<Object> fieldsContext = new ArrayList<>();
+
+		for (String ddmFormFieldName :
+				ddmFormLayoutColumn.getDDMFormFieldNames()) {
+
+			if (nestedDDMFormFieldTemplateContexts.containsKey(
+					ddmFormFieldName)) {
+
+				fieldsContext.addAll(
+					nestedDDMFormFieldTemplateContexts.get(ddmFormFieldName));
+			}
+		}
+
+		columnMap.put("fields", fieldsContext);
+		columnMap.put("size", ddmFormLayoutColumn.getSize());
+
+		return columnMap;
+	}
+
+	protected List<Map<String, Object>> createColumnsContext(
+		List<DDMFormLayoutColumn> ddmFormLayoutColumns,
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContexts) {
+
+		List<Map<String, Object>> columns = new ArrayList<>();
+
+		for (DDMFormLayoutColumn ddmFormLayoutColumn : ddmFormLayoutColumns) {
+			columns.add(
+				createColumnContext(
+					ddmFormLayoutColumn, nestedDDMFormFieldTemplateContexts));
+		}
+
+		return columns;
+	}
+
+	protected List<DDMFormLayoutRow> createDefaultDDMFormLayoutRowList(
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContexts) {
+
+		List<DDMFormLayoutRow> ddmFormLayoutRows = new ArrayList<>();
+
+		DDMFormLayoutRow ddmFormLayoutRow = new DDMFormLayoutRow();
+
+		ddmFormLayoutRows.add(ddmFormLayoutRow);
+
+		DDMFormLayoutColumn ddmFormLayoutColumn = new DDMFormLayoutColumn(
+			DDMFormLayoutColumn.FULL);
+
+		if (!nestedDDMFormFieldTemplateContexts.isEmpty()) {
+			List<String> ddmFormFieldNames =
+				ddmFormLayoutColumn.getDDMFormFieldNames();
+
+			ddmFormFieldNames.addAll(
+				nestedDDMFormFieldTemplateContexts.keySet());
+
+			ddmFormLayoutColumn.setSize(
+				getColumnSize(nestedDDMFormFieldTemplateContexts.size()));
+		}
+
+		return ddmFormLayoutRows;
+	}
+
+	protected Map<String, Object> createRowContext(
+		DDMFormLayoutRow ddmFormLayoutRow,
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContexts) {
+
+		Map<String, Object> rowMap = new HashMap<>();
+
+		rowMap.put(
+			"columns",
+			createColumnsContext(
+				ddmFormLayoutRow.getDDMFormLayoutColumns(),
+				nestedDDMFormFieldTemplateContexts));
+
+		return rowMap;
+	}
+
+	protected List<Map<String, Object>> createRowsContext(
+		List<DDMFormLayoutRow> ddmFormLayoutRows,
+		Map<String, List<Object>> nestedDDMFormFieldTemplateContexts) {
+
+		List<Map<String, Object>> rows = new ArrayList<>();
+
+		for (DDMFormLayoutRow ddmFormLayoutRow : ddmFormLayoutRows) {
+			rows.add(
+				createRowContext(
+					ddmFormLayoutRow, nestedDDMFormFieldTemplateContexts));
+		}
+
+		return rows;
+	}
+
+	protected int getColumnSize(int size) {
+		if (size == 0) {
 			return 0;
 		}
 
-		return 12 / nestedFields.size();
+		return 12 / size;
 	}
 
 }

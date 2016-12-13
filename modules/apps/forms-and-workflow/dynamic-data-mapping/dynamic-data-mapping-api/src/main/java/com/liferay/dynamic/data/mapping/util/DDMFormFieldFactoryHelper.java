@@ -18,6 +18,8 @@ import com.liferay.dynamic.data.mapping.annotations.DDMForm;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
+import com.liferay.dynamic.data.mapping.model.DDMFormLayoutPage;
+import com.liferay.dynamic.data.mapping.model.DDMFormLayoutRow;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
@@ -87,6 +89,13 @@ public class DDMFormFieldFactoryHelper {
 		if (Objects.equals(type, "fieldset")) {
 			com.liferay.dynamic.data.mapping.model.DDMForm nestedDDMForm =
 				_getNestedDDMForm();
+
+			List<DDMFormLayoutRow> nestedDDMFormLayoutRows =
+				_getNestedDDMFormLayoutRows();
+
+			Map<String, Object> propertiesMap = ddmFormField.getProperties();
+
+			propertiesMap.put("rows", nestedDDMFormLayoutRows);
 
 			ddmFormField.setNestedDDMFormFields(
 				nestedDDMForm.getDDMFormFields());
@@ -429,6 +438,23 @@ public class DDMFormFieldFactoryHelper {
 		Class<?> returnType = _getReturnType();
 
 		return DDMFormFactory.create(returnType);
+	}
+
+	private List<DDMFormLayoutRow> _getNestedDDMFormLayoutRows() {
+		Class<?> returnType = _getReturnType();
+
+		com.liferay.dynamic.data.mapping.model.DDMFormLayout ddmFormLayout =
+			DDMFormLayoutFactory.create(returnType);
+
+		List<DDMFormLayoutRow> ddmFormLayoutRows = new ArrayList<>();
+
+		for (DDMFormLayoutPage ddmFormLayoutPage :
+				ddmFormLayout.getDDMFormLayoutPages()) {
+
+			ddmFormLayoutRows.addAll(ddmFormLayoutPage.getDDMFormLayoutRows());
+		}
+
+		return ddmFormLayoutRows;
 	}
 
 	private Class<?> _getReturnType() {
