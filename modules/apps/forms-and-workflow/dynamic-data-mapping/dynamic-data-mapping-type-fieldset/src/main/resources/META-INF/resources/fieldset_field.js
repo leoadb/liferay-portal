@@ -11,6 +11,11 @@ AUI.add(
 						value: []
 					},
 
+					showLabel: {
+						state: true,
+						value: true
+					},
+
 					type: {
 						value: 'fieldset'
 					}
@@ -22,11 +27,27 @@ AUI.add(
 
 				prototype: {
 
+					initializer: function() {
+						var instance = this;
+
+						if (instance.get('repeatable')) {
+							instance._eventHandlers.push(
+								instance.after('repeat', instance._afterRepeat)
+							);
+						}
+					},
+
 					getValue: function() {
 						return '';
 					},
 
 					setValue: function() {
+					},
+
+					_afterRepeat: function() {
+						var instance = this;
+
+						instance.set('showLabel', false);
 					},
 
 					_createNestedField: function(config) {

@@ -13,14 +13,13 @@
  * @param column
  */
 {template .fieldset_column autoescape="deprecated-contextual"}
-	<div class="col-md-{$column.size}">
-
-		{foreach $field in $column.fields}
+	{foreach $field in $column.fields}
+		<div class="col-md-{$column.size}">
 			{let $variant: $field.type /}
 
 			{delcall ddm.field variant="$variant" data="$field" /}
-		{/foreach}
-	</div>
+		</div>
+	{/foreach}
 {/template}
 
 /**
@@ -58,6 +57,7 @@
  * @param name
  * @param? label
  * @param rows
+ * @param? showLabel
  * @param tip
  * @param visible
  */
@@ -69,7 +69,9 @@
 		{/if}
 
 		<fieldset>
-			<legend>{$label}</legend>
+			{if $showLabel}
+				<legend>{$label}</legend>
+			{/if}
 
 			{call ddm.fieldset_rows data="all"}
 				{param rows: $rows /}

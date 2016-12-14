@@ -133,6 +133,8 @@ AUI.add(
 					}
 				}
 
+				field.fire('repeat');
+
 				return field;
 			},
 
