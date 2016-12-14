@@ -158,6 +158,17 @@ public class DDMFormEvaluatorHelper {
 
 			ddmFormFieldEvaluationResultInstances.add(
 				ddmFormFieldEvaluationResult);
+
+			for (DDMFormFieldValue nestedDDMFormFieldValue :
+					ddmFormFieldValue.getNestedDDMFormFieldValues()) {
+
+				ddmFormFieldEvaluationResult =
+					createDDMFormFieldEvaluationResult(
+						ddmFormField, nestedDDMFormFieldValue);
+
+				ddmFormFieldEvaluationResultInstances.add(
+					ddmFormFieldEvaluationResult);
+			}
 		}
 
 		_ddmFormFieldEvaluationResultsMap.put(
@@ -214,6 +225,16 @@ public class DDMFormEvaluatorHelper {
 		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
 			if (instanceId.equals(ddmFormFieldValue.getInstanceId())) {
 				return ddmFormFieldValue;
+			}
+
+			for (DDMFormFieldValue nestedDDMFormFieldValue :
+					ddmFormFieldValue.getNestedDDMFormFieldValues()) {
+
+				if (instanceId.equals(
+						nestedDDMFormFieldValue.getInstanceId())) {
+
+					return nestedDDMFormFieldValue;
+				}
 			}
 		}
 
