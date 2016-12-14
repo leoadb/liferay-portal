@@ -11,6 +11,13 @@ AUI.add(
 						value: []
 					},
 
+					rows: {
+						setter: '_setRows',
+						state: true,
+						validator: Array.isArray,
+						value: []
+					},
+
 					showLabel: {
 						state: true,
 						value: true
@@ -62,6 +69,19 @@ AUI.add(
 						var instance = this;
 
 						return fields.map(A.bind(instance._createNestedField, instance));
+					},
+
+					_setRows: function(rows) {
+						var instance = this;
+						var fields = [];
+
+						rows.forEach(function(row) {
+							row.columns.forEach(function(column) {
+								fields = fields.concat(column.fields);
+							});
+						});
+
+						instance.set('fields', fields);
 					}
 				}
 			}
