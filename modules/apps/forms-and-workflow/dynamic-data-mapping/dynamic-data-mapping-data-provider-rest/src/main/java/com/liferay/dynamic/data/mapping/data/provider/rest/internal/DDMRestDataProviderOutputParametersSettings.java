@@ -32,7 +32,11 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutRow;
 				@DDMFormLayoutRow(
 					{
 						@DDMFormLayoutColumn(
-							size = 4, value = {"name", "path", "type"}
+							size = 4,
+							value = {
+								"outputParameterName", "outputParameterPath",
+								"outputParameterType"
+							}
 						)
 					}
 				)
@@ -46,15 +50,15 @@ public interface DDMRestDataProviderOutputParametersSettings {
 		label = "%name", properties = {"placeholder=%enter-a-name"},
 		required = true
 	)
-	public String name();
+	public String outputParameterName();
 
 	@DDMFormField(label = "%path", properties = {"placeholder=%enter-the-path"})
-	public String path();
+	public String outputParameterPath();
 
 	@DDMFormField(
 		label = "%type", optionLabels = {"%text", "%number"},
 		optionValues = {"text", "number"}, type = "select"
 	)
-	public String type();
+	public String outputParameterType();
 
 }

@@ -32,7 +32,11 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutRow;
 				@DDMFormLayoutRow(
 					{
 						@DDMFormLayoutColumn(
-							size = 4, value = {"name", "type", "required"}
+							size = 4,
+							value = {
+								"inputParameterName", "inputParameterType",
+								"inputParameterRequired"
+							}
 						)
 					}
 				)
@@ -46,15 +50,15 @@ public interface DDMRestDataProviderInputParametersSettings {
 		label = "%name", properties = {"placeholder=%enter-a-name"},
 		required = true
 	)
-	public String name();
+	public String inputParameterName();
 
 	@DDMFormField(label = "%required", type = "checkbox")
-	public boolean required();
+	public boolean inputParameterRequired();
 
 	@DDMFormField(
 		label = "%type", optionLabels = {"%text", "%number"},
 		optionValues = {"text", "number"}, type = "select"
 	)
-	public String type();
+	public String inputParameterType();
 
 }
