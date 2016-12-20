@@ -1,12 +1,19 @@
 AUI.add(
 	'liferay-ddm-form-field-fieldset',
 	function(A) {
+		var AObject = A.Object;
+
+		var Renderer = Liferay.DDM.Renderer;
+
+		var FieldTypes = Renderer.FieldTypes;
+
+		var Util = Renderer.Util;
+
 		var FieldSetField = A.Component.create(
 			{
 				ATTRS: {
 					fields: {
 						setter: '_setFields',
-						state: true,
 						validator: Array.isArray,
 						value: []
 					},
@@ -60,9 +67,66 @@ AUI.add(
 					_createNestedField: function(config) {
 						var instance = this;
 
-						var fieldClass = instance.getFieldClass();
+						config = A.merge(
+								config,
+							{
+								context: A.clone(config),
+								fieldName: Util.getFieldNameFromQualifiedName(config.name),
+								parent: instance,
+								portletNamespace: instance.get('portletNamespace'),
+								repeatedIndex: instance.get('repeatedIndex')
+							}
+						);
 
-						return new fieldClass(config);
+						var fieldType = FieldTypes.get(config.type);
+
+						var fieldClassName = fieldType.get('className');
+
+						var fieldClass = AObject.getValue(window, fieldClassName.split('.'));
+
+						var FieldSetNestedField = A.Component.create(
+								{
+									EXTENDS: fieldClass,
+
+									NAME: 'liferay-ddm-form-field-fieldset-nestedfield',
+
+									prototype: {
+										getQualifiedName: function() {
+											var instance = this;
+
+											var parent = instance.get('parent');
+
+											return [
+												instance.get('portletNamespace'),
+												'ddm$$',
+												parent.get('fieldName'),
+												'$',
+												parent.get('instanceId'),
+												'$',
+												parent.get('repeatedIndex'),
+												'#',
+												instance.get('fieldName'),
+												'$',
+												instance.get('instanceId'),
+												'$',
+												instance.get('repeatedIndex'),
+												'$$',
+												instance.get('locale')
+											].join('');
+										},
+
+										getInputNode: function() {
+											var instance = this;
+
+											var parent = instance.get('parent');
+
+											return parent.get('container').one(instance.getInputSelector());
+										},
+									}
+								}
+							);
+
+						return new FieldSetNestedField(config);
 					},
 
 					_setFields: function(fields) {
@@ -73,6 +137,7 @@ AUI.add(
 
 					_setRows: function(rows) {
 						var instance = this;
+
 						var fields = [];
 
 						rows.forEach(function(row) {
@@ -82,6 +147,8 @@ AUI.add(
 						});
 
 						instance.set('fields', fields);
+
+						return rows;
 					}
 				}
 			}
