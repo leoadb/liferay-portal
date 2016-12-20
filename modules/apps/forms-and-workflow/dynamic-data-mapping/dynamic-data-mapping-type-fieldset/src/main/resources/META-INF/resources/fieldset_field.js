@@ -12,6 +12,10 @@ AUI.add(
 		var FieldSetField = A.Component.create(
 			{
 				ATTRS: {
+					context: {
+						value: ""
+					},
+
 					fields: {
 						setter: '_setFields',
 						validator: Array.isArray,
@@ -19,7 +23,6 @@ AUI.add(
 					},
 
 					rows: {
-						setter: '_setRows',
 						state: true,
 						validator: Array.isArray,
 						value: []
@@ -49,6 +52,39 @@ AUI.add(
 								instance.after('repeat', instance._afterRepeat)
 							);
 						}
+
+						instance.after('contextChanged', instance._afterContextChange);
+
+						var fields = [];
+
+						var rows = instance.get('rows');
+
+						if (rows) {
+							rows.forEach(function(row) {
+								row.columns.forEach(function(column) {
+									fields = fields.concat(column.fields);
+								});
+							});
+
+							instance.set('fields', fields);
+						}
+					},
+
+					getField: function(name) {
+						var instance = this;
+
+						var field;
+
+						instance.get('fields').forEach(
+							function(item) {
+								if (item.get('fieldName') === name) {
+									field = item;
+								}
+								return field !== undefined;
+							}
+						);
+
+						return field;
 					},
 
 					getValue: function() {
@@ -56,6 +92,26 @@ AUI.add(
 					},
 
 					setValue: function() {
+					},
+
+					_afterContextChange: function(event) {
+						var instance = this;
+
+						var nestedFields = event.newVal.nestedFields;
+
+						if (nestedFields) {
+							for (var nestedFieldName in nestedFields) {
+								var nestedFieldContext = nestedFields[nestedFieldName][0];
+
+								var name = Util.getFieldNameFromQualifiedName(nestedFieldContext.name);
+
+								var field = instance.getField(name);
+
+								if (field) {
+									field.set('context', nestedFieldContext);
+								}
+							}
+						}
 					},
 
 					_afterRepeat: function() {
@@ -133,22 +189,6 @@ AUI.add(
 						var instance = this;
 
 						return fields.map(A.bind(instance._createNestedField, instance));
-					},
-
-					_setRows: function(rows) {
-						var instance = this;
-
-						var fields = [];
-
-						rows.forEach(function(row) {
-							row.columns.forEach(function(column) {
-								fields = fields.concat(column.fields);
-							});
-						});
-
-						instance.set('fields', fields);
-
-						return rows;
 					}
 				}
 			}

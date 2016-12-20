@@ -162,9 +162,12 @@ public class DDMFormEvaluatorHelper {
 			for (DDMFormFieldValue nestedDDMFormFieldValue :
 					ddmFormFieldValue.getNestedDDMFormFieldValues()) {
 
+				DDMFormField nestedDDMFormField =
+					nestedDDMFormFieldValue.getDDMFormField();
+
 				ddmFormFieldEvaluationResult =
 					createDDMFormFieldEvaluationResult(
-						ddmFormField, nestedDDMFormFieldValue);
+						nestedDDMFormField, nestedDDMFormFieldValue);
 
 				ddmFormFieldEvaluationResultInstances.add(
 					ddmFormFieldEvaluationResult);

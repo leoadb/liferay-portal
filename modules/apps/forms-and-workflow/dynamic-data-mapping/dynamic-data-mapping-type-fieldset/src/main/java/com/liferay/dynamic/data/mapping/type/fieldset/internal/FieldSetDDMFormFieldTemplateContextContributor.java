@@ -69,20 +69,15 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 			return parameters;
 		}
 
-		List<DDMFormLayoutRow> ddmFormLayoutRows = null;
-
 		if (properties.containsKey("rows")) {
-			ddmFormLayoutRows = (List<DDMFormLayoutRow>)properties.get("rows");
-		}
-		else {
-			ddmFormLayoutRows = createDefaultDDMFormLayoutRowList(
-				nestedDDMFormFieldTemplateContexts);
-		}
+			List<DDMFormLayoutRow> ddmFormLayoutRows =
+				(List<DDMFormLayoutRow>)properties.get("rows");
 
-		parameters.put(
-			"rows",
-			createRowsContext(
-				ddmFormLayoutRows, nestedDDMFormFieldTemplateContexts));
+			parameters.put(
+				"rows",
+				createRowsContext(
+					ddmFormLayoutRows, nestedDDMFormFieldTemplateContexts));
+		}
 
 		return parameters;
 	}
@@ -124,32 +119,6 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 		}
 
 		return columns;
-	}
-
-	protected List<DDMFormLayoutRow> createDefaultDDMFormLayoutRowList(
-		Map<String, List<Object>> nestedDDMFormFieldTemplateContexts) {
-
-		List<DDMFormLayoutRow> ddmFormLayoutRows = new ArrayList<>();
-
-		DDMFormLayoutRow ddmFormLayoutRow = new DDMFormLayoutRow();
-
-		ddmFormLayoutRows.add(ddmFormLayoutRow);
-
-		DDMFormLayoutColumn ddmFormLayoutColumn = new DDMFormLayoutColumn(
-			DDMFormLayoutColumn.FULL);
-
-		if (!nestedDDMFormFieldTemplateContexts.isEmpty()) {
-			List<String> ddmFormFieldNames =
-				ddmFormLayoutColumn.getDDMFormFieldNames();
-
-			ddmFormFieldNames.addAll(
-				nestedDDMFormFieldTemplateContexts.keySet());
-
-			ddmFormLayoutColumn.setSize(
-				getColumnSize(nestedDDMFormFieldTemplateContexts.size()));
-		}
-
-		return ddmFormLayoutRows;
 	}
 
 	protected Map<String, Object> createRowContext(
