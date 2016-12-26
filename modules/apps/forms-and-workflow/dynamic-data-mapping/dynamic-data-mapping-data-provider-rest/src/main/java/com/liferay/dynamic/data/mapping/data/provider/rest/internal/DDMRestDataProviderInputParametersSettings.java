@@ -23,7 +23,9 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormField;
  * @author Leonardo Barros
  */
 @DDMFieldSet(
-	fields = {"name", "type", "required"},
+	fields = {
+		"inputParameterName", "inputParameterType", "inputParameterRequired"
+	},
 	orientation = DDMFieldSetOrientation.HORIZONTAL
 )
 @DDMForm
@@ -33,15 +35,15 @@ public interface DDMRestDataProviderInputParametersSettings {
 		label = "%name", properties = {"placeholder=%enter-a-name"},
 		required = true
 	)
-	public String name();
+	public String inputParameterName();
 
 	@DDMFormField(label = "%required", type = "checkbox")
-	public boolean required();
+	public boolean inputParameterRequired();
 
 	@DDMFormField(
 		label = "%type", optionLabels = {"%text", "%number"},
 		optionValues = {"text", "number"}, type = "select"
 	)
-	public String type();
+	public String inputParameterType();
 
 }
