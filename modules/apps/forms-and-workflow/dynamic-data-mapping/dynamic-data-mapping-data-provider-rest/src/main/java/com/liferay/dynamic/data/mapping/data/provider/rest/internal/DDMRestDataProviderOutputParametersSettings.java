@@ -32,11 +32,13 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutRow;
 				@DDMFormLayoutRow(
 					{
 						@DDMFormLayoutColumn(
-							size = 4,
-							value = {
-								"outputParameterName", "outputParameterPath",
-								"outputParameterType"
-							}
+							size = 4, value = {"outputParameterName"}
+						),
+						@DDMFormLayoutColumn(
+							size = 4, value = {"outputParameterPath"}
+						),
+						@DDMFormLayoutColumn(
+							size = 4, value = {"outputParameterType"}
 						)
 					}
 				)

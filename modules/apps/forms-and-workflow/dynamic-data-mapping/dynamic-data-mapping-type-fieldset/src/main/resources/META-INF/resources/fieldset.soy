@@ -8,50 +8,6 @@
 {/deltemplate}
 
 /**
- * Prints a column.
- *
- * @param column
- */
-{template .fieldset_column autoescape="deprecated-contextual"}
-	{foreach $field in $column.fields}
-		<div class="col-md-{$column.size}">
-			{let $variant: $field.type /}
-
-			{delcall ddm.field variant="$variant" data="$field" /}
-		</div>
-	{/foreach}
-{/template}
-
-/**
- * Prints all columns.
- *
- * @param columns
- */
-{template .fieldset_columns autoescape="deprecated-contextual"}
-	{foreach $column in $columns}
-
-		{call ddm.fieldset_column data="all"}
-			{param column: $column /}
-		{/call}
-	{/foreach}
-{/template}
-
-/**
- * Prints all rows.
- *
- * @param rows
- */
-{template .fieldset_rows autoescape="deprecated-contextual"}
-	{foreach $row in $rows}
-		<div class="row">
-			{call ddm.fieldset_columns data="all"}
-				{param columns: $row.columns /}
-			{/call}
-		</div>
-	{/foreach}
-{/template}
-
-/**
  * Prints the DDM form fieldset field.
  *
  * @param name
@@ -73,9 +29,9 @@
 				<legend>{$label}</legend>
 			{/if}
 
-			{call ddm.fieldset_rows data="all"}
+			{delcall ddm.del_form_rows data="all"}
 				{param rows: $rows /}
-			{/call}
+			{/delcall}
 		</fieldset>
 	</div>
 {/template}

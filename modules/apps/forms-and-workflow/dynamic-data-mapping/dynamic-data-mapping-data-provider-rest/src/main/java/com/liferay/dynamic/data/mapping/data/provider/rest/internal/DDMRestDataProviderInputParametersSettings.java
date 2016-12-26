@@ -32,11 +32,13 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutRow;
 				@DDMFormLayoutRow(
 					{
 						@DDMFormLayoutColumn(
-							size = 4,
-							value = {
-								"inputParameterName", "inputParameterType",
-								"inputParameterRequired"
-							}
+							size = 4, value = {"inputParameterName"}
+						),
+						@DDMFormLayoutColumn(
+							size = 4, value = {"inputParameterType"}
+						),
+						@DDMFormLayoutColumn(
+							size = 4, value = {"inputParameterRequired"}
 						)
 					}
 				)

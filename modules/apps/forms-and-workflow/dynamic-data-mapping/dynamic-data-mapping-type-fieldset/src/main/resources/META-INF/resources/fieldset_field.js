@@ -22,12 +22,6 @@ AUI.add(
 						value: []
 					},
 
-					rows: {
-						state: true,
-						validator: Array.isArray,
-						value: []
-					},
-
 					showLabel: {
 						state: true,
 						value: true
@@ -47,48 +41,99 @@ AUI.add(
 					initializer: function() {
 						var instance = this;
 
-						if (instance.get('repeatable')) {
-							instance._eventHandlers.push(
-								instance.after('repeat', instance._afterRepeat)
-							);
-						}
-
-						instance.after('contextChanged', instance._afterContextChange);
+						instance.after('contextChange', instance._afterContextChange);
 
 						var fields = [];
 
-						var rows = instance.get('rows');
+						var context = instance.get('context');
 
-						if (rows) {
-							rows.forEach(function(row) {
-								row.columns.forEach(function(column) {
-									fields = fields.concat(column.fields);
+						var nestedFields = context.nestedFields;
+
+						for (var nestedFieldName in nestedFields) {
+							var nestedFieldContext = nestedFields[nestedFieldName][0];
+
+							nestedFieldContext.fieldName = nestedFieldName;
+
+							fields.push(nestedFieldContext);
+						}
+
+						context.rows.forEach(function(row) {
+							row.columns.forEach(function(column) {
+								column.fields.forEach(function(field) {
+									field.fieldName = Util.getFieldNameFromQualifiedName(field.name);
 								});
 							});
+						});
 
-							instance.set('fields', fields);
+						if (instance.get('repeatedIndex') > 0) {
+							instance.set('showLabel', false);
 						}
+
+						instance.set('fields', fields);
 					},
 
-					getField: function(name) {
+					copyConfiguration: function() {
 						var instance = this;
 
-						var field;
+						var config = FieldSetField.superclass.copyConfiguration.apply(instance, arguments);
 
-						instance.get('fields').forEach(
-							function(item) {
-								if (item.get('fieldName') === name) {
-									field = item;
-								}
-								return field !== undefined;
-							}
-						);
+						var nestedFields = config.context.nestedFields;
 
-						return field;
+						for (var nestedFieldName in nestedFields) {
+							var nestedFieldContext = nestedFields[nestedFieldName][0];
+
+							nestedFieldContext.fieldName = nestedFieldName;
+
+							delete nestedFieldContext.instanceId;
+							delete nestedFieldContext.name;
+							delete nestedFieldContext.value;
+						}
+
+						var rows = config.context.rows;
+
+						rows.forEach(function(row) {
+							row.columns.forEach(function(column) {
+								column.fields.forEach(function(field) {
+									field.fieldName = Util.getFieldNameFromQualifiedName(field.name);
+
+									delete field.name;
+								});
+							});
+						});
+
+						return config;
 					},
 
 					getValue: function() {
 						return '';
+					},
+
+					render: function() {
+						var instance = this;
+
+						var context = instance.get('context');
+
+						var rows = context.rows;
+
+						rows.forEach(function(row) {
+							row.columns.forEach(function(column) {
+								column.fields.forEach(function(fieldContext) {
+									var field = instance.getField(fieldContext.fieldName);
+
+									fieldContext.name = field.getQualifiedName();
+								});
+							});
+						});
+
+						FieldSetField.superclass.render.apply(instance, arguments);
+
+						instance.eachField(
+							function(field) {
+								field.render();
+							}
+						);
+
+						return instance;
 					},
 
 					setValue: function() {
@@ -103,36 +148,21 @@ AUI.add(
 							for (var nestedFieldName in nestedFields) {
 								var nestedFieldContext = nestedFields[nestedFieldName][0];
 
-								var name = Util.getFieldNameFromQualifiedName(nestedFieldContext.name);
+								if (nestedFieldContext.name) {
+									var name = Util.getFieldNameFromQualifiedName(nestedFieldContext.name);
 
-								var field = instance.getField(name);
+									var field = instance.getField(name);
 
-								if (field) {
-									field.set('context', nestedFieldContext);
+									if (field) {
+										field.set('context', nestedFieldContext);
+									}
 								}
 							}
 						}
 					},
 
-					_afterRepeat: function() {
-						var instance = this;
-
-						instance.set('showLabel', false);
-					},
-
 					_createNestedField: function(config) {
 						var instance = this;
-
-						config = A.merge(
-								config,
-							{
-								context: A.clone(config),
-								fieldName: Util.getFieldNameFromQualifiedName(config.name),
-								parent: instance,
-								portletNamespace: instance.get('portletNamespace'),
-								repeatedIndex: instance.get('repeatedIndex')
-							}
-						);
 
 						var fieldType = FieldTypes.get(config.type);
 
@@ -148,12 +178,15 @@ AUI.add(
 
 									prototype: {
 										getQualifiedName: function() {
-											var instance = this;
+											var nestedFieldInstance = this;
 
-											var parent = instance.get('parent');
+											var parent = nestedFieldInstance.get('parent');
+
+											console.log("parent: " + parent.get('repeatedIndex'));
+											console.log("nestedFieldInstance: " + nestedFieldInstance.get('repeatedIndex'));
 
 											return [
-												instance.get('portletNamespace'),
+												nestedFieldInstance.get('portletNamespace'),
 												'ddm$$',
 												parent.get('fieldName'),
 												'$',
@@ -161,28 +194,30 @@ AUI.add(
 												'$',
 												parent.get('repeatedIndex'),
 												'#',
-												instance.get('fieldName'),
+												nestedFieldInstance.get('fieldName'),
 												'$',
-												instance.get('instanceId'),
+												nestedFieldInstance.get('instanceId'),
 												'$',
-												instance.get('repeatedIndex'),
+												nestedFieldInstance.get('repeatedIndex'),
 												'$$',
-												instance.get('locale')
+												nestedFieldInstance.get('locale')
 											].join('');
-										},
-
-										getInputNode: function() {
-											var instance = this;
-
-											var parent = instance.get('parent');
-
-											return parent.get('container').one(instance.getInputSelector());
-										},
+										}
 									}
 								}
 							);
 
-						return new FieldSetNestedField(config);
+						var nestedFieldContext = A.merge(
+							config,
+							{
+								context: A.clone(config),
+								parent: instance,
+								portletNamespace: instance.get('portletNamespace'),
+								repeatedIndex: 0,
+							}
+						);
+
+						return new FieldSetNestedField(nestedFieldContext);
 					},
 
 					_setFields: function(fields) {

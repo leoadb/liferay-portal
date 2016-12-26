@@ -7,6 +7,13 @@
 {/deltemplate}
 
 /**
+ * Defines the delegated template for the forms rows.
+ */
+{deltemplate ddm.del_form_rows autoescape="deprecated-contextual"}
+	{call .form_rows data="all" /}
+{/deltemplate}
+
+/**
  * Prints a list of fields.
  *
  * @param fields
