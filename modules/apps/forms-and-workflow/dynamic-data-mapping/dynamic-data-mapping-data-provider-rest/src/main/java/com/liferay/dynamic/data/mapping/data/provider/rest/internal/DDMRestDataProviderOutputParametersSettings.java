@@ -14,12 +14,18 @@
 
 package com.liferay.dynamic.data.mapping.data.provider.rest.internal;
 
+import com.liferay.dynamic.data.mapping.annotations.DDMFieldSet;
+import com.liferay.dynamic.data.mapping.annotations.DDMFieldSetOrientation;
 import com.liferay.dynamic.data.mapping.annotations.DDMForm;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormField;
 
 /**
  * @author Leonardo Barros
  */
+@DDMFieldSet(
+	fields = {"name", "path", "type"},
+	orientation = DDMFieldSetOrientation.HORIZONTAL
+)
 @DDMForm
 public interface DDMRestDataProviderOutputParametersSettings {
 
