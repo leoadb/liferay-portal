@@ -22,9 +22,9 @@ soy.$$registerDelegateFn(soy.$$getDelTemplateId('ddm.field'), 'select', 0, ddm._
 ddm.select = function(opt_data, opt_ignored) {
   var output = '<div class="form-group' + soy.$$escapeHtmlAttribute(opt_data.visible ? '' : ' hide') + '" data-fieldname="' + soy.$$escapeHtmlAttribute(opt_data.name) + '"><div class="input-select-wrapper">' + ((opt_data.showLabel) ? ddm.select_label(opt_data) : '') + '<div class="form-builder-select-field input-group-container">' + ((! opt_data.readOnly) ? ddm.hidden_select(soy.$$augmentMap(opt_data, {options: opt_data.options, name: opt_data.name, multiple: opt_data.multiple, dir: opt_data.dir, value: opt_data.value, string: opt_data.strings})) : '');
   if (! opt_data.multiple) {
-    output += '<a class="form-control select-field-trigger" ' + ((opt_data.readOnly) ? 'disabled' : '') + ' dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" href="javascript:;" id="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" name="' + soy.$$escapeHtmlAttribute(opt_data.name) + '">';
-    var selectedLabel__soy40 = '' + ((opt_data.value && opt_data.value.value) ? soy.$$escapeHtml(opt_data.value.label) : soy.$$escapeHtml(opt_data.strings.chooseAnOption));
-    output += '<span class="option-selected">' + soy.$$escapeHtml(selectedLabel__soy40) + '</span></a>';
+    output += '<a class="form-control select-field-trigger" dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" href="javascript:;" id="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" name="' + soy.$$escapeHtmlAttribute(opt_data.name) + '">';
+    var selectedLabel__soy36 = '' + ((! opt_data.readOnly) ? (opt_data.value && opt_data.value.value) ? soy.$$escapeHtml(opt_data.value.label) : soy.$$escapeHtml(opt_data.strings.chooseAnOption) : soy.$$escapeHtml(opt_data.strings.chooseAnOption));
+    output += '<span class="option-selected">' + soy.$$escapeHtml(selectedLabel__soy36) + '</span></a>';
   } else {
   }
   if (! opt_data.readOnly) {
@@ -55,13 +55,13 @@ if (goog.DEBUG) {
 
 
 ddm.hidden_select = function(opt_data, opt_ignored) {
-  var output = '<select class="form-control hide" dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" id="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" name="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" ' + ((opt_data.multiple) ? 'multiple size="' + soy.$$escapeHtmlAttribute(opt_data.options.length) + '"' : '') + '>';
-  var optionList124 = opt_data.options;
-  var optionListLen124 = optionList124.length;
-  for (var optionIndex124 = 0; optionIndex124 < optionListLen124; optionIndex124++) {
-    var optionData124 = optionList124[optionIndex124];
-    var selectedValue__soy109 = '' + ((opt_data.value && opt_data.value.value) ? soy.$$escapeHtml(opt_data.value.value) : '');
-    output += '<option dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" ' + ((selectedValue__soy109 == optionData124.value) ? 'selected' : '') + ' value="' + soy.$$escapeHtmlAttribute(optionData124.value) + '">' + soy.$$escapeHtml(optionData124.label) + '</option>';
+  var output = '<select class="form-control hide" dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" id="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" name="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" ' + ((opt_data.multiple) ? 'multiple size="' + soy.$$escapeHtmlAttribute(opt_data.options.length) + '"' : '') + '>' + ((! opt_data.readOnly) ? '<option dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" disabled ' + ((! opt_data.value) ? 'selected' : '') + ' value="">' + soy.$$escapeHtml(opt_data.strings.chooseAnOption) + '</option>' : '');
+  var optionList135 = opt_data.options;
+  var optionListLen135 = optionList135.length;
+  for (var optionIndex135 = 0; optionIndex135 < optionListLen135; optionIndex135++) {
+    var optionData135 = optionList135[optionIndex135];
+    var selectedValue__soy120 = '' + ((opt_data.value && opt_data.value.value) ? soy.$$escapeHtml(opt_data.value.value) : '');
+    output += '<option dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" ' + ((selectedValue__soy120 == optionData135.value) ? 'selected' : '') + ' value="' + soy.$$escapeHtmlAttribute(optionData135.value) + '">' + soy.$$escapeHtml(optionData135.label) + '</option>';
   }
   output += '</select>';
   return output;

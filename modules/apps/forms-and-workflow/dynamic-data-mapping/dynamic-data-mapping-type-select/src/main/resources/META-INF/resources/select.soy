@@ -52,11 +52,14 @@
 				{/if}
 
 				{if not $multiple}
-					<a class="form-control select-field-trigger" {if $readOnly}disabled{/if} dir="{$dir}" href="javascript:;" id="{$name}" name="{$name}">
-
+					<a class="form-control select-field-trigger" dir="{$dir}" href="javascript:;" id="{$name}" name="{$name}">
 						{let $selectedLabel}
-							{if $value and $value.value}
-								{$value.label}
+							{if not $readOnly}
+								{if $value and $value.value}
+									{$value.label}
+								{else}
+									{$strings.chooseAnOption}
+								{/if}
 							{else}
 								{$strings.chooseAnOption}
 							{/if}
@@ -126,10 +129,18 @@
  * @param multiple
  * @param name
  * @param options
+ * @param readOnly
  * @param value
+ * @param strings
  */
 {template .hidden_select autoescape="deprecated-contextual"}
 	<select class="form-control hide" dir="{$dir}" id="{$name}" name="{$name}" {if $multiple}multiple size="{length($options)}"{/if}>
+		{if not $readOnly}
+			<option dir="{$dir}" disabled {if not $value}selected{/if} value="">
+				{$strings.chooseAnOption}
+			</option>
+		{/if}
+
 		{foreach $option in $options}
 			{let $selectedValue}
 				{if $value and $value.value}
