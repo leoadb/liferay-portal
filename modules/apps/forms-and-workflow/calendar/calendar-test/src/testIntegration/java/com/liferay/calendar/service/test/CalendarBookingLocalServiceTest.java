@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -1318,6 +1319,55 @@ public class CalendarBookingLocalServiceTest {
 		Assert.assertEquals(newTitleMap, calendarBookingInstance.getTitleMap());
 	}
 
+	@Test
+	public void testUpdateRecurringCalendarBookingLastInstance()
+		throws Exception {
+
+		ServiceContext serviceContext = createServiceContext();
+
+		Calendar calendar = addCalendar(
+			_user, _losAngelesTimeZone, serviceContext);
+
+		java.util.Calendar startTimeJCalendar = CalendarFactoryUtil.getCalendar(
+			2017, java.util.Calendar.JANUARY, 1, 20, 0, 0, 0,
+			_losAngelesTimeZone);
+
+		Recurrence recurrence = new Recurrence();
+
+		recurrence.setFrequency(Frequency.DAILY);
+		recurrence.setPositionalWeekdays(new ArrayList<PositionalWeekday>());
+
+		java.util.Calendar untilJCalendar =
+			(java.util.Calendar)startTimeJCalendar.clone();
+
+		recurrence.setUntilJCalendar(untilJCalendar);
+
+		long startTime = startTimeJCalendar.getTimeInMillis();
+
+		CalendarBooking calendarBooking =
+			CalendarBookingTestUtil.addRecurringCalendarBooking(
+				_user, calendar, startTime, startTime + (Time.HOUR * 10),
+				recurrence, serviceContext);
+
+		Assert.assertEquals(startTime, calendarBooking.getStartTime());
+
+		long calendarBookingId = calendarBooking.getCalendarBookingId();
+
+		CalendarBooking calendarBookingInstance =
+			CalendarBookingLocalServiceUtil.getCalendarBookingInstance(
+				calendarBookingId, 0);
+
+		Assert.assertNotNull(calendarBookingInstance);
+
+		Assert.assertEquals(startTime, calendarBookingInstance.getStartTime());
+
+		calendarBookingInstance =
+			CalendarBookingLocalServiceUtil.getCalendarBookingInstance(
+				calendarBookingId, 2);
+
+		Assert.assertNull(calendarBookingInstance);
+	}
+
 	protected Calendar addCalendar(
 			CalendarResource calendarResource, ServiceContext serviceContext)
 		throws PortalException {
@@ -1334,11 +1384,24 @@ public class CalendarBookingLocalServiceTest {
 	protected Calendar addCalendar(User user, ServiceContext serviceContext)
 		throws PortalException {
 
+		return addCalendar(_user, null, serviceContext);
+	}
+
+	protected Calendar addCalendar(
+			User user, TimeZone timeZone, ServiceContext serviceContext)
+		throws PortalException {
+
 		CalendarResource calendarResource =
 			CalendarResourceUtil.getUserCalendarResource(
 				user.getUserId(), serviceContext);
 
-		return calendarResource.getDefaultCalendar();
+		Calendar calendar = calendarResource.getDefaultCalendar();
+
+		if (timeZone != null) {
+			calendar.setTimeZoneId(timeZone.getID());
+		}
+
+		return calendar;
 	}
 
 	protected ServiceContext createServiceContext() {
@@ -1406,6 +1469,9 @@ public class CalendarBookingLocalServiceTest {
 			_checkBookingMessageListener, "_calendarBookingLocalService",
 			CalendarBookingLocalServiceUtil.getService());
 	}
+
+	private static final TimeZone _losAngelesTimeZone = TimeZone.getTimeZone(
+		"America/Los_Angeles");
 
 	private Object _checkBookingMessageListener;
 
