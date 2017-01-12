@@ -17,6 +17,7 @@ package com.liferay.dynamic.data.mapping.data.provider.rest.internal;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProvider;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderContext;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderException;
+import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderOutputParametersSettings;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderRequest;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderResponse;
 import com.liferay.portal.kernel.cache.MultiVMPool;
@@ -28,21 +29,25 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.KeyValuePair;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import jodd.http.HttpRequest;
-import jodd.http.HttpResponse;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import jodd.http.HttpRequest;
+import jodd.http.HttpResponse;
 
 /**
  * @author Marcellus Tavares
@@ -59,19 +64,15 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 			DDMDataProviderResponse ddmDataProviderResponse = doGetData(
 				ddmDataProviderContext);
 
-			DDMRESTDataProviderSettings ddmRESTDataProviderSettings =
-				ddmDataProviderContext.getSettingsInstance(
-					DDMRESTDataProviderSettings.class);
-
 			List<KeyValuePair> results = new ArrayList<>();
 
 			for (Map<Object, Object> map : ddmDataProviderResponse.getData()) {
-				String key = String.valueOf(
-					map.get(ddmRESTDataProviderSettings.key()));
-				String value = String.valueOf(
-					map.get(ddmRESTDataProviderSettings.value()));
-
-				results.add(new KeyValuePair(key, value));
+				
+				for (Entry<Object, Object> entry : map.entrySet()) {
+					results.add(new KeyValuePair(
+						String.valueOf(entry.getKey()),
+						String.valueOf(entry.getValue())));
+				}
 			}
 
 			return results;
@@ -104,9 +105,12 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 
 	protected DDMDataProviderResponse createDDMDataProviderResponse(
 		JSONArray jsonArray,
-		DDMRESTDataProviderSettings ddmRESTDataProviderSettings) {
+		DDMDataProviderContext ddmDataProviderContext) {
 
 		List<Map<Object, Object>> data = new ArrayList<>();
+		
+		Set<String> outputParameterPaths =
+			getOutputParameterPaths(ddmDataProviderContext);
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -115,18 +119,40 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 
 			data.add(map);
 
-			String key = jsonObject.getString(
-				ddmRESTDataProviderSettings.key());
+			for (String path: outputParameterPaths) {
+				map.put(path, jsonObject.get(path));
+			}
 
-			String value = jsonObject.getString(
-				ddmRESTDataProviderSettings.value());
-
-			map.put(key, value);
 		}
 
 		return new DDMDataProviderResponse(data);
 	}
 
+	protected Set<String> getOutputParameterPaths(
+		DDMDataProviderContext ddmDataProviderContext) {
+		
+		DDMRESTDataProviderSettings ddmRESTDataProviderSettings =
+			ddmDataProviderContext.getSettingsInstance(
+				DDMRESTDataProviderSettings.class);
+		
+		Set<String> outputParameterPaths = new HashSet<>();
+		
+		for (DDMDataProviderOutputParametersSettings outputParameterSettings :
+				ddmRESTDataProviderSettings.outputParameters()) {
+			
+			String[] paths =
+				StringUtil.split(
+					outputParameterSettings.outputParameterPath(),
+					CharPool.SEMICOLON);
+
+			for (String path : paths) {
+				outputParameterPaths.add(path);
+			}
+		}
+
+		return outputParameterPaths;
+	}
+	
 	protected DDMDataProviderResponse doGetData(
 			DDMDataProviderContext ddmDataProviderContext)
 		throws JSONException {
@@ -168,8 +194,7 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 		JSONArray jsonArray = getValue(httpResponse.body());
 
 		DDMDataProviderResponse ddmDataProviderResponse =
-			createDDMDataProviderResponse(
-				jsonArray, ddmRESTDataProviderSettings);
+			createDDMDataProviderResponse(jsonArray, ddmDataProviderContext);
 
 		if (ddmRESTDataProviderSettings.cacheable()) {
 			_portalCache.put(

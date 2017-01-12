@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.annotations.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutColumn;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutPage;
 import com.liferay.dynamic.data.mapping.annotations.DDMFormLayoutRow;
+import com.liferay.dynamic.data.mapping.annotations.DDMFormRule;
 import com.liferay.dynamic.data.mapping.form.field.type.DefaultDDMFormFieldTypeSettings;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
@@ -27,7 +28,22 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 /**
  * @author Marcellus Tavares
  */
-@DDMForm
+@DDMForm(
+	rules = {
+		@DDMFormRule(
+			condition = "TRUE",
+			actions = {
+				"setVisible('ddmDataProviderInstanceId', equals(getValue('dataSourceType'), 'data-provider'))",
+				"setRequired('ddmDataProviderInstanceId', equals(getValue('dataSourceType'), 'data-provider'))",
+				"setVisible('ddmDataProviderOutput', equals(getValue('dataSourceType'), 'data-provider'))",
+				"setRequired('ddmDataProviderOutput', equals(getValue('dataSourceType'), 'data-provider'))",
+				"setVisible('options', equals(getValue('dataSourceType'), 'manual'))",
+				"setRequired('options', equals(getValue('dataSourceType'), 'manual'))",
+				"setVisible('validation', FALSE)"
+			}
+		)
+	}
+)
 @DDMFormLayout(
 	paginationMode = com.liferay.dynamic.data.mapping.model.DDMFormLayout.TABBED_MODE,
 	value = {
@@ -40,7 +56,8 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 							size = 12,
 							value = {
 								"label", "tip", "required", "dataSourceType",
-								"options", "ddmDataProviderInstanceId"
+								"options", "ddmDataProviderInstanceId",
+								"ddmDataProviderOutput"
 							}
 						)
 					}
@@ -79,8 +96,12 @@ public interface SelectDDMFormFieldTypeSettings
 	public String dataSourceType();
 
 	@DDMFormField(
-		label = "%choose-a-data-provider", required = true, type = "select",
-		visibilityExpression = "equals(dataSourceType, \"data-provider\")"
+		label = "%choose-an-output-parameter-from-data-provider", type = "select"
+	)
+	public String ddmDataProviderOutput();
+
+	@DDMFormField(
+		label = "%choose-a-data-provider", type = "select"
 	)
 	public long ddmDataProviderInstanceId();
 
@@ -89,12 +110,11 @@ public interface SelectDDMFormFieldTypeSettings
 
 	@DDMFormField(
 		dataType = "ddm-options", label = "%options",
-		properties = {"showLabel=false"}, required = true, type = "options",
-		visibilityExpression = "equals(dataSourceType, \"manual\")"
+		properties = {"showLabel=false"}, type = "options"
 	)
 	public DDMFormFieldOptions options();
 
-	@DDMFormField(visibilityExpression = "FALSE")
+	@DDMFormField
 	@Override
 	public DDMFormFieldValidation validation();
 
