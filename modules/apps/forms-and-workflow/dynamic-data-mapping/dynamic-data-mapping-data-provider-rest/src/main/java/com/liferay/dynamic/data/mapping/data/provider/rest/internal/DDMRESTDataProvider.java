@@ -69,10 +69,9 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 
 			for (Map<Object, Object> map : ddmDataProviderResponse.getData()) {
 				for (Entry<Object, Object> entry : map.entrySet()) {
-					results.add(
-						new KeyValuePair(
-							String.valueOf(entry.getKey()),
-							String.valueOf(entry.getValue())));
+					results.add(new KeyValuePair(
+						String.valueOf(entry.getKey()),
+						String.valueOf(entry.getValue())));
 				}
 			}
 

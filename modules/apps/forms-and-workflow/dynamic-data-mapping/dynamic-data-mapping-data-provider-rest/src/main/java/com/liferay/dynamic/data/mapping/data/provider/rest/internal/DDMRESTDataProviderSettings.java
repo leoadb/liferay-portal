@@ -46,9 +46,10 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderParameterSe
 						@DDMFormLayoutColumn(
 							size = 12,
 							value = {
-								"url", "username", "password", "filterable",
-								"filterParameterName", "cacheable",
-								"inputParameters", "outputParameters"
+								"url", "username", "password",
+								"filterable", "filterParameterName",
+								"cacheable", "inputParameters",
+								"outputParameters"
 							}
 						)
 					}

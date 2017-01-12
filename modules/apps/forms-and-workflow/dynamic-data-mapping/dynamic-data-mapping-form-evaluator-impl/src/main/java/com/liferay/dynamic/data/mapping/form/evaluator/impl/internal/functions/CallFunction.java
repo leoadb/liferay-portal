@@ -29,7 +29,6 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -40,7 +39,6 @@ import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -111,19 +109,17 @@ public class CallFunction extends BaseDDMFormRuleFunction {
 			addDDMDataProviderContextParameters(
 				ddmDataProviderContext, paramsExpression);
 
-			DDMDataProviderResponse ddmDataProviderResponse =
-				executeDataProvider(ddmDataProvider, ddmDataProviderContext);
-
 			Map<String, String[]> outputParameterNameToPathsMap =
 				getOutputParameterNameToPathsMap(
 					ddmDataProvider, ddmDataProviderContext);
 
+			DDMDataProviderResponse ddmDataProviderResponse =
+				executeDataProvider(ddmDataProvider, ddmDataProviderContext);
+
 			Map<String, Object> resultMap = extractResults(
 				resultMapExpression, outputParameterNameToPathsMap);
 
-			setDDMFormFieldValues(
-				ddmDataProviderResponse, resultMap,
-				outputParameterNameToPathsMap);
+			setDDMFormFieldValues(ddmDataProviderResponse, resultMap);
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
@@ -135,6 +131,46 @@ public class CallFunction extends BaseDDMFormRuleFunction {
 		}
 
 		return true;
+	}
+	
+	protected Map<String, String[]> getOutputParameterNameToPathsMap(
+			DDMDataProvider ddmDataProvider,
+			DDMDataProviderContext ddmDataProviderContext) {
+
+		Map<String, String[]> outputParameterNameToPathsMap = new HashMap<>();
+
+		if (Validator.isNull(ddmDataProviderContext.getDDMFormValues()) ||
+			!ClassUtil.isSubclass(
+				ddmDataProvider.getSettings(),
+				DDMDataProviderParameterSettings.class)) {
+
+			return outputParameterNameToPathsMap;
+		}
+		
+		DDMDataProviderParameterSettings ddmDataProviderParameterSettings =
+			(DDMDataProviderParameterSettings)
+				ddmDataProviderContext.getSettingsInstance(
+					ddmDataProvider.getSettings());
+
+
+		for (DDMDataProviderOutputParametersSettings outputParameterSettings :
+				ddmDataProviderParameterSettings.outputParameters()) {
+
+			String outputType = outputParameterSettings.outputParameterType();
+
+			String[] paths = StringUtil.split(
+				outputParameterSettings.outputParameterPath(),
+				CharPool.SEMICOLON);
+
+			if (paths.length == 1 && outputType.equals("[\"list\"]")) {
+				paths = ArrayUtil.append(paths, paths[0]);
+			}
+
+			outputParameterNameToPathsMap.put(
+				outputParameterSettings.outputParameterName(), paths);
+		}
+
+		return outputParameterNameToPathsMap;
 	}
 
 	protected void addDDMDataProviderContextParameters(
@@ -179,23 +215,20 @@ public class CallFunction extends BaseDDMFormRuleFunction {
 		return ddmDataProviderContext;
 	}
 
-	protected JSONObject createKeyValueMappingJSONObject(String[] paths) {
-		JSONObject keyValueJSONObject = _jsonFactory.createJSONObject();
-
-		keyValueJSONObject.put("key", paths[0]);
-		keyValueJSONObject.put("value", paths[1]);
-
-		return keyValueJSONObject;
-	}
-
 	protected Object createResultMapValue(
-		String token, Map<String, String[]> outputParameterNameToPathsMap) {
+		String token,
+		Map<String, String[]> outputParameterNameToPathsMap) {
 
 		String[] paths = GetterUtil.getStringValues(
 			outputParameterNameToPathsMap.get(token));
+		
+		if (paths.length == 2) {
+			JSONObject keyValueJSONObject = _jsonFactory.createJSONObject();
 
-		if (isKeyValueMapping(paths)) {
-			return createKeyValueMappingJSONObject(paths);
+			keyValueJSONObject.put("key", paths[0]);
+			keyValueJSONObject.put("value", paths[1]);
+
+			return keyValueJSONObject;
 		}
 
 		try {
@@ -315,102 +348,6 @@ public class CallFunction extends BaseDDMFormRuleFunction {
 		return String.valueOf(value);
 	}
 
-	protected Map<String, String[]> getOutputParameterNameToPathsMap(
-		DDMDataProvider ddmDataProvider,
-		DDMDataProviderContext ddmDataProviderContext) {
-
-		Map<String, String[]> outputParameterNameToPathsMap = new HashMap<>();
-
-		if (Validator.isNull(ddmDataProviderContext.getDDMFormValues()) ||
-			!ClassUtil.isSubclass(
-				ddmDataProvider.getSettings(),
-				DDMDataProviderParameterSettings.class)) {
-
-			return outputParameterNameToPathsMap;
-		}
-
-		DDMDataProviderParameterSettings ddmDataProviderParameterSettings =
-			(DDMDataProviderParameterSettings)
-				ddmDataProviderContext.getSettingsInstance(
-					ddmDataProvider.getSettings());
-
-		for (DDMDataProviderOutputParametersSettings outputParameterSettings :
-				ddmDataProviderParameterSettings.outputParameters()) {
-
-			String[] paths = StringUtil.split(
-				outputParameterSettings.outputParameterPath(),
-				CharPool.SEMICOLON);
-
-			if (isListOutputParameterWithOnePath(
-					outputParameterSettings, paths)) {
-
-				paths = ArrayUtil.append(paths, paths[0]);
-			}
-
-			outputParameterNameToPathsMap.put(
-				outputParameterSettings.outputParameterName(), paths);
-		}
-
-		return outputParameterNameToPathsMap;
-	}
-
-	protected String getOutputParameterType(
-		DDMDataProviderOutputParametersSettings
-			ddmDataProviderOutputParametersSettings) {
-
-		String outputParameterType =
-			ddmDataProviderOutputParametersSettings.outputParameterType();
-
-		try {
-			JSONArray jsonArray = _jsonFactory.createJSONArray(
-				outputParameterType);
-
-			return jsonArray.getString(0);
-		}
-		catch (JSONException jsone) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsone, jsone);
-			}
-		}
-
-		return outputParameterType;
-	}
-
-	protected String getPropertyName(
-		String propertyName,
-		Map<String, String[]> outputParameterNameToPathsMap) {
-
-		if (outputParameterNameToPathsMap.containsKey(propertyName)) {
-			String[] paths = outputParameterNameToPathsMap.get(propertyName);
-
-			return paths[0];
-		}
-
-		return propertyName;
-	}
-
-	protected boolean isKeyValueMapping(String[] paths) {
-		if (paths.length == 2) {
-			return true;
-		}
-
-		return false;
-	}
-
-	protected boolean isListOutputParameterWithOnePath(
-		DDMDataProviderOutputParametersSettings
-			ddmDataProviderOutputParametersSettings, String[] paths) {
-
-		String outputType = getOutputParameterType(
-			ddmDataProviderOutputParametersSettings);
-
-		if (outputType.equals("list") && (paths.length == 1)) {
-			return true;
-		}
-
-		return false;
-	}
-
 	protected void setDDMFormFieldOptions(
 		List<Map<Object, Object>> data, String ddmFormFieldName,
 		String keyProperty, String valueProperty) {
@@ -448,30 +385,25 @@ public class CallFunction extends BaseDDMFormRuleFunction {
 		Map<Object, Object> data, String ddmFormFieldName,
 		String propertyName) {
 
-		if (!data.containsKey(propertyName)) {
+		if (!data.containsKey(propertyName.toLowerCase())) {
 			return;
 		}
 
-		Object value = data.get(propertyName);
+		Object value = data.get(propertyName.toLowerCase());
 
 		DDMFormFieldEvaluationResult ddmFormFieldEvaluationResult =
 			getDDMFormFieldEvaluationResult(ddmFormFieldName);
 
 		if (ddmFormFieldEvaluationResult != null) {
-			ddmFormFieldEvaluationResult.setValue(value);
+			ddmFormFieldEvaluationResult.setProperty("value", value);
 		}
 	}
 
 	protected void setDDMFormFieldValues(
 		DDMDataProviderResponse ddmDataProviderResponse,
-		Map<String, Object> resultMap,
-		Map<String, String[]> outputParameterNameToPathsMap) {
+		Map<String, Object> resultMap) {
 
 		List<Map<Object, Object>> data = ddmDataProviderResponse.getData();
-
-		if (ListUtil.isEmpty(data)) {
-			return;
-		}
 
 		for (Map.Entry<String, Object> entry : resultMap.entrySet()) {
 			String ddmFormFieldName = entry.getKey();
@@ -485,12 +417,17 @@ public class CallFunction extends BaseDDMFormRuleFunction {
 					data, ddmFormFieldName, jsonObject.getString("key"),
 					jsonObject.getString("value"));
 			}
-			else {
-				String propertyName = getPropertyName(
-					String.valueOf(value), outputParameterNameToPathsMap);
-
+//			else if (fieldType.equals("select")) {
+//				KeyValuePair keyValuePair = new KeyValuePair();
+//
+//				setDDMFormFieldOptions(
+//					data, ddmFormFieldName, keyValuePair.getKey(),
+//					keyValuePair.getValue());
+//			}
+			else if(!data.isEmpty()){
+				
 				setDDMFormFieldValue(
-					data.get(0), ddmFormFieldName, propertyName);
+					data.get(0), ddmFormFieldName, String.valueOf(value));
 			}
 		}
 	}

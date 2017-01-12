@@ -16,7 +16,6 @@ package com.liferay.dynamic.data.lists.form.web.internal.converter.serializer;
 
 import com.liferay.dynamic.data.lists.form.web.internal.converter.model.action.AutoFillDDLFormRuleAction;
 import com.liferay.portal.kernel.util.CharPool;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -51,7 +50,7 @@ public class AutoFillDDLFormRuleActionSerializer
 	protected String convertAutoFillInputParameters(
 		Map<String, String> inputParametersMapper) {
 
-		if (MapUtil.isEmpty(inputParametersMapper)) {
+		if (inputParametersMapper.isEmpty()) {
 			return StringUtil.quote(StringPool.BLANK);
 		}
 
@@ -75,10 +74,10 @@ public class AutoFillDDLFormRuleActionSerializer
 	protected String convertAutoFillOutputParameters(
 		Map<String, String> outputParametersMapper) {
 
-		if (MapUtil.isEmpty(outputParametersMapper)) {
+		if (outputParametersMapper.isEmpty()) {
 			return StringUtil.quote(StringPool.BLANK);
 		}
-
+		
 		StringBundler sb = new StringBundler(
 			outputParametersMapper.size() * 4 - 1);
 
