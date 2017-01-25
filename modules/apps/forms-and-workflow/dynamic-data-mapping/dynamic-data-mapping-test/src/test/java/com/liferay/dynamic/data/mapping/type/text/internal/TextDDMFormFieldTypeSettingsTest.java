@@ -61,12 +61,6 @@ public class TextDDMFormFieldTypeSettingsTest
 		Assert.assertNotNull(placeholderDDMFormField);
 		Assert.assertEquals("string", placeholderDDMFormField.getDataType());
 		Assert.assertEquals("text", placeholderDDMFormField.getType());
-
-		DDMFormField tooltipDDMFormField = ddmFormFieldsMap.get("tooltip");
-
-		Assert.assertNotNull(tooltipDDMFormField);
-		Assert.assertEquals(
-			"FALSE", tooltipDDMFormField.getVisibilityExpression());
 	}
 
 }

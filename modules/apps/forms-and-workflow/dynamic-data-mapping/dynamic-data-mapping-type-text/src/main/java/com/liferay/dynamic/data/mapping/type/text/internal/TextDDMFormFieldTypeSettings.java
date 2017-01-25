@@ -35,6 +35,16 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 				"call('getDataProviderInstanceOutputParameters', 'dataProviderInstanceId=ddmDataProviderInstanceId', 'ddmDataProviderInstanceOutput={key: outputParameterName, value: outputParameterName}')"
 			},
 			condition = "not(equals(getValue('ddmDataProviderInstanceId'), 0))"
+		),
+		@DDMFormRule(
+			actions = {
+				"setVisible('dataSourceType', TRUE)",
+				"setVisible('ddmDataProviderInstanceId', equals(dataSourceType, \"data-provider\"))",
+				"setVisible('ddmDataProviderInstanceOutput', equals(dataSourceType, \"data-provider\"))",
+				"setVisible('options', equals(dataSourceType, \"manual\"))",
+				"setVisible('tooltip', FALSE)"
+			},
+			condition = "TRUE"
 		)
 	}
 )
@@ -84,15 +94,11 @@ public interface TextDDMFormFieldTypeSettings
 		label = "%create-list",
 		optionLabels = {"%manually", "%from-data-provider"},
 		optionValues = {"manual", "data-provider"}, predefinedValue = "manual",
-		properties = {"showLabel=false"}, type = "radio",
-		visibilityExpression = "TRUE"
+		properties = {"showLabel=false"}, type = "radio"
 	)
 	public String dataSourceType();
 
-	@DDMFormField(
-		label = "%choose-a-data-provider", type = "select",
-		visibilityExpression = "equals(dataSourceType, \"data-provider\")"
-	)
+	@DDMFormField(label = "%choose-a-data-provider", type = "select")
 	public long ddmDataProviderInstanceId();
 
 	@DDMFormField(
@@ -100,8 +106,7 @@ public interface TextDDMFormFieldTypeSettings
 		properties = {
 			"tooltip=%choose-an-output-parameter-for-a-data-provider-previously-created"
 		},
-		type = "select",
-		visibilityExpression = "equals(dataSourceType, \"data-provider\")"
+		type = "select"
 	)
 	public String ddmDataProviderInstanceOutput();
 
@@ -117,8 +122,7 @@ public interface TextDDMFormFieldTypeSettings
 	@DDMFormField(
 		dataType = "ddm-options", label = "%options",
 		properties = {"showLabel=false", "allowEmptyOptions=true"},
-		required = false, type = "options",
-		visibilityExpression = "equals(dataSourceType, \"manual\")"
+		required = false, type = "options"
 	)
 	public DDMFormFieldOptions options();
 
@@ -132,7 +136,7 @@ public interface TextDDMFormFieldTypeSettings
 	)
 	public LocalizedValue placeholder();
 
-	@DDMFormField(visibilityExpression = "FALSE")
+	@DDMFormField
 	public LocalizedValue tooltip();
 
 }
