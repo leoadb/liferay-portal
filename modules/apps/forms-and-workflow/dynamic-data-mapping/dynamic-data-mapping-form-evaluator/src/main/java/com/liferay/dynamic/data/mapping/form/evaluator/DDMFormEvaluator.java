@@ -24,8 +24,27 @@ import java.util.Locale;
  */
 public interface DDMFormEvaluator {
 
-	public DDMFormEvaluationResult evaluate(
+	/**
+	 * @deprecated As of 2.1.0, replaced by {@link #evaluate(
+	 *             DDMFormEvaluatorContext)}
+	 */
+	@Deprecated
+	public default DDMFormEvaluationResult evaluate(
 			DDMForm ddmForm, DDMFormValues ddmFormValues, Locale locale)
+		throws DDMFormEvaluationException {
+
+		DDMFormEvaluatorContext ddmFormEvaluatorContext =
+			new DDMFormEvaluatorContext();
+
+		ddmFormEvaluatorContext.setDDMForm(ddmForm);
+		ddmFormEvaluatorContext.setDDMFormValues(ddmFormValues);
+		ddmFormEvaluatorContext.setLocale(locale);
+
+		return evaluate(ddmFormEvaluatorContext);
+	}
+
+	public DDMFormEvaluationResult evaluate(
+			DDMFormEvaluatorContext ddmFormEvaluatorContext)
 		throws DDMFormEvaluationException;
 
 }
