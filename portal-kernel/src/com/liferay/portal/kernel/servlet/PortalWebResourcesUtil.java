@@ -15,6 +15,7 @@
 package com.liferay.portal.kernel.servlet;
 
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 import com.liferay.registry.ServiceReference;
@@ -50,6 +51,10 @@ public class PortalWebResourcesUtil {
 	public static String getModuleContextPath(String resourceType) {
 		PortalWebResources portalWebResources = _portalWebResourcesMap.get(
 			resourceType);
+
+		if (portalWebResources == null) {
+			return StringPool.BLANK;
+		}
 
 		return portalWebResources.getContextPath();
 	}
@@ -161,6 +166,16 @@ public class PortalWebResourcesUtil {
 	private static final ServiceTracker<PortalWebResources, PortalWebResources>
 		_serviceTracker;
 
+	static {
+		Registry registry = RegistryUtil.getRegistry();
+
+		_serviceTracker = registry.trackServices(
+			PortalWebResources.class,
+			new PortalWebResourcesServiceTrackerCustomizer());
+
+		_serviceTracker.open();
+	}
+
 	private static class PortalWebResourcesServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer
 			<PortalWebResources, PortalWebResources> {
@@ -199,16 +214,6 @@ public class PortalWebResourcesUtil {
 				portalWebResources.getResourceType(), portalWebResources);
 		}
 
-	}
-
-	static {
-		Registry registry = RegistryUtil.getRegistry();
-
-		_serviceTracker = registry.trackServices(
-			PortalWebResources.class,
-			new PortalWebResourcesServiceTrackerCustomizer());
-
-		_serviceTracker.open();
 	}
 
 }
