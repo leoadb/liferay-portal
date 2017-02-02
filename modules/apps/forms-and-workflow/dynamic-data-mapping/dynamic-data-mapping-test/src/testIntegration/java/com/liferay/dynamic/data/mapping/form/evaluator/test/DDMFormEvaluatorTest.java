@@ -17,6 +17,7 @@ package com.liferay.dynamic.data.mapping.form.evaluator.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluator;
+import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluatorContext;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.dynamic.data.mapping.io.DDMFormJSONDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
@@ -29,6 +30,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
+
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -80,7 +83,9 @@ public class DDMFormEvaluatorTest extends BaseDDMServiceTestCase {
 			DDMFormEvaluator.class);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
-			ddmFormEvaluator.evaluate(ddmForm, ddmFormValues, LocaleUtil.US);
+			ddmFormEvaluator.evaluate(
+				createDDMFormEvaluationContext(
+					ddmForm, ddmFormValues, LocaleUtil.US));
 
 		JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
 
@@ -114,7 +119,9 @@ public class DDMFormEvaluatorTest extends BaseDDMServiceTestCase {
 			DDMFormEvaluator.class);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
-			ddmFormEvaluator.evaluate(ddmForm, ddmFormValues, LocaleUtil.US);
+			ddmFormEvaluator.evaluate(
+				createDDMFormEvaluationContext(
+					ddmForm, ddmFormValues, LocaleUtil.US));
 
 		DDMFormFieldEvaluationResult checkboxDDMFormFieldEvaluationResult =
 			ddmFormEvaluationResult.geDDMFormFieldEvaluationResult(
@@ -144,7 +151,9 @@ public class DDMFormEvaluatorTest extends BaseDDMServiceTestCase {
 			DDMFormEvaluator.class);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
-			ddmFormEvaluator.evaluate(ddmForm, ddmFormValues, LocaleUtil.US);
+			ddmFormEvaluator.evaluate(
+				createDDMFormEvaluationContext(
+					ddmForm, ddmFormValues, LocaleUtil.US));
 
 		DDMFormFieldEvaluationResult checkboxDDMFormFieldEvaluationResult =
 			ddmFormEvaluationResult.geDDMFormFieldEvaluationResult(
@@ -174,7 +183,9 @@ public class DDMFormEvaluatorTest extends BaseDDMServiceTestCase {
 			DDMFormEvaluator.class);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
-			ddmFormEvaluator.evaluate(ddmForm, ddmFormValues, LocaleUtil.US);
+			ddmFormEvaluator.evaluate(
+				createDDMFormEvaluationContext(
+					ddmForm, ddmFormValues, LocaleUtil.US));
 
 		DDMFormFieldEvaluationResult phoneDDMFormFieldEvaluationResult =
 			ddmFormEvaluationResult.geDDMFormFieldEvaluationResult(
@@ -204,7 +215,9 @@ public class DDMFormEvaluatorTest extends BaseDDMServiceTestCase {
 			DDMFormEvaluator.class);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
-			ddmFormEvaluator.evaluate(ddmForm, ddmFormValues, LocaleUtil.US);
+			ddmFormEvaluator.evaluate(
+				createDDMFormEvaluationContext(
+					ddmForm, ddmFormValues, LocaleUtil.US));
 
 		DDMFormFieldEvaluationResult phoneDDMFormFieldEvaluationResult =
 			ddmFormEvaluationResult.geDDMFormFieldEvaluationResult(
@@ -234,7 +247,9 @@ public class DDMFormEvaluatorTest extends BaseDDMServiceTestCase {
 			DDMFormEvaluator.class);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
-			ddmFormEvaluator.evaluate(ddmForm, ddmFormValues, LocaleUtil.US);
+			ddmFormEvaluator.evaluate(
+				createDDMFormEvaluationContext(
+					ddmForm, ddmFormValues, LocaleUtil.US));
 
 		DDMFormFieldEvaluationResult phoneDDMFormFieldEvaluationResult =
 			ddmFormEvaluationResult.geDDMFormFieldEvaluationResult(
@@ -264,13 +279,28 @@ public class DDMFormEvaluatorTest extends BaseDDMServiceTestCase {
 			DDMFormEvaluator.class);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
-			ddmFormEvaluator.evaluate(ddmForm, ddmFormValues, LocaleUtil.US);
+			ddmFormEvaluator.evaluate(
+				createDDMFormEvaluationContext(
+					ddmForm, ddmFormValues, LocaleUtil.US));
 
 		DDMFormFieldEvaluationResult phoneDDMFormFieldEvaluationResult =
 			ddmFormEvaluationResult.geDDMFormFieldEvaluationResult(
 				"Phone", "hany");
 
 		Assert.assertTrue(phoneDDMFormFieldEvaluationResult.isVisible());
+	}
+
+	protected DDMFormEvaluatorContext createDDMFormEvaluationContext(
+		DDMForm ddmForm, DDMFormValues ddmFormValues, Locale locale) {
+
+		DDMFormEvaluatorContext ddmFormEvaluatorContext =
+			new DDMFormEvaluatorContext();
+
+		ddmFormEvaluatorContext.setDDMForm(ddmForm);
+		ddmFormEvaluatorContext.setDDMFormValues(ddmFormValues);
+		ddmFormEvaluatorContext.setLocale(locale);
+
+		return ddmFormEvaluatorContext;
 	}
 
 	protected void setUpDDMFormJSONDeserializer() {

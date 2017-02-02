@@ -19,32 +19,48 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
- * @author Pablo Carvalho
+ * @author Leonardo Barros
  */
-public interface DDMFormEvaluator {
+public class DDMFormEvaluatorContext {
 
-	/**
-	 * @deprecated As of 2.1.0, replaced by {@link #evaluate(
-	 *             DDMFormEvaluatorContext)}
-	 */
-	@Deprecated
-	public default DDMFormEvaluationResult evaluate(
-			DDMForm ddmForm, DDMFormValues ddmFormValues, Locale locale)
-		throws DDMFormEvaluationException {
-
-		DDMFormEvaluatorContext ddmFormEvaluatorContext =
-			new DDMFormEvaluatorContext();
-
-		ddmFormEvaluatorContext.setDDMForm(ddmForm);
-		ddmFormEvaluatorContext.setDDMFormValues(ddmFormValues);
-		ddmFormEvaluatorContext.setLocale(locale);
-
-		return evaluate(ddmFormEvaluatorContext);
+	public DDMForm getDDMForm() {
+		return _ddmForm;
 	}
 
-	public DDMFormEvaluationResult evaluate(
-			DDMFormEvaluatorContext ddmFormEvaluatorContext)
-		throws DDMFormEvaluationException;
+	public DDMFormValues getDDMFormValues() {
+		return _ddmFormValues;
+	}
+
+	public HttpServletRequest getHttpServletRequest() {
+		return _request;
+	}
+
+	public Locale getLocale() {
+		return _locale;
+	}
+
+	public void setDDMForm(DDMForm ddmForm) {
+		_ddmForm = ddmForm;
+	}
+
+	public void setDDMFormValues(DDMFormValues ddmFormValues) {
+		_ddmFormValues = ddmFormValues;
+	}
+
+	public void setHttpServletRequest(HttpServletRequest request) {
+		_request = request;
+	}
+
+	public void setLocale(Locale locale) {
+		_locale = locale;
+	}
+
+	private DDMForm _ddmForm;
+	private DDMFormValues _ddmFormValues;
+	private Locale _locale;
+	private HttpServletRequest _request;
 
 }
