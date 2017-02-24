@@ -287,7 +287,7 @@ public class DDLFormRuleToDDMFormRuleConverterTest
 		PowerMockito.mockStatic(ServiceContextThreadLocal.class);
 
 		PowerMockito.when(
-			ServiceContextThreadLocal.popServiceContext()
+			ServiceContextThreadLocal.getServiceContext()
 		).thenReturn(
 			_serviceContext
 		);
