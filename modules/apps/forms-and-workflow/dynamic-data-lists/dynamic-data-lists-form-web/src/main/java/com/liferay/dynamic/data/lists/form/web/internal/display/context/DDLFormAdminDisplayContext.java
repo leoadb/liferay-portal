@@ -49,16 +49,22 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.dynamic.data.mapping.storage.StorageEngine;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesMerger;
+import com.liferay.dynamic.data.mapping.util.comparator.StructureNameComparator;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONSerializer;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -77,6 +83,7 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowEngineManager;
 import com.liferay.portal.kernel.workflow.WorkflowHandler;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
@@ -85,6 +92,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -261,6 +269,27 @@ public class DDLFormAdminDisplayContext {
 
 	public String[] getDisplayViews() {
 		return _DISPLAY_VIEWS;
+	}
+
+	public JSONArray getFieldSetDefinitions() {
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		List<DDMStructure> ddmStructures = _ddmStructureService.search(
+			getCompanyId(), new long[] {getScopeGroupId()},
+			PortalUtil.getClassNameId(DDLRecordSet.class), StringPool.BLANK,
+			DDMStructureConstants.TYPE_FRAGMENT, WorkflowConstants.STATUS_ANY,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			new StructureNameComparator(true));
+
+		Stream<DDMStructure> stream = ddmStructures.stream();
+
+		stream.map(
+			ddmStructure -> toJSONObject(ddmStructure)
+		).forEach(
+			jsonArray::put
+		);
+
+		return jsonArray;
 	}
 
 	public String getFormURL() throws PortalException {
@@ -575,6 +604,21 @@ public class DDLFormAdminDisplayContext {
 			ActionKeys.VIEW);
 	}
 
+	protected JSONArray fieldsToJSONArray(String definition) {
+		try {
+			JSONObject jsonObject = _jsonFactory.createJSONObject(definition);
+
+			return jsonObject.getJSONArray("fields");
+		}
+		catch (JSONException jsone) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsone);
+			}
+
+			return _jsonFactory.createJSONArray();
+		}
+	}
+
 	protected OrderByComparator<DDLRecordSet> getDDLRecordSetOrderByComparator(
 		String orderByCol, String orderByType) {
 
@@ -795,7 +839,48 @@ public class DDLFormAdminDisplayContext {
 		return jsonObject;
 	}
 
+	protected JSONObject toJSONObject(DDMFormLayout ddmFormLayout) {
+		String definition = _ddmFormLayoutJSONSerializer.serialize(
+			ddmFormLayout);
+
+		try {
+			return _jsonFactory.createJSONObject(definition);
+		}
+		catch (JSONException jsone) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsone);
+			}
+
+			return _jsonFactory.createJSONObject();
+		}
+	}
+
+	protected JSONObject toJSONObject(DDMStructure ddmStructure) {
+		JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+		try {
+			Locale locale = _ddlFormAdminRequestHelper.getLocale();
+
+			jsonObject.put(
+				"fields", fieldsToJSONArray(ddmStructure.getDefinition()));
+			jsonObject.put("icon", "forms");
+			jsonObject.put(
+				"layout", toJSONObject(ddmStructure.getDDMFormLayout()));
+			jsonObject.put("name", ddmStructure.getName(locale, true));
+		}
+		catch (PortalException pe) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(pe);
+			}
+		}
+
+		return jsonObject;
+	}
+
 	private static final String[] _DISPLAY_VIEWS = {"descriptive", "list"};
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DDLFormAdminDisplayContext.class);
 
 	private final DDLFormAdminRequestHelper _ddlFormAdminRequestHelper;
 	private final DDLFormWebConfiguration _ddlFormWebConfiguration;
