@@ -28,7 +28,8 @@
 								'liferay-ddl-form-builder-rule-builder',
 								'liferay-ddl-form-builder-util',
 								'liferay-ddm-form-field-types',
-								'liferay-ddm-form-renderer'
+								'liferay-ddm-form-renderer',
+								'liferay-ddl-form-builder-field-sets'
 							]
 						},
 						'liferay-ddl-form-builder-action': {
@@ -245,6 +246,13 @@
 								'liferay-ddl-form-builder-rule-builder',
 								'liferay-portlet-base',
 								'liferay-util-window'
+							]
+						},
+						'liferay-ddl-form-builder-field-sets': {
+							path: 'form_builder_field_sets.js',
+							requires: [
+								'array-extras',
+								'liferay-ddm-form-renderer-type'
 							]
 						}
 					},
