@@ -180,6 +180,8 @@ renderResponse.setTitle((structure == null) ? LanguageUtil.get(request, "new-fie
 							}
 						);
 
+						var fieldSets = <%= ddlFormAdminDisplayContext.getFieldSetDefinitions() %>;
+
 						Liferay.provide(
 							window,
 							'<portlet:namespace />init',
@@ -187,6 +189,8 @@ renderResponse.setTitle((structure == null) ? LanguageUtil.get(request, "new-fie
 								var definition = <%= ddlFormAdminFieldLibraryDisplayContext.getSerializedDDMForm() %>;
 
 								Liferay.DDM.Renderer.FieldTypes.register(fieldTypes);
+
+								Liferay.DDL.FieldSets.register(fieldSets);
 
 								Liferay.component(
 									'formPortlet',
@@ -215,7 +219,7 @@ renderResponse.setTitle((structure == null) ? LanguageUtil.get(request, "new-fie
 								);
 
 							},
-							['liferay-ddl-portlet'].concat(systemFieldModules)
+							['liferay-ddl-portlet','liferay-ddl-form-builder-field-sets'].concat(systemFieldModules)
 						);
 
 						<portlet:namespace />init();
