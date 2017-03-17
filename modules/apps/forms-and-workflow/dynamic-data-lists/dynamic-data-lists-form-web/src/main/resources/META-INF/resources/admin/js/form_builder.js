@@ -426,13 +426,15 @@ AUI.add(
 
 								var field = instance._createField(item.type, config);
 
-								var newFieldDefaultContext = {
-									portletNamespace: instance.get('portletNamespace'),
-									readOnly: true,
-									showLabel: true,
-									type: item.type,
-									visible: true
-								};
+								var newFieldDefaultContext = A.merge(config,
+									{
+										portletNamespace: instance.get('portletNamespace'),
+										readOnly: true,
+										showLabel: true,
+										type: item.type,
+										visible: true
+									}
+								);
 
 								field.set('fieldName', item.name + Util.generateInstanceId(6));
 								field.set('context', newFieldDefaultContext);

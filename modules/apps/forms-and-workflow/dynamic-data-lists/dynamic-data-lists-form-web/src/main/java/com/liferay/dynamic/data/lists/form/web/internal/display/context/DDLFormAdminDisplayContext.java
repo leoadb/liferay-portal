@@ -647,6 +647,54 @@ public class DDLFormAdminDisplayContext {
 		return ddmForm;
 	}
 
+	protected Object getDDMFormFieldPropertyValue(Object value) {
+		if (value instanceof LocalizedValue) {
+			LocalizedValue localizedValue = (LocalizedValue)value;
+
+			Locale locale = getLocale();
+
+			return GetterUtil.getString(localizedValue.getString(locale));
+		}
+		else if (value instanceof DDMFormFieldOptions) {
+			JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+			DDMFormFieldOptions ddmFormFieldOptions =
+				(DDMFormFieldOptions)value;
+
+			Locale locale = getLocale();
+
+			for (String optionValue : ddmFormFieldOptions.getOptionsValues()) {
+				JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+				LocalizedValue optionLabel =
+					ddmFormFieldOptions.getOptionLabels(optionValue);
+
+				jsonObject.put("label", optionLabel.getString(locale));
+
+				jsonObject.put("value", optionValue);
+
+				jsonArray.put(jsonObject);
+			}
+
+			return jsonArray;
+		}
+		else if (value instanceof DDMFormFieldValidation) {
+			DDMFormFieldValidation ddmFormFieldValidation =
+				(DDMFormFieldValidation)value;
+
+			JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+			jsonObject.put(
+				"errorMessage", ddmFormFieldValidation.getErrorMessage());
+			jsonObject.put(
+				"expression", ddmFormFieldValidation.getExpression());
+
+			return jsonObject;
+		}
+
+		return value;
+	}
+
 	protected JSONArray getDDMFormFieldTypePropertyNames(
 			DDMForm ddmFormFieldTypeSettingsDDMForm)
 		throws PortalException {
@@ -699,54 +747,6 @@ public class DDLFormAdminDisplayContext {
 		}
 
 		return displayStyle;
-	}
-
-	protected Object getFieldPropertyValue(Object value) {
-		if (value instanceof LocalizedValue) {
-			LocalizedValue localizedValue = (LocalizedValue)value;
-
-			Locale locale = getLocale();
-
-			return GetterUtil.getString(localizedValue.getString(locale));
-		}
-		else if (value instanceof DDMFormFieldOptions) {
-			JSONArray jsonArray = _jsonFactory.createJSONArray();
-
-			DDMFormFieldOptions ddmFormFieldOptions =
-				(DDMFormFieldOptions)value;
-
-			Locale locale = getLocale();
-
-			for (String optionValue : ddmFormFieldOptions.getOptionsValues()) {
-				JSONObject jsonObject = _jsonFactory.createJSONObject();
-
-				LocalizedValue optionLabel =
-					ddmFormFieldOptions.getOptionLabels(optionValue);
-
-				jsonObject.put("label", optionLabel.getString(locale));
-
-				jsonObject.put("value", optionValue);
-
-				jsonArray.put(jsonObject);
-			}
-
-			return jsonArray;
-		}
-		else if (value instanceof DDMFormFieldValidation) {
-			DDMFormFieldValidation ddmFormFieldValidation =
-				(DDMFormFieldValidation)value;
-
-			JSONObject jsonObject = _jsonFactory.createJSONObject();
-
-		jsonObject.put(
-			"errorMessage", ddmFormFieldValidation.getErrorMessage());
-			jsonObject.put(
-			"expression", ddmFormFieldValidation.getExpression());
-
-			return jsonObject;
-		}
-
-		return GetterUtil.getString(value);
 	}
 
 	protected String getFormLayoutURL(boolean privateLayout) {
@@ -908,7 +908,8 @@ public class DDLFormAdminDisplayContext {
 
 		stream.forEach(
 			entry -> jsonObject.put(
-				entry.getKey(), getFieldPropertyValue(entry.getValue())));
+				entry.getKey(),
+				getDDMFormFieldPropertyValue(entry.getValue())));
 
 		return jsonObject;
 	}
