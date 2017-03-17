@@ -35,7 +35,8 @@ AUI.add(
 				return new Liferay.DDM.FormRendererFieldType(
 					{
 						defaultConfig: {
-							type: config.name
+							fields: config.fields,
+							page: config.layout.pages[0]
 						},
 						fieldClass: Liferay.DDM.Renderer.Field,
 						icon: config.icon,

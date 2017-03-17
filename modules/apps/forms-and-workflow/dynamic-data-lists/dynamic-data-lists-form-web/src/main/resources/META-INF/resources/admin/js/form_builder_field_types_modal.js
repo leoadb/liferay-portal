@@ -134,7 +134,13 @@ AUI.add(
 
 						event.preventDefault();
 
-						debugger;
+						var fieldType = event.currentTarget.getData('fieldType');
+
+						instance.fire('selectFieldSet', {
+							fieldType: fieldType
+						});
+
+						instance.hide();
 					},
 
 					_onClickFieldType: function(event) {
