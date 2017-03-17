@@ -17,7 +17,7 @@ AUI.add(
 			{
 				ATTRS: {
 					fieldSets: {
-						value: {}
+						value: []
 					},
 
 					fieldSetsGroupNode: {

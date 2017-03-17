@@ -47,9 +47,12 @@ import com.liferay.dynamic.data.mapping.io.DDMFormLayoutJSONSerializer;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureConstants;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.dynamic.data.mapping.storage.StorageEngine;
@@ -73,6 +76,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -92,6 +96,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
@@ -604,19 +609,16 @@ public class DDLFormAdminDisplayContext {
 			ActionKeys.VIEW);
 	}
 
-	protected JSONArray fieldsToJSONArray(String definition) {
-		try {
-			JSONObject jsonObject = _jsonFactory.createJSONObject(definition);
+	protected String fieldPropertyToString(Object value) {
+		if (value instanceof LocalizedValue) {
+			LocalizedValue localizedValue = (LocalizedValue)value;
 
-			return jsonObject.getJSONArray("fields");
-		}
-		catch (JSONException jsone) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsone);
-			}
+			Locale locale = getLocale();
 
-			return _jsonFactory.createJSONArray();
+			return GetterUtil.getString(localizedValue.getString(locale));
 		}
+
+		return GetterUtil.getString(value);
 	}
 
 	protected OrderByComparator<DDLRecordSet> getDDLRecordSetOrderByComparator(
@@ -731,6 +733,10 @@ public class DDLFormAdminDisplayContext {
 		return ParamUtil.getString(_renderRequest, "keywords");
 	}
 
+	protected Locale getLocale() {
+		return _ddlFormAdminRequestHelper.getLocale();
+	}
+
 	protected DDLRecord getRecord() throws PortalException {
 		long recordId = ParamUtil.getLong(_renderRequest, "recordId");
 
@@ -827,6 +833,20 @@ public class DDLFormAdminDisplayContext {
 		recordSetSearch.setTotal(total);
 	}
 
+	protected JSONArray toJSONArray(Map<String, DDMFormField> ddmFormFields) {
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		Stream<DDMFormField> stream = ddmFormFields.values().stream();
+
+		stream.map(
+			this::toJSONObject
+		).forEach(
+			jsonArray::put
+		);
+
+		return jsonArray;
+	}
+
 	protected JSONObject toJSONObject(
 		DDMDataProviderInstance ddmDataProviderInstance, Locale locale) {
 
@@ -835,6 +855,24 @@ public class DDLFormAdminDisplayContext {
 		jsonObject.put(
 			"id", ddmDataProviderInstance.getDataProviderInstanceId());
 		jsonObject.put("name", ddmDataProviderInstance.getName(locale));
+
+		return jsonObject;
+	}
+
+	protected JSONObject toJSONObject(DDMFormField ddmFormField) {
+		JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+		Map<String, Object> properties = ddmFormField.getProperties();
+
+		Set<Map.Entry<String, Object>> entrySet = properties.entrySet();
+
+		Stream<Map.Entry<String, Object>> stream = entrySet.stream();
+
+		stream = stream.filter(entry -> entry.getValue() != null);
+
+		stream.forEach(
+			entry -> jsonObject.put(
+				entry.getKey(), fieldPropertyToString(entry.getValue())));
 
 		return jsonObject;
 	}
@@ -861,8 +899,13 @@ public class DDLFormAdminDisplayContext {
 		try {
 			Locale locale = _ddlFormAdminRequestHelper.getLocale();
 
-			jsonObject.put(
-				"fields", fieldsToJSONArray(ddmStructure.getDefinition()));
+			DDMForm ddmForm = ddmStructure.getDDMForm();
+
+			Map<String, DDMFormField> ddmFormFields =
+				ddmForm.getDDMFormFieldsMap(true);
+
+			jsonObject.put("fields", toJSONArray(ddmFormFields));
+
 			jsonObject.put("icon", "forms");
 			jsonObject.put(
 				"layout", toJSONObject(ddmStructure.getDDMFormLayout()));
