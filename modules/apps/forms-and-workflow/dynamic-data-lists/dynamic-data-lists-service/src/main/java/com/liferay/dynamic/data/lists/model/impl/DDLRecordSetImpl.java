@@ -16,11 +16,14 @@ package com.liferay.dynamic.data.lists.model.impl;
 
 import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetSettings;
+import com.liferay.dynamic.data.lists.model.DDLRecordSetVersion;
 import com.liferay.dynamic.data.lists.service.DDLRecordLocalServiceUtil;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalServiceUtil;
+import com.liferay.dynamic.data.lists.service.DDLRecordSetVersionLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -35,14 +38,26 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 
 	@Override
 	public DDMStructure getDDMStructure() throws PortalException {
-		return DDMStructureLocalServiceUtil.getStructure(getDDMStructureId());
+		DDMStructureVersion ddmStructureVersion = getDDMStructureVersion();
+
+		return ddmStructureVersion.getStructure();
 	}
 
 	@Override
-	public DDMStructure getDDMStructure(long formDDMTemplateId)
+	public DDMStructureVersion getDDMStructureVersion() throws PortalException {
+		DDLRecordSetVersion ddlRecordSetVersion =
+			DDLRecordSetVersionLocalServiceUtil.getDDLRecordSetVersion(
+				getRecordSetId(), getVersion());
+
+		return DDMStructureVersionLocalServiceUtil.getStructureVersion(
+			ddlRecordSetVersion.getDDMStructureVersionId());
+	}
+
+	@Override
+	public DDMStructureVersion getDDMStructureVersion(long formDDMTemplateId)
 		throws PortalException {
 
-		DDMStructure ddmStructure = getDDMStructure();
+		DDMStructureVersion ddmStructureVersion = getDDMStructureVersion();
 
 		if (formDDMTemplateId > 0) {
 			DDMTemplate ddmTemplate =
@@ -50,15 +65,17 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 
 			if (ddmTemplate != null) {
 
-				// Clone ddmStructure to make sure changes are never persisted
+				// Clone ddmStructureVersion to make sure changes are never
+				// persisted
 
-				ddmStructure = (DDMStructure)ddmStructure.clone();
+				ddmStructureVersion =
+					(DDMStructureVersion)ddmStructureVersion.clone();
 
-				ddmStructure.setDefinition(ddmTemplate.getScript());
+				ddmStructureVersion.setDefinition(ddmTemplate.getScript());
 			}
 		}
 
-		return ddmStructure;
+		return ddmStructureVersion;
 	}
 
 	@Override
