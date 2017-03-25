@@ -253,4 +253,6 @@ public interface DDLRecordSetVersionLocalService extends BaseLocalService,
 	*/
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
 		Projection projection);
+
+	public void deleteByRecordSetId(long recordSetId) throws PortalException;
 }

@@ -309,6 +309,12 @@ public class DDLRecordSetVersionLocalServiceWrapper
 	}
 
 	@Override
+	public void deleteByRecordSetId(long recordSetId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_ddlRecordSetVersionLocalService.deleteByRecordSetId(recordSetId);
+	}
+
+	@Override
 	public DDLRecordSetVersionLocalService getWrappedService() {
 		return _ddlRecordSetVersionLocalService;
 	}

@@ -287,6 +287,11 @@ public class DDLRecordSetVersionLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	public static void deleteByRecordSetId(long recordSetId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().deleteByRecordSetId(recordSetId);
+	}
+
 	public static DDLRecordSetVersionLocalService getService() {
 		return _serviceTracker.getService();
 	}
