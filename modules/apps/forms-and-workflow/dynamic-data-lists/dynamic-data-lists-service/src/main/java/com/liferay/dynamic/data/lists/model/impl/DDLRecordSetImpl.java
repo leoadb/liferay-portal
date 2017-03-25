@@ -43,6 +43,12 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 		return ddmStructureVersion.getStructure();
 	}
 
+	public long getDDMStructureId() throws PortalException {
+		DDMStructure ddmStructure = getDDMStructure();
+
+		return ddmStructure.getStructureId();
+	}
+
 	@Override
 	public DDMStructureVersion getDDMStructureVersion() throws PortalException {
 		DDLRecordSetVersion ddlRecordSetVersion =
@@ -76,6 +82,12 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 		}
 
 		return ddmStructureVersion;
+	}
+
+	public long getDDMStructureVersionId() throws PortalException {
+		DDMStructureVersion ddmStructureVersion = getDDMStructureVersion();
+
+		return ddmStructureVersion.getStructureVersionId();
 	}
 
 	@Override
