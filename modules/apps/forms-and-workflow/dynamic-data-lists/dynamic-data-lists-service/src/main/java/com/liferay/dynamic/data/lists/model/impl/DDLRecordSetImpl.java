@@ -43,6 +43,30 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 		return ddmStructureVersion.getStructure();
 	}
 
+	@Override
+	public DDMStructure getDDMStructure(long formDDMTemplateId)
+		throws PortalException {
+
+		DDMStructure ddmStructure = getDDMStructure();
+
+		if (formDDMTemplateId > 0) {
+			DDMTemplate ddmTemplate =
+				DDMTemplateLocalServiceUtil.fetchDDMTemplate(formDDMTemplateId);
+
+			if (ddmTemplate != null) {
+
+				// Clone ddmStructure to make sure changes are never
+				// persisted
+
+				ddmStructure = (DDMStructure)ddmStructure.clone();
+
+				ddmStructure.setDefinition(ddmTemplate.getScript());
+			}
+		}
+
+		return ddmStructure;
+	}
+
 	public long getDDMStructureId() throws PortalException {
 		DDMStructure ddmStructure = getDDMStructure();
 
@@ -57,31 +81,6 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 
 		return DDMStructureVersionLocalServiceUtil.getStructureVersion(
 			ddlRecordSetVersion.getDDMStructureVersionId());
-	}
-
-	@Override
-	public DDMStructureVersion getDDMStructureVersion(long formDDMTemplateId)
-		throws PortalException {
-
-		DDMStructureVersion ddmStructureVersion = getDDMStructureVersion();
-
-		if (formDDMTemplateId > 0) {
-			DDMTemplate ddmTemplate =
-				DDMTemplateLocalServiceUtil.fetchDDMTemplate(formDDMTemplateId);
-
-			if (ddmTemplate != null) {
-
-				// Clone ddmStructureVersion to make sure changes are never
-				// persisted
-
-				ddmStructureVersion =
-					(DDMStructureVersion)ddmStructureVersion.clone();
-
-				ddmStructureVersion.setDefinition(ddmTemplate.getScript());
-			}
-		}
-
-		return ddmStructureVersion;
 	}
 
 	public long getDDMStructureVersionId() throws PortalException {
