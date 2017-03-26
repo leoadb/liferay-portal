@@ -82,6 +82,7 @@ public class DDLRecordSetLocalServiceImpl
 	 *         <code>DDLRecordSetConstants</code> in the
 	 *         <code>dynamic.data.lists.api</code> module for constants starting
 	 *         with the "SCOPE_" prefix.
+	 * @param  settings the record set's settings
 	 * @param  serviceContext the service context to be applied. Can set the
 	 *         UUID, guest permissions, and group permissions for the record
 	 *         set.
@@ -93,7 +94,7 @@ public class DDLRecordSetLocalServiceImpl
 			long userId, long groupId, long ddmStructureVersionId,
 			String recordSetKey, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, int minDisplayRows, int scope,
-			ServiceContext serviceContext)
+			String settings, ServiceContext serviceContext)
 		throws PortalException {
 
 		// Record set
@@ -120,6 +121,13 @@ public class DDLRecordSetLocalServiceImpl
 		recordSet.setDescriptionMap(descriptionMap);
 		recordSet.setMinDisplayRows(minDisplayRows);
 		recordSet.setScope(scope);
+		recordSet.setSettings(settings);
+
+		//Record Set Version
+
+		DDLRecordSetVersion ddlRecordSetVersion = addRecordSetVersion(
+			ddmStructureVersionId, user, recordSet,
+			DDLRecordSetConstants.VERSION_DEFAULT, serviceContext);
 
 		ddlRecordSetPersistence.update(recordSet);
 
@@ -138,11 +146,12 @@ public class DDLRecordSetLocalServiceImpl
 				serviceContext.getGuestPermissions());
 		}
 
-		//Record Set Version
+		recordSet.setCreateDate(ddlRecordSetVersion.getCreateDate());
+		recordSet.setModifiedDate(ddlRecordSetVersion.getCreateDate());
+		recordSet.setVersion(ddlRecordSetVersion.getVersion());
 
-		addRecordSetVersion(
-			ddmStructureVersionId, user, recordSet,
-			DDLRecordSetConstants.VERSION_DEFAULT, serviceContext);
+		recordSet.setVersionUserId(user.getUserId());
+		recordSet.setVersionUserName(user.getFullName());
 
 		// Dynamic data mapping structure link
 
@@ -603,19 +612,39 @@ public class DDLRecordSetLocalServiceImpl
 	 */
 	@Override
 	public DDLRecordSet updateRecordSet(
-			long recordSetId, DDMFormValues settingsDDMFormValues)
+			long userId, long recordSetId, DDMFormValues settingsDDMFormValues,
+			ServiceContext serviceContext)
 		throws PortalException {
 
-		Date now = new Date();
+		User user = userLocalService.getUser(userId);
 
 		ddmFormValuesValidator.validate(settingsDDMFormValues);
 
 		DDLRecordSet recordSet = ddlRecordSetPersistence.findByPrimaryKey(
 			recordSetId);
 
-		recordSet.setModifiedDate(now);
+		DDLRecordSetVersion latestRecordSetVersion =
+			ddlRecordSetVersionLocalService.getLatestRecordSetVersion(
+				recordSet.getRecordSetId());
+
+		boolean majorVersion = GetterUtil.getBoolean(
+			serviceContext.getAttribute("majorVersion"));
+
+		String version = getNextVersion(
+			latestRecordSetVersion.getVersion(), majorVersion);
+
+		recordSet.setVersion(version);
+
+		recordSet.setVersionUserId(user.getUserId());
+		recordSet.setVersionUserName(user.getFullName());
 		recordSet.setSettings(
 			ddmFormValuesJSONSerializer.serialize(settingsDDMFormValues));
+
+		DDLRecordSetVersion ddlRecordSetVersion = addRecordSetVersion(
+			latestRecordSetVersion.getDDMStructureVersionId(), user, recordSet,
+			version, serviceContext);
+
+		recordSet.setModifiedDate(ddlRecordSetVersion.getCreateDate());
 
 		return ddlRecordSetPersistence.update(recordSet);
 	}
@@ -633,6 +662,7 @@ public class DDLRecordSetLocalServiceImpl
 	 *         descriptions
 	 * @param  minDisplayRows the record set's minimum number of rows to be
 	 *         displayed in spreadsheet view
+	 * @param  settings the settings of record set
 	 * @param  serviceContext the service context to be applied. This can set
 	 *         the record set modified date.
 	 * @return the record set
@@ -642,7 +672,7 @@ public class DDLRecordSetLocalServiceImpl
 	public DDLRecordSet updateRecordSet(
 			long userId, long recordSetId, long ddmStructureVersionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			int minDisplayRows, ServiceContext serviceContext)
+			int minDisplayRows, String settings, ServiceContext serviceContext)
 		throws PortalException {
 
 		DDLRecordSet recordSet = ddlRecordSetPersistence.findByPrimaryKey(
@@ -650,7 +680,7 @@ public class DDLRecordSetLocalServiceImpl
 
 		return doUpdateRecordSet(
 			userId, ddmStructureVersionId, nameMap, descriptionMap,
-			minDisplayRows, serviceContext, recordSet);
+			minDisplayRows, settings, serviceContext, recordSet);
 	}
 
 	/**
@@ -667,6 +697,7 @@ public class DDLRecordSetLocalServiceImpl
 	 *         descriptions
 	 * @param  minDisplayRows the record set's minimum number of rows to be
 	 *         displayed in spreadsheet view
+	 * @param  settings the record set's settings
 	 * @param  serviceContext the service context to be applied. This can set
 	 *         the record set modified date.
 	 * @return the record set
@@ -677,7 +708,7 @@ public class DDLRecordSetLocalServiceImpl
 			long userId, long groupId, long ddmStructureVersionId,
 			String recordSetKey, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, int minDisplayRows,
-			ServiceContext serviceContext)
+			String settings, ServiceContext serviceContext)
 		throws PortalException {
 
 		DDLRecordSet recordSet = ddlRecordSetPersistence.findByG_R(
@@ -685,7 +716,7 @@ public class DDLRecordSetLocalServiceImpl
 
 		return doUpdateRecordSet(
 			userId, ddmStructureVersionId, nameMap, descriptionMap,
-			minDisplayRows, serviceContext, recordSet);
+			minDisplayRows, settings, serviceContext, recordSet);
 	}
 
 	protected DDLRecordSetVersion addRecordSetVersion(
@@ -697,16 +728,19 @@ public class DDLRecordSetLocalServiceImpl
 		DDLRecordSetVersion ddlRecordSetVersion =
 			ddlRecordSetVersionPersistence.create(recordSetVersionId);
 
+		Date now = new Date();
+
 		ddlRecordSetVersion.setGroupId(recordSet.getGroupId());
 		ddlRecordSetVersion.setCompanyId(recordSet.getCompanyId());
 		ddlRecordSetVersion.setUserId(recordSet.getUserId());
 		ddlRecordSetVersion.setUserName(recordSet.getUserName());
-		ddlRecordSetVersion.setCreateDate(recordSet.getModifiedDate());
+		ddlRecordSetVersion.setCreateDate(now);
 		ddlRecordSetVersion.setRecordSetId(recordSet.getRecordSetId());
 		ddlRecordSetVersion.setDDMStructureVersionId(structureVersionId);
 		ddlRecordSetVersion.setVersion(version);
 		ddlRecordSetVersion.setName(recordSet.getName());
 		ddlRecordSetVersion.setDescription(recordSet.getDescription());
+		ddlRecordSetVersion.setSettings(recordSet.getSettings());
 
 		int status = GetterUtil.getInteger(
 			serviceContext.getAttribute("status"),
@@ -716,7 +750,7 @@ public class DDLRecordSetLocalServiceImpl
 
 		ddlRecordSetVersion.setStatusByUserId(user.getUserId());
 		ddlRecordSetVersion.setStatusByUserName(user.getFullName());
-		ddlRecordSetVersion.setStatusDate(recordSet.getModifiedDate());
+		ddlRecordSetVersion.setStatusDate(now);
 
 		ddlRecordSetVersionPersistence.update(ddlRecordSetVersion);
 
@@ -726,7 +760,7 @@ public class DDLRecordSetLocalServiceImpl
 	protected DDLRecordSet doUpdateRecordSet(
 			long userId, long ddmStructureVersionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			int minDisplayRows, ServiceContext serviceContext,
+			int minDisplayRows, String settings, ServiceContext serviceContext,
 			DDLRecordSet recordSet)
 		throws PortalException {
 
@@ -754,9 +788,12 @@ public class DDLRecordSetLocalServiceImpl
 		recordSet.setVersionUserName(user.getFullName());
 		recordSet.setDescriptionMap(descriptionMap);
 		recordSet.setMinDisplayRows(minDisplayRows);
+		recordSet.setSettings(settings);
 
-		addRecordSetVersion(
+		DDLRecordSetVersion ddlRecordSetVersion = addRecordSetVersion(
 			ddmStructureVersionId, user, recordSet, version, serviceContext);
+
+		recordSet.setModifiedDate(ddlRecordSetVersion.getCreateDate());
 
 		ddlRecordSetPersistence.update(recordSet);
 
