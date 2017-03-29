@@ -15,6 +15,10 @@ AUI.add(
 		};
 
 		FormBuilderSettingsSupport.ATTRS = {
+			availableLocalesMetadata: {
+				value: []
+			},
+
 			builder: {
 				value: null
 			},
@@ -203,6 +207,7 @@ AUI.add(
 
 				return new Liferay.DDL.FormBuilderSettingsForm(
 					{
+						availableLocalesMetadata: instance.get('availableLocalesMetadata'),
 						context: context,
 						definition: JSON.parse(context.definition),
 						editMode: builder.get('recordSetId') === 0 || instance.isPersisted(),
@@ -234,6 +239,8 @@ AUI.add(
 				else if (contextKey in fieldContext) {
 					formFieldContext.value = fieldContext[contextKey];
 				}
+
+				formFieldContext.availableLocalesMetadata = instance.get('availableLocalesMetadata');
 			},
 
 			_renderFormBuilderField: function() {
