@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONSerializer;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -65,6 +66,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -74,6 +76,7 @@ import com.liferay.portal.kernel.util.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowEngineManager;
 import com.liferay.portal.kernel.workflow.WorkflowHandler;
@@ -82,7 +85,9 @@ import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -145,6 +150,26 @@ public class DDLFormAdminDisplayContext {
 
 	public int getAutosaveInterval() {
 		return _ddlFormWebConfiguration.autosaveInterval();
+	}
+
+	public JSONArray getAvailableLocalesMetadata() {
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		Locale siteDefaultLocale = getSiteDefaultLocale();
+
+		jsonArray.put(createLocaleMetadataJSONObject(siteDefaultLocale));
+
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales();
+
+		for (Locale locale : availableLocales) {
+			if (Objects.equals(locale, siteDefaultLocale)) {
+				continue;
+			}
+
+			jsonArray.put(createLocaleMetadataJSONObject(locale));
+		}
+
+		return jsonArray;
 	}
 
 	public DDLFormViewRecordDisplayContext
@@ -543,6 +568,23 @@ public class DDLFormAdminDisplayContext {
 			ActionKeys.VIEW);
 	}
 
+	protected JSONObject createLocaleMetadataJSONObject(Locale locale) {
+		Locale siteDefaultLocale = getSiteDefaultLocale();
+
+		JSONObject localeMetadataJSONObject = _jsonFactory.createJSONObject();
+
+		localeMetadataJSONObject.put(
+			"dir", LanguageUtil.get(locale, "lang.dir"));
+		localeMetadataJSONObject.put("icon", getLocaleIcon(locale));
+		localeMetadataJSONObject.put(
+			"label",
+			HtmlUtil.escapeAttribute(locale.getDisplayName(siteDefaultLocale)));
+		localeMetadataJSONObject.put(
+			"languageId", LocaleUtil.toLanguageId(locale));
+
+		return localeMetadataJSONObject;
+	}
+
 	protected OrderByComparator<DDLRecordSet> getDDLRecordSetOrderByComparator(
 		String orderByCol, String orderByType) {
 
@@ -649,6 +691,23 @@ public class DDLFormAdminDisplayContext {
 
 	protected String getKeywords() {
 		return ParamUtil.getString(_renderRequest, "keywords");
+	}
+
+	protected String getLocaleIcon(Locale locale) {
+		ThemeDisplay themeDisplay =
+			_ddlFormAdminRequestHelper.getThemeDisplay();
+
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(themeDisplay.getPathThemeImages());
+		sb.append("/lexicon/icons.svg");
+		sb.append(StringPool.POUND);
+		sb.append(
+			StringUtil.toLowerCase(StringUtil.replace(languageId, '_', '-')));
+
+		return sb.toString();
 	}
 
 	protected DDLRecord getRecord() throws PortalException {
