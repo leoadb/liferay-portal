@@ -26,6 +26,10 @@ AUI.add(
 						]
 					},
 
+					availableLocalesMetadata: {
+						value: []
+					},
+
 					defaultLanguageId: {
 						value: themeDisplay.getDefaultLanguageId()
 					},
@@ -751,6 +755,7 @@ AUI.add(
 
 						return new Liferay.DDL.FormBuilder(
 							{
+								availableLocalesMetadata: instance.get('availableLocalesMetadata'),
 								defaultLanguageId: instance.get('defaultLanguageId'),
 								definition: instance.get('definition'),
 								evaluatorURL: instance.get('evaluatorURL'),

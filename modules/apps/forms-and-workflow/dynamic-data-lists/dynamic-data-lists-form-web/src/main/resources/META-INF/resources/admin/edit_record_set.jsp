@@ -251,6 +251,7 @@ renderResponse.setTitle((recordSet == null) ? LanguageUtil.get(request, "new-for
 									new Liferay.DDL.Portlet(
 										{
 											availableLanguageIds: definition.availableLanguageIds,
+											availableLocalesMetadata: <%= ddlFormAdminDisplayContext.getAvailableLocalesMetadata() %>,
 											autosaveInterval: '<%= ddlFormAdminDisplayContext.getAutosaveInterval() %>',
 											autosaveURL: '<%= saveRecordSetURL.toString() %>',
 											defaultLanguageId: definition.defaultLanguageId,

@@ -28,6 +28,10 @@ AUI.add(
 		var FormBuilder = A.Component.create(
 			{
 				ATTRS: {
+					availableLocalesMetadata: {
+						value: []
+					},
+
 					container: {
 						getter: function() {
 							var instance = this;
@@ -202,6 +206,7 @@ AUI.add(
 							A.merge(
 								fieldType.get('defaultConfig'),
 								{
+									availableLocalesMetadata: instance.get('availableLocalesMetadata'),
 									builder: instance,
 									defaultLanguageId: instance.get('defaultLanguageId'),
 									evaluatorURL: instance.get('evaluatorURL'),

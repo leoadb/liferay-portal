@@ -119,6 +119,7 @@ AUI.add(
 							A.merge(
 								context,
 								{
+									availableLocalesMetadata:  builder.get('availableLocalesMetadata'),
 									context: context,
 									evaluatorURL: builder.get('evaluatorURL'),
 									getFieldNameSettingFormContextURL: builder.get('getFieldNameSettingFormContextURL'),

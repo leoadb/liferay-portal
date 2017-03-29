@@ -12,6 +12,11 @@ AUI.add(
 		var FormBuilderSettingsForm = A.Component.create(
 			{
 				ATTRS: {
+
+					availableLocalesMetadata: {
+						value: []
+					},
+
 					editMode: {
 						value: false
 					},
