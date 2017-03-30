@@ -37,12 +37,11 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Rafael Praxedes
@@ -143,8 +142,10 @@ public class GetDataProviderParametersSettingsMVCResourceCommand
 				ddmDataProviderInputParameterSetting :
 					ddmDataProviderInputParametersSettings) {
 
+			String label =
+				ddmDataProviderInputParameterSetting.inputParameterLabel();
 			String name =
-				ddmDataProviderInputParameterSetting.inputParameterName();
+				ddmDataProviderInputParameterSetting.inputParameterLabel();
 			String type = getType(
 				ddmDataProviderInputParameterSetting.inputParameterType());
 
@@ -155,6 +156,12 @@ public class GetDataProviderParametersSettingsMVCResourceCommand
 			JSONObject inputJSONObject = _jsonFactory.createJSONObject();
 
 			inputJSONObject.put("name", name);
+
+			if (!Validator.isNull(label)) {
+				inputJSONObject.put("label", label);
+			} else {
+				inputJSONObject.put("label", name);
+			}
 
 			inputJSONObject.put(
 				"required",
@@ -181,16 +188,23 @@ public class GetDataProviderParametersSettingsMVCResourceCommand
 
 			String name =
 				ddmDataProviderOutputParameterSetting.outputParameterName();
+			String path =
+				ddmDataProviderOutputParameterSetting.outputParameterPath();
 			String type = getType(
 				ddmDataProviderOutputParameterSetting.outputParameterType());
 
-			if (Validator.isNull(name) || Validator.isNull(type)) {
+			if (Validator.isNull(path) || Validator.isNull(type)) {
 				continue;
 			}
 
 			JSONObject outputJSONObject = _jsonFactory.createJSONObject();
 
-			outputJSONObject.put("name", name);
+			if (!Validator.isNull(name)) {
+				outputJSONObject.put("name", name);
+			} else {
+				outputJSONObject.put("name", path);
+			}
+
 			outputJSONObject.put("type", type);
 
 			outputsJSONArray.put(outputJSONObject);
