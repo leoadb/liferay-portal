@@ -7,12 +7,14 @@ alter table DDLRecordSet add version VARCHAR(75) null;
 alter table DDLRecordVersion add recordSetVersion VARCHAR(75) null;
 
 create table DDLRecordSetVersion (
+	uuid_ VARCHAR(75) null,
 	recordSetVersionId LONG not null primary key,
 	groupId LONG,
 	companyId LONG,
 	userId LONG,
 	userName VARCHAR(75) null,
 	createDate DATE null,
+	modifiedDate DATE null,
 	recordSetId LONG,
 	DDMStructureVersionId LONG,
 	name STRING null,
@@ -22,7 +24,8 @@ create table DDLRecordSetVersion (
 	status INTEGER,
 	statusByUserId LONG,
 	statusByUserName VARCHAR(75) null,
-	statusDate DATE null
+	statusDate DATE null,
+	lastPublishDate DATE null
 );
 
 create index IX_F12C61D4 on DDLRecord (recordSetId, recordSetVersion[$COLUMN_LENGTH:75$]);
