@@ -34,3 +34,5 @@ create index IX_19AD75F6 on DDLRecordVersion (recordSetId, recordSetVersion[$COL
 
 create index IX_1C4E1CC9 on DDLRecordSetVersion (recordSetId, status);
 create unique index IX_94FC5485 on DDLRecordSetVersion (recordSetId, version[$COLUMN_LENGTH:75$]);
+create index IX_D6E379ED on DDLRecordSetVersion (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_9CEB97AF on DDLRecordSetVersion (uuid_[$COLUMN_LENGTH:75$], groupId);
