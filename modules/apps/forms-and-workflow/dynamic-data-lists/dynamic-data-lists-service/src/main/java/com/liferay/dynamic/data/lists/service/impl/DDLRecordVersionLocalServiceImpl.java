@@ -95,6 +95,11 @@ public class DDLRecordVersionLocalServiceImpl
 		return ddlRecordVersionPersistence.findByR_V(recordId, version);
 	}
 
+	@Override
+	public List<DDLRecordVersion> getRecordVersions(long recordId) {
+		return ddlRecordVersionPersistence.findByRecordId(recordId);
+	}
+
 	/**
 	 * Returns an ordered range of record versions matching the record's ID.
 	 *
