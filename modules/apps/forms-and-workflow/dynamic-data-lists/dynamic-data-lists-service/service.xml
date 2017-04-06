@@ -146,6 +146,10 @@
 		<finder name="RecordSetId" return-type="Collection">
 			<finder-column name="recordSetId" />
 		</finder>
+		<finder name="G_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+		</finder>
 		<finder name="RS_V" return-type="DDLRecordSetVersion" unique="true">
 			<finder-column name="recordSetId" />
 			<finder-column name="version" />
@@ -191,6 +195,10 @@
 
 		<finder name="RecordId" return-type="Collection">
 			<finder-column name="recordId" />
+		</finder>
+		<finder name="G_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
 		</finder>
 		<finder name="R_R" return-type="Collection">
 			<finder-column name="recordSetId" />

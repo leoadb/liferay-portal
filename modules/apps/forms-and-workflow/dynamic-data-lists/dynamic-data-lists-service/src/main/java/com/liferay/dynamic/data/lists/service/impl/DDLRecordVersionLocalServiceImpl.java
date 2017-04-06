@@ -34,6 +34,11 @@ import java.util.List;
 public class DDLRecordVersionLocalServiceImpl
 	extends DDLRecordVersionLocalServiceBaseImpl {
 
+	@Override
+	public List<DDLRecordVersion> findByG_C(long groupId, long companyId) {
+		return ddlRecordVersionPersistence.findByG_C(groupId, companyId);
+	}
+
 	/**
 	 * Returns the record's latest record version.
 	 *
