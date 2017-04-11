@@ -37,11 +37,12 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Rafael Praxedes
@@ -145,7 +146,7 @@ public class GetDataProviderParametersSettingsMVCResourceCommand
 			String label =
 				ddmDataProviderInputParameterSetting.inputParameterLabel();
 			String name =
-				ddmDataProviderInputParameterSetting.inputParameterLabel();
+				ddmDataProviderInputParameterSetting.inputParameterName();
 			String type = getType(
 				ddmDataProviderInputParameterSetting.inputParameterType());
 
@@ -157,9 +158,10 @@ public class GetDataProviderParametersSettingsMVCResourceCommand
 
 			inputJSONObject.put("name", name);
 
-			if (!Validator.isNull(label)) {
+			if (Validator.isNotNull(label)) {
 				inputJSONObject.put("label", label);
-			} else {
+			}
+			else {
 				inputJSONObject.put("label", name);
 			}
 
@@ -199,9 +201,10 @@ public class GetDataProviderParametersSettingsMVCResourceCommand
 
 			JSONObject outputJSONObject = _jsonFactory.createJSONObject();
 
-			if (!Validator.isNull(name)) {
+			if (Validator.isNotNull(name)) {
 				outputJSONObject.put("name", name);
-			} else {
+			}
+			else {
 				outputJSONObject.put("name", path);
 			}
 
