@@ -42,6 +42,18 @@ AUI.add(
 				ATTRS: {
 					builder: {
 					},
+					
+					editingLocale:{
+						value: themeDisplay.getDefaultLanguageId()
+					},
+					
+					localizedDescriptions: {
+						value: []
+					},
+					
+					localizedTitles: {
+						value: []
+					},
 
 					mode: {
 						validator: '_validateMode',
@@ -63,6 +75,14 @@ AUI.add(
 							untitledPage: Liferay.Language.get('untitled-page-x-of-x')
 						},
 						writeOnce: true
+					},
+					
+					successPageSettings: {
+						value: {
+							body: {},
+							enabled: false,
+							title: {}
+						}
 					}
 				},
 
@@ -106,6 +126,7 @@ AUI.add(
 
 						instance._eventHandlers = [
 							A.on('windowresize', A.bind('_syncPageInformationHeight', instance)),
+							instance.after('localeChange', A.bind('_afterLocaleChange', instance)),
 							instance.after('titlesChange', A.bind('_afterTitlesChange', instance))
 						];
 
@@ -128,6 +149,8 @@ AUI.add(
 						successPage.hide();
 
 						content.append(successPage);
+						
+						instance._createTitleForEditingLocale();
 					},
 
 					destructor: function() {
@@ -155,21 +178,7 @@ AUI.add(
 					getSuccessPageDefinition: function() {
 						var instance = this;
 
-						var builder = instance.get('builder');
-
-						var boundingBox = builder.get('boundingBox');
-
-						var successPage = boundingBox.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE);
-
-						var wizard = instance._getWizard();
-
-						var successPageDefinition = {
-							body: successPage.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE_CONTENT).val(),
-							enabled: wizard.get('successPage'),
-							title: successPage.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE_TITLE).val()
-						};
-
-						return successPageDefinition;
+						return instance._updateSuccessPageSettings();
 					},
 
 					setSuccessPage: function(successPageDefinition) {
@@ -255,6 +264,28 @@ AUI.add(
 
 						switchModeNode.toggle(event.newVal > 1);
 					},
+					
+					_afterLocaleChange: function(event) {
+						var instance = this;
+						
+						instance._updateSuccessPageSettings();
+						
+						instance.set('editingLocale', event.editingLocale);
+						
+						var wizard = instance._getWizard();
+
+						var selectedWizard = wizard.get('selected');
+
+						var pagesQuantity = wizard.get('items').length;
+
+						if (wizard.get('successPage') && selectedWizard === pagesQuantity) {
+							instance._syncSuccessPage();
+						}
+						else {
+							instance._syncTitle();
+						}
+						instance._syncWizardItems();
+					},
 
 					_afterTitlesChange: function(event) {
 						var instance = this;
@@ -281,6 +312,8 @@ AUI.add(
 							pagination.set('page', selectedWizard + 1);
 
 							instance.set('activePageNumber', selectedWizard + 1);
+							
+							instance._syncTitle();
 						}
 					},
 
@@ -324,6 +357,36 @@ AUI.add(
 
 						return popover;
 					},
+					
+					_createTitleForEditingLocale: function() {
+						var instance = this;
+						
+						var activePageNumber = instance.get('activePageNumber');
+						var editingLocale = instance.get('editingLocale');
+						var defaultLocale = themeDisplay.getDefaultLanguageId();
+						var titles = instance.get('localizedTitles');
+						var descriptions = instance.get('localizedDescriptions');
+						
+						if(!titles[activePageNumber-1]) {
+							titles[activePageNumber-1] = {};
+						}
+						
+						if(!descriptions[activePageNumber-1]) {
+							descriptions[activePageNumber-1] = {};
+						}
+						
+						if(!titles[activePageNumber-1][editingLocale]) {
+							titles[activePageNumber-1][editingLocale] = titles[activePageNumber-1][defaultLocale] || '';
+							
+							instance.set('localizedTitles', titles);
+						}
+						
+						if(!descriptions[activePageNumber-1][editingLocale]) {
+							descriptions[activePageNumber-1][editingLocale] = descriptions[activePageNumber-1][defaultLocale] || '';
+							
+							instance.set('localizedDescriptions', descriptions);
+						}
+					},
 
 					_createUntitledPageLabel: function(activePageNumber, pagesQuantity) {
 						var instance = this;
@@ -347,12 +410,17 @@ AUI.add(
 
 						var activePageNumber = instance.get('activePageNumber');
 						var pagesQuantity = instance.get('pagesQuantity');
-						var titles = instance.get('titles');
-
+						
+						instance._createTitleForEditingLocale();
+						
+						var editingLocale = instance.get('editingLocale');
+						var defaultLocale = themeDisplay.getDefaultLanguageId();
+						var titles = instance.get('localizedTitles');
+						
 						var items = [];
 
 						for (var i = 1; i <= pagesQuantity; i++) {
-							var title = titles[i - 1];
+							var title = titles[i - 1][editingLocale] || titles[i - 1][defaultLocale];
 
 							if (!title) {
 								title = instance._createUntitledPageLabel(i, pagesQuantity);
@@ -462,6 +530,23 @@ AUI.add(
 							instance._showLayout();
 						}
 					},
+					
+					_onDescriptionInputValueChange: function(event) {
+						var instance = this;
+
+						var activePageNumber = instance.get('activePageNumber');
+						var editingLocale = instance.get('editingLocale');
+						var descriptions = instance.get('descriptions');
+						var localizedDescriptions = instance.get('localizedDescriptions');
+
+						var description = event.newVal.trim();
+
+						descriptions[activePageNumber - 1] = description;
+						localizedDescriptions[activePageNumber - 1][editingLocale] = description;
+						
+						instance.set('descriptions', descriptions);
+						instance.set('localizedDescriptions', localizedDescriptions);
+					},
 
 					_onPageControlOptionClick: function(event) {
 						var popover = this._getPopover();
@@ -513,8 +598,27 @@ AUI.add(
 							titles.splice(activePageNumber - 1, 1);
 
 							instance.set('titles', titles);
-							instance.set('activePageNumber', page);
+							
+							var descriptions = instance.get('descriptions');
 
+							descriptions.splice(activePageNumber - 1, 1);
+
+							instance.set('descriptions', descriptions);
+							
+							var localizedTitles = instance.get('localizedTitles');
+							
+							localizedTitles.splice(activePageNumber - 1, 1);
+							
+							instance.set('localizedTitles', localizedTitles);
+							
+							var localizedDescriptions = instance.get('localizedDescriptions');
+							
+							localizedDescriptions.splice(activePageNumber - 1, 1);
+							
+							instance.set('localizedDescriptions', localizedDescriptions);
+							
+							instance.set('activePageNumber', page);
+							
 							instance._removeWizardPage(activePageNumber - 1);
 
 							if (!instance.get('pagesQuantity')) {
@@ -552,11 +656,11 @@ AUI.add(
 						var instance = this;
 
 						var activePageNumber = instance.get('activePageNumber');
+						var editingLocale = instance.get('editingLocale');
 						var titles = instance.get('titles');
+						var localizedTitles = instance.get('localizedTitles');
 
 						var title = event.newVal.trim();
-
-						titles[activePageNumber - 1] = title;
 
 						if (!title) {
 							var pagesQuantity = instance.get('pagesQuantity');
@@ -564,7 +668,11 @@ AUI.add(
 							title = instance._createUntitledPageLabel(activePageNumber, pagesQuantity);
 						}
 
+						titles[activePageNumber - 1] = title;
+						localizedTitles[activePageNumber - 1][editingLocale] = title;
+
 						instance.set('titles', titles);
+						instance.set('localizedTitles', localizedTitles);
 					},
 
 					_plugAutoSize: function(node) {
@@ -666,7 +774,20 @@ AUI.add(
 						var successPage = boundingBox.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE);
 
 						var strings = instance.get('strings');
-
+						
+						var successPageSettings = {
+							body: {},
+							enabled: instance._getWizard().get('successPage'),
+							title: {}
+						};
+						
+						var defaultLanguageId = themeDisplay.getDefaultLanguageId();
+						
+						successPageSettings.body[defaultLanguageId] = strings.defaultContent;
+						successPageSettings.title[defaultLanguageId] = strings.defaultTitle;
+						
+						instance.set('successPageSettings', successPageSettings);
+						
 						successPage.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE_TITLE).val(strings.defaultTitle);
 
 						successPage.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE_CONTENT).val(strings.defaultContent);
@@ -715,6 +836,8 @@ AUI.add(
 
 						boundingBox.one('.' + CSS_LAYOUT).show();
 						boundingBox.one('.' + CSS_PAGE_HEADER).show();
+						
+						instance._syncSuccessPage();
 
 						boundingBox.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE).hide();
 					},
@@ -728,6 +851,8 @@ AUI.add(
 						boundingBox.one('.' + CSS_PAGE_HEADER).hide();
 
 						boundingBox.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE).show();
+						
+						instance._syncSuccessPage();
 					},
 
 					_syncControlTriggersUI: function() {
@@ -763,6 +888,71 @@ AUI.add(
 						var deletePageButton = instance._getPopover().get('boundingBox').one('.' + CSS_FORM_BUILDER_PAGE_MANAGER_DELETE_PAGE);
 
 						deletePageButton.text(instance._getDeleteButtonString());
+					},
+					
+					_syncSuccessPage: function() {
+						var instance = this;
+						
+						var builder = instance.get('builder');
+
+						var boundingBox = builder.get('boundingBox');
+						
+						var successPage = boundingBox.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE);
+
+						var editingLocale = instance.get('editingLocale');
+						
+						var defaultLocale = themeDisplay.getDefaultLanguageId();
+						
+						var successPageSettings = instance.get('successPageSettings');
+
+						if(!successPageSettings.body[editingLocale]) {
+							var strings = instance.get('strings');
+							
+							if(successPageSettings.body[defaultLocale]) {
+								successPageSettings.body[editingLocale] = A.clone(successPageSettings.body[defaultLocale]);
+							}
+							else {
+								successPageSettings.body[editingLocale] = strings.defaultContent;
+							}
+							
+							if(successPageSettings.title[defaultLocale]) {
+								successPageSettings.title[editingLocale] = A.clone(successPageSettings.title[defaultLocale]);
+							}
+							else {
+								successPageSettings.title[editingLocale] = strings.defaultTitle;
+							}
+
+							instance.set('successPageSettings', successPageSettings);
+						}
+						
+						successPage.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE_TITLE).val(successPageSettings.title[editingLocale]);
+
+						successPage.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE_CONTENT).val(successPageSettings.body[editingLocale]);
+					},
+					
+					_syncTitle: function() {
+						var instance = this;
+						
+						instance._createTitleForEditingLocale();
+						
+						var editingLocale = instance.get('editingLocale');
+						
+						var defaultLocale = themeDisplay.getDefaultLanguageId();
+						
+						var titles = instance.get('localizedTitles');
+						var descriptions = instance.get('localizedDescriptions');
+						
+						var pageHeader = instance.get('pageHeader');
+						
+						var activePageNumber = instance.get('activePageNumber');
+						
+						var titleNode = pageHeader.one('.' + CSS_PAGE_HEADER_TITLE);
+						
+						titleNode.val(titles[activePageNumber - 1][editingLocale] || titles[activePageNumber - 1][defaultLocale] || '');
+						
+						var descriptionNode = pageHeader.one('.' + CSS_PAGE_HEADER_DESCRIPTION);
+						
+						descriptionNode.val(descriptions[activePageNumber - 1][editingLocale] || descriptions[activePageNumber - 1][defaultLocale] || '');
 					},
 
 					_syncWizardItems: function() {
@@ -824,6 +1014,30 @@ AUI.add(
 							paginationBoundingBox.hide();
 							wizardBoundingBox.hide();
 						}
+					},
+					
+					_updateSuccessPageSettings: function() {
+						var instance = this;
+						
+						var builder = instance.get('builder');
+
+						var boundingBox = builder.get('boundingBox');
+
+						var successPage = boundingBox.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE);
+
+						var wizard = instance._getWizard();
+						
+						var successPageSettings = instance.get('successPageSettings');
+						var editingLocale = instance.get('editingLocale');
+						
+						successPageSettings.enabled = wizard.get('successPage');
+						
+						successPageSettings.body[editingLocale] = successPage.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE_CONTENT).val();
+						successPageSettings.title[editingLocale] = successPage.one('.' + CSS_FORM_BUILDER_SUCCESS_PAGE_TITLE).val();
+						
+						instance.set('successPageSettings', successPageSettings);
+
+						return successPageSettings;
 					},
 
 					_validateMode: function(mode) {
