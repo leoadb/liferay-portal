@@ -8,6 +8,7 @@ AUI.add(
 
 		FormTemplateSupport.ATTRS = {
 			context: {
+				setter: function(val) { return JSON.parse(val); },
 				valueFn: '_valueContext'
 			},
 
@@ -22,7 +23,11 @@ AUI.add(
 
 				var renderer = instance.getTemplateRenderer();
 
-				return renderer(instance.getTemplateContext());
+				var container = document.createDocumentFragment();
+
+				new renderer(instance.getTemplateContext(), container);
+
+				return container.firstChild.outerHTML;
 			},
 
 			getTemplateContext: function() {

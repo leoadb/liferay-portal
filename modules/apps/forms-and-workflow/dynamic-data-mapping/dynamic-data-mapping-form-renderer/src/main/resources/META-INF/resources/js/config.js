@@ -187,10 +187,7 @@
 					combine: Liferay.AUI.getCombine(),
 					modules: {
 						'liferay-ddm-form-soy': {
-							path: 'form.soy.js',
-							requires: [
-								'soyutils'
-							]
+							path: 'form.js'
 						}
 					},
 					root: MODULE_PATH + '/'

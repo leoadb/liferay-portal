@@ -74,9 +74,12 @@ AUI.add(
 
 				return nodes.filter(
 					function(item) {
-						var qualifiedName = item.one('.form-group').getData('fieldname');
+						var foo = item.one('.form-group');
+						if (foo) {
+							var qualifiedName = item.one('.form-group').getData('fieldname');
 
-						return fn.call(instance, qualifiedName, item);
+							return fn.call(instance, qualifiedName, item);
+						}
 					}
 				);
 			},
