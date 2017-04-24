@@ -197,7 +197,7 @@ AUI.add(
 
 				var operator = instance._getOperator(index);
 
-				return instance._getSelectFieldFirstValue(operator);
+				return instance._getFieldValue(operator);
 			},
 
 			_getSecondOperand: function(index, type) {
@@ -224,28 +224,31 @@ AUI.add(
 
 				var secondOperandType = instance._getSecondOperandType(index);
 
-				return instance._getSelectFieldFirstValue(secondOperandType);
+				return instance._getFieldValue(secondOperandType);
 			},
 
-			_getSelectFieldFirstValue: function(selectField) {
+			_getFieldValue: function(selectField) {
 				var instance = this;
 
 				var value = selectField.getValue();
 
-				if (A.Object.isEmpty(value)) {
+				if (!A.Lang.isArray(value)) {
+					return value;
+				}
+
+				if (value.length == 0) {
 					return '';
 				}
-				else {
-					return value[0];
-				}
+
+				return value[0];
 			},
 
 			_getSecondOperandValue: function(index, type) {
 				var instance = this;
 
-				var secondOperand = instance._getSecondOperand(index, type)
+				var secondOperand = instance._getSecondOperand(index, type);
 
-				return instance._getSelectFieldFirstValue(secondOperand);
+				return instance._getFieldValue(secondOperand);
 			},
 
 			_handleAddConditionClick: function() {
@@ -410,15 +413,15 @@ AUI.add(
 				var context = {
 					fieldName: index + '-condition-first-operand',
 					label: instance.get('strings').if,
-					options: instance.get('fields'), //check
+					options: instance.get('fields'),
 					showLabel: false,
+					value: value,
 					visible: true
 				};
 
 				var field = new Liferay.DDM.Field.Select(
 					{
 						bubbleTargets: [instance],
-						value: value,
 						context: context
 					}
 				);
@@ -431,9 +434,18 @@ AUI.add(
 			_renderOperator: function(index, condition, container) {
 				var instance = this;
 
+				var value = [];
+
+				if (condition) {
+					instance._updateOperatorList(instance._getFieldDataType(condition.operands[0].value), index);
+
+					value =  [condition.operator];
+				}
+
 				var context = {
 					fieldName: index + '-condition-operator',
 					showLabel: false,
+					value: value,
 					visible: true,
 					options: []
 				};
@@ -441,20 +453,13 @@ AUI.add(
 				var field = new Liferay.DDM.Field.Select(
 					{
 						bubbleTargets: [instance],
-						context: context,
-						value: []
+						context: context
 					}
 				);
 
 				field.render(container);
 
 				instance._conditions[index + '-condition-operator'] = field;
-
-				if (condition) {
-					instance._updateOperatorList(instance._getFieldDataType(condition.operands[0].value), index);
-
-					field.set('value', [condition.operator]);
-				}
 			},
 
 			_renderSecondOperandInput: function(index, condition, container) {
@@ -477,6 +482,7 @@ AUI.add(
 					options: [],
 					placeholder: '',
 					showLabel: false,
+					value: value,
 					strings: {},
 					visible: visible
 				};
@@ -484,7 +490,6 @@ AUI.add(
 				var field = new Liferay.DDM.Field.Text(
 					{
 						bubbleTargets: [instance],
-						value: value,
 						context: context
 					}
 				);
@@ -510,13 +515,13 @@ AUI.add(
 					label: 'Put this label after',
 					options: instance.get('fields'),
 					showLabel: false,
+					value: value,
 					visible: visible
 				};
 
 				var field = new Liferay.DDM.Field.Select(
 					{
 						bubbleTargets: [instance],
-						value: value,
 						context: context
 					}
 				);
@@ -542,16 +547,15 @@ AUI.add(
 
 				var context = {
 					fieldName: index + '-condition-second-operand-options-select',
-					label: 'Put this label after',
 					options: options,
 					showLabel: false,
+					value: value,
 					visible: visible
 				};
 
 				var field = new Liferay.DDM.Field.Select(
 					{
 						bubbleTargets: [instance],
-						value: value,
 						context: context
 					}
 				);
@@ -584,13 +588,13 @@ AUI.add(
 						}
 					],
 					showLabel: false,
+					value: value,
 					visible: instance._isBinaryCondition(index)
 				};
 
 				var field = new Liferay.DDM.Field.Select(
 					{
 						bubbleTargets: [instance],
-						value: value,
 						context: context
 					}
 				);
@@ -650,7 +654,7 @@ AUI.add(
 
 				var secondOperandType = instance._getSecondOperandType(index);
 
-				var secondOperandTypeValue = secondOperandType ? instance._getSelectFieldFirstValue(secondOperandType) : '';
+				var secondOperandTypeValue = secondOperandType ? instance._getFieldValue(secondOperandType) : '';
 
 				if (secondOperandTypeValue && secondOperandType.get('visible')) {
 					var secondOperandFields = instance._getSecondOperand(index, 'fields');
