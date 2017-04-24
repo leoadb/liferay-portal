@@ -6,10 +6,6 @@ AUI.add(
 		var FormBuilderRenderRuleCondition = function(config) {};
 
 		FormBuilderRenderRuleCondition.ATTRS = {
-			functionsMetadata: {
-				value: Settings.functionsMetadata
-			},
-
 			logicOperator: {
 				setter: function(val) {
 					return val.toUpperCase();
@@ -615,7 +611,7 @@ AUI.add(
 
 				var operator = instance._getOperator(conditionIndex);
 
-				var operatorTypes = instance.get('functionsMetadata');
+				var operatorTypes = Settings.functionsMetadata;
 
 				var options = [];
 
