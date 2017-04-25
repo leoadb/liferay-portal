@@ -354,15 +354,11 @@ AUI.add(
 						var instance = this;
 
 						var fields = instance.getFields();
-//
-//						if (A.Lang.isArray(fieldValue)) {
-//							fieldValue = fieldValue[0];
-//						}
 
 						var fieldLabel;
 
 						for (var index in fields) {
-							if (fields[index].value === fieldValue[0]) {
+							if (fields[index].value === fieldValue) {
 								fieldLabel = fields[index].label;
 							}
 						}

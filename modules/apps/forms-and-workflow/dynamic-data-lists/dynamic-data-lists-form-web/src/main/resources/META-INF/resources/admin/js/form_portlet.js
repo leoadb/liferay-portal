@@ -340,8 +340,6 @@ AUI.add(
 
 						var state = instance.getState();
 
-						console.log('state', state);
-
 						instance.one('#description').val(JSON.stringify(state.description));
 						instance.one('#name').val(JSON.stringify(state.name));
 
@@ -375,7 +373,7 @@ AUI.add(
 
 						var editForm = instance.get('editForm');
 
-						//submitForm(editForm.form);
+						submitForm(editForm.form);
 					},
 
 					_afterEditingLocaleChange: function(event) {
