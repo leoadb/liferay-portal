@@ -15,14 +15,21 @@
 package com.liferay.dynamic.data.mapping.type.options.internal;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateContextContributor;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -54,16 +61,19 @@ public class OptionsDDMFormFieldTemplateContextContributor
 		parameters.put(
 			"value", getValue(ddmFormField, ddmFormFieldRenderingContext));
 
+		parameters.put("defaultLanguageId", LocaleUtil.toLanguageId(ddmFormField.getDDMForm().getDefaultLocale()));
+
+
 		return parameters;
 	}
 
-	protected List<Object> getValue(
+	protected Map<String, Object> getValue(
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
 		OptionsDDMFormFieldContextHelper optionsDDMFormFieldContextHelper =
 			new OptionsDDMFormFieldContextHelper(
-				jsonFactory, ddmFormFieldRenderingContext.getValue());
+				jsonFactory, ddmFormField, ddmFormFieldRenderingContext.getValue());
 
 		return optionsDDMFormFieldContextHelper.getValue();
 	}
