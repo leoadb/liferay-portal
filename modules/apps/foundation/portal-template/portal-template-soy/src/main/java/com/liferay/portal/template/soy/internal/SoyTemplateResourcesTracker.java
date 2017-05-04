@@ -172,6 +172,9 @@ public class SoyTemplateResourcesTracker {
 		private void _addTemplateResourcesToList(Bundle bundle) {
 			BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
 
+			System.out.println(
+				"Adding resources for " + bundle.getSymbolicName());
+
 			for (BundleWire bundleWire : bundleWiring.getRequiredWires("soy")) {
 				BundleRevision bundleRevision = bundleWire.getProvider();
 
@@ -189,8 +192,15 @@ public class SoyTemplateResourcesTracker {
 				List<TemplateResource> templateResources =
 					soyTemplateResourceCollector.getTemplateResources();
 
+				System.out.println(
+					"Gonna add " + templateResources.size() + " resources");
+
 				templateResources.stream().forEach(
 					templateResource -> {
+						if (templateResource == null) {
+							System.out.println("Found null template!");
+						}
+
 						if ((templateResource != null) &&
 							!_templateResources.contains(templateResource)) {
 

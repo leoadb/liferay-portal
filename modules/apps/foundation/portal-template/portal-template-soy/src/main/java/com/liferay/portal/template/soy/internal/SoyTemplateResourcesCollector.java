@@ -150,6 +150,10 @@ public class SoyTemplateResourcesCollector {
 			templateResource = new URLTemplateResource(templateId, url);
 		}
 
+		if (templateResource == null) {
+			System.out.println("Collector returned null for " + templateId);
+		}
+
 		return templateResource;
 	}
 
