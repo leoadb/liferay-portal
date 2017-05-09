@@ -9,6 +9,10 @@ AUI.add(
 
 		var MINUTE = 60000;
 
+		var STR_TRANSLATION_MANAGER = 'translationManager';
+
+		var STR_UNTITLED_FORM = Liferay.Language.get('untitled-form');
+
 		var TPL_BUTTON_SPINNER = '<span aria-hidden="true"><span class="icon-spinner icon-spin"></span></span>';
 
 		var DDLPortlet = A.Component.create(
@@ -94,7 +98,6 @@ AUI.add(
 						instance.one('.portlet-forms').removeClass('hide');
 
 						instance.get('formBuilder').render(instance.one('#formBuilder'));
-
 						instance.get('ruleBuilder').render(instance.one('#ruleBuilder'));
 
 						instance.createEditor(instance.ns('descriptionEditor'));
@@ -115,25 +118,27 @@ AUI.add(
 						var nameEditor = CKEDITOR.instances[instance.ns('nameEditor')];
 
 						instance._eventHandlers = [
-							instance.after('autosave', instance._afterAutosave),
+							descriptionEditor.on('change', A.bind('_onDescriptionEditorChange', instance)),
 							formBuilder._layoutBuilder.after('layout-builder:moveEnd', A.bind(instance._afterFormBuilderLayoutBuilderMoveEnd, instance)),
 							formBuilder._layoutBuilder.after('layout-builder:moveStart', A.bind(instance._afterFormBuilderLayoutBuilderMoveStart, instance)),
+							instance.after('autosave', instance._afterAutosave),
 							instance.one('.back-url-link').on('click', A.bind('_onBack', instance)),
 							instance.one('#preview').on('click', A.bind('_onPreviewButtonClick', instance)),
 							instance.one('#publish').on('click', A.bind('_onPublishButtonClick', instance)),
 							instance.one('#publishIcon').on('click', A.bind('_onPublishIconClick', instance)),
 							instance.one('#save').on('click', A.bind('_onSaveButtonClick', instance)),
-							instance.one('#showRules').on('click', A.bind('_onRulesButtonClick', instance)),
 							instance.one('#showForm').on('click', A.bind('_onFormButtonClick', instance)),
-							Liferay.on('destroyPortlet', A.bind('_onDestroyPortlet', instance))
+							instance.one('#showRules').on('click', A.bind('_onRulesButtonClick', instance)),
+							Liferay.on('destroyPortlet', A.bind('_onDestroyPortlet', instance)),
+							nameEditor.on('change', A.bind('_onNameEditorChange', instance)),
+							translationManager.on('editingLocaleChange', instance._afterEditingLocaleChange.bind(instance))
 						];
 
-						var autosaveInterval = instance.get('autosaveInterval');
+						var autosaveInterval = Settings.autosaveInterval;
 
 						if (autosaveInterval > 0) {
 							instance._intervalId = setInterval(A.bind('_autosave', instance), autosaveInterval * MINUTE);
 						}
-
 					},
 
 					destructor: function() {
@@ -149,6 +154,23 @@ AUI.add(
 
 						instance._copyPublishFormURLPopover.destroy();
 						instance._publishTooltip.destroy();
+					},
+
+					createCopyPublishFormURLPopover: function() {
+						var instance = this;
+
+						instance._copyPublishFormURLPopover = new Liferay.DDL.FormBuilderCopyPublishFormURLPopover(
+							{
+								portletNamespace: instance.get('namespace')
+							}
+						);
+
+						instance._copyPublishFormURLPopover.setAlign(
+							{
+								node: A.one('.publish-icon'),
+								points: [A.WidgetPositionAlign.RC, A.WidgetPositionAlign.LC]
+							}
+						);
 					},
 
 					createEditor: function(editorName) {
@@ -169,21 +191,6 @@ AUI.add(
 								}
 							);
 						}
-					},
-
-					createCopyPublishFormURLPopover: function() {
-						var instance = this;
-
-						instance._copyPublishFormURLPopover = new Liferay.DDL.FormBuilderCopyPublishFormURLPopover(
-							{
-								portletNamespace: instance.get('namespace')
-							}
-						);
-
-						instance._copyPublishFormURLPopover.setAlign({
-							node: A.one('.publish-icon'),
-							points: [A.WidgetPositionAlign.RC, A.WidgetPositionAlign.LC]
-						});
 					},
 
 					createPublishTooltip: function() {
@@ -259,13 +266,17 @@ AUI.add(
 					isEmpty: function() {
 						var instance = this;
 
-						var state = instance.getState();
+						var formBuilder = instance.get('formBuilder');
 
-						var definition = state.definition;
+						var count = 0;
 
-						var fields = definition.fields;
+						formBuilder.eachFields(
+							function(field) {
+								count++;
+							}
+						);
 
-						return fields.length === 0;
+						return count === 0;
 					},
 
 					openConfirmationModal: function(confirm, cancel) {
@@ -309,48 +320,37 @@ AUI.add(
 						return dialog;
 					},
 
-					serializeFormBuilder: function() {
+					submitForm: function() {
+						var instance = this;
+
+						instance.syncInputValues();
+
+						var editForm = instance.get('editForm');
+
+						submitForm(editForm.form);
+					},
+
+					syncInputValues: function() {
 						var instance = this;
 
 						var state = instance.getState();
 
-						instance.one('#description').val(state.description);
+						instance.one('#description').val(JSON.stringify(state.description));
+						instance.one('#name').val(JSON.stringify(state.name));
 
-						instance.one('#definition').val(JSON.stringify(state.definition));
-
-						instance.one('#layout').val(JSON.stringify(state.layout));
-
-						instance.one('#name').val(state.name);
-
-						instance.one('#rules').val(state.rules);
-
-						var publishCheckbox = instance.one('#publishCheckbox');
+						instance.one('#serializedFormBuilderContext').val(JSON.stringify(state));
 
 						var settingsDDMForm = Liferay.component('settingsDDMForm');
 
 						var publishedField = settingsDDMForm.getField('published');
 
-						publishedField.setValue(instance.get('published'));
+						publishedField.set('value', instance.get('published'));
 
-						var settings = settingsDDMForm.toJSON();
+						var settings = settingsDDMForm.get('context');
 
-						var settingsInput = instance.one('#serializedSettingsDDMFormValues');
+						var settingsInput = instance.one('#serializedSettingsContext');
 
 						settingsInput.val(JSON.stringify(settings));
-					},
-
-					submitForm: function() {
-						var instance = this;
-
-						if (!instance.get('name').trim()) {
-							instance.set('name', Liferay.Language.get('untitled-form'));
-						}
-
-						instance.serializeFormBuilder();
-
-						var editForm = instance.get('editForm');
-
-						submitForm(editForm.form);
 					},
 
 					_afterAutosave: function(event) {
@@ -364,6 +364,20 @@ AUI.add(
 						);
 
 						instance.one('#autosaveMessage').set('innerHTML', autosaveMessage);
+					},
+
+					_afterEditingLocaleChange: function(event) {
+						var instance = this;
+
+						var editingLanguageId = event.newVal;
+
+						var formBuilder = instance.get('formBuilder');
+
+						instance.set('editingLanguageId', editingLanguageId);
+						formBuilder.set('editingLanguageId', editingLanguageId);
+
+						instance._syncName();
+						instance._syncDescription();
 					},
 
 					_afterFormBuilderLayoutBuilderMoveEnd: function() {
@@ -385,7 +399,7 @@ AUI.add(
 
 						callback = callback || EMPTY_FN;
 
-						instance.serializeFormBuilder();
+						instance.syncInputValues();
 
 						var state = instance.getState();
 
@@ -396,7 +410,7 @@ AUI.add(
 								var formData = instance._getFormData(A.IO.stringify(editForm.form));
 
 								A.io.request(
-									instance.get('autosaveURL'),
+									Settings.autosaveURL,
 									{
 										after: {
 											success: function() {
@@ -438,10 +452,10 @@ AUI.add(
 						var requireAuthenticationField = settingsDDMForm.getField('requireAuthentication');
 
 						if (requireAuthenticationField.getValue()) {
-							formURL = instance.get('restrictedFormURL');
+							formURL = Settings.restrictedFormURL;
 						}
 						else {
-							formURL = instance.get('sharedFormURL');
+							formURL = Settings.sharedFormURL;
 						}
 
 						var recordSetId = instance.byId('recordSetId').val();
@@ -476,27 +490,85 @@ AUI.add(
 					_getDescription: function() {
 						var instance = this;
 
-						return window[instance.ns('descriptionEditor')].getHTML();
+						var editor = instance._getDescriptionEditor();
+
+						return editor.getHTML();
+					},
+
+					_getDescriptionEditor: function() {
+						var instance = this;
+
+						return window[instance.ns('descriptionEditor')];
 					},
 
 					_getFormData: function(formString) {
 						var instance = this;
 
-						if (!instance.get('name').trim()) {
-							var formObject = A.QueryString.parse(formString);
+						var formObject = A.QueryString.parse(formString);
 
-							formObject[instance.ns('name')] = Liferay.Language.get('untitled-form');
+						var state = instance.getState();
 
-							formString = A.QueryString.stringify(formObject);
-						}
+						formObject[instance.ns('name')] = JSON.stringify(state.name);
+						formObject[instance.ns('published')] = JSON.stringify(instance.get('published'));
+
+						formString = A.QueryString.stringify(formObject);
 
 						return formString;
+					},
+
+					_getLocalizedName: function() {
+						var instance = this;
+
+						var defaultLanguageId = instance.get('defaultLanguageId');
+						var localizedName = instance.get('localizedName');
+
+						if (!localizedName[defaultLanguageId]) {
+							localizedName[defaultLanguageId] = STR_UNTITLED_FORM;
+						}
+
+						return localizedName;
 					},
 
 					_getName: function() {
 						var instance = this;
 
-						return window[instance.ns('nameEditor')].getHTML();
+						var editor = instance._getNameEditor();
+
+						return editor.getHTML();
+					},
+
+					_getNameEditor: function() {
+						var instance = this;
+
+						return window[instance.ns('nameEditor')];
+					},
+
+					_getRecordSetId: function() {
+						var instance = this;
+
+						return instance.byId('recordSetId').val();
+					},
+
+					_handlePublishAction: function() {
+						var instance = this;
+
+						var publishMessage = Liferay.Language.get('the-form-was-published-successfully-access-it-with-this-url-x');
+
+						var formUrl = '<span style="font-weight: 500">' + instance._createFormURL() + '</span>';
+
+						publishMessage = publishMessage.replace(/\{0\}/gim, formUrl);
+
+						instance._showAlert(publishMessage, 'success');
+
+						instance.one('#publish').html(Liferay.Language.get('unpublish-form'));
+					},
+
+					_handleUnpublishAction: function() {
+						var instance = this;
+
+						instance._showAlert(Liferay.Language.get('the-form-was-unpublished-successfully'), 'success');
+
+						instance.one('#publish').html(Liferay.Language.get('publish-form'));
 					},
 
 					_isSameState: function(state1, state2) {
@@ -531,6 +603,17 @@ AUI.add(
 						}
 					},
 
+					_onDescriptionEditorChange: function(event) {
+						var instance = this;
+
+						var editingLanguageId = instance.get('editingLanguageId');
+						var localizedDescription = instance.get('localizedDescription');
+
+						var descriptionEditor = instance._getDescriptionEditor();
+
+						localizedDescription[editingLanguageId] = descriptionEditor.getHTML();
+					},
+
 					_onDestroyPortlet: function(event) {
 						var instance = this;
 
@@ -551,6 +634,17 @@ AUI.add(
 						instance.one('#showForm').addClass('active');
 					},
 
+					_onNameEditorChange: function(event) {
+						var instance = this;
+
+						var editingLanguageId = instance.get('editingLanguageId');
+						var localizedName = instance.get('localizedName');
+
+						var nameEditor = instance._getNameEditor();
+
+						localizedName[editingLanguageId] = nameEditor.getHTML();
+					},
+
 					_onPreviewButtonClick: function() {
 						var instance = this;
 
@@ -563,24 +657,11 @@ AUI.add(
 						);
 					},
 
-					_onPublishIconClick: function() {
-						var instance = this;
-
-						if (!instance.get('published')) {
-							return;
-						}
-
-						instance._copyPublishFormURLPopover.set('publishURL', instance._createFormURL());
-
-						instance._copyPublishFormURLPopover.show();
-					},
-
 					_onPublishButtonClick: function() {
 						var instance = this;
 
 						instance._autosave(
 							function() {
-
 								var publishedValue = instance.get('published');
 								var newPublishedValue = !publishedValue;
 
@@ -592,11 +673,13 @@ AUI.add(
 								);
 
 								A.io.request(
-									instance.get('publishRecordSetURL'),
+									Settings.publishRecordSetURL,
 									{
 										after: {
 											success: function() {
 												instance.set('published', newPublishedValue);
+
+												instance.syncInputValues();
 
 												if (newPublishedValue) {
 													instance._handlePublishAction();
@@ -618,26 +701,16 @@ AUI.add(
 
 					},
 
-					_handlePublishAction: function() {
+					_onPublishIconClick: function() {
 						var instance = this;
 
-						var publishMessage = Liferay.Language.get('the-form-was-published-successfully-access-it-with-this-url-x')
+						if (!instance.get('published')) {
+							return;
+						}
 
-						var formUrl = '<span style="font-weight: 500">' + instance._createFormURL() + '</span>';
+						instance._copyPublishFormURLPopover.set('publishURL', instance._createFormURL());
 
-						publishMessage = publishMessage.replace(/\{0\}/gim, formUrl);
-
-						instance._showAlert(publishMessage, "success");
-
-						instance.one('#publish').html(Liferay.Language.get('unpublish-form'));
-					},
-
-					_handleUnpublishAction: function() {
-						var instance = this;
-
-						instance._showAlert(Liferay.Language.get('the-form-was-unpublished-successfully'), "success");
-
-						instance.one('#publish').html(Liferay.Language.get('publish-form'));
+						instance._copyPublishFormURLPopover.show();
 					},
 
 					_onRulesButtonClick: function() {
@@ -668,21 +741,28 @@ AUI.add(
 						instance.submitForm();
 					},
 
+					_setDescription: function(value) {
+						var instance = this;
+
+						var editor = instance._getDescriptionEditor();
+
+						editor.setHTML(value);
+					},
+
 					_setName: function(value) {
 						var instance = this;
 
-						window[instance.ns('nameEditor')].setHTML(value);
+						var editor = instance._getNameEditor();
+
+						editor.setHTML(value);
 					},
 
 					_setPublished: function(value) {
 						var instance = this;
 
-						if (value) {
-							A.one('.publish-icon').removeClass("disabled");
-						}
-						else {
-							A.one('.publish-icon').addClass("disabled");
-						}
+						var publishIcon = A.one('.publish-icon');
+
+						publishIcon.toggleClass('disabled', !value);
 					},
 
 					_showAlert: function(message, type) {
@@ -690,7 +770,7 @@ AUI.add(
 
 						var alert = instance.get('alert');
 
-						var icon = "exclamation-full";
+						var icon = 'exclamation-full';
 
 						if (type === 'success') {
 							icon = 'check';
@@ -709,6 +789,36 @@ AUI.add(
 						}
 
 						alert.show();
+					},
+
+					_syncDescription: function() {
+						var instance = this;
+
+						var editingLanguageId = instance.get('editingLanguageId');
+						var defaultLanguageId = instance.get('defaultLanguageId');
+
+						var localizedDescription = instance.get('localizedDescription');
+
+						var description = localizedDescription[editingLanguageId] || localizedDescription[defaultLanguageId];
+
+						localizedDescription[editingLanguageId] = description;
+
+						instance._setDescription(description);
+					},
+
+					_syncName: function() {
+						var instance = this;
+
+						var editingLanguageId = instance.get('editingLanguageId');
+						var defaultLanguageId = instance.get('defaultLanguageId');
+
+						var localizedName = instance.get('localizedName');
+
+						var name = localizedName[editingLanguageId] || localizedName[defaultLanguageId];
+
+						localizedName[editingLanguageId] = name;
+
+						instance._setName(name);
 					},
 
 					_valueAlert: function() {
