@@ -252,7 +252,6 @@ describe(
 					}
 				);
 
-
 				xit(
 					'should not allow the same name for different options',
 					function(done) {
