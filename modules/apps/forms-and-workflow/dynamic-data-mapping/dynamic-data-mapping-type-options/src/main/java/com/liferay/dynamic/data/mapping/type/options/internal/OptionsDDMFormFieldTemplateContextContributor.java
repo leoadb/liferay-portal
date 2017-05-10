@@ -53,11 +53,11 @@ public class OptionsDDMFormFieldTemplateContextContributor
 				ddmFormField.getProperty("allowEmptyOptions")));
 		parameters.put(
 			"value", getValue(ddmFormField, ddmFormFieldRenderingContext));
-		
+
 		parameters.put(
-			 "defaultLanguageId",
-	 			LocaleUtil.toLanguageId(
-	 				ddmFormField.getDDMForm().getDefaultLocale()));
+			"defaultLanguageId",
+			LocaleUtil.toLanguageId(
+				ddmFormField.getDDMForm().getDefaultLocale()));
 
 		return parameters;
 	}
