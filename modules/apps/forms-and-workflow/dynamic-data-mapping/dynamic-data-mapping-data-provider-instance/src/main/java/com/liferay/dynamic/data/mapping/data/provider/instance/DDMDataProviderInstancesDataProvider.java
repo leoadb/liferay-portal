@@ -20,20 +20,18 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderException;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderRequest;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderResponse;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderResponseOutput;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.workflow.WorkflowDefinition;
-import com.liferay.portal.kernel.workflow.WorkflowDefinitionManager;
-import com.liferay.portal.kernel.workflow.WorkflowEngineManager;
-import com.liferay.portal.kernel.workflow.WorkflowException;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,13 +39,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Marcellus Tavares
+ * @author Rafael Praxedes
  */
 @Component(
 	immediate = true,
-	property = "ddm.data.provider.instance.id=workflow-definitions"
+	property = "ddm.data.provider.instance.id=getDataProviderInstances"
 )
-public class WorkflowDefinitionsDataProvider implements DDMDataProvider {
+public class DDMDataProviderInstancesDataProvider implements DDMDataProvider {
 
 	@Override
 	public List<KeyValuePair> getData(
@@ -64,44 +62,35 @@ public class WorkflowDefinitionsDataProvider implements DDMDataProvider {
 
 		List<KeyValuePair> data = new ArrayList<>();
 
-		Locale locale = getLocale(
-			ddmDataProviderRequest.getHttpServletRequest());
-
-		data.add(
-			new KeyValuePair(
-				"no-workflow", LanguageUtil.get(locale, "no-workflow")));
-
-		if (!_workflowEngineManager.isDeployed()) {
-			return DDMDataProviderResponse.of(
-				DDMDataProviderResponseOutput.of(
-					"Default-Output", "list", data));
-		}
-
 		try {
-			long companyId = getCompanyId(
-				ddmDataProviderRequest.getHttpServletRequest());
+			HttpServletRequest request =
+				ddmDataProviderRequest.getHttpServletRequest();
 
-			List<WorkflowDefinition> workflowDefinitions =
-				_workflowDefinitionManager.getActiveWorkflowDefinitions(
-					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+			ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-			for (WorkflowDefinition workflowDefinition : workflowDefinitions) {
-				String version = LanguageUtil.format(
-					locale, "version-x", workflowDefinition.getVersion(),
-					false);
+			long[] groupIds = _portal.getCurrentAndAncestorSiteGroupIds(
+				themeDisplay.getScopeGroupId());
 
-				String label =
-					workflowDefinition.getName() + " (" + version + ")";
+			//todo expose in the service
 
-				String value =
-					workflowDefinition.getName() + StringPool.AT +
-						workflowDefinition.getVersion();
+			List<DDMDataProviderInstance> ddmDataProviderInstances =
+				_ddmDataProviderInstanceLocalService.getDataProviderInstances(
+					groupIds);
 
-				data.add(new KeyValuePair(value, label));
+			for (DDMDataProviderInstance ddmDataProviderInstance :
+					ddmDataProviderInstances) {
+
+				long value =
+					ddmDataProviderInstance.getDataProviderInstanceId();
+
+				String label = ddmDataProviderInstance.getName(
+					themeDisplay.getLocale());
+
+				data.add(new KeyValuePair(String.valueOf(value), label));
 			}
 		}
-		catch (WorkflowException we) {
-			throw new DDMDataProviderException(we);
+		catch (Exception e) {
 		}
 
 		return DDMDataProviderResponse.of(
@@ -113,21 +102,14 @@ public class WorkflowDefinitionsDataProvider implements DDMDataProvider {
 		throw new UnsupportedOperationException();
 	}
 
-	protected long getCompanyId(HttpServletRequest httpServletRequest) {
-		return _portal.getCompanyId(httpServletRequest);
-	}
+	private static final Log _log = LogFactoryUtil.getLog(
+		DDMDataProviderInstancesDataProvider.class);
 
-	protected Locale getLocale(HttpServletRequest httpServletRequest) {
-		return _portal.getLocale(httpServletRequest);
-	}
+	@Reference
+	private DDMDataProviderInstanceLocalService
+		_ddmDataProviderInstanceLocalService;
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private WorkflowDefinitionManager _workflowDefinitionManager;
-
-	@Reference
-	private WorkflowEngineManager _workflowEngineManager;
 
 }
