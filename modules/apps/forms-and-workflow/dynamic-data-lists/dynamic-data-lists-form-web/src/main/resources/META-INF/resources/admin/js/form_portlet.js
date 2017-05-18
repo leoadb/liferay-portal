@@ -533,6 +533,7 @@ AUI.add(
 
 						if (recordSetIdNode.val() === '0') {
 							recordSetIdNode.val(response.recordSetId);
+							instance._setRecordSetIdURLParameter(response.recordSetId);
 						}
 
 						if (ddmStructureIdNode.val() === '0') {
@@ -755,6 +756,22 @@ AUI.add(
 								.attr('title', Liferay.Language.get('publish-the-form-to-get-its-shareable-link'));
 						}
 					},
+
+					_setRecordSetIdURLParameter: function(recordSetId) {
+						var instance = this;
+
+						var currentURL = window.location.href;
+
+						var recordSetParameterName = instance.get('namespace') + 'recordSetId';
+
+						if (history) {
+							history.replaceState(
+								{
+									recordSetId: recordSetId
+								},
+								'',
+								currentURL + '&' + recordSetParameterName + '=' + recordSetId
+							);
 						}
 					},
 
