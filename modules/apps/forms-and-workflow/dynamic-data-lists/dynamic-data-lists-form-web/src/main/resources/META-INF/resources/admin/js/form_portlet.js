@@ -146,7 +146,7 @@ AUI.add(
 
 						instance.bindUI();
 
-						instance.savedState = instance.initialState = instance.getState();
+						instance.savedState = instance.getState();
 					},
 
 					renderUI: function() {
@@ -429,6 +429,8 @@ AUI.add(
 						);
 
 						instance.one('#autosaveMessage').set('innerHTML', autosaveMessage);
+
+						A.one('.publish-icon').removeClass('hide');
 					},
 
 					_afterFormBuilderLayoutBuilderMoveEnd: function() {
@@ -531,6 +533,7 @@ AUI.add(
 
 						if (recordSetIdNode.val() === '0') {
 							recordSetIdNode.val(response.recordSetId);
+							instance._setRecordSetIdURLParameter(response.recordSetId);
 						}
 
 						if (ddmStructureIdNode.val() === '0') {
@@ -579,7 +582,7 @@ AUI.add(
 					_onBack: function(event) {
 						var instance = this;
 
-						if (!instance._isSameState(instance.getState(), instance.initialState)) {
+						if (!instance._isSameState(instance.getState(), instance.savedState)) {
 							event.preventDefault();
 							event.stopPropagation();
 
@@ -743,10 +746,32 @@ AUI.add(
 						var instance = this;
 
 						if (value) {
-							A.one('.publish-icon').removeClass("disabled");
+							A.one('.publish-icon')
+								.removeClass("disabled")
+								.attr('title', Liferay.Language.get('copy-url'));
 						}
 						else {
-							A.one('.publish-icon').addClass("disabled");
+							A.one('.publish-icon')
+								.addClass("disabled")
+								.attr('title', Liferay.Language.get('publish-the-form-to-get-its-shareable-link'));
+						}
+					},
+
+					_setRecordSetIdURLParameter: function(recordSetId) {
+						var instance = this;
+
+						var currentURL = window.location.href;
+
+						var recordSetParameterName = instance.get('namespace') + 'recordSetId';
+
+						if (history) {
+							history.replaceState(
+								{
+									recordSetId: recordSetId
+								},
+								'',
+								currentURL + '&' + recordSetParameterName + '=' + recordSetId
+							);
 						}
 					},
 
