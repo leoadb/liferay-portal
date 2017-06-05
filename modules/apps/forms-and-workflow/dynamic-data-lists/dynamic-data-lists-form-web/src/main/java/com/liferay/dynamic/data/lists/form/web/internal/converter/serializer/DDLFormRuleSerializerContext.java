@@ -14,12 +14,24 @@
 
 package com.liferay.dynamic.data.lists.form.web.internal.converter.serializer;
 
-/**
- * @author Leonardo Barros
- */
-public interface DDLFormRuleActionSerializer {
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-	public String serialize(
-		DDLFormRuleSerializerContext ddlFormRuleSerializerContext);
+/**
+ * @author Rafael Praxedes
+ */
+public class DDLFormRuleSerializerContext {
+
+	public void addAttribute(String key, Object value) {
+		_serializerContext.put(key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getAttribute(String key) {
+		return (T)_serializerContext.get(key);
+	}
+
+	private final Map<String, Object> _serializerContext =
+		new ConcurrentHashMap<>();
 
 }
