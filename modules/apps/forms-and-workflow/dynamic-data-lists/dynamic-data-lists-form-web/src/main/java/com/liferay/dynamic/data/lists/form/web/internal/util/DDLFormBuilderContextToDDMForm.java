@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -343,43 +344,37 @@ public class DDLFormBuilderContextToDDMForm {
 		DDMFormSuccessPageSettings ddmFormSuccessPageSettings =
 			new DDMFormSuccessPageSettings();
 
-		setSuccessPageSettingsBody(
-			jsonObject.getJSONObject("body"), ddmForm.getDefaultLocale(),
-			ddmFormSuccessPageSettings);
-		setSuccessPageSettingsTitle(
-			jsonObject.getJSONObject("title"), ddmForm.getDefaultLocale(),
-			ddmFormSuccessPageSettings);
-		setSuccessPageSettingsEnabled(
-			jsonObject.getBoolean("enabled"), ddmFormSuccessPageSettings);
+		Locale defaultLocale = ddmForm.getDefaultLocale();
+
+		ddmFormSuccessPageSettings.setBody(
+			createLocalizedValue(
+				jsonObject.getJSONObject("body"), defaultLocale));
+
+		ddmFormSuccessPageSettings.setTitle(
+			createLocalizedValue(
+				jsonObject.getJSONObject("title"), defaultLocale));
+
+		ddmFormSuccessPageSettings.setEnabled(jsonObject.getBoolean("enabled"));
 
 		ddmForm.setDDMFormSuccessPageSettings(ddmFormSuccessPageSettings);
 	}
 
-	protected void setSuccessPageSettingsBody(
-		JSONObject jsonObject, Locale defaultLocale,
-		DDMFormSuccessPageSettings ddmFormSuccessPageSettings) {
+	protected LocalizedValue createLocalizedValue(
+		JSONObject jsonObject, Locale defaultLocale) {
 
-		String body = jsonObject.getString(
-			LocaleUtil.toLanguageId(defaultLocale));
+		LocalizedValue localizedValue = new LocalizedValue(defaultLocale);
 
-		ddmFormSuccessPageSettings.setBody(body);
-	}
+		Iterator<String> keys = jsonObject.keys();
 
-	protected void setSuccessPageSettingsEnabled(
-		boolean enabled,
-		DDMFormSuccessPageSettings ddmFormSuccessPageSettings) {
+		while (keys.hasNext()) {
+			String languageId = keys.next();
 
-		ddmFormSuccessPageSettings.setEnabled(enabled);
-	}
+			localizedValue.addString(
+				LocaleUtil.fromLanguageId(languageId),
+				jsonObject.getString(languageId));
+		}
 
-	protected void setSuccessPageSettingsTitle(
-		JSONObject jsonObject, Locale defaultLocale,
-		DDMFormSuccessPageSettings ddmFormSuccessPageSettings) {
-
-		String title = jsonObject.getString(
-			LocaleUtil.toLanguageId(defaultLocale));
-
-		ddmFormSuccessPageSettings.setTitle(title);
+		return localizedValue;
 	}
 
 	@Reference
