@@ -34,4 +34,8 @@ public interface DDMFormFieldValueAccessor<T> {
 		return Validator.isNull(value.getString(locale));
 	}
 
+	public default Object map(Object value) {
+		return value;
+	}
+
 }
