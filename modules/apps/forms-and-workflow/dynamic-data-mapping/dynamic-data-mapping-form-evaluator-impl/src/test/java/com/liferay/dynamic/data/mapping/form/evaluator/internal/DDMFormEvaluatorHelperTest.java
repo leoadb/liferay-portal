@@ -22,6 +22,7 @@ import com.liferay.dynamic.data.mapping.expression.internal.DDMExpressionFactory
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluationResult;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluatorContext;
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
@@ -138,7 +139,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, _userLocalService);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				_userLocalService);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -212,7 +214,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, _roleLocalService, _userGroupRoleLocalService,
+				_ddmFormFieldTypeServicesTracker, _jsonFactory,
+				_roleLocalService, _userGroupRoleLocalService,
 				_userLocalService);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
@@ -265,7 +268,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -323,7 +327,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, _userLocalService);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				_userLocalService);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -383,7 +388,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, _roleLocalService, _userGroupRoleLocalService,
+				_ddmFormFieldTypeServicesTracker, _jsonFactory,
+				_roleLocalService, _userGroupRoleLocalService,
 				_userLocalService);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
@@ -436,7 +442,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -472,7 +479,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -529,7 +537,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -592,7 +601,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -640,7 +650,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -709,7 +720,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -809,7 +821,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -890,7 +903,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -943,7 +957,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -997,7 +1012,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -1053,7 +1069,8 @@ public class DDMFormEvaluatorHelperTest {
 		DDMFormEvaluatorHelper ddmFormEvaluatorHelper =
 			new DDMFormEvaluatorHelper(
 				null, _ddmExpressionFactory, ddmFormEvaluatorContext,
-				_jsonFactory, null, null, null);
+				_ddmFormFieldTypeServicesTracker, _jsonFactory, null, null,
+				null);
 
 		DDMFormEvaluationResult ddmFormEvaluationResult =
 			ddmFormEvaluatorHelper.evaluate();
@@ -1193,6 +1210,10 @@ public class DDMFormEvaluatorHelperTest {
 
 	private final DDMExpressionFactory _ddmExpressionFactory =
 		new DDMExpressionFactoryImpl();
+
+	@Mock
+	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;
+
 	private final JSONFactory _jsonFactory = new JSONFactoryImpl();
 	private Language _language;
 
