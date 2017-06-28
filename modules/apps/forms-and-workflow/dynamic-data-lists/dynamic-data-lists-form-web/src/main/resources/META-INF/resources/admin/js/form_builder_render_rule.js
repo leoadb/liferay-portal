@@ -30,10 +30,12 @@ AUI.add(
 
 					strings: {
 						value: {
+							actions: Liferay.Language.get('actions'),
 							and: Liferay.Language.get('and'),
 							autofill: Liferay.Language.get('autofill'),
 							calculate: Liferay.Language.get('calculate'),
 							cancel: Liferay.Language.get('cancel'),
+							condition: Liferay.Language.get('condition'),
 							description: Liferay.Language.get('define-condition-and-action-to-change-fields-and-elements-on-the-form'),
 							do: Liferay.Language.get('do'),
 							enable: Liferay.Language.get('enable'),
