@@ -3,7 +3,7 @@ AUI.add(
 	function(A) {
 		var currentUser = {
 			dataType: 'user',
-			label: 'User',
+			label: Liferay.Language.get('user'),
 			value: 'user'
 		};
 

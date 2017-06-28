@@ -373,7 +373,7 @@ AUI.add(
 						var instance = this;
 
 						if (fieldValue === 'user') {
-							return 'User';
+							return Liferay.Language.get('user');
 						}
 
 						var fields = instance.getFields();
