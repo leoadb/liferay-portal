@@ -17,11 +17,7 @@ AUI.add(
 					},
 
 					logicOperator: {
-						setter: function(val) {
-							return val.toUpperCase();
-						},
-						validator: '_isValidLogicOperator',
-						value: Liferay.Language.get('or')
+						value: 'or'
 					},
 
 					pages: {
@@ -143,7 +139,7 @@ AUI.add(
 							};
 						}
 
-						instance.set('logicOperator', rule['logical-operator']);
+						instance.set('logicOperator', rule['logical-operator'] || instance.get('logicOperator'));
 
 						contentBox.setHTML(instance._getRuleContainerTemplate(rule));
 
@@ -373,7 +369,7 @@ AUI.add(
 								conditions: rule ? rule.conditions : [],
 								deleteIcon: Liferay.Util.getLexiconIconTpl('trash', 'icon-monospaced'),
 								invalid: !instance._isValidRule(rule),
-								logicalOperator: instance.get('logicOperator'),
+								logicalOperator: instance.get('logicOperator').toLowerCase(),
 								plusIcon: Liferay.Util.getLexiconIconTpl('plus', 'icon-monospaced'),
 								showLabel: false,
 								strings: instance.get('strings')
