@@ -49,7 +49,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.web.form.web.configuration.WebFormGroupServiceConfiguration;
+import com.liferay.web.form.web.configuration.WebFormServiceConfiguration;
 import com.liferay.web.form.web.internal.constants.WebFormPortletKeys;
 import com.liferay.web.form.web.internal.util.WebFormUtil;
 
@@ -243,7 +243,7 @@ public class WebFormPortlet extends MVCPortlet {
 			if (saveToFile) {
 				String fileName = WebFormUtil.getFileName(
 					themeDisplay, portletId,
-					_webFormGroupServiceConfiguration.dataRootDir());
+					_webFormServiceConfiguration.dataRootDir());
 
 				fileSuccess = saveFile(fieldsMap, fileName);
 			}
@@ -299,8 +299,8 @@ public class WebFormPortlet extends MVCPortlet {
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		_webFormGroupServiceConfiguration = ConfigurableUtil.createConfigurable(
-			WebFormGroupServiceConfiguration.class, properties);
+		_webFormServiceConfiguration = ConfigurableUtil.createConfigurable(
+			WebFormServiceConfiguration.class, properties);
 	}
 
 	protected void appendFieldLabels(
@@ -308,7 +308,7 @@ public class WebFormPortlet extends MVCPortlet {
 
 		for (String fieldLabel : fieldsMap.keySet()) {
 			sb.append(getCSVFormattedValue(fieldLabel));
-			sb.append(_webFormGroupServiceConfiguration.csvSeparator());
+			sb.append(_webFormServiceConfiguration.csvSeparator());
 		}
 
 		sb.setIndex(sb.index() - 1);
@@ -324,7 +324,7 @@ public class WebFormPortlet extends MVCPortlet {
 
 			sb.append(getCSVFormattedValue(fieldValue));
 
-			sb.append(_webFormGroupServiceConfiguration.csvSeparator());
+			sb.append(_webFormServiceConfiguration.csvSeparator());
 		}
 
 		sb.setIndex(sb.index() - 1);
@@ -370,7 +370,7 @@ public class WebFormPortlet extends MVCPortlet {
 			fieldLabels.add(fieldLabel);
 
 			sb.append(getCSVFormattedValue(localizedfieldLabel));
-			sb.append(_webFormGroupServiceConfiguration.csvSeparator());
+			sb.append(_webFormServiceConfiguration.csvSeparator());
 		}
 
 		sb.setIndex(sb.index() - 1);
@@ -391,7 +391,7 @@ public class WebFormPortlet extends MVCPortlet {
 
 					sb.append(getCSVFormattedValue(data));
 
-					sb.append(_webFormGroupServiceConfiguration.csvSeparator());
+					sb.append(_webFormServiceConfiguration.csvSeparator());
 				}
 
 				sb.setIndex(sb.index() - 1);
@@ -503,8 +503,8 @@ public class WebFormPortlet extends MVCPortlet {
 			}
 
 			InternetAddress fromAddress = new InternetAddress(
-				_webFormGroupServiceConfiguration.emailFromAddress(),
-				_webFormGroupServiceConfiguration.emailFromName());
+				_webFormServiceConfiguration.emailFromAddress(),
+				_webFormServiceConfiguration.emailFromName());
 			String subject = preferences.getValue("subject", StringPool.BLANK);
 			String body = getMailBody(fieldsMap);
 
@@ -598,7 +598,7 @@ public class WebFormPortlet extends MVCPortlet {
 				continue;
 			}
 
-			if (!_webFormGroupServiceConfiguration.validationScriptEnable()) {
+			if (!_webFormServiceConfiguration.validationScriptEnable()) {
 				continue;
 			}
 
@@ -630,6 +630,6 @@ public class WebFormPortlet extends MVCPortlet {
 	@Reference
 	private Portal _portal;
 
-	private WebFormGroupServiceConfiguration _webFormGroupServiceConfiguration;
+	private WebFormServiceConfiguration _webFormServiceConfiguration;
 
 }
