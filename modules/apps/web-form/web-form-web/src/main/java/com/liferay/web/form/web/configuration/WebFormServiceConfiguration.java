@@ -29,7 +29,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	localization = "content/Language",
 	name = "web.form.service.configuration.name"
 )
-public interface WebFormGroupServiceConfiguration {
+public interface WebFormServiceConfiguration {
 
 	@Meta.AD(deflt = ";", required = false)
 	public String csvSeparator();
