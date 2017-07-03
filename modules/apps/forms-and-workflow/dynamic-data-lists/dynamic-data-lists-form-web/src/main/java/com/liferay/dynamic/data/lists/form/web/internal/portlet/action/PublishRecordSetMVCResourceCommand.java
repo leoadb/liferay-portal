@@ -24,10 +24,13 @@ import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -35,8 +38,13 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -59,21 +67,44 @@ public class PublishRecordSetMVCResourceCommand extends BaseMVCResourceCommand {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		long recordSetId = ParamUtil.getLong(resourceRequest, "recordSetId");
+		Map<String, Object> response = new HashMap<>();
 
-		boolean published = ParamUtil.getBoolean(resourceRequest, "published");
+		try {
+			long recordSetId = ParamUtil.getLong(
+				resourceRequest, "recordSetId");
 
-		DDLRecordSet recordSet = _ddlRecordSetService.getRecordSet(recordSetId);
+			boolean published = ParamUtil.getBoolean(
+				resourceRequest, "published");
 
-		updateRecordSetPermission(resourceRequest, recordSetId, published);
+			DDLRecordSet recordSet = _ddlRecordSetService.getRecordSet(
+				recordSetId);
 
-		DDMFormValues settingsDDMFormValues =
-			recordSet.getSettingsDDMFormValues();
+			updateRecordSetPermission(resourceRequest, recordSetId, published);
 
-		updatePublishedDDMFormFieldValue(settingsDDMFormValues, published);
+			DDMFormValues settingsDDMFormValues =
+				recordSet.getSettingsDDMFormValues();
 
-		_ddlRecordSetService.updateRecordSet(
-			recordSetId, settingsDDMFormValues);
+			updatePublishedDDMFormFieldValue(settingsDDMFormValues, published);
+
+			_ddlRecordSetService.updateRecordSet(
+				recordSetId, settingsDDMFormValues);
+
+			response.put("success", true);
+		}
+		catch (Throwable t) {
+			resourceResponse.setProperty(
+				ResourceResponse.HTTP_STATUS_CODE,
+				String.valueOf(HttpServletResponse.SC_BAD_REQUEST));
+
+			response.clear();
+
+			response.put("error", t.getMessage());
+		}
+
+		JSONSerializer jsonSerializer = _jsonFactory.createJSONSerializer();
+
+		PortletResponseUtil.write(
+			resourceResponse, jsonSerializer.serializeDeep(response));
 	}
 
 	@Reference(unbind = "-")
@@ -146,6 +177,9 @@ public class PublishRecordSetMVCResourceCommand extends BaseMVCResourceCommand {
 
 	private DDLRecordSetService _ddlRecordSetService;
 	private DDMFormValuesQueryFactory _ddmFormValuesQueryFactory;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Portal _portal;
