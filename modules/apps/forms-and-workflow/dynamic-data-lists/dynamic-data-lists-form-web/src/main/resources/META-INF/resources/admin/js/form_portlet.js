@@ -421,10 +421,16 @@ AUI.add(
 									Settings.autosaveURL,
 									{
 										after: {
-											success: function() {
-												var responseData = this.get('responseData');
+											success: function(event, id, xhr) {
+												var requestURL = this.get('uri');
+												var responseURL = xhr.responseURL;
 
-												if (responseData.success) {
+												if (requestURL !== responseURL) {
+													window.location.reload();
+												}
+												else {
+													var responseData = this.get('responseData');
+
 													instance._defineIds(responseData);
 
 													instance.savedState = state;
@@ -688,10 +694,16 @@ AUI.add(
 									Settings.publishRecordSetURL,
 									{
 										after: {
-											success: function() {
-												var responseData = this.get('responseData');
+											success: function(event, id, xhr) {
+												var requestURL = this.get('uri');
+												var responseURL = xhr.responseURL;
 
-												if (responseData.success) {
+												if (requestURL !== responseURL) {
+													window.location.reload();
+												}
+												else {
+													var responseData = this.get('responseData');
+
 													instance.set('published', newPublishedValue);
 
 													instance.syncInputValues();
