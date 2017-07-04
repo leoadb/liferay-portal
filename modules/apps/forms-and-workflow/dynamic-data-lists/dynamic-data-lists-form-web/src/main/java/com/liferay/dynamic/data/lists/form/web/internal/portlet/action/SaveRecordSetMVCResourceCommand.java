@@ -82,8 +82,6 @@ public class SaveRecordSetMVCResourceCommand extends BaseMVCResourceCommand {
 					recordSet.getModifiedDate(), themeDisplay.getLocale()));
 
 			response.put("recordSetId", recordSet.getRecordSetId());
-
-			response.put("success", true);
 		}
 		catch (Throwable t) {
 			resourceResponse.setProperty(
@@ -91,8 +89,6 @@ public class SaveRecordSetMVCResourceCommand extends BaseMVCResourceCommand {
 				String.valueOf(HttpServletResponse.SC_BAD_REQUEST));
 
 			response.clear();
-
-			response.put("error", t.getMessage());
 		}
 
 		JSONSerializer jsonSerializer = jsonFactory.createJSONSerializer();

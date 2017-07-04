@@ -440,9 +440,6 @@ AUI.add(
 												}
 											}
 										},
-										on: {
-											complete: instance._checkXhrResponse
-										},
 										data: formData,
 										dataType: 'JSON',
 										method: 'POST'
@@ -618,17 +615,6 @@ AUI.add(
 						}
 					},
 
-					_checkXhrResponse: function(event, id, xhr) {
-						var instance = this;
-
-						var requestURL = instance.get('uri');
-						var responseURL = xhr.responseURL;
-
-						if (requestURL != responseURL) {
-							window.location.reload();
-						}
-					},
-
 					_onDescriptionEditorChange: function(event) {
 						var instance = this;
 
@@ -718,9 +704,6 @@ AUI.add(
 													}
 												}
 											}
-										},
-										on: {
-											complete: instance._checkXhrResponse
 										},
 										data: payload,
 										dataType: 'JSON',
