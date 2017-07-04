@@ -424,19 +424,24 @@ AUI.add(
 											success: function() {
 												var responseData = this.get('responseData');
 
-												instance._defineIds(responseData);
+												if (responseData.success) {
+													instance._defineIds(responseData);
 
-												instance.savedState = state;
+													instance.savedState = state;
 
-												instance.fire(
-													'autosave',
-													{
-														modifiedDate: responseData.modifiedDate
-													}
-												);
+													instance.fire(
+															'autosave',
+															{
+																modifiedDate: responseData.modifiedDate
+															}
+													);
 
-												callback.call();
+													callback.call();
+												}
 											}
+										},
+										on: {
+											complete: instance._checkXhrResponse
 										},
 										data: formData,
 										dataType: 'JSON',
@@ -613,6 +618,17 @@ AUI.add(
 						}
 					},
 
+					_checkXhrResponse: function(event, id, xhr) {
+						var instance = this;
+
+						var requestURL = instance.get('uri');
+						var responseURL = xhr.responseURL;
+
+						if (requestURL != responseURL) {
+							window.location.reload();
+						}
+					},
+
 					_onDescriptionEditorChange: function(event) {
 						var instance = this;
 
@@ -687,17 +703,24 @@ AUI.add(
 									{
 										after: {
 											success: function() {
-												instance.set('published', newPublishedValue);
+												var responseData = this.get('responseData');
 
-												instance.syncInputValues();
+												if (responseData.success) {
+													instance.set('published', newPublishedValue);
 
-												if (newPublishedValue) {
-													instance._handlePublishAction();
-												}
-												else {
-													instance._handleUnpublishAction();
+													instance.syncInputValues();
+
+													if (newPublishedValue) {
+														instance._handlePublishAction();
+													}
+													else {
+														instance._handleUnpublishAction();
+													}
 												}
 											}
+										},
+										on: {
+											complete: instance._checkXhrResponse
 										},
 										data: payload,
 										dataType: 'JSON',
