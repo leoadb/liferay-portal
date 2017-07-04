@@ -65,6 +65,10 @@ public class PublishRecordSetMVCResourceCommand extends BaseMVCResourceCommand {
 			long recordSetId = ParamUtil.getLong(
 				resourceRequest, "recordSetId");
 
+			if (recordSetId == 0) {
+				return;
+			}
+
 			boolean published = ParamUtil.getBoolean(
 				resourceRequest, "published");
 
