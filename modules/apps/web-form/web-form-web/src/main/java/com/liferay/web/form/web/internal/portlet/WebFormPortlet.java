@@ -222,7 +222,7 @@ public class WebFormPortlet extends MVCPortlet {
 
 			if (sendAsEmail) {
 				emailSuccess = sendEmail(
-					themeDisplay.getCompanyId(), fieldsMap, preferences);
+					fieldsMap, preferences, webFormServiceConfiguration);
 			}
 
 			if (saveToDatabase) {
@@ -497,8 +497,8 @@ public class WebFormPortlet extends MVCPortlet {
 	}
 
 	protected boolean sendEmail(
-		long companyId, Map<String, String> fieldsMap,
-		PortletPreferences preferences) {
+		Map<String, String> fieldsMap, PortletPreferences preferences,
+		WebFormServiceConfiguration webFormServiceConfiguration) {
 
 		try {
 			String emailAddresses = preferences.getValue(
@@ -512,9 +512,6 @@ public class WebFormPortlet extends MVCPortlet {
 				return false;
 			}
 
-			WebFormServiceConfiguration webFormServiceConfiguration =
-				getWebFormServiceConfiguration(companyId);
-
 			String emailFromAddress = preferences.getValue(
 				"emailFromAddress",
 				webFormServiceConfiguration.emailFromAddress());
@@ -524,6 +521,7 @@ public class WebFormPortlet extends MVCPortlet {
 
 			InternetAddress fromAddress = new InternetAddress(
 				emailFromAddress, emailFromName);
+
 			String subject = preferences.getValue("subject", StringPool.BLANK);
 			String body = getMailBody(fieldsMap);
 
