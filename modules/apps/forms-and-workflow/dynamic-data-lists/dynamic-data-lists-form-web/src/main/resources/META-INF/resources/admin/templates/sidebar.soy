@@ -9,7 +9,7 @@
  *  @param toolbarButtonIcon
  *  @param toolbarTemplateContext
  */
-{template .render autoescape="deprecated-contextual"}
+{template .render}
 	{call ddl.sidebar.header data="all" /}
 	{call ddl.sidebar.body}
 		{param bodyContent: $bodyContent /}
@@ -20,8 +20,8 @@
  * Prints the DDL sidebar body.
  *  @param? bodyContent
  */
-{template .body autoescape="deprecated-contextual"}
-	<div class="sidebar-body">{$bodyContent|noAutoescape}</div>
+{template .body}
+	<div class="sidebar-body">{$bodyContent}</div>
 {/template}
 
 /**
@@ -29,7 +29,7 @@
  *  @param toolbarButtonIcon
  *  @param toolbarTemplateContext
  */
-{template .field_options_toolbar autoescape="deprecated-contextual"}
+{template .field_options_toolbar}
 	{call ddl.field_settings_toolbar data="all" /}
 {/template}
 
@@ -41,7 +41,7 @@
  *  @param toolbarButtonIcon
  *  @param toolbarTemplateContext
  */
-{template .header autoescape="deprecated-contextual"}
+{template .header}
 	<div class="sidebar-header">
 		<ul class="sidebar-header-actions">
 			{if $toolbarTemplateContext}
@@ -51,7 +51,7 @@
 			{/if}
 
 			<li>
-				<a class="form-builder-sidebar-close" href="javascript:;">{$closeButtonIcon|noAutoescape}</a>
+				<a class="form-builder-sidebar-close" href="javascript:;">{$closeButtonIcon}</a>
 			</li>
 		</ul>
 

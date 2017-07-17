@@ -11,7 +11,7 @@
  * @param plusIcon
  * @param strings
  */
-{template .settings autoescape="deprecated-contextual"}
+{template .settings}
 	<h2 class="form-builder-section-title text-default">{$strings.title}</h2>
 	<h4 class="text-default">{$strings.description}</h4>
 
@@ -96,7 +96,7 @@
  * @param index
  * @param logicalOperator
  */
-{template .condition autoescape="deprecated-contextual"}
+{template .condition}
 	<li class="form-builder-rule-condition-container-{$index} timeline-item">
 		<div class="panel panel-default">
 			<div class="flex-container panel-body">
@@ -124,7 +124,7 @@
 				data-card-id="{$index}"
 				href="javascript:;"
 				type="button">
-				{$deleteIcon|noAutoescape}
+				{$deleteIcon}
 			</button>
 		</div>
 	</li>
@@ -136,11 +136,11 @@
  * @param? cssClass
  * @param plusIcon
  */
-{template .btnAddNewTimelineItem autoescape="deprecated-contextual"}
+{template .btnAddNewTimelineItem}
 	<div class="addbutton-timeline-item">
 		<div class="add-condition timeline-increment-icon">
 			<a aria-role="button" class="btn btn-primary btn-xs form-builder-timeline-add-item {$cssClass or ''}" href="javascript:;">
-				{$plusIcon|noAutoescape}
+				{$plusIcon}
 			</a>
 		</div>
 	</div>
@@ -150,7 +150,7 @@
  * @param? extraContent
  * @param title
  */
-{template .rulesHeader autoescape="deprecated-contextual"}
+{template .rulesHeader}
 	<li class="timeline-item">
 		<div class="panel panel-default">
 			<div class="flex-container panel-body">
@@ -159,7 +159,7 @@
 				</div>
 
 				{if $extraContent}
-					{$extraContent|noAutoescape}
+					{$extraContent}
 				{/if}
 
 				<div class="timeline-increment-icon">
@@ -196,7 +196,7 @@
  * @param do
  * @param index
  */
-{template .action autoescape="deprecated-contextual"}
+{template .action}
 	<li class="form-builder-rule-action-container-{$index} timeline-item">
 		<div class="panel panel-default">
 			<div class="no-padding-bottom panel-body">
@@ -225,7 +225,7 @@
 				data-card-id="{$index}"
 				href="javascript:;"
 				type="button">
-				{$deleteIcon|noAutoescape}
+				{$deleteIcon}
 			</button>
 		</div>
 	</li>

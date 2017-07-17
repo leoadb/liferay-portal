@@ -5,14 +5,14 @@
  * @param addAutoCompleteButton
  * @param label
  */
-{template .actionPanel autoescape="deprecated-contextual"}
+{template .actionPanel}
 	<div class="row">
 		<div class="col-md-12">
 			<div class="autocomplete-action-panel cursor-pointer panel panel-default">
 				<div class="panel-body">
 					{$label}
 					<span class="pull-right">
-						{$addAutoCompleteButton|noAutoescape}
+						{$addAutoCompleteButton}
 					</span>
 				</div>
 			</div>
@@ -25,13 +25,13 @@
  * @param backButton
  * @param label
  */
-{template .container autoescape="deprecated-contextual"}
+{template .container}
 	<div class="autocomplete-container">
 		<header class="header-toolbar">
 			<div class="toolbar-group">
 				<div class="toolbar-group-content">
 					<a class="autocomplete-header-back" href="javascript:;">
-						{$backButton|noAutoescape}
+						{$backButton}
 					</a>
 				</div>
 			</div>
