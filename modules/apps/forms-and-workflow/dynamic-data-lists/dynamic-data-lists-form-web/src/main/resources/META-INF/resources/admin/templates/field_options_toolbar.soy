@@ -1,15 +1,15 @@
-{namespace ddl}
+{namespace DDLFieldSettingsToolbar}
 
 /**
  * Prints the DDM form checkbox field.
  *  @param toolbarTemplateContext
  *  @param toolbarButtonIcon
  */
-{template .field_settings_toolbar}
+{template .render}
 	<div class="dropdown open">
 		<a class="dropdown-toggle icon-monospaced" data-toggle="dropdown" href="javascript:;">{$toolbarButtonIcon}</a>
 
-		{call ddl.field_settings_toolbar_list}
+		{call .field_settings_toolbar_list}
 			{param options: $toolbarTemplateContext.options /}
 		{/call}
 	</div>
@@ -22,7 +22,7 @@
 {template .field_settings_toolbar_list}
 	<ul class="dropdown-menu dropdown-menu-right">
 		{foreach $option in $options}
-			{call ddl.field_settings_toolbar_item}
+			{call .field_settings_toolbar_item}
 				{param option: $option /}
 			{/call}
 		{/foreach}
