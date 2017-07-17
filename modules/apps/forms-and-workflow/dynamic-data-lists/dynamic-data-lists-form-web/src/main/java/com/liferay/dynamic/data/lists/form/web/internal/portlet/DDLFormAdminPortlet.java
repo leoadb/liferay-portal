@@ -107,6 +107,7 @@ public class DDLFormAdminPortlet extends MVCPortlet {
 			setRenderRequestAttributes(renderRequest, renderResponse);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			if (isSessionErrorException(e)) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(e, e);
