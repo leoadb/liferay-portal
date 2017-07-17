@@ -1,4 +1,4 @@
-{namespace ddl.sidebar}
+{namespace DDLSidebar}
 
 /**
  * Prints the DDL sidebar.
@@ -10,8 +10,8 @@
  *  @param toolbarTemplateContext
  */
 {template .render}
-	{call ddl.sidebar.header data="all" /}
-	{call ddl.sidebar.body}
+	{call .header data="all" /}
+	{call .body}
 		{param bodyContent: $bodyContent /}
 	{/call}
 {/template}
@@ -30,7 +30,7 @@
  *  @param toolbarTemplateContext
  */
 {template .field_options_toolbar}
-	{call ddl.field_settings_toolbar data="all" /}
+	{call DDLFieldSettingsToolbar.render data="all" /}
 {/template}
 
 /**
@@ -46,7 +46,7 @@
 		<ul class="sidebar-header-actions">
 			{if $toolbarTemplateContext}
 			<li>
-				{call ddl.sidebar.field_options_toolbar data="all" /}
+				{call .field_options_toolbar data="all" /}
 			</li>
 			{/if}
 
