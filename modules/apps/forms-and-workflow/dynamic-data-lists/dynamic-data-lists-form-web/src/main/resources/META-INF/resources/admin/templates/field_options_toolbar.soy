@@ -5,9 +5,9 @@
  *  @param toolbarTemplateContext
  *  @param toolbarButtonIcon
  */
-{template .field_settings_toolbar autoescape="deprecated-contextual"}
+{template .field_settings_toolbar}
 	<div class="dropdown open">
-		<a class="dropdown-toggle icon-monospaced" data-toggle="dropdown" href="javascript:;">{$toolbarButtonIcon|noAutoescape}</a>
+		<a class="dropdown-toggle icon-monospaced" data-toggle="dropdown" href="javascript:;">{$toolbarButtonIcon}</a>
 
 		{call ddl.field_settings_toolbar_list}
 			{param options: $toolbarTemplateContext.options /}
@@ -19,7 +19,7 @@
  * Prints the DDM form checkbox field.
  *  @param options
  */
-{template .field_settings_toolbar_list autoescape="deprecated-contextual"}
+{template .field_settings_toolbar_list}
 	<ul class="dropdown-menu dropdown-menu-right">
 		{foreach $option in $options}
 			{call ddl.field_settings_toolbar_item}
@@ -33,7 +33,7 @@
  * Prints the DDM form checkbox field.
  *  @param option
  */
-{template .field_settings_toolbar_item autoescape="deprecated-contextual"}
+{template .field_settings_toolbar_item}
 	<li>
 		<a class="{$option.buttonClass or ''}" data-handler="{$option.handler}" href="javascript:;" title="{$option.label}">{$option.label}</a>
 	</li>
