@@ -70,8 +70,3 @@ processResources {
 		}
 	}
 }
-
-transpileJS {
-	soySrcIncludes = ""
-	srcIncludes = "**/*.es.js"
-}
