@@ -6,9 +6,14 @@ import templates from './autocomplete.soy';
 /**
  * AutoComplete Component
  */
-class AutoComplete extends Component {}
+class AutoCompleteContainer extends Component {}
 
 // Register component
-Soy.register(AutoComplete, templates, 'autocomplete');
+Soy.register(AutoCompleteContainer, templates, 'container');
 
-export default AutoComplete;
+class AutoCompleteActionPanel extends Component {}
+
+//Register component
+Soy.register(AutoCompleteActionPanel, templates, 'actionPanel');
+
+export { AutoCompleteContainer, AutoCompleteActionPanel };

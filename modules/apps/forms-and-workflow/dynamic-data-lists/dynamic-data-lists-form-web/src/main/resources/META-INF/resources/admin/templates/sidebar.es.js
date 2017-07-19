@@ -9,6 +9,6 @@ import templates from './sidebar.soy';
 class SideBar extends Component {}
 
 // Register component
-Soy.register(SideBar, templates, 'sidebar');
+Soy.register(SideBar, templates, 'render');
 
 export default SideBar;

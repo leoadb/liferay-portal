@@ -9,6 +9,6 @@ import templates from './data_provider_parameter.soy';
 class DataProviderParameter extends Component {}
 
 // Register component
-Soy.register(DataProviderParameter, templates, 'data_provider_parameter');
+Soy.register(DataProviderParameter, templates, 'render');
 
 export default DataProviderParameter;

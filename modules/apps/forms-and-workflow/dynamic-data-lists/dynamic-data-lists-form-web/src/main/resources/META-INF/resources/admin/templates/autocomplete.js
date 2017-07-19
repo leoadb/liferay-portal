@@ -1,18 +1,14 @@
 Liferay.Loader.require(
 	'frontend-js-metal-web/metal-soy-bundle/build/bundle',
-	'dynamic-data-lists-form-web/autocomplete.es',
+	'dynamic-data-lists-form-web/admin/templates/autocomplete.es',
 	function(MetalSoyBundle, AutoComplete) {
-		if (!window.ddl) {
-			window.ddl = {};
+		if (!window.DDLAutoComplete) {
+			window.DDLAutoComplete = {};
 		}
 
-		window.ddl['autocomplete'] = AutoComplete.default;
+		window.DDLAutoComplete.actionPanel = AutoComplete.AutoCompleteActionPanel;
+		window.DDLAutoComplete.container = AutoComplete.AutoCompleteContainer;
 
-		AUI.add(
-			'liferay-ddl-autocomplete-soy',
-			function(A) {
-				debugger;
-			}
-		);
+		AUI.add('liferay-ddl-form-builder-autocomplete-template');
 	}
 );

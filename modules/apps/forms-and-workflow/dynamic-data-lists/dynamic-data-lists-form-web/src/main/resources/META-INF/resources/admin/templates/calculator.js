@@ -1,18 +1,13 @@
 Liferay.Loader.require(
 	'frontend-js-metal-web/metal-soy-bundle/build/bundle',
-	'dynamic-data-lists-form-web/calculator.es',
+	'dynamic-data-lists-form-web/admin/templates/calculator.es',
 	function(MetalSoyBundle, Calculator) {
-		if (!window.ddl) {
-			window.ddl = {};
+		if (!window.DDLCalculator) {
+			window.DDLCalculator = {};
 		}
 
-		window.ddl['calculator'] = Calculator.default;
+		window.DDLCalculator.render = Calculator.default;
 
-		AUI.add(
-			'liferay-ddl-calculator-soy',
-			function(A) {
-				debugger;
-			}
-		);
+		AUI.add('liferay-ddl-form-builder-calculator-template');
 	}
 );

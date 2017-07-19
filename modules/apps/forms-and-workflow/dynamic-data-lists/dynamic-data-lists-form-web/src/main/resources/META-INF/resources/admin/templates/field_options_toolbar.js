@@ -1,18 +1,13 @@
 Liferay.Loader.require(
 	'frontend-js-metal-web/metal-soy-bundle/build/bundle',
-	'dynamic-data-lists-form-web/field_options_toolbar.es',
+	'dynamic-data-lists-form-web/admin/templates/field_options_toolbar.es',
 	function(MetalSoyBundle, FieldOptionsToolbar) {
-		if (!window.ddl) {
-			window.ddl = {};
+		if (!window.DDLFieldSettingsToolbar) {
+			window.DDLFieldSettingsToolbar = {};
 		}
 
-		window.ddl['field_options_toolbar'] = FieldOptionsToolbar.default;
+		window.DDLFieldSettingsToolbar.render = FieldOptionsToolbar.default;
 
-		AUI.add(
-			'liferay-ddl-field-options-toolbar-soy',
-			function(A) {
-				debugger;
-			}
-		);
+		AUI.add('liferay-ddl-form-builder-field-options-toolbar-template');
 	}
 );

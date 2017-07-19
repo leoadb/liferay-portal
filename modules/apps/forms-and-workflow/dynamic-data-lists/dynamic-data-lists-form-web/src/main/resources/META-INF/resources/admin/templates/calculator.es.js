@@ -9,6 +9,6 @@ import templates from './calculator.soy';
 class Calculator extends Component {}
 
 // Register component
-Soy.register(Calculator, templates, 'calculator');
+Soy.register(Calculator, templates, 'render');
 
 export default Calculator;

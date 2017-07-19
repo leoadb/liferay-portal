@@ -1,18 +1,13 @@
 Liferay.Loader.require(
 	'frontend-js-metal-web/metal-soy-bundle/build/bundle',
-	'dynamic-data-lists-form-web/sidebar.es',
+	'dynamic-data-lists-form-web/admin/templates/sidebar.es',
 	function(MetalSoyBundle, SideBar) {
-		if (!window.ddl) {
-			window.ddl = {};
+		if (!window.DDLSidebar) {
+			window.DDLSidebar = {};
 		}
 
-		window.ddl['sidebar'] = SideBar.default;
+		window.DDLSidebar.render = SideBar.default;
 
-		AUI.add(
-			'liferay-ddl-sidebar-soy',
-			function(A) {
-				debugger;
-			}
-		);
+		AUI.add('liferay-ddl-form-builder-sidebar-template');
 	}
 );

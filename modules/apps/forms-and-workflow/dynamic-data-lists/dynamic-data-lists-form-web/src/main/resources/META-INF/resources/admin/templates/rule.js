@@ -1,18 +1,13 @@
 Liferay.Loader.require(
 	'frontend-js-metal-web/metal-soy-bundle/build/bundle',
-	'dynamic-data-lists-form-web/rule.es',
+	'dynamic-data-lists-form-web/admin/templates/rule.es',
 	function(MetalSoyBundle, Rule) {
-		if (!window.ddl) {
-			window.ddl = {};
+		if (!window.DDLRule) {
+			window.DDLRule = {};
 		}
 
-		window.ddl['rule'] = Rule.default;
+		window.DDLRule.render = Rule.default;
 
-		AUI.add(
-			'liferay-ddl-rule-soy',
-			function(A) {
-				debugger;
-			}
-		);
+		AUI.add('liferay-ddl-form-builder-rule-template');
 	}
 );

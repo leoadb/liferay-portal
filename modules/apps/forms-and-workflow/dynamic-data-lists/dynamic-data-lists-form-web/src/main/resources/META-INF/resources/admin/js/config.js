@@ -228,7 +228,7 @@
 						},
 						'liferay-ddl-form-builder-sidebar': {
 							path: 'form_builder_sidebar.js',
-							requires: ['aui-tabview', 'liferay-ddl-form-builder-sidebar-template', 'liferay-ddl-form-field-options-toolbar']
+							requires: ['aui-tabview', 'liferay-ddl-form-builder-field-options-toolbar', 'liferay-ddl-form-builder-sidebar-template']
 						},
 						'liferay-ddl-form-builder-sidebar-template': {
 							path: '../templates/sidebar.js'
@@ -245,9 +245,6 @@
 							requires: [
 								'liferay-ddm-form-renderer-wizard'
 							]
-						},
-						'liferay-ddl-form-sidebar-soy': {
-							path: 'sidebar.js'
 						},
 						'liferay-ddl-portlet': {
 							path: 'form_portlet.js',

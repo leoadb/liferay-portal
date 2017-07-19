@@ -9,6 +9,6 @@ import templates from './rule.soy';
 class Rule extends Component {}
 
 // Register component
-Soy.register(Rule, templates, 'rule');
+Soy.register(Rule, templates, 'render');
 
 export default Rule;

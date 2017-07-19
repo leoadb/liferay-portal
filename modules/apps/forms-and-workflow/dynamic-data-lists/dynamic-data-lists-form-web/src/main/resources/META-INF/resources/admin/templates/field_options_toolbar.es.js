@@ -9,6 +9,6 @@ import templates from './field_options_toolbar.soy';
 class FieldOptionsToolbar extends Component {}
 
 // Register component
-Soy.register(FieldOptionsToolbar, templates, 'field_options_toolbar');
+Soy.register(FieldOptionsToolbar, templates, 'render');
 
 export default FieldOptionsToolbar;

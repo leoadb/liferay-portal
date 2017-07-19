@@ -1,18 +1,13 @@
 Liferay.Loader.require(
 	'frontend-js-metal-web/metal-soy-bundle/build/bundle',
-	'dynamic-data-lists-form-web/data_provider_parameter.es',
+	'dynamic-data-lists-form-web/admin/templates/data_provider_parameter.es',
 	function(MetalSoyBundle, DataProviderParameter) {
-		if (!window.ddl) {
-			window.ddl = {};
+		if (!window.DDLDataProviderParameter) {
+			window.DDLDataProviderParameter = {};
 		}
 
-		window.ddl['data_provider_parameter'] = DataProviderParameter.default;
+		window.DDLDataProviderParameter.render = DataProviderParameter.default;
 
-		AUI.add(
-			'liferay-ddl-data-provider-parameter-soy',
-			function(A) {
-				debugger;
-			}
-		);
+		AUI.add('liferay-ddl-form-builder-data-provider-parameter-template');
 	}
 );
