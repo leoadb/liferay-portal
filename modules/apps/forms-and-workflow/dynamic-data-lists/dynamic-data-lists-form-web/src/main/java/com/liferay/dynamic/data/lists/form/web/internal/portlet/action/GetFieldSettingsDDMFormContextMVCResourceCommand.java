@@ -19,6 +19,7 @@ import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
+import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.io.DDMFormJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
@@ -79,6 +80,11 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 		DDMFormRenderingContext ddmFormRenderingContext =
 			new DDMFormRenderingContext();
 
+		DDMFormValues ddmFormValues = _ddmFormValuesFactory.create(
+			resourceRequest, ddmFormFieldTypeSettingsDDMForm);
+
+		ddmFormRenderingContext.setDDMFormValues(ddmFormValues);
+
 		ddmFormRenderingContext.setHttpServletRequest(
 			_portal.getHttpServletRequest(resourceRequest));
 		ddmFormRenderingContext.setHttpServletResponse(
@@ -118,6 +124,9 @@ public class GetFieldSettingsDDMFormContextMVCResourceCommand
 
 	@Reference
 	private DDMFormTemplateContextFactory _ddmFormTemplateContextFactory;
+
+	@Reference
+	private DDMFormValuesFactory _ddmFormValuesFactory;
 
 	@Reference
 	private JSONFactory _jsonFactory;
