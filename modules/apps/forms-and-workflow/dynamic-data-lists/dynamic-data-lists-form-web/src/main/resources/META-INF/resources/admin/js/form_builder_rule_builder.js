@@ -90,16 +90,19 @@ AUI.add(
 					syncUI: function() {
 						var instance = this;
 
-						var ruleBuilderTemplateRenderer = SoyTemplateUtil.getTemplateRenderer('ddl.rule_builder');
+						var ruleBuilderTemplateRenderer = SoyTemplateUtil.getTemplateRenderer('DDLRuleBuilder.render');
 
-						var rulesBuilder = ruleBuilderTemplateRenderer(
+						var container = document.createDocumentFragment();
+
+						new ruleBuilderTemplateRenderer(
 							{
 								plusIcon: Liferay.Util.getLexiconIconTpl('plus', 'icon-monospaced'),
 								strings: instance.get('strings')
-							}
+							},
+							container
 						);
 
-						instance.get('contentBox').setHTML(rulesBuilder);
+						instance.get('contentBox').setHTML(container.firstChild.outerHTML);
 
 						var rules = instance.get('rules');
 
@@ -271,7 +274,7 @@ AUI.add(
 
 						var strings = instance.get('strings');
 
-						var badgeTemplate = SoyTemplateUtil.getTemplateRenderer('ddl.badge');
+						var badgeTemplate = SoyTemplateUtil.getTemplateRenderer('DDLRuleBuilder.badge');
 
 						var actionKey = MAP_ACTION_DESCRIPTIONS[type];
 
@@ -281,61 +284,82 @@ AUI.add(
 							var data;
 
 							if (type === 'jump-to-page') {
-								data = [
-									badgeTemplate(
-										{
-											content: pages[action.target].label
-										}
-									)
-								];
+								var jumpToPageContainer = document.createDocumentFragment();
+
+								new badgeTemplate(
+									{
+										content: pages[action.target].label
+									},
+									jumpToPageContainer
+								);
+
+								data = [jumpToPageContainer.firstChild.outerHTML];
 							}
 							else if (type === 'auto-fill') {
 								data = [];
 
 								var fieldListDescription = [];
 
+								var autoFillContainer;
+
 								for (var output in action.outputs) {
-									fieldListDescription.push(
-										badgeTemplate(
-											{
-												content: action.outputs[output]
-											}
-										)
+									autoFillContainer = document.createDocumentFragment();
+
+									new badgeTemplate(
+										{
+											content: action.outputs[output]
+										},
+										autoFillContainer
 									);
+
+									fieldListDescription.push(autoFillContainer.firstChild.outerHTML);
 								}
 
 								data.push(fieldListDescription.join(', '));
 
-								data.push(
-									badgeTemplate(
-										{
-											content: instance._getDataProviderLabel(action.ddmDataProviderInstanceUUID)
-										}
-									)
+								autoFillContainer = document.createDocumentFragment();
+
+								new badgeTemplate(
+									{
+										content: instance._getDataProviderLabel(action.ddmDataProviderInstanceUUID)
+									},
+									autoFillContainer
 								);
+
+								data.push(autoFillContainer.firstChild.outerHTML);
 							}
 							else if (type === 'calculate') {
-								data = [
-									badgeTemplate(
-										{
-											content: action.expression.replace(/\[|\]/g, '')
-										}
-									),
-									badgeTemplate(
-										{
-											content: instance._getFieldLabel(action.target)
-										}
-									)
-								];
+								var calculateContainer0 = document.createDocumentFragment();
+
+								new badgeTemplate(
+									{
+										content: action.expression.replace(/\[|\]/g, '')
+									},
+									calculateContainer0
+								);
+
+								var calculateContainer1 = document.createDocumentFragment();
+
+								new badgeTemplate(
+									{
+										content: instance._getFieldLabel(action.target)
+									},
+									calculateContainer1
+								);
+
+								data = [calculateContainer0.firstChild.outerHTML, calculateContainer1.firstChild.outerHTML];
 							}
 							else {
-								data = [
-									badgeTemplate(
-										{
-											content: action.label
-										}
-									)
-								];
+								var container = document.createDocumentFragment();
+
+								new badgeTemplate(
+									{
+										content: action.label
+									},
+									container
+								);
+
+								data = [container.firstChild.outerHTML];
 							}
 
 							actionDescription = A.Lang.sub(strings[actionKey], data);
@@ -517,19 +541,22 @@ AUI.add(
 
 						var rulesList = instance.get('boundingBox').one('.liferay-ddl-form-rule-rules-list-container');
 
-						var ruleListTemplateRenderer = SoyTemplateUtil.getTemplateRenderer('ddl.rule_list');
-
 						var rulesDescription = instance._getRulesDescription(rules);
 
-						rulesList.setHTML(
-							ruleListTemplateRenderer(
-								{
-									kebab: Liferay.Util.getLexiconIconTpl('ellipsis-v', 'icon-monospaced'),
-									rules: rulesDescription,
-									strings: instance.get('strings')
-								}
-							)
+						var ruleListTemplateRenderer = SoyTemplateUtil.getTemplateRenderer('DDLRuleBuilder.rule_list');
+
+						var container = document.createDocumentFragment();
+
+						new ruleListTemplateRenderer(
+							{
+								kebab: Liferay.Util.getLexiconIconTpl('ellipsis-v', 'icon-monospaced'),
+								rules: rulesDescription,
+								strings: instance.get('strings')
+							},
+							container
 						);
+
+						rulesList.setHTML(container.firstChild.outerHTML);
 					},
 
 					_setRules: function(rules) {
