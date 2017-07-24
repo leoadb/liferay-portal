@@ -96,7 +96,7 @@
 							]
 						},
 						'liferay-ddl-form-builder-data-provider-parameter-template': {
-							path: '../templates/data_provider_parameter.js'
+							path: '../templates/data-provider-parameter.js'
 						},
 						'liferay-ddl-form-builder-definition-serializer': {
 							path: 'form_definition_serializer.js',
@@ -116,7 +116,7 @@
 							requires: ['liferay-ddl-form-builder-field-options-toolbar-template']
 						},
 						'liferay-ddl-form-builder-field-options-toolbar-template': {
-							path: '../templates/field_options_toolbar.js'
+							path: '../templates/field-options-toolbar.js'
 						},
 						'liferay-ddl-form-builder-field-settings-form': {
 							path: 'form_builder_field_settings_form.js',
@@ -211,7 +211,7 @@
 							]
 						},
 						'liferay-ddl-form-builder-rule-builder-template': {
-							path: '../templates/rule_builder.js'
+							path: '../templates/rule-builder.js'
 						},
 						'liferay-ddl-form-builder-rule-template': {
 							path: '../templates/rule.js'

@@ -1,7 +1,7 @@
 import Component from 'metal-component';
 import Soy from 'metal-soy';
 
-import templates from './data_provider_parameter.soy';
+import templates from './data-provider-parameter.soy';
 
 /**
  * DataProviderParameter Component
