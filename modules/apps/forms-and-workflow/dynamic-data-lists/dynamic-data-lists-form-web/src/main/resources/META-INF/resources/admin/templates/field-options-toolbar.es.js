@@ -1,7 +1,7 @@
 import Component from 'metal-component';
 import Soy from 'metal-soy';
 
-import templates from './field_options_toolbar.soy';
+import templates from './field-options-toolbar.soy';
 
 /**
  * FieldOptionsToolbar Component
