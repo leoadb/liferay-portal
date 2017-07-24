@@ -1,6 +1,6 @@
 Liferay.Loader.require(
 	'frontend-js-metal-web/metal-soy-bundle/build/bundle',
-	'dynamic-data-lists-form-web/admin/templates/field_options_toolbar.es',
+	'dynamic-data-lists-form-web/admin/templates/field-options-toolbar.es',
 	function(MetalSoyBundle, FieldOptionsToolbar) {
 		if (!window.DDLFieldSettingsToolbar) {
 			window.DDLFieldSettingsToolbar = {};
