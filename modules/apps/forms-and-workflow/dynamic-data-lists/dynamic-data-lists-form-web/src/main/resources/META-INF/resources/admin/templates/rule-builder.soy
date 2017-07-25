@@ -2,11 +2,11 @@
 
 /**
  * Prints the DDL form rule builder cotainer.
- *
- * @param plusIcon
- * @param strings
  */
 {template .render}
+	{@param plusIcon: html}
+	{@param strings: [ruleBuilder: string]}
+
 	<div class="form-builder-rule-builder-container">
 		<h1 class="form-builder-section-title text-default">{$strings.ruleBuilder}</h1>
 
@@ -24,88 +24,90 @@
 
 /**
  * Prints the DDL form card rule.
- *
- * @param kebab
- * @param rules
- * @param strings
  */
 {template .rule_list}
-	{if length($rules) > 0}
-		<ul class="ddl-form-body-content form-builder-rule-builder-rules-list tabular-list-group">
-		{foreach $rule in $rules}
-			<li class="list-group-item">
-				<div class="clamp-horizontal list-group-item-content">
-					<p class="form-builder-rule-builder-rule-description text-default">
-						<b>{$strings.if} </b>
-						{foreach $condition in $rule.conditions}
-							{call .condition}
-								{param operandType: $condition.operands[0].type /}
-								{param operandValue: $condition.operands[0].label /}
-								{param strings: $strings /}
-							{/call}
+	{@param kebab: html}
+	{@param rules: list<[conditions: list<[operandType: string, operandValue: string, strings: any, operator: string, operands: list<[type: string, label: string, value: string]>]>, actions: list<string>, logicOperator: string]>}
+	{@param strings: ?}
 
-							<b class="text-lowercase"><em> {$strings[$condition.operator]} </em></b>
-
-							{if $condition.operands[1]}
+	<div>
+		{if length($rules) > 0}
+			<ul class="ddl-form-body-content form-builder-rule-builder-rules-list tabular-list-group">
+			{foreach $rule in $rules}
+				<li class="list-group-item">
+					<div class="clamp-horizontal list-group-item-content">
+						<p class="form-builder-rule-builder-rule-description text-default">
+							<b>{$strings.if} </b>
+							{foreach $condition in $rule.conditions}
 								{call .condition}
-									{param operandType: $condition.operands[1].type /}
-									{param operandValue: isNonnull($condition.operands[1].label) ? $condition.operands[1].label : $condition.operands[1].value /}
+									{param operandType: $condition.operands[0].type /}
+									{param operandValue: $condition.operands[0].label /}
 									{param strings: $strings /}
 								{/call}
-							{/if}
 
-							{if not isLast($condition)}
-								<br />
-								<b> {$strings[$rule.logicOperator]} </b>
-							{/if}
-						{/foreach}
+								<b class="text-lowercase"><em> {$strings[$condition.operator]} </em></b>
 
-						<br />
+								{if $condition.operands[1]}
+									{call .condition}
+										{param operandType: $condition.operands[1].type /}
+										{param operandValue: isNonnull($condition.operands[1].label) ? $condition.operands[1].label : $condition.operands[1].value /}
+										{param strings: $strings /}
+									{/call}
+								{/if}
 
-						{foreach $action in $rule.actions}
-							{call .action}
-								{param action: $action /}
-							{/call}
-							{if not isLast($action)}
-							, <br />
-							<b> {$strings.and} </b>
-							{/if}
-						{/foreach}
-					</p>
-				</div>
-				<div class="list-group-item-field">
-					<div class="card-col-field">
-						<div class="dropdown">
-							<ul class="dropdown-menu dropdown-menu-right">
-								<li class="rule-card-edit" data-card-id="{index($rule)}">
-									<a href="javascript:;">{$strings.edit}</a>
-								</li>
-								<li class="rule-card-delete" data-card-id="{index($rule)}">
-									<a href="javascript:;">{$strings.delete}</a>
-								</li>
-							</ul>
-							<a class="dropdown-toggle icon-monospaced" data-toggle="dropdown" href="#1">
-								{$kebab}
-							</a>
+								{if not isLast($condition)}
+									<br />
+									<b> {$strings[$rule.logicOperator]} </b>
+								{/if}
+							{/foreach}
+
+							<br />
+
+							{foreach $action in $rule.actions}
+								{call .action}
+									{param action: $action /}
+								{/call}
+								{if not isLast($action)}
+								, <br />
+								<b> {$strings.and} </b>
+								{/if}
+							{/foreach}
+						</p>
+					</div>
+					<div class="list-group-item-field">
+						<div class="card-col-field">
+							<div class="dropdown">
+								<ul class="dropdown-menu dropdown-menu-right">
+									<li class="rule-card-edit" data-card-id="{index($rule)}">
+										<a href="javascript:;">{$strings.edit}</a>
+									</li>
+									<li class="rule-card-delete" data-card-id="{index($rule)}">
+										<a href="javascript:;">{$strings.delete}</a>
+									</li>
+								</ul>
+								<a class="dropdown-toggle icon-monospaced" data-toggle="dropdown" href="#1">
+									{$kebab}
+								</a>
+							</div>
 						</div>
 					</div>
-				</div>
-			</li>
-		{/foreach}
-		</ul>
-	{else}
-		{call .empty_list}
-			{param message: $strings.emptyListText /}
-		{/call}
-	{/if}
+				</li>
+			{/foreach}
+			</ul>
+		{else}
+			{call .empty_list}
+				{param message: $strings.emptyListText /}
+			{/call}
+		{/if}
+	</div>
 {/template}
 
 /**
  * Prints the DDL form card rule.
- *
- * @param? message
  */
 {template .empty_list}
+	{@param? message: string}
+
 	<div class="main-content-body">
 		<div class="card main-content-card taglib-empty-result-message">
 			<div class="card-row card-row-padded">
@@ -122,10 +124,10 @@
 
 /**
  * Prints the list of rule types on the Popover.
- *
- * @param strings
  */
 {template .rule_types}
+	{@param strings: [showHide: string, enableDisable: string, require: string]}
+
 	<ul class="dropdown-menu">
 		<li>
 			<a data-rule-type="visibility" href="javascript:;">{$strings.showHide}</a>
@@ -137,21 +139,21 @@
 
 /**
  * Prints the DDL form card rule.
- *
- * @param? content
  */
 {template .badge}
+	{@param? content: string}
+
 	<span class="badge badge-default badge-sm">{$content}</span>
 {/template}
 
 /**
  * Prints Rules Conditions.
- *
- * @param operandType
- * @param operandValue
- * @param strings
  */
 {template .condition}
+	{@param operandType: string}
+	{@param operandValue: string}
+	{@param strings: ?}
+
 	{if $operandType != 'user' and $operandType != 'list'}
 		<span>{$strings[$operandType]} </span>
 	{/if}
@@ -163,9 +165,9 @@
 
 /**
  * Prints Rules Actions.
- *
- * @param action
  */
 {template .action}
+	{@param action: string}
+
 	<b>{$action}</b>
 {/template}
