@@ -6,7 +6,9 @@ Liferay.Loader.require(
 			window.DDLRule = {};
 		}
 
-		window.DDLRule.render = Rule.default;
+		Rule.default.forEach(function(item) {
+			window.DDLRule[item.key] = item.component;
+		});
 
 		AUI.add('liferay-ddl-form-builder-rule-template');
 	}

@@ -3,12 +3,17 @@ import Soy from 'metal-soy';
 
 import templates from './calculate.soy';
 
-/**
- * Calculate Component
- */
-class Calculate extends Component {}
+let CalculateTemplates = [];
 
-// Register component
-Soy.register(Calculate, templates, 'render');
+for (let template in templates) {
+	if (template !== 'templates') {
+		class C extends Component {};
+		Soy.register(C, templates, template);
+		CalculateTemplates.push({
+			key: template,
+			component: C
+		});
+	}
+}
 
-export default Calculate;
+export default CalculateTemplates;

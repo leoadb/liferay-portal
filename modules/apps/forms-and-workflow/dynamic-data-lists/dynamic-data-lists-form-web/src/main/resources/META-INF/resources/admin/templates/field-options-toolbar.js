@@ -6,7 +6,9 @@ Liferay.Loader.require(
 			window.DDLFieldSettingsToolbar = {};
 		}
 
-		window.DDLFieldSettingsToolbar.render = FieldOptionsToolbar.default;
+		FieldOptionsToolbar.default.forEach(function(item) {
+			window.DDLFieldSettingsToolbar[item.key] = item.component;
+		});
 
 		AUI.add('liferay-ddl-form-builder-field-options-toolbar-template');
 	}

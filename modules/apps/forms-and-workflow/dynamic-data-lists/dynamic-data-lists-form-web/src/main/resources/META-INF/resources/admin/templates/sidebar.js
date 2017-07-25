@@ -6,7 +6,9 @@ Liferay.Loader.require(
 			window.DDLSidebar = {};
 		}
 
-		window.DDLSidebar.render = SideBar.default;
+		SideBar.default.forEach(function(item) {
+			window.DDLSidebar[item.key] = item.component;
+		});
 
 		AUI.add('liferay-ddl-form-builder-sidebar-template');
 	}
