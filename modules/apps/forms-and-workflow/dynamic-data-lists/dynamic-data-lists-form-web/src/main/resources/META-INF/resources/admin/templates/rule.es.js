@@ -3,12 +3,17 @@ import Soy from 'metal-soy';
 
 import templates from './rule.soy';
 
-/**
- * Rule Component
- */
-class Rule extends Component {}
+let RuleTemplates = [];
 
-// Register component
-Soy.register(Rule, templates, 'render');
+for (let template in templates) {
+	if (template !== 'templates') {
+		class C extends Component {};
+		Soy.register(C, templates, template);
+		RuleTemplates.push({
+			key: template,
+			component: C
+		});
+	}
+}
 
-export default Rule;
+export default RuleTemplates;

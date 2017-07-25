@@ -6,7 +6,9 @@ Liferay.Loader.require(
 			window.DDLCalculate = {};
 		}
 
-		window.DDLCalculate.render = Calculate.default;
+		Calculate.default.forEach(function(item) {
+			window.DDLCalculate[item.key] = item.component;
+		});
 
 		AUI.add('liferay-ddl-form-builder-calculate-template');
 	}
