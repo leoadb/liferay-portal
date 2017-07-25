@@ -3,12 +3,17 @@ import Soy from 'metal-soy';
 
 import templates from './data-provider-parameter.soy';
 
-/**
- * DataProviderParameter Component
- */
-class DataProviderParameter extends Component {}
+let DataProviderParameterTemplates = [];
 
-// Register component
-Soy.register(DataProviderParameter, templates, 'render');
+for (let template in templates) {
+	if (template !== 'templates') {
+		class C extends Component {};
+		Soy.register(C, templates, template);
+		DataProviderParameterTemplates.push({
+			key: template,
+			component: C
+		});
+	}
+}
 
-export default DataProviderParameter;
+export default DataProviderParameterTemplates;

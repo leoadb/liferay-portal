@@ -3,12 +3,17 @@ import Soy from 'metal-soy';
 
 import templates from './field-options-toolbar.soy';
 
-/**
- * FieldOptionsToolbar Component
- */
-class FieldOptionsToolbar extends Component {}
+let OptionsToolbarTemplates = [];
 
-// Register component
-Soy.register(FieldOptionsToolbar, templates, 'render');
+for (let template in templates) {
+	if (template !== 'templates') {
+		class C extends Component {};
+		Soy.register(C, templates, template);
+		OptionsToolbarTemplates.push({
+			key: template,
+			component: C
+		});
+	}
+}
 
-export default FieldOptionsToolbar;
+export default OptionsToolbarTemplates;

@@ -6,7 +6,9 @@ Liferay.Loader.require(
 			window.DDLDataProviderParameter = {};
 		}
 
-		window.DDLDataProviderParameter.render = DataProviderParameter.default;
+		DataProviderParameter.default.forEach(function(item) {
+			window.DDLDataProviderParameter[item.key] = item.component;
+		});
 
 		AUI.add('liferay-ddl-form-builder-data-provider-parameter-template');
 	}

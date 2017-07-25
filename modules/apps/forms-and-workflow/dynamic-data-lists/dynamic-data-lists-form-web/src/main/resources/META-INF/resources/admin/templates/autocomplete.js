@@ -6,8 +6,9 @@ Liferay.Loader.require(
 			window.DDLAutoComplete = {};
 		}
 
-		window.DDLAutoComplete.actionPanel = AutoComplete.AutoCompleteActionPanel;
-		window.DDLAutoComplete.container = AutoComplete.AutoCompleteContainer;
+		AutoComplete.default.forEach(function(item) {
+			window.DDLAutoComplete[item.key] = item.component;
+		});
 
 		AUI.add('liferay-ddl-form-builder-autocomplete-template');
 	}

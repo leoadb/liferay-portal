@@ -3,17 +3,17 @@ import Soy from 'metal-soy';
 
 import templates from './autocomplete.soy';
 
-/**
- * AutoComplete Component
- */
-class AutoCompleteContainer extends Component {}
+let AutoCompleteTemplates = [];
 
-// Register component
-Soy.register(AutoCompleteContainer, templates, 'container');
+for (let template in templates) {
+	if (template !== 'templates') {
+		class C extends Component {};
+		Soy.register(C, templates, template);
+		AutoCompleteTemplates.push({
+			key: template,
+			component: C
+		});
+	}
+}
 
-class AutoCompleteActionPanel extends Component {}
-
-//Register component
-Soy.register(AutoCompleteActionPanel, templates, 'actionPanel');
-
-export { AutoCompleteContainer, AutoCompleteActionPanel };
+export default AutoCompleteTemplates;

@@ -4,12 +4,17 @@ import Soy from 'metal-soy';
 import './field-options-toolbar.soy';
 import templates from './sidebar.soy';
 
-/**
- * SideBar Component
- */
-class SideBar extends Component {}
+let SidebarTemplates = [];
 
-// Register component
-Soy.register(SideBar, templates, 'render');
+for (let template in templates) {
+	if (template !== 'templates') {
+		class C extends Component {};
+		Soy.register(C, templates, template);
+		SidebarTemplates.push({
+			key: template,
+			component: C
+		});
+	}
+}
 
-export default SideBar;
+export default SidebarTemplates;
