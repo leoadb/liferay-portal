@@ -1,31 +1,30 @@
-{namespace ddm}
+{namespace DDMDocumentLibrary}
 
 /**
  * Defines the delegated template for the file upload field.
  */
-{deltemplate ddm.field autoescape="deprecated-contextual" variant="'document_library'"}
-	{call .document_library data="all" /}
+{deltemplate ddm.field variant="'document_library'"}
+	{call .render data="all" /}
 {/deltemplate}
 
 /**
  * Prints the DDM form file upload field.
- *
- * @param clearButtonVisible
- * @param dir
- * @param fileEntryURL
- * @param fileEntryTitle
- * @param label
- * @param lexiconIconsPath
- * @param name
- * @param readOnly
- * @param required
- * @param showLabel
- * @param strings
- * @param tip
- * @param visible
- * @param value
  */
-{template .document_library autoescape="deprecated-contextual"}
+{template .render}
+	{@param? clearButtonVisible: bool}
+	{@param? dir: string}
+	{@param? fileEntryURL: string}
+	{@param? fileEntryTitle: string}
+	{@param? label: string}
+	{@param? lexiconIconsPath: string}
+	{@param name: string}
+	{@param readOnly: bool}
+	{@param? required: bool}
+	{@param showLabel: bool}
+	{@param strings: [select: string]}
+	{@param? tip: string}
+	{@param? value: ?}
+	{@param visible: bool}
 
 	<div class="form-group{$visible ? '' : ' hide'}" data-fieldname="{$name}">
 		{if $showLabel}
@@ -44,7 +43,7 @@
 
 		<div class="form-builder-document-library-field">
 			{if $fileEntryURL}
-				{call ddm.card_item}
+				{call .card_item}
 					{param fileEntryURL: $fileEntryURL /}
 					{param fileEntryTitle: $fileEntryTitle /}
 					{param lexiconIconsPath: $lexiconIconsPath /}
@@ -52,8 +51,8 @@
 
 				{else}
 					<div class="input-group">
-						<input class="field form-control" dir="{$dir}" id="inputFile" type="text" value="{$fileEntryTitle ? $fileEntryTitle : ''}" readonly>
-						{call ddm.button_group}
+						<input class="field form-control" {if $dir}dir="{$dir}"{/if} id="inputFile" type="text" value="{$fileEntryTitle ? $fileEntryTitle : ''}" readonly>
+						{call .button_group}
 							{param clearButtonVisible: $clearButtonVisible /}
 							{param lexiconIconsPath: $lexiconIconsPath /}
 							{param readOnly: $readOnly /}
@@ -68,13 +67,13 @@
 
 /**
  * Prints the button group to manipulate files.
- *
- * @param clearButtonVisible
- * @param lexiconIconsPath
- * @param readOnly
- * @param strings
  */
-{template .button_group autoescape="deprecated-contextual"}
+{template .button_group}
+	{@param? clearButtonVisible: bool}
+	{@param? lexiconIconsPath: string}
+	{@param readOnly: bool}
+	{@param strings: [select: string]}
+
 	<div class="input-group-btn">
 		<button class="btn btn-default select-button" {if $readOnly}disabled{/if} type="button">
 			<span class="lfr-btn-label">{$strings.select}</span>
@@ -89,12 +88,12 @@
 
 /**
  * Prints the card to allow file to be downloaded.
- *
- * @param fileEntryURL
- * @param fileEntryTitle
- * @param lexiconIconsPath
  */
-{template .card_item autoescape="deprecated-contextual"}
+{template .card_item}
+	{@param? fileEntryURL: string}
+	{@param? fileEntryTitle: string}
+	{@param? lexiconIconsPath: string}
+
 	<div class="card card-horizontal">
 		<div class="card-row card-row-padded">
 			<div class="card-col-content card-col-gutters">
