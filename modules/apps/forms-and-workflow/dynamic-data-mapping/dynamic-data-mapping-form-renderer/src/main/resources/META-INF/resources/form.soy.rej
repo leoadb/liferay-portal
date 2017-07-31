@@ -1,0 +1,24 @@
+diff a/modules/apps/forms-and-workflow/dynamic-data-mapping/dynamic-data-mapping-form-renderer/src/main/resources/META-INF/resources/form.soy b/modules/apps/forms-and-workflow/dynamic-data-mapping/dynamic-data-mapping-form-renderer/src/main/resources/META-INF/resources/form.soy	(rejected hunks)
+@@ -23,15 +23,15 @@
+
+ /**
+  * Prints the JavaScript form renderer.
+- *
+- * @param containerId
+- * @param context
+- * @param evaluatorURL
+- * @param fieldTypes
+- * @param portletNamespace
+- * @param readOnly
+  */
+ {template .form_renderer_js}
++	{@param containerId: string}
++	{@param context: ?}
++	{@param evaluatorURL: string}
++	{@param fieldTypes: string}
++	{@param portletNamespace: string}
++	{@param readOnly: bool}
++
+ 	<script type="text/javascript">
+ 		AUI().use(
+ 			'liferay-ddm-form-renderer',

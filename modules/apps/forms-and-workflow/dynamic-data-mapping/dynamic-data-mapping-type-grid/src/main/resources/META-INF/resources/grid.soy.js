@@ -11,7 +11,7 @@ if (typeof ddm == 'undefined') { var ddm = {}; }
 
 
 ddm.__deltemplate_s2_b69d8aa9 = function(opt_data, opt_ignored) {
-  return '' + ddm.grid(opt_data);
+  return soydata.VERY_UNSAFE.ordainSanitizedHtml(ddm.grid(opt_data));
 };
 if (goog.DEBUG) {
   ddm.__deltemplate_s2_b69d8aa9.soyTemplateName = 'ddm.__deltemplate_s2_b69d8aa9';
@@ -28,23 +28,25 @@ ddm.grid = function(opt_data, opt_ignored) {
     output += '<th>' + soy.$$escapeHtml(columnData35.label) + '</th>';
   }
   output += '</tr></thead><tbody>';
-  var rowList63 = opt_data.rows;
-  var rowListLen63 = rowList63.length;
-  for (var rowIndex63 = 0; rowIndex63 < rowListLen63; rowIndex63++) {
-    var rowData63 = rowList63[rowIndex63];
-    output += '<tr name="' + soy.$$escapeHtmlAttribute(rowData63.value) + '"><td>' + soy.$$escapeHtml(rowData63.label) + '</td>';
-    var columnList60 = opt_data.columns;
-    var columnListLen60 = columnList60.length;
-    for (var columnIndex60 = 0; columnIndex60 < columnListLen60; columnIndex60++) {
-      var columnData60 = columnList60[columnIndex60];
-      var checked__soy43 = columnData60.value == opt_data.value[rowData63.value] ? 'checked' : '';
-      var autoFocus__soy44 = opt_data.focusTarget && (opt_data.focusTarget.row == rowData63.value && opt_data.focusTarget.index == columnIndex60) ? 'autofocus' : '';
-      output += '<td><input ' + soy.$$filterHtmlAttributes(autoFocus__soy44) + ' ' + soy.$$filterHtmlAttributes(checked__soy43) + ' class="form-builder-grid-field" data-row-index="' + soy.$$escapeHtmlAttribute(columnIndex60) + '" ' + ((opt_data.readOnly) ? 'disabled' : '') + ' name="' + soy.$$escapeHtmlAttribute(rowData63.value) + '" type="radio" value="' + soy.$$escapeHtmlAttribute(columnData60.value) + '" /></td>';
+  var rowList73 = opt_data.rows;
+  var rowListLen73 = rowList73.length;
+  for (var rowIndex73 = 0; rowIndex73 < rowListLen73; rowIndex73++) {
+    var rowData73 = rowList73[rowIndex73];
+    output += '<tr name="' + soy.$$escapeHtmlAttribute(rowData73.value) + '"><td>' + soy.$$escapeHtml(rowData73.label) + '</td>';
+    var columnList70 = opt_data.columns;
+    var columnListLen70 = columnList70.length;
+    for (var columnIndex70 = 0; columnIndex70 < columnListLen70; columnIndex70++) {
+      var columnData70 = columnList70[columnIndex70];
+      var checked__soy43 = '' + ((columnData70.value == opt_data.value[rowData73.value]) ? 'checked' : '');
+      checked__soy43 = soydata.VERY_UNSAFE.$$ordainSanitizedAttributesForInternalBlocks(checked__soy43);
+      var autoFocus__soy47 = '' + ((opt_data.focusTarget && (opt_data.focusTarget.row == rowData73.value && opt_data.focusTarget.index == columnIndex70)) ? 'autoFocus' : '');
+      autoFocus__soy47 = soydata.VERY_UNSAFE.$$ordainSanitizedAttributesForInternalBlocks(autoFocus__soy47);
+      output += '<td><input ' + ((autoFocus__soy47) ? 'autoFocus' : '') + ' ' + ((checked__soy43) ? 'checked' : '') + ' class="form-builder-grid-field" data-row-index="' + soy.$$escapeHtmlAttribute(columnIndex70) + '" ' + ((opt_data.readOnly) ? 'disabled' : '') + ' name="' + soy.$$escapeHtmlAttribute(rowData73.value) + '" type="radio" value="' + soy.$$escapeHtmlAttribute(columnData70.value) + '" /></td>';
     }
     output += '</tr>';
   }
-  output += '</tbody></table></div>' + ((opt_data.childElementsHTML) ? soy.$$filterNoAutoescape(opt_data.childElementsHTML) : '') + '</div>';
-  return output;
+  output += '</tbody></table></div></div>';
+  return soydata.VERY_UNSAFE.ordainSanitizedHtml(output);
 };
 if (goog.DEBUG) {
   ddm.grid.soyTemplateName = 'ddm.grid';
@@ -53,14 +55,14 @@ if (goog.DEBUG) {
 
 ddm.hidden_grid = function(opt_data, opt_ignored) {
   var output = '';
-  var rowList84 = opt_data.rows;
-  var rowListLen84 = rowList84.length;
-  for (var rowIndex84 = 0; rowIndex84 < rowListLen84; rowIndex84++) {
-    var rowData84 = rowList84[rowIndex84];
-    var inputValue__soy72 = opt_data.value[rowData84.value] ? rowData84.value + ';' + opt_data.value[rowData84.value] : '';
-    output += '<input class="form-control" dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" name="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" type="hidden" ' + ((inputValue__soy72) ? 'value="' + soy.$$escapeHtmlAttribute(inputValue__soy72) + '"' : '') + '/>';
+  var rowList89 = opt_data.rows;
+  var rowListLen89 = rowList89.length;
+  for (var rowIndex89 = 0; rowIndex89 < rowListLen89; rowIndex89++) {
+    var rowData89 = rowList89[rowIndex89];
+    var inputValue__soy77 = opt_data.value[rowData89.value] ? rowData89.value + ';' + opt_data.value[rowData89.value] : '';
+    output += '<input class="form-control" dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" name="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" type="hidden" ' + ((inputValue__soy77) ? 'value="' + soy.$$escapeHtmlAttribute(inputValue__soy77) + '"' : '') + '/>';
   }
-  return output;
+  return soydata.VERY_UNSAFE.ordainSanitizedHtml(output);
 };
 if (goog.DEBUG) {
   ddm.hidden_grid.soyTemplateName = 'ddm.hidden_grid';
