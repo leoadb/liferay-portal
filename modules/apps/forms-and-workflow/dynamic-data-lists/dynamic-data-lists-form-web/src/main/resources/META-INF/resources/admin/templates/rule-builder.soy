@@ -27,7 +27,7 @@
  */
 {template .rule_list}
 	{@param kebab: html}
-	{@param rules: list<[conditions: list<[operandType: string, operandValue: string, strings: any, operator: string, operands: list<[type: string, label: string, value: string]>]>, actions: list<string>, logicOperator: string]>}
+	{@param rules: list<[conditions: list<[operandType: string, operandValue: string, strings: any, operator: string, operands: list<[type: string, label: string, value: string]>]>, actions: list<?>, logicOperator: string]>}
 	{@param strings: ?}
 
 	<div>
@@ -163,11 +163,86 @@
 	{/call}
 {/template}
 
+{template .autofill_outputs}
+	{@param outputs: list<?>}
+
+	{foreach $output in $outputs}
+		{call .badge}
+			{param content: $output /}
+		{/call}
+		{if not isLast($output)}
+		,
+		{/if}
+	{/foreach}
+{/template}
+
 /**
  * Prints Rules Actions.
  */
 {template .action}
-	{@param action: string}
+	{@param action: ?}
 
-	<b>{$action}</b>
+	{if $action.type == 'jump-to-page'}
+		<b>
+			{msg desc=""}
+				jump-to-page-
+				{call .badge}
+					{param content: $action.param0 /}
+				{/call}
+			{/msg}
+		</b>
+	{elseif $action.type == 'auto-fill'}
+		<b>
+			{msg desc=""}
+				autofill-
+				{call .autofill_outputs}
+					{param outputs: $action.param0 /}
+				{/call}
+				-from-data-provider-
+				{call .badge}
+					{param content: $action.param1 /}
+				{/call}
+			{/msg}
+		</b>
+	{elseif $action.type == 'calculate'}
+		<b>
+			{msg desc=""}
+				calculate-field-
+				{call .badge}
+					{param content: $action.param0 /}
+				{/call}
+				-as-
+				{call .badge}
+					{param content: $action.param1 /}
+				{/call}
+			{/msg}
+		</b>
+	{elseif $action.type == 'enable'}
+		<b>
+			{msg desc=""}
+				enable-
+				{call .badge}
+					{param content: $action.param0 /}
+				{/call}
+			{/msg}
+		</b>
+	{elseif $action.type == 'require'}
+		<b>
+			{msg desc=""}
+				require-
+				{call .badge}
+					{param content: $action.param0 /}
+				{/call}
+			{/msg}
+		</b>
+	{elseif $action.type == 'show'}
+		<b>
+			{msg desc=""}
+				show-
+				{call .badge}
+					{param content: $action.param0 /}
+				{/call}
+			{/msg}
+		</b>
+	{/if}
 {/template}
