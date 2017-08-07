@@ -270,102 +270,49 @@ AUI.add(
 					_getActionDescription: function(type, action) {
 						var instance = this;
 
-						var actionDescription = '';
-
-						var strings = instance.get('strings');
-
-						var badgeTemplate = SoyTemplateUtil.getTemplateRenderer('DDLRuleBuilder.badge');
-
 						var actionKey = MAP_ACTION_DESCRIPTIONS[type];
-
-						var pages = instance.getPages();
 
 						if (actionKey) {
 							var data;
 
 							if (type === 'jump-to-page') {
-								var jumpToPageContainer = document.createDocumentFragment();
+								var pages = instance.getPages();
 
-								new badgeTemplate(
-									{
-										content: pages[action.target].label
-									},
-									jumpToPageContainer
-								);
-
-								data = [jumpToPageContainer.firstChild.outerHTML];
+								return {
+									type: 'jumptopage',
+									param0: pages[action.target].label
+								}
 							}
 							else if (type === 'auto-fill') {
-								data = [];
-
 								var fieldListDescription = [];
 
-								var autoFillContainer;
-
 								for (var output in action.outputs) {
-									autoFillContainer = document.createDocumentFragment();
-
-									new badgeTemplate(
-										{
-											content: action.outputs[output]
-										},
-										autoFillContainer
-									);
-
-									fieldListDescription.push(autoFillContainer.firstChild.outerHTML);
+									fieldListDescription.push(action.outputs[output]);
 								}
 
-								data.push(fieldListDescription.join(', '));
-
-								autoFillContainer = document.createDocumentFragment();
-
-								new badgeTemplate(
-									{
-										content: instance._getDataProviderLabel(action.ddmDataProviderInstanceUUID)
-									},
-									autoFillContainer
-								);
-
-								data.push(autoFillContainer.firstChild.outerHTML);
+								return {
+									type: 'autofill',
+									param0: fieldListDescription,
+									param1: instance._getDataProviderLabel(action.ddmDataProviderInstanceUUID)
+								}
 							}
 							else if (type === 'calculate') {
-								var calculateContainer0 = document.createDocumentFragment();
 
-								new badgeTemplate(
-									{
-										content: action.expression.replace(/\[|\]/g, '')
-									},
-									calculateContainer0
-								);
-
-								var calculateContainer1 = document.createDocumentFragment();
-
-								new badgeTemplate(
-									{
-										content: instance._getFieldLabel(action.target)
-									},
-									calculateContainer1
-								);
-
-								data = [calculateContainer0.firstChild.outerHTML, calculateContainer1.firstChild.outerHTML];
+								return {
+									type: type,
+									param0: action.expression.replace(/\[|\]/g, ''),
+									param1: instance._getFieldLabel(action.target)
+								}
 							}
 							else {
-								var container = document.createDocumentFragment();
-
-								new badgeTemplate(
-									{
-										content: action.label
-									},
-									container
-								);
-
-								data = [container.firstChild.outerHTML];
+								return {
+									type: type,
+									param0: action.label
+								}
 							}
-
-							actionDescription = A.Lang.sub(strings[actionKey], data);
 						}
 
-						return actionDescription;
+						return {};
 					},
 
 					_getActionsDescription: function(actions) {
