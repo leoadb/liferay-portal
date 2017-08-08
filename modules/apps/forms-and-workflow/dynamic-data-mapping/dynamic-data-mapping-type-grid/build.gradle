@@ -6,11 +6,6 @@ task testJS
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
-configJSModules {
-	dependsOn = []
-	enabled = false
-}
-
 dependencies {
 	provided group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "2.0.0"
 	provided group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
@@ -30,15 +25,4 @@ mergeLang {
 
 testJS {
 	dependsOn gulpTest
-}
-
-transpileJS {
-	soySrcIncludes = ""
-	srcIncludes = "**/*.es.js"
-}
-
-wrapSoyAlloyTemplate {
-	enabled = true
-	moduleName = "liferay-ddm-form-field-grid-template"
-	namespace = "ddm"
 }
