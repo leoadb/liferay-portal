@@ -51,7 +51,7 @@ import org.springframework.mock.web.portlet.MockPortletRequest;
  */
 @RunWith(Arquillian.class)
 @Sync
-public class RecordSetFieldSettingsValidatorTest {
+public class RecordSetDDMFormFieldSettingsValidatorTest {
 
 	@ClassRule
 	@Rule
@@ -123,7 +123,7 @@ public class RecordSetFieldSettingsValidatorTest {
 		}
 
 		String expectedMessage = String.format(
-			"Invalid value set for the properties of fields [%s]", fieldName);
+			"Invalid value set for the properties of field [%s]", fieldName);
 
 		Assert.assertNotNull(validateException);
 
@@ -144,7 +144,7 @@ public class RecordSetFieldSettingsValidatorTest {
 			PortletRequest portletRequest, DDMForm ddmForm)
 		throws Throwable {
 
-		Class<?> clazz = _recordSetFieldSettingsValidator.getClass();
+		Class<?> clazz = _recordSetDDMFormFieldSettingsValidator.getClass();
 
 		Method method = clazz.getDeclaredMethod(
 			"validate", PortletRequest.class, DDMForm.class);
@@ -153,7 +153,8 @@ public class RecordSetFieldSettingsValidatorTest {
 
 		try {
 			method.invoke(
-				_recordSetFieldSettingsValidator, portletRequest, ddmForm);
+				_recordSetDDMFormFieldSettingsValidator, portletRequest,
+				ddmForm);
 		}
 		catch (InvocationTargetException ite) {
 			throw ite.getCause();
@@ -180,13 +181,13 @@ public class RecordSetFieldSettingsValidatorTest {
 
 		Object[] servlets = registry.getServices(_CLASS_NAME, sb.toString());
 
-		_recordSetFieldSettingsValidator = servlets[0];
+		_recordSetDDMFormFieldSettingsValidator = servlets[0];
 	}
 
 	private static final String _CLASS_NAME =
 		"com.liferay.dynamic.data.lists.form.web.internal.portlet.action." +
-			"util.RecordSetFieldSettingsValidator";
+			"util.RecordSetDDMFormFieldSettingsValidator";
 
-	private Object _recordSetFieldSettingsValidator;
+	private Object _recordSetDDMFormFieldSettingsValidator;
 
 }
