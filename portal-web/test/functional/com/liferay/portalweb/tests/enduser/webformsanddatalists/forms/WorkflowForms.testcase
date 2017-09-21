@@ -4,6 +4,8 @@
 	<property name="testray.component.names" value="Dynamic Data Lists,Workflow,Forms" />
 	<property name="testray.main.component.name" value="Workflow" />
 
+	<property name="custom.properties" value="javascript.fast.load=false${line.separator}minifier.enabled=false" />
+
 	<set-up>
 		<var method="TestPropsUtil#get('test.portal.instance')" name="testPortalInstance" />
 
