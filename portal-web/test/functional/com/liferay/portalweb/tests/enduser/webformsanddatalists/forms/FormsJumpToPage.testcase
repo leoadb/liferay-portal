@@ -3,7 +3,7 @@
 	<property name="portal.upstream" value="true" />
 	<property name="testray.main.component.name" value="Forms" />
 
-	<property name="custom.properties" value="javascript.fast.load=false${line.separator}minifier.enabled=false" />
+	<property name="custom.properties" value="minifier.enabled=false" />
 	<property name="test.assert.warning.exceptions" value="true" />
 
 	<set-up>
