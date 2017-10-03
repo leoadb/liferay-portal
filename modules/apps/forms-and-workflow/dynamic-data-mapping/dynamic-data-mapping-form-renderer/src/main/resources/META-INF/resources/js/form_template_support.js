@@ -3,8 +3,6 @@ AUI.add(
 	function(A) {
 		var AObject = A.Object;
 
-		var SoyTemplateUtil = Liferay.DDM.SoyTemplateUtil;
-
 		var FormTemplateSupport = function() {
 		};
 
@@ -50,21 +48,17 @@ AUI.add(
 			render: function() {
 				var instance = this;
 
-				SoyTemplateUtil.loadModules(
-					function() {
-						var container = instance.get('container');
+				var container = instance.get('container');
 
-						container.html(instance.getTemplate());
+				container.html(instance.getTemplate());
 
-						instance.eachField(
-							function(field) {
-								field.updateContainer();
-							}
-						);
-
-						instance.fire('render');
+				instance.eachField(
+					function(field) {
+						field.updateContainer();
 					}
 				);
+
+				instance.fire('render');
 
 				return instance;
 			},
@@ -97,6 +91,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: ['aui-base', 'liferay-ddm-soy-template-util']
+		requires: ['aui-base']
 	}
 );
