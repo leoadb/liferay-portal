@@ -21,11 +21,25 @@ import com.liferay.polls.exception.QuestionExpirationDateException;
 import com.liferay.polls.exception.QuestionTitleException;
 import com.liferay.polls.model.PollsChoice;
 import com.liferay.polls.model.PollsQuestion;
+import com.liferay.polls.model.impl.PollsQuestionImpl;
 import com.liferay.polls.service.base.PollsQuestionLocalServiceBaseImpl;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -33,6 +47,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +63,7 @@ import java.util.Set;
 public class PollsQuestionLocalServiceImpl
 	extends PollsQuestionLocalServiceBaseImpl {
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public PollsQuestion addQuestion(
 			long userId, Map<Locale, String> titleMap,
@@ -174,6 +191,7 @@ public class PollsQuestionLocalServiceImpl
 		pollsQuestionLocalService.deleteQuestion(question);
 	}
 
+	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(
 		action = SystemEventConstants.ACTION_SKIP,
@@ -234,8 +252,34 @@ public class PollsQuestionLocalServiceImpl
 		long companyId, long[] groupIds, String keywords, int start, int end,
 		OrderByComparator<PollsQuestion> orderByComparator) {
 
-		return pollsQuestionFinder.findByKeywords(
-			companyId, groupIds, keywords, start, end, orderByComparator);
+		try {
+			Hits hits = search(companyId, groupIds, keywords, start, end);
+
+			List<PollsQuestion> pollsQuestions = new ArrayList<>(
+				hits.getLength());
+
+			Set<Serializable> questionIds = new HashSet<Serializable>();
+			
+			for (Document document : hits.getDocs()) {
+				Long questionId = Long.parseLong(
+					document.get(Field.ENTRY_CLASS_PK));
+				
+				questionIds.add(questionId);
+				
+			}
+
+			pollsQuestions.addAll(
+				pollsQuestionPersistence.fetchByPrimaryKeys(
+					questionIds).values());
+			
+			return pollsQuestions;
+		}
+		catch (PortalException pe) {
+			return pollsQuestionFinder.findByKeywords(
+					companyId, groupIds, keywords, start, end,
+					orderByComparator);
+		}
+
 	}
 
 	@Override
@@ -251,8 +295,18 @@ public class PollsQuestionLocalServiceImpl
 
 	@Override
 	public int searchCount(long companyId, long[] groupIds, String keywords) {
-		return pollsQuestionFinder.countByKeywords(
-			companyId, groupIds, keywords);
+		Indexer<PollsQuestion> indexer = IndexerRegistryUtil.getIndexer(
+			PollsQuestion.class.getName());
+
+		try {
+			return (int)indexer.searchCount(
+				buildSearchContext(companyId, groupIds, keywords));
+		}
+		catch (PortalException pe) {
+			return pollsQuestionFinder.countByKeywords(
+					companyId, groupIds, keywords);
+		}
+
 	}
 
 	@Override
@@ -264,6 +318,7 @@ public class PollsQuestionLocalServiceImpl
 			companyId, groupIds, title, description, andOperator);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public PollsQuestion updateQuestion(
 			long userId, long questionId, Map<Locale, String> titleMap,
@@ -332,6 +387,51 @@ public class PollsQuestionLocalServiceImpl
 		return question;
 	}
 
+	protected SearchContext buildSearchContext(
+			long companyId, long[] groupIds, String keywords)
+		throws PortalException {
+
+		return buildSearchContext(
+			companyId, groupIds, keywords, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS);
+	}
+
+	protected SearchContext buildSearchContext(
+			long companyId, long[] groupIds, String keywords, int start,
+			int end)
+		throws PortalException {
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setKeywords(keywords);
+
+		searchContext.setAttribute("paginationType", "none");
+
+		searchContext.setCompanyId(companyId);
+
+		searchContext.setEnd(end);
+		searchContext.setGroupIds(groupIds);
+		searchContext.setStart(start);
+		
+		searchContext.setSorts(new Sort(Field.CREATE_DATE, true));
+
+		return searchContext;
+	}
+
+	protected Hits search(
+			long companyId, long[] groupIds, String keywords, int start,
+			int end)
+		throws PortalException {
+
+		Indexer<PollsQuestion> indexer = IndexerRegistryUtil.getIndexer(
+			PollsQuestion.class.getName());
+
+		SearchContext searchContext = buildSearchContext(
+			companyId, groupIds, keywords, start, end);
+
+		return indexer.search(searchContext);
+	}
+
 	protected void validate(
 			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
 			List<PollsChoice> choices, Date expirationDate)
@@ -379,4 +479,5 @@ public class PollsQuestionLocalServiceImpl
 		}
 	}
 
+	
 }
