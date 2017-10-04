@@ -21,7 +21,6 @@ import com.liferay.polls.exception.QuestionExpirationDateException;
 import com.liferay.polls.exception.QuestionTitleException;
 import com.liferay.polls.model.PollsChoice;
 import com.liferay.polls.model.PollsQuestion;
-import com.liferay.polls.model.impl.PollsQuestionImpl;
 import com.liferay.polls.service.base.PollsQuestionLocalServiceBaseImpl;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -38,7 +37,6 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -48,6 +46,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -197,7 +196,8 @@ public class PollsQuestionLocalServiceImpl
 		action = SystemEventConstants.ACTION_SKIP,
 		type = SystemEventConstants.TYPE_DELETE
 	)
-	public void deleteQuestion(PollsQuestion question) throws PortalException {
+	public PollsQuestion deleteQuestion(PollsQuestion question)
+		throws PortalException {
 
 		// Question
 
@@ -216,6 +216,8 @@ public class PollsQuestionLocalServiceImpl
 		// Votes
 
 		pollsVotePersistence.removeByQuestionId(question.getQuestionId());
+
+		return question;
 	}
 
 	@Override
@@ -258,28 +260,29 @@ public class PollsQuestionLocalServiceImpl
 			List<PollsQuestion> pollsQuestions = new ArrayList<>(
 				hits.getLength());
 
-			Set<Serializable> questionIds = new HashSet<Serializable>();
-			
+			Set<Serializable> questionIds = new HashSet<>();
+
 			for (Document document : hits.getDocs()) {
 				Long questionId = Long.parseLong(
 					document.get(Field.ENTRY_CLASS_PK));
-				
+
 				questionIds.add(questionId);
-				
 			}
 
 			pollsQuestions.addAll(
 				pollsQuestionPersistence.fetchByPrimaryKeys(
 					questionIds).values());
-			
+
 			return pollsQuestions;
 		}
 		catch (PortalException pe) {
-			return pollsQuestionFinder.findByKeywords(
-					companyId, groupIds, keywords, start, end,
-					orderByComparator);
+			if (_log.isDebugEnabled()) {
+				_log.debug(pe, pe);
+			}
 		}
 
+		return pollsQuestionFinder.findByKeywords(
+			companyId, groupIds, keywords, start, end, orderByComparator);
 	}
 
 	@Override
@@ -303,10 +306,13 @@ public class PollsQuestionLocalServiceImpl
 				buildSearchContext(companyId, groupIds, keywords));
 		}
 		catch (PortalException pe) {
-			return pollsQuestionFinder.countByKeywords(
-					companyId, groupIds, keywords);
+			if (_log.isDebugEnabled()) {
+				_log.debug(pe, pe);
+			}
 		}
 
+		return pollsQuestionFinder.countByKeywords(
+			companyId, groupIds, keywords);
 	}
 
 	@Override
@@ -412,7 +418,7 @@ public class PollsQuestionLocalServiceImpl
 		searchContext.setEnd(end);
 		searchContext.setGroupIds(groupIds);
 		searchContext.setStart(start);
-		
+
 		searchContext.setSorts(new Sort(Field.CREATE_DATE, true));
 
 		return searchContext;
@@ -479,5 +485,7 @@ public class PollsQuestionLocalServiceImpl
 		}
 	}
 
-	
+	private static final Log _log = LogFactoryUtil.getLog(
+		PollsQuestionLocalServiceImpl.class);
+
 }
