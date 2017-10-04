@@ -72,6 +72,8 @@ public class PollsQuestionIndexer extends BaseIndexer<PollsQuestion> {
 
 		Document document = getBaseModelDocument(CLASS_NAME, pollsQuestion);
 
+		document.addDateSortable(
+			Field.CREATE_DATE, pollsQuestion.getCreateDate());
 		document.addText(Field.DESCRIPTION, getDescriptionField(pollsQuestion));
 		document.addText(Field.TITLE, getTitleField(pollsQuestion));
 
