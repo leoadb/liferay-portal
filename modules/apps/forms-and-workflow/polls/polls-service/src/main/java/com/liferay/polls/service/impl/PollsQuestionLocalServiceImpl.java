@@ -188,18 +188,13 @@ public class PollsQuestionLocalServiceImpl
 		pollsQuestionLocalService.deleteQuestion(question);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(
 		action = SystemEventConstants.ACTION_SKIP,
 		type = SystemEventConstants.TYPE_DELETE
 	)
-	public PollsQuestion deleteQuestion(PollsQuestion question)
-		throws PortalException {
-
-		// Question
-
-		pollsQuestionPersistence.remove(question);
+	public void deleteQuestion(PollsQuestion question) throws PortalException {
+		deletePollsQuestion(question);
 
 		// Resources
 
@@ -214,8 +209,6 @@ public class PollsQuestionLocalServiceImpl
 		// Votes
 
 		pollsVotePersistence.removeByQuestionId(question.getQuestionId());
-
-		return question;
 	}
 
 	@Override
