@@ -844,8 +844,8 @@ AUI.add(
 					_syncDescription: function() {
 						var instance = this;
 
-						var editingLanguageId = instance.get('editingLanguageId');
 						var defaultLanguageId = instance.get('defaultLanguageId');
+						var editingLanguageId = instance.get('editingLanguageId');
 
 						var localizedDescription = instance.get('localizedDescription');
 
@@ -859,8 +859,8 @@ AUI.add(
 					_syncName: function() {
 						var instance = this;
 
-						var editingLanguageId = instance.get('editingLanguageId');
 						var defaultLanguageId = instance.get('defaultLanguageId');
+						var editingLanguageId = instance.get('editingLanguageId');
 
 						var localizedName = instance.get('localizedName');
 
@@ -878,6 +878,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: ['aui-tooltip', 'io-base', 'liferay-alert', 'liferay-ddm-form-builder', 'liferay-ddl-form-builder-copy-publish-form-url-popover', 'liferay-ddm-form-builder-definition-serializer', 'liferay-ddm-form-builder-layout-serializer', 'liferay-ddm-form-builder-rule-builder', 'liferay-portlet-base', 'liferay-util-window', 'querystring-parse']
+		requires: ['aui-tooltip', 'io-base', 'liferay-alert', 'liferay-ddl-form-builder-copy-publish-form-url-popover', 'liferay-ddm-form-builder', 'liferay-ddm-form-builder-definition-serializer', 'liferay-ddm-form-builder-layout-serializer', 'liferay-ddm-form-builder-rule-builder', 'liferay-portlet-base', 'liferay-util-window', 'querystring-parse']
 	}
 );
