@@ -324,6 +324,18 @@ AUI.add(
 
 							return this;
 						};
+					},
+
+					_afterSelectionKey: function(event) {
+						var instance = this;
+						var activeCell = instance.get('activeCell');
+						var alignNode = event.alignNode || activeCell;
+						var column = instance.getColumn(alignNode);
+						var type = column.type;
+
+						if (activeCell && (event.keyCode === 13) && (type !== 'textarea')) {
+							instance._onEditCell(activeCell);
+						}
 					}
 				},
 
