@@ -32,6 +32,7 @@ import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalServi
 import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -96,21 +97,31 @@ public class DDLServiceUpgrade implements UpgradeStepRegistrator {
 			"com.liferay.dynamic.data.lists.service", "1.1.3", "1.1.4",
 			new com.liferay.dynamic.data.lists.internal.upgrade.v1_1_4.
 				UpgradeDDLRecordSet(
-					_counterLocalService, _ddmFormInstanceLocalService,
-					_ddmFormInstanceRecordLocalService,
-					_ddmFormInstanceRecordVersionLocalService,
-					_ddmFormInstanceVersionLocalService,
+					_classNameLocalService, _ddmFormInstanceLocalService,
 					_ddmStructureLinkLocalService,
 					_portletPreferencesLocalService,
 					_resourcePermissionLocalService),
 			new com.liferay.dynamic.data.lists.internal.upgrade.v1_1_4.
+				UpgradeDDLRecordSetVersion(_ddmFormInstanceVersionLocalService),
+			new com.liferay.dynamic.data.lists.internal.upgrade.v1_1_4.
+				UpgradeDDLRecordVersion(
+					_ddmFormInstanceRecordVersionLocalService),
+			new com.liferay.dynamic.data.lists.internal.upgrade.v1_1_4.
 				UpgradeResourceAction(_resourceActionLocalService));
+
+		registry.register(
+			"com.liferay.dynamic.data.lists.service", "1.1.4", "2.0.0",
+			new com.liferay.dynamic.data.lists.internal.upgrade.v2_0_0.
+				UpgradeDDLRecord(_ddmFormInstanceRecordLocalService));
 	}
 
 	@Reference(unbind = "-")
 	protected void setDDMStructureLocalService(
 		DDMStructureLocalService ddmStructureLocalService) {
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private CounterLocalService _counterLocalService;

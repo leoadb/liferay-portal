@@ -14,30 +14,21 @@
 
 package com.liferay.dynamic.data.lists.internal.upgrade.v1_1_4;
 
-import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
-import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
-import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
-import com.liferay.dynamic.data.mapping.model.DDMFormInstanceVersion;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
-import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalService;
-import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
-import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Junction;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -50,42 +41,19 @@ import java.sql.ResultSet;
 public class UpgradeDDLRecordSet extends UpgradeProcess {
 
 	public UpgradeDDLRecordSet(
-		CounterLocalService counterLocalService,
+		ClassNameLocalService classNameLocalService,
 		DDMFormInstanceLocalService ddmFormInstanceLocalService,
-		DDMFormInstanceRecordLocalService
-			ddmFormInstanceRecordLocalService,
-		DDMFormInstanceRecordVersionLocalService
-			ddmFormInstanceRecordVersionLocalService,
-		DDMFormInstanceVersionLocalService
-			ddmFormInstanceVersionLocalService,
 		DDMStructureLinkLocalService
 			ddmStructureLinkLocalService,
 		PortletPreferencesLocalService
 			portletPreferencesLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService) {
 
-		_counterLocalService = counterLocalService;
+		_classNameLocalService = classNameLocalService;
 		_ddmFormInstanceLocalService = ddmFormInstanceLocalService;
-		_ddmFormInstanceRecordLocalService = ddmFormInstanceRecordLocalService;
-		_ddmFormInstanceRecordVersionLocalService =
-			ddmFormInstanceRecordVersionLocalService;
-		_ddmFormInstanceVersionLocalService =
-			ddmFormInstanceVersionLocalService;
 		_ddmStructureLinkLocalService = ddmStructureLinkLocalService;
 		_portletPreferencesLocalService = portletPreferencesLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
-	}
-
-	protected void deleteDDLRecords(long recordSetId) throws Exception {
-		deleteDDLRecordVersions(recordSetId);
-
-		try (PreparedStatement ps = connection.prepareStatement(
-				"delete from DDLRecord where recordSetId = ?")) {
-
-			ps.setLong(1, recordSetId);
-
-			ps.executeUpdate();
-		}
 	}
 
 	protected void deleteDDLRecordSet(long ddmStructureId, long recordSetId)
@@ -93,8 +61,6 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 
 		_ddmStructureLinkLocalService.deleteStructureStructureLinks(
 			ddmStructureId);
-		deleteDDLRecords(recordSetId);
-		deleteDDLRecordSetVersions(recordSetId);
 
 		try (PreparedStatement ps = connection.prepareStatement(
 				"delete from DDLRecordSet where recordSetId = ?")) {
@@ -105,45 +71,25 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 		}
 	}
 
-	protected void deleteDDLRecordSetVersions(long recordSetId)
-		throws Exception {
-
-		try (PreparedStatement ps = connection.prepareStatement(
-				"delete from DDLRecordSetVersion where recordSetId = ?")) {
-
-			ps.setLong(1, recordSetId);
-
-			ps.executeUpdate();
-		}
-	}
-
-	protected void deleteDDLRecordVersions(long recordSetId) throws Exception {
-		try (PreparedStatement ps = connection.prepareStatement(
-				"delete from DDLRecordVersion where recordSetId = ?")) {
-
-			ps.setLong(1, recordSetId);
-
-			ps.executeUpdate();
-		}
-	}
-
 	@Override
 	protected void doUpgrade() throws Exception {
-		StringBundler sb = new StringBundler(2);
+		StringBundler slq = new StringBundler(2);
 
-		sb.append("select DDLRecordSet.* from DDLRecordSet ");
-		sb.append("where DDLRecordSet.scope = ?");
+		slq.append("select DDLRecordSet.* from DDLRecordSet ");
+		slq.append("where DDLRecordSet.scope = ?");
 
 		try (PreparedStatement ps1 =
-				connection.prepareStatement(sb.toString())) {
+				connection.prepareStatement(slq.toString())) {
 
 			ps1.setInt(1, DDLRecordSetConstants.SCOPE_FORMS);
 
 			try (ResultSet rs = ps1.executeQuery()) {
 				while (rs.next()) {
+					long recordSetId = rs.getLong("recordSetId");
+
 					DDMFormInstance ddmFormInstance =
 						_ddmFormInstanceLocalService.createDDMFormInstance(
-							_counterLocalService.increment());
+							recordSetId);
 
 					long ddmStructureId = rs.getLong("DDMStructureId");
 
@@ -168,20 +114,16 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 					ddmFormInstance.setVersionUserName(
 						rs.getString("versionUserName"));
 
-					_ddmFormInstanceLocalService.addDDMFormInstance(
-						ddmFormInstance);
+					updateDDMStructure(ddmStructureId);
+					updateDDMStructureLink(ddmStructureId);
 
-					long recordSetId = rs.getLong("recordSetId");
-
-					upgradeDDLRecordSetVersions(recordSetId, ddmFormInstance);
-					upgradeDDLRecords(recordSetId, ddmFormInstance);
 					upgradeResourcePermission(
-						String.valueOf(recordSetId),
+						recordSetId, ddmFormInstance.getFormInstanceId(),
 						"com.liferay.dynamic.data.mapping.model." +
 							"DDMFormInstance");
 
 					upgradeResourcePermission(
-						String.valueOf(ddmStructureId),
+						ddmStructureId, ddmStructureId,
 						"com.liferay.dynamic.data.mapping.model." +
 							"DDMFormInstance-com.liferay.dynamic.data." +
 								"mapping.model.DDMStructure");
@@ -194,8 +136,51 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 							"DDMFormPortlet");
 
 					deleteDDLRecordSet(ddmStructureId, recordSetId);
+
+					_ddmFormInstanceLocalService.addDDMFormInstance(
+						ddmFormInstance);
 				}
 			}
+		}
+	}
+
+	protected void updateDDMStructure(long ddmStructureId) throws Exception {
+		StringBundler slq = new StringBundler(2);
+
+		slq.append("update DDMStructure set classNameId = ? ");
+		slq.append("where structureId = ?");
+
+		try (PreparedStatement ps = connection.prepareStatement(
+				slq.toString())) {
+
+			ps.setLong(
+				1,
+				_classNameLocalService.getClassNameId(
+					DDMFormInstance.class.getName()));
+			ps.setLong(2, ddmStructureId);
+
+			ps.executeUpdate();
+		}
+	}
+
+	protected void updateDDMStructureLink(long ddmStructureId)
+		throws Exception {
+
+		StringBundler slq = new StringBundler(2);
+
+		slq.append("update DDMStructureLink set classNameId = ? ");
+		slq.append("where structureId = ?");
+
+		try (PreparedStatement ps = connection.prepareStatement(
+				slq.toString())) {
+
+			ps.setLong(
+				1,
+				_classNameLocalService.getClassNameId(
+					DDMFormInstance.class.getName()));
+			ps.setLong(2, ddmStructureId);
+
+			ps.executeUpdate();
 		}
 	}
 
@@ -208,38 +193,23 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 			_portletPreferencesLocalService.getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
-			new ActionableDynamicQuery.AddCriteriaMethod() {
+			dynamicQuery -> {
+				Junction junction = RestrictionsFactoryUtil.disjunction();
 
-				@Override
-				public void addCriteria(DynamicQuery dynamicQuery) {
-					Junction junction = RestrictionsFactoryUtil.disjunction();
+				Property property = PropertyFactoryUtil.forName("portletId");
 
-					Property property = PropertyFactoryUtil.forName(
-						"portletId");
+				junction.add(property.eq(oldPortletId));
+				junction.add(property.like(oldPortletId + "_INSTANCE_%"));
+				junction.add(
+					property.like(oldPortletId + "_USER_%_INSTANCE_%"));
 
-					junction.add(property.eq(oldPortletId));
-					junction.add(property.like(oldPortletId + "_INSTANCE_%"));
-					junction.add(
-						property.like(oldPortletId + "_USER_%_INSTANCE_%"));
-
-					dynamicQuery.add(junction);
-				}
-
+				dynamicQuery.add(junction);
 			});
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.
-				PerformActionMethod<PortletPreferences>() {
-
-				@Override
-				public void performAction(PortletPreferences portletPreference)
-					throws PortalException {
-
-					updatePortletPreferences(
-						ddmFormInstanceId, recordSetId, oldPortletId,
-						newPortletId, portletPreference);
-				}
-
-			});
+			(ActionableDynamicQuery.PerformActionMethod<PortletPreferences>)
+				portletPreference -> updatePortletPreferences(
+					ddmFormInstanceId, recordSetId, oldPortletId, newPortletId,
+					portletPreference));
 
 		actionableDynamicQuery.performActions();
 	}
@@ -264,217 +234,35 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 			portletPreferences);
 	}
 
-	protected void upgradeDDLRecords(
-			long recordSetId, DDMFormInstance ddmFormInstance)
-		throws Exception {
-
-		StringBundler sb = new StringBundler(2);
-
-		sb.append("select DDLRecord.* from DDLRecord ");
-		sb.append("where DDLRecord.recordSetId = ?");
-
-		try (PreparedStatement ps1 =
-				connection.prepareStatement(sb.toString())) {
-
-			ps1.setLong(1, recordSetId);
-
-			try (ResultSet rs = ps1.executeQuery()) {
-				while (rs.next()) {
-					DDMFormInstanceRecord ddmFormInstanceRecord =
-						_ddmFormInstanceRecordLocalService.
-							createDDMFormInstanceRecord(
-								_counterLocalService.increment());
-
-					ddmFormInstanceRecord.setCompanyId(rs.getLong("company"));
-					ddmFormInstanceRecord.setCreateDate(
-						rs.getTimestamp("createDate"));
-					ddmFormInstanceRecord.setFormInstanceId(
-						ddmFormInstance.getFormInstanceId());
-					ddmFormInstanceRecord.setFormInstanceVersion(
-						ddmFormInstance.getVersion());
-					ddmFormInstanceRecord.setGroupId(rs.getLong("groupId"));
-					ddmFormInstanceRecord.setLastPublishDate(
-						rs.getTimestamp("lastPublishDate"));
-					ddmFormInstanceRecord.setModifiedDate(
-						rs.getTimestamp("modifiedDate"));
-					ddmFormInstanceRecord.setStorageId(
-						rs.getLong("DDMStorageId"));
-					ddmFormInstanceRecord.setUserId(rs.getLong("userId"));
-					ddmFormInstanceRecord.setUserName(rs.getString("userName"));
-					ddmFormInstanceRecord.setVersion(rs.getString("version"));
-					ddmFormInstanceRecord.setVersionUserId(
-						rs.getLong("versionUserId"));
-					ddmFormInstanceRecord.setVersionUserName(
-						rs.getString("versionUserName"));
-
-					_ddmFormInstanceRecordLocalService.addDDMFormInstanceRecord(
-						ddmFormInstanceRecord);
-
-					long recordId = rs.getLong("recordId");
-
-					upgradeDDLRecordVersions(
-						recordId, ddmFormInstance, ddmFormInstanceRecord);
-				}
-			}
-		}
-	}
-
-	protected void upgradeDDLRecordSetVersions(
-			long recordSetId, DDMFormInstance ddmFormInstance)
-		throws Exception {
-
-		StringBundler sb = new StringBundler(2);
-
-		sb.append("select DDLRecordSetVersion.* from DDLRecordSetVersion ");
-		sb.append("where DDLRecordSetVersion.recordSetId = ?");
-
-		try (PreparedStatement ps1 =
-				connection.prepareStatement(sb.toString())) {
-
-			ps1.setLong(1, recordSetId);
-
-			try (ResultSet rs = ps1.executeQuery()) {
-				while (rs.next()) {
-					DDMFormInstanceVersion ddmFormInstanceVersion =
-						_ddmFormInstanceVersionLocalService.
-							createDDMFormInstanceVersion(
-								_counterLocalService.increment());
-
-					ddmFormInstanceVersion.setCompanyId(
-						rs.getLong("companyId"));
-					ddmFormInstanceVersion.setCreateDate(
-						rs.getTimestamp("createDate"));
-					ddmFormInstanceVersion.setDescriptionMap(
-						LocalizationUtil.getLocalizationMap(
-							rs.getString("description")));
-					ddmFormInstanceVersion.setFormInstanceId(
-						ddmFormInstance.getFormInstanceId());
-					ddmFormInstanceVersion.setGroupId(rs.getLong("groupId"));
-					ddmFormInstanceVersion.setNameMap(
-						LocalizationUtil.getLocalizationMap(
-							rs.getString("name")));
-					ddmFormInstanceVersion.setSettings(
-						rs.getString("settings_"));
-					ddmFormInstanceVersion.setStatus(rs.getInt("status"));
-					ddmFormInstanceVersion.setStatusByUserId(
-						rs.getLong("statusByUserId"));
-					ddmFormInstanceVersion.setStatusByUserName(
-						rs.getString("statusByUserName"));
-					ddmFormInstanceVersion.setStatusDate(
-						rs.getTimestamp("statusDate"));
-					ddmFormInstanceVersion.setStructureVersionId(
-						rs.getLong("DDMStructureVersionId"));
-					ddmFormInstanceVersion.setUserId(rs.getLong("userId"));
-					ddmFormInstanceVersion.setUserName(
-						rs.getString("userName"));
-					ddmFormInstanceVersion.setVersion(rs.getString("version"));
-
-					_ddmFormInstanceVersionLocalService.
-						addDDMFormInstanceVersion(ddmFormInstanceVersion);
-				}
-			}
-		}
-	}
-
-	protected void upgradeDDLRecordVersions(
-			long recordId, DDMFormInstance ddmFormInstance,
-			DDMFormInstanceRecord ddmFormInstanceRecord)
-		throws Exception {
-
-		StringBundler sb = new StringBundler(2);
-
-		sb.append("select DDLRecordVersion.* from DDLRecordVersion ");
-		sb.append("where DDLRecordVersion.recordId = ?");
-
-		try (PreparedStatement ps1 =
-				connection.prepareStatement(sb.toString())) {
-
-			ps1.setLong(1, recordId);
-
-			try (ResultSet rs = ps1.executeQuery()) {
-				while (rs.next()) {
-					DDMFormInstanceRecordVersion ddmFormInstanceRecordVersion =
-						_ddmFormInstanceRecordVersionLocalService.
-							createDDMFormInstanceRecordVersion(
-								_counterLocalService.increment());
-
-					ddmFormInstanceRecordVersion.setCompanyId(
-						rs.getLong("companyId"));
-					ddmFormInstanceRecordVersion.setCreateDate(
-						rs.getTimestamp("createDate"));
-					ddmFormInstanceRecordVersion.setFormInstanceId(
-						ddmFormInstanceRecord.getFormInstanceId());
-					ddmFormInstanceRecordVersion.setFormInstanceRecordId(
-						ddmFormInstanceRecord.getFormInstanceRecordId());
-					ddmFormInstanceRecordVersion.setFormInstanceVersion(
-						ddmFormInstance.getVersion());
-					ddmFormInstanceRecordVersion.setGroupId(
-						rs.getLong("groupId"));
-					ddmFormInstanceRecordVersion.setStorageId(
-						rs.getInt("DDMStorageId"));
-					ddmFormInstanceRecordVersion.setStatus(rs.getInt("status"));
-					ddmFormInstanceRecordVersion.setStatusByUserId(
-						rs.getLong("statusByUserId"));
-					ddmFormInstanceRecordVersion.setStatusByUserName(
-						rs.getString("statusByUserName"));
-					ddmFormInstanceRecordVersion.setStatusDate(
-						rs.getTimestamp("statusDate"));
-					ddmFormInstanceRecordVersion.setUserId(
-						rs.getLong("userId"));
-					ddmFormInstanceRecordVersion.setUserName(
-						rs.getString("userName"));
-					ddmFormInstanceRecordVersion.setVersion(
-						rs.getString("version"));
-				}
-			}
-		}
-	}
-
-	protected void upgradeResourcePermission(String primKey, String name)
+	protected void upgradeResourcePermission(
+			long oldPrimKeyId, long newPrimKeyId, String name)
 		throws Exception {
 
 		ActionableDynamicQuery actionableDynamicQuery =
 			_resourcePermissionLocalService.getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
-			new ActionableDynamicQuery.AddCriteriaMethod() {
+			dynamicQuery -> {
+				Property nameProperty = PropertyFactoryUtil.forName("primKey");
 
-				@Override
-				public void addCriteria(DynamicQuery dynamicQuery) {
-					Property nameProperty = PropertyFactoryUtil.forName(
-						"primKey");
-
-					dynamicQuery.add(nameProperty.eq(primKey));
-				}
-
+				dynamicQuery.add(nameProperty.eq(String.valueOf(oldPrimKeyId)));
 			});
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.
-				PerformActionMethod<ResourcePermission>() {
-
-				@Override
-				public void performAction(ResourcePermission resourcePermission)
-					throws PortalException {
-
+			(ActionableDynamicQuery.PerformActionMethod<ResourcePermission>)
+				resourcePermission -> {
 					resourcePermission.setName(name);
+					resourcePermission.setPrimKey(String.valueOf(newPrimKeyId));
+					resourcePermission.setPrimKeyId(newPrimKeyId);
 
 					_resourcePermissionLocalService.updateResourcePermission(
 						resourcePermission);
-				}
-
-			});
+				});
 
 		actionableDynamicQuery.performActions();
 	}
 
-	private final CounterLocalService _counterLocalService;
+	private final ClassNameLocalService _classNameLocalService;
 	private final DDMFormInstanceLocalService _ddmFormInstanceLocalService;
-	private final DDMFormInstanceRecordLocalService
-		_ddmFormInstanceRecordLocalService;
-	private final DDMFormInstanceRecordVersionLocalService
-		_ddmFormInstanceRecordVersionLocalService;
-	private final DDMFormInstanceVersionLocalService
-		_ddmFormInstanceVersionLocalService;
 	private final DDMStructureLinkLocalService _ddmStructureLinkLocalService;
 	private final PortletPreferencesLocalService
 		_portletPreferencesLocalService;
