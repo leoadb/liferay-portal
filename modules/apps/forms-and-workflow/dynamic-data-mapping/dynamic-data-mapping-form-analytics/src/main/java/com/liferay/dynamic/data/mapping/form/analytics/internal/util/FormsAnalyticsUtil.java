@@ -14,7 +14,8 @@ import java.util.Map;
 public class FormsAnalyticsUtil {
 
 	public static void sendMessage(
-			long userId, String eventId, DDMFormAnalyticsEventEntry ddmFormAnalyticsEventEntry)
+			long userId, String eventId, String sessionId,
+			DDMFormAnalyticsEventEntry ddmFormAnalyticsEventEntry)
 		throws Exception {
 
 		Map<String, String> properties = new HashMap<>();
@@ -26,12 +27,20 @@ public class FormsAnalyticsUtil {
 		);
 
 		properties.put("userId", String.valueOf(userId));
+		properties.put(
+			"date", ddmFormAnalyticsEventEntry.getTimestamp().toString());
 
-		sendMessage(String.valueOf(userId), eventId, properties);
+		Map<String, String> context = new HashMap<>();
+
+		context.put("sessionId", sessionId);
+
+		sendMessage(String.valueOf(userId), eventId, context, properties);
 	
 	}
-	public static void sendMessage(
-			String userId, String eventId, Map<String, String> properties)
+
+	private static void sendMessage(
+			String userId, String eventId, Map<String, String> context,
+			Map<String, String> properties)
 		throws Exception {
 
 		AnalyticsEventsMessage.Event.Builder eventBuilder =
@@ -42,7 +51,7 @@ public class FormsAnalyticsUtil {
 		Event build = eventBuilder.build();
 
 		Builder builder = AnalyticsEventsMessage.builder(
-			_analyticsKey, userId).event(build);
+			_analyticsKey, userId).event(build).context(context);
 
 		sendAnalytics(builder.build());
 	}
@@ -58,7 +67,7 @@ public class FormsAnalyticsUtil {
 	private static final AnalyticsEventsMessageJSONObjectMapper
 		_jsonObjectMapper = new AnalyticsEventsMessageJSONObjectMapper();
 
-	private static final String _analyticsKey = "";
+	private static final String _analyticsKey = "analyticskey:test";
 	private static final String _applicationId =
 		"com.liferay.dynamic.data.mapping.forms.analytics:1.0.0";
 }

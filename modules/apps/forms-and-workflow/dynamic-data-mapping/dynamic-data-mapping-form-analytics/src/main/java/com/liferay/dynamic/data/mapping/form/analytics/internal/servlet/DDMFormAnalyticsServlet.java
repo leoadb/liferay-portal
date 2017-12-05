@@ -36,6 +36,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -98,11 +99,14 @@ public class DDMFormAnalyticsServlet extends HttpServlet {
 			DDMFormAnalyticsEventEntry ddmFormAnalyticsEventEntry =
 				new DDMFormAnalyticsEventEntry(
 					userId, attributes, event, LocalDateTime.now());
-			
+
 			_ddmFormAnalyticsEventEntries.add(ddmFormAnalyticsEventEntry);
-			
+
+			HttpSession session = request.getSession();
+
 			FormsAnalyticsUtil.sendMessage(
-				userId, event.toString(), ddmFormAnalyticsEventEntry);
+				userId, event.toString(), session.getId(),
+				ddmFormAnalyticsEventEntry);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
