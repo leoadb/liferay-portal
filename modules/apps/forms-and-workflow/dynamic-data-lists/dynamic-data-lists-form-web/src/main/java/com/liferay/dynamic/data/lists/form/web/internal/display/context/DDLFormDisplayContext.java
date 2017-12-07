@@ -18,6 +18,7 @@ import com.liferay.dynamic.data.lists.model.DDLRecordConstants;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetSettings;
 import com.liferay.dynamic.data.lists.model.DDLRecordVersion;
+import com.liferay.dynamic.data.lists.service.DDLRecordLocalService;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetService;
 import com.liferay.dynamic.data.lists.service.DDLRecordVersionLocalService;
 import com.liferay.dynamic.data.lists.service.permission.DDLRecordSetPermission;
@@ -70,6 +71,7 @@ public class DDLFormDisplayContext {
 
 	public DDLFormDisplayContext(
 			RenderRequest renderRequest, RenderResponse renderResponse,
+			DDLRecordLocalService ddlRecordLocalService,
 			DDLRecordSetService ddlRecordSetService,
 			DDLRecordVersionLocalService ddlRecordVersionLocalService,
 			DDMFormRenderer ddmFormRenderer,
@@ -81,6 +83,7 @@ public class DDLFormDisplayContext {
 
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+		_ddlRecordLocalService = ddlRecordLocalService;
 		_ddlRecordSetService = ddlRecordSetService;
 		_ddlRecordVersionLocalService = ddlRecordVersionLocalService;
 		_ddmFormRenderer = ddmFormRenderer;
@@ -104,6 +107,13 @@ public class DDLFormDisplayContext {
 
 	public String getContainerId() {
 		return _containerId;
+	}
+
+	public int getFormTransaction() {
+		long userId = getUserId();
+		long recordSetId = getRecordSetId();
+
+		return _ddlRecordLocalService.getRecordsCount(recordSetId, userId);
 	}
 
 	public String getDDMFormHTML() throws PortalException {
@@ -526,6 +536,7 @@ public class DDLFormDisplayContext {
 	private Boolean _autosaveEnabled;
 	private final String _containerId;
 	private final DDLRecordSetService _ddlRecordSetService;
+	private final DDLRecordLocalService _ddlRecordLocalService;
 	private final DDLRecordVersionLocalService _ddlRecordVersionLocalService;
 	private final DDMFormRenderer _ddmFormRenderer;
 	private final DDMFormValuesFactory _ddmFormValuesFactory;

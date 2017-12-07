@@ -18,6 +18,7 @@ import com.liferay.dynamic.data.lists.form.web.internal.constants.DDLFormPortlet
 import com.liferay.dynamic.data.lists.form.web.internal.display.context.DDLFormDisplayContext;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetSettings;
+import com.liferay.dynamic.data.lists.service.DDLRecordLocalService;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetService;
 import com.liferay.dynamic.data.lists.service.DDLRecordVersionLocalService;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
@@ -221,9 +222,9 @@ public class DDLFormPortlet extends MVCPortlet {
 		throws PortalException {
 
 		DDLFormDisplayContext ddlFormDisplayContext = new DDLFormDisplayContext(
-			renderRequest, renderResponse, _ddlRecordSetService,
-			_ddlRecordVersionLocalService, _ddmFormRenderer,
-			_ddmFormValuesFactory, _ddmFormValuesMerger,
+			renderRequest, renderResponse, _ddlRecordLocalService,
+			_ddlRecordSetService, _ddlRecordVersionLocalService,
+			_ddmFormRenderer, _ddmFormValuesFactory, _ddmFormValuesMerger,
 			_workflowDefinitionLinkLocalService);
 
 		renderRequest.setAttribute(
@@ -231,6 +232,9 @@ public class DDLFormPortlet extends MVCPortlet {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DDLFormPortlet.class);
+
+	@Reference
+	private DDLRecordLocalService _ddlRecordLocalService;
 
 	@Reference
 	private DDLRecordSetService _ddlRecordSetService;
