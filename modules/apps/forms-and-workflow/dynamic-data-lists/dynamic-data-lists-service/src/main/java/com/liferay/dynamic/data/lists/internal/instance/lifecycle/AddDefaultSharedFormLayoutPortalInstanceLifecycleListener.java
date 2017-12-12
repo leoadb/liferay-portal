@@ -73,6 +73,8 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 			addFormsPortlet(sharedLayout);
 		}
 
+		verifyLayout(sharedLayout);
+
 		Layout privateLayout = _layoutLocalService.fetchLayoutByFriendlyURL(
 			group.getGroupId(), true, "/shared");
 
@@ -82,6 +84,8 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 
 			addFormsPortlet(privateLayout);
 		}
+
+		verifyLayout(privateLayout);
 	}
 
 	protected Group addFormsGroup(long companyId) throws PortalException {
@@ -206,6 +210,20 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 			role.getCompanyId(), Layout.class.getName(),
 			ResourceConstants.SCOPE_GROUP, String.valueOf(layout.getGroupId()),
 			role.getRoleId(), ActionKeys.VIEW);
+	}
+
+	protected void verifyLayout(Layout layout) {
+		if (StringUtil.equals(
+				layout.getType(), _LAYOUT_TYPE_FULL_PAGE_APPLICATION)) {
+
+			return;
+		}
+
+		layout.setType(_LAYOUT_TYPE_FULL_PAGE_APPLICATION);
+
+		_layoutLocalService.updateLayout(layout);
+
+		addFormsPortlet(layout);
 	}
 
 	private static final String _DYNAMIC_DATA_LISTS_FORM =
