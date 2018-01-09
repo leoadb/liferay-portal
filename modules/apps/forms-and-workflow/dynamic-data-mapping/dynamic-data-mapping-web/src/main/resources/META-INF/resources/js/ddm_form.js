@@ -1962,7 +1962,8 @@ AUI.add(
 								start = end;
 								end = start + delta;
 
-								if (start <= cache.total) {
+								if (start <= cache.total && start != cache.oldStart) {
+									cache.oldStart = start;
 									listNode.append(instance._loadingAnimationNode);
 
 									instance._requestLayouts(parentLayoutId, groupId, privateLayout, start, end, A.rbind('_renderLayoutsFragment', instance, key));
@@ -2408,6 +2409,7 @@ AUI.add(
 								layouts: layouts,
 								path: path.slice(),
 								start: start,
+								oldStart: 0,
 								total: total
 							};
 
