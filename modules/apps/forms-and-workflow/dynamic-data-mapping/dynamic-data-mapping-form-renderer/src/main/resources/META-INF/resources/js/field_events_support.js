@@ -119,8 +119,8 @@ AUI.add(
 
 					Liferay.fire("ddmFieldBlur", {
 						fieldName: instance.get("fieldName"),
-						formId: root.getFormId(),
-						interactionTime: (now - (instance.get('fieldFocusDate') || now)) / 1000
+						focusDuration: (now - (instance.get('fieldFocusDate') || now)) / 1000,
+						formId: root.getFormId()
 					});
 				}
 			},
