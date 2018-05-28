@@ -23,7 +23,7 @@ import com.liferay.dynamic.data.mapping.form.web.internal.search.FieldSetSearch;
 import com.liferay.dynamic.data.mapping.form.web.internal.search.FieldSetSearchTerms;
 import com.liferay.dynamic.data.mapping.form.web.internal.security.permission.resource.DDMFormPermission;
 import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesJSONSerializer;
-import com.liferay.dynamic.data.mapping.io.exporter.DDMExporterFactory;
+import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordWriterTracker;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureConstants;
@@ -75,9 +75,9 @@ public class DDMFormAdminFieldSetDisplayContext
 		RenderRequest renderRequest, RenderResponse renderResponse,
 		AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 			addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
-		DDMExporterFactory ddmExporterFactory,
 		DDMFormWebConfiguration ddmFormWebConfiguration,
 		DDMFormInstanceRecordLocalService formInstanceRecordLocalService,
+		DDMFormInstanceRecordWriterTracker ddmFormInstanceRecordWriterTracker,
 		DDMFormInstanceService formInstanceService,
 		DDMFormFieldTypeServicesTracker formFieldTypeServicesTracker,
 		DDMFormFieldTypesJSONSerializer formFieldTypesJSONSerializer,
@@ -89,8 +89,8 @@ public class DDMFormAdminFieldSetDisplayContext
 		super(
 			renderRequest, renderResponse,
 			addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
-			ddmExporterFactory, ddmFormWebConfiguration,
-			formInstanceRecordLocalService, formInstanceService,
+			ddmFormWebConfiguration, formInstanceRecordLocalService,
+			ddmFormInstanceRecordWriterTracker, formInstanceService,
 			formFieldTypeServicesTracker, formFieldTypesJSONSerializer,
 			formRenderer, formValuesFactory, formValuesMerger,
 			structureLocalService, structureService, jsonFactory);

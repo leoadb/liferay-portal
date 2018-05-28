@@ -28,7 +28,7 @@ import com.liferay.dynamic.data.mapping.form.web.internal.search.FormInstanceSea
 import com.liferay.dynamic.data.mapping.form.web.internal.security.permission.resource.DDMFormInstancePermission;
 import com.liferay.dynamic.data.mapping.form.web.internal.security.permission.resource.DDMFormPermission;
 import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesJSONSerializer;
-import com.liferay.dynamic.data.mapping.io.exporter.DDMExporterFactory;
+import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordWriterTracker;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
@@ -98,9 +98,9 @@ public class DDMFormAdminDisplayContext {
 		RenderRequest renderRequest, RenderResponse renderResponse,
 		AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 			addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
-		DDMExporterFactory ddmExporterFactory,
 		DDMFormWebConfiguration formWebConfiguration,
 		DDMFormInstanceRecordLocalService formInstanceRecordLocalService,
+		DDMFormInstanceRecordWriterTracker ddmFormInstanceRecordWriterTracker,
 		DDMFormInstanceService formInstanceService,
 		DDMFormFieldTypeServicesTracker formFieldTypeServicesTracker,
 		DDMFormFieldTypesJSONSerializer formFieldTypesJSONSerializer,
@@ -113,9 +113,10 @@ public class DDMFormAdminDisplayContext {
 		_renderResponse = renderResponse;
 		_addDefaultSharedFormLayoutPortalInstanceLifecycleListener =
 			addDefaultSharedFormLayoutPortalInstanceLifecycleListener;
-		_ddmExporterFactory = ddmExporterFactory;
 		_ddmFormWebConfiguration = formWebConfiguration;
 		_ddmFormInstanceRecordLocalService = formInstanceRecordLocalService;
+		_ddmFormInstanceRecordWriterTracker =
+			ddmFormInstanceRecordWriterTracker;
 		_ddmFormInstanceService = formInstanceService;
 		_ddmFormFieldTypeServicesTracker = formFieldTypeServicesTracker;
 		_ddmFormFieldTypesJSONSerializer = formFieldTypesJSONSerializer;
@@ -151,8 +152,9 @@ public class DDMFormAdminDisplayContext {
 		return _ddmFormWebConfiguration.autosaveInterval();
 	}
 
-	public Map<String, String> getAvailableExportFormats() {
-		return _ddmExporterFactory.getAvailableFormatsMap();
+	public Set<String> getAvailableExportFormats() {
+		return _ddmFormInstanceRecordWriterTracker.
+			getDDMFormInstanceRecordWriterTypes();
 	}
 
 	public Locale[] getAvailableLocales() {
@@ -1071,7 +1073,6 @@ public class DDMFormAdminDisplayContext {
 
 	private final AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 		_addDefaultSharedFormLayoutPortalInstanceLifecycleListener;
-	private final DDMExporterFactory _ddmExporterFactory;
 	private final DDMFormFieldTypeServicesTracker
 		_ddmFormFieldTypeServicesTracker;
 	private final DDMFormFieldTypesJSONSerializer
@@ -1079,6 +1080,8 @@ public class DDMFormAdminDisplayContext {
 	private DDMFormInstance _ddmFormInstance;
 	private final DDMFormInstanceRecordLocalService
 		_ddmFormInstanceRecordLocalService;
+	private final DDMFormInstanceRecordWriterTracker
+		_ddmFormInstanceRecordWriterTracker;
 	private final DDMFormInstanceService _ddmFormInstanceService;
 	private final DDMFormRenderer _ddmFormRenderer;
 	private final DDMFormValuesFactory _ddmFormValuesFactory;
