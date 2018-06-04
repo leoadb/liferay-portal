@@ -31,7 +31,6 @@ import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalServic
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
-import com.liferay.dynamic.data.mapping.storage.StorageEngine;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesMerger;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureCreateDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureModifiedDateComparator;
@@ -85,8 +84,7 @@ public class DDMFormAdminFieldSetDisplayContext
 		DDMFormRenderer formRenderer, DDMFormValuesFactory formValuesFactory,
 		DDMFormValuesMerger formValuesMerger,
 		DDMStructureLocalService structureLocalService,
-		DDMStructureService structureService, JSONFactory jsonFactory,
-		StorageEngine storageEngine) {
+		DDMStructureService structureService, JSONFactory jsonFactory) {
 
 		super(
 			renderRequest, renderResponse,
@@ -95,8 +93,7 @@ public class DDMFormAdminFieldSetDisplayContext
 			formInstanceRecordLocalService, formInstanceService,
 			formFieldTypeServicesTracker, formFieldTypesJSONSerializer,
 			formRenderer, formValuesFactory, formValuesMerger,
-			structureLocalService, structureService, jsonFactory,
-			storageEngine);
+			structureLocalService, structureService, jsonFactory);
 	}
 
 	public List<DropdownItem> getActionItemsDropdownItems() {
