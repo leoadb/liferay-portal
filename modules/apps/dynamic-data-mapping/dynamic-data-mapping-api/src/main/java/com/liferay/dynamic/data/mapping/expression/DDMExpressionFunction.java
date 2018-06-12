@@ -19,6 +19,12 @@ package com.liferay.dynamic.data.mapping.expression;
  */
 public interface DDMExpressionFunction {
 
-	public Object evaluate(Object... parameters);
+	/**
+	 * @deprecated As of 4.0.0, replaced by {@link Function0},
+	 * {@link Function1}, {@link Function2}, {@link Function3},
+	 * {@link Function4}
+	 */
+	@Deprecated
+	public default Object evaluate(Object... parameters) {
 
 }
