@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 /**
  * @author Marcellus Tavares
+ * @author Leonardo Barros
  */
 @ProviderType
 public interface DDMExpressionFactory {
@@ -27,8 +28,14 @@ public interface DDMExpressionFactory {
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
-	public DDMExpression<Boolean> createBooleanDDMExpression(
+	public default DDMExpression<Boolean> createBooleanDDMExpression(
 			String ddmExpressionString)
+		throws DDMExpressionException {
+
+		return createDDMExpression(ddmExpressionString);
+	}
+
+	public <T> DDMExpression<T> createDDMExpression(String expression)
 		throws DDMExpressionException;
 
 	/**
@@ -36,53 +43,71 @@ public interface DDMExpressionFactory {
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
-	public DDMExpression<Double> createDoubleDDMExpression(
+	public default DDMExpression<Double> createDoubleDDMExpression(
 			String ddmExpressionString)
-		throws DDMExpressionException;
+		throws DDMExpressionException {
+
+		return createDDMExpression(ddmExpressionString);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
-	public DDMExpression<Float> createFloatDDMExpression(
+	public default DDMExpression<Float> createFloatDDMExpression(
 			String ddmExpressionString)
-		throws DDMExpressionException;
+		throws DDMExpressionException {
+
+		return createDDMExpression(ddmExpressionString);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
-	public DDMExpression<Integer> createIntegerDDMExpression(
+	public default DDMExpression<Integer> createIntegerDDMExpression(
 			String ddmExpressionString)
-		throws DDMExpressionException;
+		throws DDMExpressionException {
+
+		return createDDMExpression(ddmExpressionString);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
-	public DDMExpression<Long> createLongDDMExpression(
+	public default DDMExpression<Long> createLongDDMExpression(
 			String ddmExpressionString)
-		throws DDMExpressionException;
+		throws DDMExpressionException {
+
+		return createDDMExpression(ddmExpressionString);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
-	public DDMExpression<Number> createNumberDDMExpression(
+	public default DDMExpression<Number> createNumberDDMExpression(
 			String ddmExpressionString)
-		throws DDMExpressionException;
+		throws DDMExpressionException {
+
+		return createDDMExpression(ddmExpressionString);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
-	public DDMExpression<String> createStringDDMExpression(
+	public default DDMExpression<String> createStringDDMExpression(
 			String ddmExpressionString)
-		throws DDMExpressionException;
+		throws DDMExpressionException {
+
+		return createDDMExpression(ddmExpressionString);
+	}
 
 }
