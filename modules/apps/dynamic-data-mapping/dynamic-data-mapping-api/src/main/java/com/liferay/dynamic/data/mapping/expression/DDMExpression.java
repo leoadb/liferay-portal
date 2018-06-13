@@ -18,13 +18,21 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.dynamic.data.mapping.expression.model.Expression;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Miguel Angelo Caldas Gallindo
+ * @author Leonardo Barros
  */
 @ProviderType
 public interface DDMExpression<T> {
+
+	public void addFunctions(
+		Map<String, DDMExpressionFunction> ddmExpressionFunctions);
+
+	public void addObserver(DDMExpressionObserver ddmExpressionObserver);
 
 	public T evaluate() throws DDMExpressionException;
 
@@ -34,86 +42,131 @@ public interface DDMExpression<T> {
 	 * @deprecated As of 4.0.0, with no direct replacement
 	 */
 	@Deprecated
-	public Map<String, VariableDependencies> getVariableDependenciesMap()
-		throws DDMExpressionException;
+	public default Map<String, VariableDependencies>
+			getVariableDependenciesMap()
+		throws DDMExpressionException {
+
+		return Collections.emptyMap();
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setBooleanVariableValue(
-		String variableName, Boolean variableValue);
+	public default void setBooleanVariableValue(
+		String variableName, Boolean variableValue) {
+
+		setVariable(variableName, variableValue);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#addFunctions(
 	 * Map)}
 	 */
 	@Deprecated
-	public void setDDMExpressionFunction(
-		String functionName, DDMExpressionFunction ddmExpressionFunction);
+	public default void setDDMExpressionFunction(
+		String functionName, DDMExpressionFunction ddmExpressionFunction) {
+
+		Map<String, DDMExpressionFunction> ddmExpressionFunctions =
+			new HashMap() {
+				{
+					put(functionName, ddmExpressionFunction);
+				}
+			};
+
+		addFunctions(ddmExpressionFunctions);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setDoubleVariableValue(
-		String variableName, Double variableValue);
+	public default void setDoubleVariableValue(
+		String variableName, Double variableValue) {
+
+		setVariable(variableName, variableValue);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setExpressionStringVariableValue(
-		String variableName, String variableValue);
+	public default void setExpressionStringVariableValue(
+		String variableName, String variableValue) {
+
+		setVariable(variableName, variableValue);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setFloatVariableValue(String variableName, Float variableValue);
+	public default void setFloatVariableValue(
+		String variableName, Float variableValue) {
+
+		setVariable(variableName, variableValue);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setIntegerVariableValue(
-		String variableName, Integer variableValue);
+	public default void setIntegerVariableValue(
+		String variableName, Integer variableValue) {
+
+		setVariable(variableName, variableValue);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setLongVariableValue(String variableName, Long variableValue);
+	public default void setLongVariableValue(
+		String variableName, Long variableValue) {
+
+		setVariable(variableName, variableValue);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setNumberVariableValue(
-		String variableName, Number variableValue);
+	public default void setNumberVariableValue(
+		String variableName, Number variableValue) {
+
+		setVariable(variableName, variableValue);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setObjectVariableValue(
-		String variableName, Object variableValue);
+	public default void setObjectVariableValue(
+		String variableName, Object variableValue) {
+
+		setVariable(variableName, variableValue);
+	}
 
 	/**
 	 * @deprecated As of 4.0.0, replaced by {@link DDMExpression#setVariable(
 	 * String, Object)}
 	 */
 	@Deprecated
-	public void setStringVariableValue(
+	public default void setStringVariableValue(
 			String variableName, String variableValue)
-		throws DDMExpressionException;
+		throws DDMExpressionException {
+
+		setVariable(variableName, variableValue);
+	}
+
+	public void setVariable(String name, Object value);
 
 }
