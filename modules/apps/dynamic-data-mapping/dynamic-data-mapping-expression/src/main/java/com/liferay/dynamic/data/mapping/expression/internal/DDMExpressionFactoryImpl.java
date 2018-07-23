@@ -51,6 +51,12 @@ public class DDMExpressionFactoryImpl implements DDMExpressionFactory {
 		return ddmExpression;
 	}
 
+	public void setDDMExpressionFunctionTracker(
+		DDMExpressionFunctionTracker ddmExpressionFunctionTracker) {
+
+		this.ddmExpressionFunctionTracker = ddmExpressionFunctionTracker;
+	}
+
 	@Reference
 	protected DDMExpressionFunctionTracker ddmExpressionFunctionTracker;
 
