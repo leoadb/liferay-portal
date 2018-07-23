@@ -61,6 +61,10 @@ public interface DDMExpressionFunction {
 		return null;
 	}
 
+	public default boolean isObservable() {
+		return false;
+	}
+
 	@FunctionalInterface
 	public interface Function0<R> extends DDMExpressionFunction {
 
