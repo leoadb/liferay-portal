@@ -20,7 +20,7 @@ package com.liferay.dynamic.data.mapping.expression;
 public interface DDMExpressionFunction {
 
 	/**
-	 * @deprecated As of 4.0.0, replaced by {@link Function0},
+	 * @deprecated As of Judson (7.1.x), replaced by {@link Function0},
 	 * {@link Function1}, {@link Function2}, {@link Function3},
 	 * {@link Function4}
 	 */

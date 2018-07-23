@@ -24,7 +24,7 @@ import aQute.bnd.annotation.ProviderType;
 public interface DDMExpressionFactory {
 
 	/**
-	 * @deprecated As of 4.0.0, replaced by {@link
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
@@ -39,7 +39,7 @@ public interface DDMExpressionFactory {
 		throws DDMExpressionException;
 
 	/**
-	 * @deprecated As of 4.0.0, replaced by {@link
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
@@ -51,7 +51,7 @@ public interface DDMExpressionFactory {
 	}
 
 	/**
-	 * @deprecated As of 4.0.0, replaced by {@link
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
@@ -63,7 +63,7 @@ public interface DDMExpressionFactory {
 	}
 
 	/**
-	 * @deprecated As of 4.0.0, replaced by {@link
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
@@ -75,7 +75,7 @@ public interface DDMExpressionFactory {
 	}
 
 	/**
-	 * @deprecated As of 4.0.0, replaced by {@link
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
@@ -87,7 +87,7 @@ public interface DDMExpressionFactory {
 	}
 
 	/**
-	 * @deprecated As of 4.0.0, replaced by {@link
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
@@ -99,7 +99,7 @@ public interface DDMExpressionFactory {
 	}
 
 	/**
-	 * @deprecated As of 4.0.0, replaced by {@link
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 * DDMExpressionFactory#createDDMExpression(String)}
 	 */
 	@Deprecated
