@@ -15,32 +15,45 @@
 package com.liferay.dynamic.data.mapping.form.evaluator.internal.functions;
 
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFunction;
+import com.liferay.dynamic.data.mapping.expression.DDMExpressionObserver;
+import com.liferay.dynamic.data.mapping.expression.ExecuteActionRequest;
 
-import java.util.Map;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Inácio Nery
+ * @author Leonardo Barros
  */
-public class JumpPageFunction implements DDMExpressionFunction {
-
-	public JumpPageFunction(Map<Integer, Integer> pageFlow) {
-		_pageFlow = pageFlow;
-	}
+@Component(
+	immediate = true, property = "ddm.form.evaluator.function.name=jumpPage",
+	service = DDMExpressionFunction.class
+)
+public class JumpPageFunction
+	implements DDMExpressionFunction.
+		Function3<DDMExpressionObserver, Number, Number, Boolean> {
 
 	@Override
-	public Object evaluate(Object... parameters) {
-		if (parameters.length != 2) {
-			throw new IllegalArgumentException("Two parameters are expected");
-		}
+	public Boolean apply(
+		DDMExpressionObserver ddmExpressionObserver, Number fromPage,
+		Number toPage) {
 
-		Double fromPageIndex = (Double)parameters[0];
-		Double toPageIndex = (Double)parameters[1];
+		ExecuteActionRequest.Builder builder =
+			ExecuteActionRequest.Builder.newBuilder("jumpPage");
 
-		_pageFlow.put(fromPageIndex.intValue(), toPageIndex.intValue());
+		ExecuteActionRequest executeActionRequest = builder.withParameter(
+			"from", () -> fromPage.intValue()
+		).withParameter(
+			"to", () -> toPage.intValue()
+		).build();
+
+		ddmExpressionObserver.executeAction(executeActionRequest);
 
 		return true;
 	}
 
-	private final Map<Integer, Integer> _pageFlow;
+	@Override
+	public boolean isObservable() {
+		return true;
+	}
 
 }
