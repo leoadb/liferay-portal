@@ -18,7 +18,6 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderInvoker;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderRequest;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderResponse;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderResponseOutput;
-import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormFieldEvaluationResult;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;

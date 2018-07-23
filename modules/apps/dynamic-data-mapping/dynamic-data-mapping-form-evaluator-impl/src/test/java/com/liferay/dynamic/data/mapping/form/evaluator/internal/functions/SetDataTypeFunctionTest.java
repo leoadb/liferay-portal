@@ -20,36 +20,13 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class MatchFunctionTest {
+public class SetDataTypeFunctionTest {
 
 	@Test
-	public void testInvalidRegex() {
-		MatchFunction matchFunction = new MatchFunction();
+	public void testGetPropertyName() {
+		SetDataTypeFunction setDataTypeFunction = new SetDataTypeFunction();
 
-		Boolean result = matchFunction.apply(
-			"test@liferay", "\\\\S+[@\\S+\\.\\S+");
-
-		Assert.assertFalse(result);
-	}
-
-	@Test
-	public void testNotMatch() {
-		MatchFunction matchFunction = new MatchFunction();
-
-		Boolean result = matchFunction.apply(
-			"test@liferay", "\\S+@\\S+\\.\\S+");
-
-		Assert.assertFalse(result);
-	}
-
-	@Test
-	public void testValidMatch() {
-		MatchFunction matchFunction = new MatchFunction();
-
-		Boolean result = matchFunction.apply(
-			"test@liferay.com", "\\S+@\\S+\\.\\S+");
-
-		Assert.assertTrue(result);
+		Assert.assertEquals("dataType", setDataTypeFunction.getPropertyName());
 	}
 
 }

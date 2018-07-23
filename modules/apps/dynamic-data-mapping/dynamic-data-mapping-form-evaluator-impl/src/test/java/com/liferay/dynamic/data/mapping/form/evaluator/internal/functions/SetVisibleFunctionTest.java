@@ -20,36 +20,13 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class MatchFunctionTest {
+public class SetVisibleFunctionTest {
 
 	@Test
-	public void testInvalidRegex() {
-		MatchFunction matchFunction = new MatchFunction();
+	public void testGetPropertyName() {
+		SetVisibleFunction setVisibleFunction = new SetVisibleFunction();
 
-		Boolean result = matchFunction.apply(
-			"test@liferay", "\\\\S+[@\\S+\\.\\S+");
-
-		Assert.assertFalse(result);
-	}
-
-	@Test
-	public void testNotMatch() {
-		MatchFunction matchFunction = new MatchFunction();
-
-		Boolean result = matchFunction.apply(
-			"test@liferay", "\\S+@\\S+\\.\\S+");
-
-		Assert.assertFalse(result);
-	}
-
-	@Test
-	public void testValidMatch() {
-		MatchFunction matchFunction = new MatchFunction();
-
-		Boolean result = matchFunction.apply(
-			"test@liferay.com", "\\S+@\\S+\\.\\S+");
-
-		Assert.assertTrue(result);
+		Assert.assertEquals("visible", setVisibleFunction.getPropertyName());
 	}
 
 }
