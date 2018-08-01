@@ -42,6 +42,8 @@ public interface DDMExpression<T> {
 		return Collections.emptyMap();
 	}
 
+	public Map<String, Object> getVariables();
+
 	/**
 	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
