@@ -14,17 +14,14 @@
 
 package com.liferay.dynamic.data.mapping.validator;
 
-import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
-
 /**
- * @author Marcellus Tavares
- * @deprecated As of Judson (7.1.x), replaced by
- * {@link DDMFormValidator}
+ * @author Leonardo Barros
  */
-@Deprecated
-public interface DDMFormValuesValidator {
+public enum DDMFormValuesValidatorErrorStatus {
 
-	public void validate(DDMFormValues ddmFormValues)
-		throws DDMFormValuesValidationException;
+	MUST_NOT_SET_VALUE_EXCEPTION, MUST_SET_VALID_AVAILABLE_LOCALES_EXCEPTION,
+	MUST_SET_VALID_DEFAULT_LOCALE_EXCEPTION, MUST_SET_VALID_FIELD_EXCEPTION,
+	MUST_SET_VALID_VALUE_EXCEPTION, MUST_SET_VALID_VALUES_SIZE_EXCEPTION,
+	REQUIRED_VALUE_EXCEPTION
 
 }

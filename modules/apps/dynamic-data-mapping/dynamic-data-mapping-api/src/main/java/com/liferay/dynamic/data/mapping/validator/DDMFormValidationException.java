@@ -22,7 +22,9 @@ import java.util.Locale;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of Judson (7.1.x), with no replacement
  */
+@Deprecated
 @ProviderType
 public class DDMFormValidationException extends PortalException {
 

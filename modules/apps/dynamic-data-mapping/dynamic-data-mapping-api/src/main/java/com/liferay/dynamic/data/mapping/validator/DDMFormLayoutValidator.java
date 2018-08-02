@@ -18,7 +18,10 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 
 /**
  * @author Pablo Carvalho
+ * @deprecated As of Judson (7.1.x), replaced by
+ * {@link DDMFormValidator}
  */
+@Deprecated
 public interface DDMFormLayoutValidator {
 
 	public void validate(DDMFormLayout ddmFormLayout)

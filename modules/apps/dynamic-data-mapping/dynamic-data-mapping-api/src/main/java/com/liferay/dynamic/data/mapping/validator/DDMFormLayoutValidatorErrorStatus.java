@@ -14,17 +14,13 @@
 
 package com.liferay.dynamic.data.mapping.validator;
 
-import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
-
 /**
- * @author Marcellus Tavares
- * @deprecated As of Judson (7.1.x), replaced by
- * {@link DDMFormValidator}
+ * @author Leonardo Barros
  */
-@Deprecated
-public interface DDMFormValuesValidator {
+public enum DDMFormLayoutValidatorErrorStatus {
 
-	public void validate(DDMFormValues ddmFormValues)
-		throws DDMFormValuesValidationException;
+	INVALID_COLUMN_SIZE_EXCEPTION, INVALID_ROW_SIZE_EXCEPTION,
+	MUST_NOT_DUPLICATE_FIELD_NAME_EXCEPTION, MUST_SET_DEFAULT_LOCALE_EXCEPTION,
+	MUST_SET_EQUAL_LOCALE_FOR_LAYOUT_EXCEPTION
 
 }

@@ -22,7 +22,9 @@ import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of Judson (7.1.x), with no replacement
  */
+@Deprecated
 @ProviderType
 public class DDMFormLayoutValidationException extends PortalException {
 

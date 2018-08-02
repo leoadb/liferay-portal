@@ -20,7 +20,9 @@ import com.liferay.dynamic.data.mapping.exception.StorageException;
 
 /**
  * @author Marcellus Tavares
+ * @deprecated As of Judson (7.1.x), with no replacement
  */
+@Deprecated
 @ProviderType
 public class DDMFormValuesValidationException extends StorageException {
 
