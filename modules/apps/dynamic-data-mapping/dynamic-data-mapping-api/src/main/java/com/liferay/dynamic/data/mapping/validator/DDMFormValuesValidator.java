@@ -18,13 +18,26 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 
 /**
  * @author Marcellus Tavares
- * @deprecated As of Judson (7.1.x), replaced by
- * {@link DDMFormValidator}
  */
-@Deprecated
 public interface DDMFormValuesValidator {
 
-	public void validate(DDMFormValues ddmFormValues)
+	/**
+	 * @deprecated As of Judson (7.1.x), replaced by
+	 * {@link DDMFormValuesValidator#validate(DDMFormValuesValidatorValidateRequest)}
+	 */
+	@Deprecated
+	public default void validate(DDMFormValues ddmFormValues)
+		throws DDMFormValuesValidationException {
+
+		DDMFormValuesValidatorValidateRequest.Builder builder =
+			DDMFormValuesValidatorValidateRequest.Builder.newBuilder(
+				ddmFormValues);
+
+		validate(builder.build());
+	}
+
+	public void validate(
+			DDMFormValuesValidatorValidateRequest validateFormValuesRequest)
 		throws DDMFormValuesValidationException;
 
 }
