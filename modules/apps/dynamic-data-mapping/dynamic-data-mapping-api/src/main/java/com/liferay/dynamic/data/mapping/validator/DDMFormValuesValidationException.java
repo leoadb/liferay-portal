@@ -17,16 +17,25 @@ package com.liferay.dynamic.data.mapping.validator;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.dynamic.data.mapping.exception.StorageException;
+import com.liferay.petra.string.StringPool;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Marcellus Tavares
- * @deprecated As of Judson (7.1.x), with no replacement
  */
-@Deprecated
 @ProviderType
 public class DDMFormValuesValidationException extends StorageException {
 
 	public DDMFormValuesValidationException() {
+	}
+
+	public DDMFormValuesValidationException(
+		List<DDMFormValuesValidatorError> ddmFormValuesValidatorErrors) {
+
+		_ddmFormValuesValidatorErrors = ddmFormValuesValidatorErrors;
 	}
 
 	public DDMFormValuesValidationException(String msg) {
@@ -41,6 +50,30 @@ public class DDMFormValuesValidationException extends StorageException {
 		super(cause);
 	}
 
+	public List<DDMFormValuesValidatorError> getDDMFormValuesValidatorErrors() {
+		return _ddmFormValuesValidatorErrors;
+	}
+
+	@Override
+	public String getMessage() {
+		if (_ddmFormValuesValidatorErrors == null) {
+			return super.getMessage();
+		}
+
+		Stream<DDMFormValuesValidatorError> stream =
+			_ddmFormValuesValidatorErrors.stream();
+
+		return stream.map(
+			DDMFormValuesValidatorError::getErrorMessage
+		).collect(
+			Collectors.joining(StringPool.NEW_LINE)
+		);
+	}
+
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustNotSetValue
 		extends DDMFormValuesValidationException {
 
@@ -61,6 +94,10 @@ public class DDMFormValuesValidationException extends StorageException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidAvailableLocales
 		extends DDMFormValuesValidationException {
 
@@ -81,6 +118,10 @@ public class DDMFormValuesValidationException extends StorageException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidDefaultLocale
 		extends DDMFormValuesValidationException {
 
@@ -100,6 +141,10 @@ public class DDMFormValuesValidationException extends StorageException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidField
 		extends DDMFormValuesValidationException {
 
@@ -119,6 +164,10 @@ public class DDMFormValuesValidationException extends StorageException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidValue
 		extends DDMFormValuesValidationException {
 
@@ -146,6 +195,10 @@ public class DDMFormValuesValidationException extends StorageException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidValuesSize
 		extends DDMFormValuesValidationException {
 
@@ -166,6 +219,10 @@ public class DDMFormValuesValidationException extends StorageException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class RequiredValue extends DDMFormValuesValidationException {
 
 		public RequiredValue(String fieldName) {
@@ -182,5 +239,7 @@ public class DDMFormValuesValidationException extends StorageException {
 		private final String _fieldName;
 
 	}
+
+	private List<DDMFormValuesValidatorError> _ddmFormValuesValidatorErrors;
 
 }

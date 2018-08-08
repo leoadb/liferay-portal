@@ -16,19 +16,27 @@ package com.liferay.dynamic.data.mapping.validator;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Brian Wing Shun Chan
- * @deprecated As of Judson (7.1.x), with no replacement
  */
-@Deprecated
 @ProviderType
 public class DDMFormValidationException extends PortalException {
 
 	public DDMFormValidationException() {
+	}
+
+	public DDMFormValidationException(
+		List<DDMFormValidatorError> ddmFormValidatorErrors) {
+
+		_ddmFormValidatorErrors = ddmFormValidatorErrors;
 	}
 
 	public DDMFormValidationException(String msg) {
@@ -43,6 +51,29 @@ public class DDMFormValidationException extends PortalException {
 		super(cause);
 	}
 
+	public List<DDMFormValidatorError> getDDMFormValidatorErrors() {
+		return _ddmFormValidatorErrors;
+	}
+
+	@Override
+	public String getMessage() {
+		if (_ddmFormValidatorErrors == null) {
+			return super.getMessage();
+		}
+
+		Stream<DDMFormValidatorError> stream = _ddmFormValidatorErrors.stream();
+
+		return stream.map(
+			DDMFormValidatorError::getErrorMessage
+		).collect(
+			Collectors.joining(StringPool.NEW_LINE)
+		);
+	}
+
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustNotDuplicateFieldName
 		extends DDMFormValidationException {
 
@@ -63,6 +94,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetAvailableLocales
 		extends DDMFormValidationException {
 
@@ -73,6 +108,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetDefaultLocale
 		extends DDMFormValidationException {
 
@@ -82,6 +121,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetDefaultLocaleAsAvailableLocale
 		extends DDMFormValidationException {
 
@@ -103,6 +146,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetFieldsForForm
 		extends DDMFormValidationException {
 
@@ -112,6 +159,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetFieldType extends DDMFormValidationException {
 
 		public MustSetFieldType(String fieldName) {
@@ -132,6 +183,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetOptionsForField
 		extends DDMFormValidationException {
 
@@ -151,6 +206,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidAvailableLocalesForProperty
 		extends DDMFormValidationException {
 
@@ -180,6 +239,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidCharactersForFieldName
 		extends DDMFormValidationException {
 
@@ -199,6 +262,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidCharactersForFieldType
 		extends DDMFormValidationException {
 
@@ -218,6 +285,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidDefaultLocaleForProperty
 		extends DDMFormValidationException {
 
@@ -247,6 +318,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidFormRuleExpression
 		extends DDMFormValidationException {
 
@@ -270,6 +345,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidIndexType
 		extends DDMFormValidationException {
 
@@ -289,6 +368,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidValidationExpression
 		extends MustSetValidDDMFormFieldExpression {
 
@@ -304,6 +387,10 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	public static class MustSetValidVisibilityExpression
 		extends MustSetValidDDMFormFieldExpression {
 
@@ -319,6 +406,12 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
+	private List<DDMFormValidatorError> _ddmFormValidatorErrors;
+
+	/**
+	 * @deprecated As of Judson (7.1.x), with no replacement
+	 */
+	@Deprecated
 	private static class MustSetValidDDMFormFieldExpression
 		extends DDMFormValidationException {
 
