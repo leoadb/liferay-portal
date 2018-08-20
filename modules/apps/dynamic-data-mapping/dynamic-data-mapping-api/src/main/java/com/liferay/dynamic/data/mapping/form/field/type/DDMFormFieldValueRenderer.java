@@ -23,6 +23,35 @@ import java.util.Locale;
  */
 public interface DDMFormFieldValueRenderer {
 
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale);
+	/**
+	 * @deprecated As of Judson (7.1.x), replaced by {
+	 * @link DDMFormFieldValueRenderer#render(
+	 * DDMFormFieldValueRendererRenderRequest)}
+	 */
+	@Deprecated
+	public default String render(
+		DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+
+		DDMFormFieldValueRendererRenderRequest.Builder builder =
+			DDMFormFieldValueRendererRenderRequest.Builder.newBuilder();
+
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest =
+				builder.withDDMFormFieldValue(
+					ddmFormFieldValue
+				).withLocale(
+					locale
+				).build();
+
+		DDMFormFieldValueRendererRenderResponse
+			ddmFormFieldValueRendererRenderResponse = render(
+				ddmFormFieldValueRendererRenderRequest);
+
+		return ddmFormFieldValueRendererRenderResponse.getContent();
+	}
+
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest);
 
 }
