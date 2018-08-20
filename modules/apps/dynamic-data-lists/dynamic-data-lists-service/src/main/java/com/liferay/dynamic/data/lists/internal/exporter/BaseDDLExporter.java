@@ -21,6 +21,8 @@ import com.liferay.dynamic.data.lists.model.DDLRecordSetVersion;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetVersionService;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldType;
@@ -143,8 +145,23 @@ public abstract class BaseDDLExporter implements DDLExporter {
 				getDDMFormFieldTypeServicesTracker().
 					getDDMFormFieldValueRenderer(ddmFormFieldValue.getType());
 
-			valueString = ddmFormFieldValueRenderer.render(
-				ddmFormFieldValue, getLocale());
+			DDMFormFieldValueRendererRenderRequest.Builder builder =
+				DDMFormFieldValueRendererRenderRequest.Builder.newBuilder();
+
+			DDMFormFieldValueRendererRenderRequest
+				ddmFormFieldValueRendererRenderRequest =
+					builder.withDDMFormFieldValue(
+						ddmFormFieldValue
+					).withLocale(
+						getLocale()
+					).build();
+
+			DDMFormFieldValueRendererRenderResponse
+				ddmFormFieldValueRendererRenderResponse =
+					ddmFormFieldValueRenderer.render(
+						ddmFormFieldValueRendererRenderRequest);
+
+			valueString = ddmFormFieldValueRendererRenderResponse.getContent();
 		}
 		else {
 			DDMFormFieldValueRendererRegistry

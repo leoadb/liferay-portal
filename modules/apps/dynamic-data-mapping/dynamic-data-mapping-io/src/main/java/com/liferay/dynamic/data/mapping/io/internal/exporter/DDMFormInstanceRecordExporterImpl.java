@@ -17,6 +17,8 @@ package com.liferay.dynamic.data.mapping.io.internal.exporter;
 import com.liferay.dynamic.data.mapping.exception.FormInstanceRecordExporterException;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordExporter;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordExporterRequest;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordExporterResponse;
@@ -160,9 +162,24 @@ public class DDMFormInstanceRecordExporterImpl
 			ddmFormFieldTypeServicesTracker.getDDMFormFieldValueRenderer(
 				ddmFormField.getType());
 
+		DDMFormFieldValueRendererRenderRequest.Builder builder =
+			DDMFormFieldValueRendererRenderRequest.Builder.newBuilder();
+
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest =
+				builder.withDDMFormFieldValue(
+					ddmFormFieldValues.get(0)
+				).withLocale(
+					locale
+				).build();
+
+		DDMFormFieldValueRendererRenderResponse
+			ddmFormFieldValueRendererRenderResponse =
+				ddmFormFieldValueRenderer.render(
+					ddmFormFieldValueRendererRenderRequest);
+
 		return HtmlUtil.render(
-			ddmFormFieldValueRenderer.render(
-				ddmFormFieldValues.get(0), locale));
+			ddmFormFieldValueRendererRenderResponse.getContent());
 	}
 
 	protected List<Map<String, String>> getDDMFormFieldValues(

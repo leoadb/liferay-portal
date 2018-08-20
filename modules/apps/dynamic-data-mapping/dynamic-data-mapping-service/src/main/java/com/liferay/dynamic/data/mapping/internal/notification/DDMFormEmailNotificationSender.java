@@ -17,6 +17,8 @@ package com.liferay.dynamic.data.mapping.internal.notification;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
@@ -530,8 +532,24 @@ public class DDMFormEmailNotificationSender {
 			_ddmFormFieldTypeServicesTracker.getDDMFormFieldValueRenderer(
 				ddmFormFieldValue.getType());
 
+		DDMFormFieldValueRendererRenderRequest.Builder builder =
+			DDMFormFieldValueRendererRenderRequest.Builder.newBuilder();
+
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest =
+				builder.withDDMFormFieldValue(
+					ddmFormFieldValue
+				).withLocale(
+					locale
+				).build();
+
+		DDMFormFieldValueRendererRenderResponse
+			ddmFormFieldValueRendererRenderResponse =
+				ddmFormFieldValueRenderer.render(
+					ddmFormFieldValueRendererRenderRequest);
+
 		return HtmlUtil.unescape(
-			ddmFormFieldValueRenderer.render(ddmFormFieldValue, locale));
+			ddmFormFieldValueRendererRenderResponse.getContent());
 	}
 
 	@Reference(unbind = "-")

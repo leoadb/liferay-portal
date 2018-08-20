@@ -27,10 +27,18 @@ public class DefaultDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest) {
+
+		DDMFormFieldValue ddmFormFieldValue =
+			ddmFormFieldValueRendererRenderRequest.getDDMFormFieldValue();
+		Locale locale = ddmFormFieldValueRendererRenderRequest.getLocale();
+
 		Value value = ddmFormFieldValue.getValue();
 
-		return HtmlUtil.escape(value.getString(locale));
+		return DDMFormFieldValueRendererRenderResponse.Builder.of(
+			HtmlUtil.escape(value.getString(locale)));
 	}
 
 }

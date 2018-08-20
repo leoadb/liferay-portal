@@ -17,6 +17,8 @@ package com.liferay.dynamic.data.mapping.form.web.internal.display.context;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.form.web.internal.search.FormInstanceRecordSearch;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -138,7 +140,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 			return StringPool.BLANK;
 		}
 
-		final DDMFormFieldValueRenderer fieldValueRenderer =
+		final DDMFormFieldValueRenderer ddmFormFieldValueRenderer =
 			_ddmFormFieldTypeServicesTracker.getDDMFormFieldValueRenderer(
 				formField.getType());
 
@@ -147,9 +149,25 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 			new Function<DDMFormFieldValue, String>() {
 
 				@Override
-				public String apply(DDMFormFieldValue formFieldValue) {
-					return fieldValueRenderer.render(
-						formFieldValue, _renderRequest.getLocale());
+				public String apply(DDMFormFieldValue ddmFormFieldValue) {
+					DDMFormFieldValueRendererRenderRequest.Builder builder =
+						DDMFormFieldValueRendererRenderRequest.Builder.
+							newBuilder();
+
+					DDMFormFieldValueRendererRenderRequest
+						ddmFormFieldValueRendererRenderRequest =
+							builder.withDDMFormFieldValue(
+								ddmFormFieldValue
+							).withLocale(
+								_renderRequest.getLocale()
+							).build();
+
+					DDMFormFieldValueRendererRenderResponse
+						ddmFormFieldValueRendererRenderResponse =
+							ddmFormFieldValueRenderer.render(
+								ddmFormFieldValueRendererRenderRequest);
+
+					return ddmFormFieldValueRendererRenderResponse.getContent();
 				}
 
 			});
