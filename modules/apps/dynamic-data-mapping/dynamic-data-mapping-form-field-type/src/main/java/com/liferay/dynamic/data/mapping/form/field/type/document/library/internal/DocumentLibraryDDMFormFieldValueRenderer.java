@@ -16,6 +16,8 @@ package com.liferay.dynamic.data.mapping.form.field.type.document.library.intern
 
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -38,7 +40,14 @@ public class DocumentLibraryDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest) {
+
+		DDMFormFieldValue ddmFormFieldValue =
+			ddmFormFieldValueRendererRenderRequest.getDDMFormFieldValue();
+		Locale locale = ddmFormFieldValueRendererRenderRequest.getLocale();
+
 		JSONObject jsonObject =
 			documentLibraryDDMFormFieldValueAccessor.getValue(
 				ddmFormFieldValue, locale);
@@ -47,18 +56,21 @@ public class DocumentLibraryDDMFormFieldValueRenderer
 		long groupId = jsonObject.getLong("groupId");
 
 		if (Validator.isNull(uuid) || (groupId == 0)) {
-			return StringPool.BLANK;
+			return DDMFormFieldValueRendererRenderResponse.Builder.of(
+				StringPool.BLANK);
 		}
 
 		try {
 			FileEntry fileEntry = dlAppService.getFileEntryByUuidAndGroupId(
 				uuid, groupId);
 
-			return fileEntry.getTitle();
+			return DDMFormFieldValueRendererRenderResponse.Builder.of(
+				fileEntry.getTitle());
 		}
 		catch (Exception e) {
-			return LanguageUtil.format(
-				locale, "is-temporarily-unavailable", "content");
+			return DDMFormFieldValueRendererRenderResponse.Builder.of(
+				LanguageUtil.format(
+					locale, "is-temporarily-unavailable", "content"));
 		}
 	}
 

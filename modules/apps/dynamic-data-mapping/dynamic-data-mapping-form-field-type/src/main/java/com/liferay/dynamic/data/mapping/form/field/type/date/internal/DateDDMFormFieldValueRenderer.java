@@ -15,6 +15,8 @@
 package com.liferay.dynamic.data.mapping.form.field.type.date.internal;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.petra.string.StringPool;
@@ -41,10 +43,19 @@ public class DateDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest) {
+
+		DDMFormFieldValue ddmFormFieldValue =
+			ddmFormFieldValueRendererRenderRequest.getDDMFormFieldValue();
+		Locale locale = ddmFormFieldValueRendererRenderRequest.getLocale();
+
 		Value value = ddmFormFieldValue.getValue();
 
-		return render(value.getString(locale), locale);
+		String content = render(value.getString(locale), locale);
+
+		return DDMFormFieldValueRendererRenderResponse.Builder.of(content);
 	}
 
 	protected String render(String valueString, Locale locale) {

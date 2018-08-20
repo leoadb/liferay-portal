@@ -15,6 +15,8 @@
 package com.liferay.dynamic.data.mapping.form.field.type.checkbox.internal;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
@@ -31,16 +33,24 @@ public class CheckboxDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest) {
+
+		DDMFormFieldValue ddmFormFieldValue =
+			ddmFormFieldValueRendererRenderRequest.getDDMFormFieldValue();
+		Locale locale = ddmFormFieldValueRendererRenderRequest.getLocale();
+
 		Boolean valueBoolean = checkboxDDMFormFieldValueAccessor.getValue(
 			ddmFormFieldValue, locale);
 
+		String content = LanguageUtil.get(locale, "no");
+
 		if (valueBoolean == Boolean.TRUE) {
-			return LanguageUtil.get(locale, "yes");
+			content = LanguageUtil.get(locale, "yes");
 		}
-		else {
-			return LanguageUtil.get(locale, "no");
-		}
+
+		return DDMFormFieldValueRendererRenderResponse.Builder.of(content);
 	}
 
 	@Reference

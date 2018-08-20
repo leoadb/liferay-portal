@@ -15,6 +15,8 @@
 package com.liferay.dynamic.data.mapping.form.field.type.select.internal;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
@@ -38,7 +40,14 @@ public class SelectDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest) {
+
+		DDMFormFieldValue ddmFormFieldValue =
+			ddmFormFieldValueRendererRenderRequest.getDDMFormFieldValue();
+		Locale locale = ddmFormFieldValueRendererRenderRequest.getLocale();
+
 		JSONArray optionsValuesJSONArray =
 			selectDDMFormFieldValueAccessor.getValue(ddmFormFieldValue, locale);
 
@@ -46,7 +55,8 @@ public class SelectDDMFormFieldValueRenderer
 			ddmFormFieldValue);
 
 		if (optionsValuesJSONArray.length() == 0) {
-			return StringPool.BLANK;
+			return DDMFormFieldValueRendererRenderResponse.Builder.of(
+				StringPool.BLANK);
 		}
 
 		StringBundler sb = new StringBundler(
@@ -70,7 +80,8 @@ public class SelectDDMFormFieldValueRenderer
 
 		sb.setIndex(sb.index() - 1);
 
-		return sb.toString();
+		return DDMFormFieldValueRendererRenderResponse.Builder.of(
+			sb.toString());
 	}
 
 	protected DDMFormFieldOptions getDDMFormFieldOptions(

@@ -15,6 +15,8 @@
 package com.liferay.dynamic.data.mapping.form.field.type.radio.internal;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
@@ -34,7 +36,14 @@ public class RadioDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest) {
+
+		DDMFormFieldValue ddmFormFieldValue =
+			ddmFormFieldValueRendererRenderRequest.getDDMFormFieldValue();
+		Locale locale = ddmFormFieldValueRendererRenderRequest.getLocale();
+
 		String optionValue = radioDDMFormFieldValueAccessor.getValue(
 			ddmFormFieldValue, locale);
 
@@ -45,10 +54,12 @@ public class RadioDDMFormFieldValueRenderer
 			optionValue);
 
 		if (optionLabel == null) {
-			return StringPool.BLANK;
+			return DDMFormFieldValueRendererRenderResponse.Builder.of(
+				StringPool.BLANK);
 		}
 
-		return optionLabel.getString(locale);
+		return DDMFormFieldValueRendererRenderResponse.Builder.of(
+			optionLabel.getString(locale));
 	}
 
 	protected DDMFormFieldOptions getDDMFormFieldOptions(

@@ -15,6 +15,8 @@
 package com.liferay.dynamic.data.mapping.form.field.type.numeric.internal;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.petra.string.StringPool;
@@ -35,17 +37,26 @@ public class NumericDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest) {
+
+		DDMFormFieldValue ddmFormFieldValue =
+			ddmFormFieldValueRendererRenderRequest.getDDMFormFieldValue();
+		Locale locale = ddmFormFieldValueRendererRenderRequest.getLocale();
+
 		Number number = getNumber(ddmFormFieldValue);
 
 		if (number != null) {
 			NumberFormat numberFormat = NumericDDMFormFieldUtil.getNumberFormat(
 				locale);
 
-			return numberFormat.format(number);
+			return DDMFormFieldValueRendererRenderResponse.Builder.of(
+				numberFormat.format(number));
 		}
 
-		return StringPool.BLANK;
+		return DDMFormFieldValueRendererRenderResponse.Builder.of(
+			StringPool.BLANK);
 	}
 
 	protected Number getNumber(DDMFormFieldValue ddmFormFieldValue) {

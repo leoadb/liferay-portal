@@ -15,6 +15,8 @@
 package com.liferay.dynamic.data.mapping.form.field.type.grid.internal;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
@@ -37,12 +39,20 @@ public class GridDDMFormFieldValueRenderer
 	implements DDMFormFieldValueRenderer {
 
 	@Override
-	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+	public DDMFormFieldValueRendererRenderResponse render(
+		DDMFormFieldValueRendererRenderRequest
+			ddmFormFieldValueRendererRenderRequest) {
+
+		DDMFormFieldValue ddmFormFieldValue =
+			ddmFormFieldValueRendererRenderRequest.getDDMFormFieldValue();
+		Locale locale = ddmFormFieldValueRendererRenderRequest.getLocale();
+
 		JSONObject valuesJSONObject = gridDDMFormFieldValueAccessor.getValue(
 			ddmFormFieldValue, locale);
 
 		if (valuesJSONObject.length() == 0) {
-			return StringPool.BLANK;
+			return DDMFormFieldValueRendererRenderResponse.Builder.of(
+				StringPool.BLANK);
 		}
 
 		DDMFormFieldOptions rows = getDDMFormFieldOptions(
@@ -77,7 +87,8 @@ public class GridDDMFormFieldValueRenderer
 			sb.setIndex(sb.index() - 1);
 		}
 
-		return sb.toString();
+		return DDMFormFieldValueRendererRenderResponse.Builder.of(
+			sb.toString());
 	}
 
 	protected DDMFormFieldOptions getDDMFormFieldOptions(
