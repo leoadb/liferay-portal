@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormFieldValueRendererTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -50,13 +51,15 @@ public class NumericDDMFormFieldValueRendererTest {
 
 		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 
-		String enRenderedValue = _numericDDMFormFieldValueRenderer.render(
-			ddmFormFieldValue, LocaleUtil.US);
+		String enRenderedValue = DDMFormFieldValueRendererTestUtil.render(
+			ddmFormFieldValue, _numericDDMFormFieldValueRenderer,
+			LocaleUtil.US);
 
 		Assert.assertEquals("1.25", enRenderedValue);
 
-		String ptRenderedValue = _numericDDMFormFieldValueRenderer.render(
-			ddmFormFieldValue, LocaleUtil.BRAZIL);
+		String ptRenderedValue = DDMFormFieldValueRendererTestUtil.render(
+			ddmFormFieldValue, _numericDDMFormFieldValueRenderer,
+			LocaleUtil.BRAZIL);
 
 		Assert.assertEquals("1,25", ptRenderedValue);
 	}
@@ -79,13 +82,15 @@ public class NumericDDMFormFieldValueRendererTest {
 
 		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 
-		String enRenderedValue = _numericDDMFormFieldValueRenderer.render(
-			ddmFormFieldValue, LocaleUtil.US);
+		String enRenderedValue = DDMFormFieldValueRendererTestUtil.render(
+			ddmFormFieldValue, _numericDDMFormFieldValueRenderer,
+			LocaleUtil.US);
 
 		Assert.assertEquals("3.141592", enRenderedValue);
 
-		String ptRenderedValue = _numericDDMFormFieldValueRenderer.render(
-			ddmFormFieldValue, LocaleUtil.BRAZIL);
+		String ptRenderedValue = DDMFormFieldValueRendererTestUtil.render(
+			ddmFormFieldValue, _numericDDMFormFieldValueRenderer,
+			LocaleUtil.BRAZIL);
 
 		Assert.assertEquals("3,141592", ptRenderedValue);
 	}
@@ -112,13 +117,15 @@ public class NumericDDMFormFieldValueRendererTest {
 
 		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
 
-		String enRenderedValue = _numericDDMFormFieldValueRenderer.render(
-			ddmFormFieldValue, LocaleUtil.US);
+		String enRenderedValue = DDMFormFieldValueRendererTestUtil.render(
+			ddmFormFieldValue, _numericDDMFormFieldValueRenderer,
+			LocaleUtil.US);
 
 		Assert.assertEquals("111222333.25", enRenderedValue);
 
-		String ptRenderedValue = _numericDDMFormFieldValueRenderer.render(
-			ddmFormFieldValue, LocaleUtil.BRAZIL);
+		String ptRenderedValue = DDMFormFieldValueRendererTestUtil.render(
+			ddmFormFieldValue, _numericDDMFormFieldValueRenderer,
+			LocaleUtil.BRAZIL);
 
 		Assert.assertEquals("111222333,25", ptRenderedValue);
 	}

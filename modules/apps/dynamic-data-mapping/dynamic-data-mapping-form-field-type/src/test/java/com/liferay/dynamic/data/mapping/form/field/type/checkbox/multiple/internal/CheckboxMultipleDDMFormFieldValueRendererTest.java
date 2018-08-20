@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormFieldValueRendererTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -80,8 +81,9 @@ public class CheckboxMultipleDDMFormFieldValueRendererTest {
 
 		Assert.assertEquals(
 			"option 1",
-			_checkboxMultipleDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, _checkboxMultipleDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 	}
 
 	@Test
@@ -114,8 +116,9 @@ public class CheckboxMultipleDDMFormFieldValueRendererTest {
 
 		Assert.assertEquals(
 			"option 1, option 2",
-			_checkboxMultipleDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, _checkboxMultipleDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 	}
 
 	private CheckboxMultipleDDMFormFieldValueRenderer

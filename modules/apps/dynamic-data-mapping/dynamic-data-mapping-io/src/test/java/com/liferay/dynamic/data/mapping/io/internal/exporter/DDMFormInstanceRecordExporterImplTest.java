@@ -17,6 +17,8 @@ package com.liferay.dynamic.data.mapping.io.internal.exporter;
 import com.liferay.dynamic.data.mapping.exception.FormInstanceRecordExporterException;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderRequest;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRendererRenderResponse;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordExporterRequest;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordExporterResponse;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordWriter;
@@ -355,10 +357,15 @@ public class DDMFormInstanceRecordExporterImplTest extends PowerMockito {
 			ddmFormFieldValueRenderer
 		);
 
+		DDMFormFieldValueRendererRenderResponse
+			ddmFormFieldValueRendererRenderResponse =
+				DDMFormFieldValueRendererRenderResponse.Builder.of("value1");
+
 		when(
-			ddmFormFieldValueRenderer.render(ddmFormFieldValue, locale)
+			ddmFormFieldValueRenderer.render(
+				Matchers.any(DDMFormFieldValueRendererRenderRequest.class))
 		).thenReturn(
-			"value1"
+			ddmFormFieldValueRendererRenderResponse
 		);
 
 		when(
@@ -381,7 +388,7 @@ public class DDMFormInstanceRecordExporterImplTest extends PowerMockito {
 		Mockito.verify(
 			ddmFormFieldValueRenderer, Mockito.times(1)
 		).render(
-			ddmFormFieldValue, locale
+			Matchers.any(DDMFormFieldValueRendererRenderRequest.class)
 		);
 
 		Mockito.verify(

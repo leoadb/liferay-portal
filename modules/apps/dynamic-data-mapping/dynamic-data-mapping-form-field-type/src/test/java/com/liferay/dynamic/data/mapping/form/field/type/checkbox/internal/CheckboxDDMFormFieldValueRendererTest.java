@@ -16,6 +16,7 @@ package com.liferay.dynamic.data.mapping.form.field.type.checkbox.internal;
 
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormFieldValueRendererTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -61,8 +62,9 @@ public class CheckboxDDMFormFieldValueRendererTest extends PowerMockito {
 
 		Assert.assertEquals(
 			expectedCheckboxRenderedValue,
-			checkboxDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, checkboxDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 
 		ddmFormFieldValue.setValue(new UnlocalizedValue("false"));
 
@@ -70,8 +72,9 @@ public class CheckboxDDMFormFieldValueRendererTest extends PowerMockito {
 
 		Assert.assertEquals(
 			expectedCheckboxRenderedValue,
-			checkboxDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, checkboxDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 	}
 
 	protected CheckboxDDMFormFieldValueRenderer

@@ -19,6 +19,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormFieldValueRendererTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.petra.string.StringPool;
@@ -66,19 +67,22 @@ public class DateDDMFormFieldValueRendererTest {
 
 		Assert.assertEquals(
 			"1/25/15",
-			dateDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, dateDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 		Assert.assertEquals(
 			"25/01/15",
-			dateDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.BRAZIL));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, dateDDMFormFieldValueRenderer,
+				LocaleUtil.BRAZIL));
 
 		ddmFormFieldValue.setValue(new UnlocalizedValue(""));
 
 		Assert.assertEquals(
 			StringPool.BLANK,
-			dateDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, dateDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 	}
 
 	protected void setUpDateFormatFactoryUtil() {

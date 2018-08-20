@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormFieldValueRendererTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -75,8 +76,9 @@ public class GridDDMFormFieldValueRendererTest {
 
 		Assert.assertEquals(
 			"rowLabel 1: columnLabel 1",
-			gridDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, gridDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 	}
 
 	@Test
@@ -124,8 +126,9 @@ public class GridDDMFormFieldValueRendererTest {
 
 		Assert.assertEquals(
 			"rowLabel 1: columnLabel 1, rowLabel 2: columnLabel 2",
-			gridDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, gridDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 	}
 
 	protected GridDDMFormFieldValueAccessor

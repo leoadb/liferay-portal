@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormFieldValueRendererTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -63,8 +64,9 @@ public class RadioDDMFormFieldValueRendererTest {
 
 		Assert.assertEquals(
 			"option 1",
-			radioDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
+			DDMFormFieldValueRendererTestUtil.render(
+				ddmFormFieldValue, radioDDMFormFieldValueRenderer,
+				LocaleUtil.US));
 	}
 
 	protected RadioDDMFormFieldValueRenderer
