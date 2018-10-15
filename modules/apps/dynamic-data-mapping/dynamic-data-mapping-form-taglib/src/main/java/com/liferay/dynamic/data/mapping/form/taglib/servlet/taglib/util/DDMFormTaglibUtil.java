@@ -20,13 +20,32 @@ import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderConte
 import com.liferay.dynamic.data.mapping.form.builder.settings.DDMFormBuilderSettingsRequest;
 import com.liferay.dynamic.data.mapping.form.builder.settings.DDMFormBuilderSettingsResponse;
 import com.liferay.dynamic.data.mapping.form.builder.settings.DDMFormBuilderSettingsRetriever;
+import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
+import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
+import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingException;
+import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstanceVersion;
+import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
+import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.util.DDMFormValuesMerger;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONSerializer;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -45,6 +64,12 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true, service = {})
 public class DDMFormTaglibUtil {
+
+	public static DDMFormValues createDDMFormValues(
+		HttpServletRequest request, DDMForm ddmForm) {
+
+		return _ddmFormValuesFactory.create(request, ddmForm);
+	}
 
 	public static DDMForm getDDMForm(
 		long ddmStructureId, long ddmStructureVersionId) {
@@ -127,6 +152,66 @@ public class DDMFormTaglibUtil {
 			formBuilderContextResponse.getContext());
 	}
 
+	public static DDMFormInstance getFormInstance(long formInstanceId) {
+		return _ddmFormInstanceLocalService.fetchFormInstance(formInstanceId);
+	}
+
+	public static DDMFormInstanceRecord getFormInstanceRecord(
+		long formInstanceRecordId) {
+
+		return _ddmFormInstanceRecordLocalService.fetchDDMFormInstanceRecord(
+			formInstanceRecordId);
+	}
+
+	public static DDMFormInstanceRecordVersion getFormInstanceRecordVersion(
+		long formInstanceRecordVersionId) {
+
+		return _ddmFormInstanceRecordVersionLocalService.
+			fetchDDMFormInstanceRecordVersion(formInstanceRecordVersionId);
+	}
+
+	public static DDMFormInstanceVersion getFormInstanceVersion(
+		long formInstanceVersionId) {
+
+		return _ddmFormInstanceVersionLocalService.fetchDDMFormInstanceVersion(
+			formInstanceVersionId);
+	}
+
+	public static Group getGroup(long groupId) {
+		return _groupLocalService.fetchGroup(groupId);
+	}
+
+	public static DDMFormInstanceVersion getLatestFormInstanceVersion(
+			long formInstanceId, int status)
+		throws PortalException {
+
+		return _ddmFormInstanceVersionLocalService.getLatestFormInstanceVersion(
+			formInstanceId, status);
+	}
+
+	public static boolean hasWorkflowDefinitionLink(
+		long companyId, long groupId, String name, long formInstanceId) {
+
+		return _workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
+			companyId, groupId, name, formInstanceId);
+	}
+
+	public static DDMFormValues mergeDDMFormValues(
+		DDMFormValues newDDMFormValues, DDMFormValues existingDDMFormValues) {
+
+		return _ddmFormValuesMerger.merge(
+			newDDMFormValues, existingDDMFormValues);
+	}
+
+	public static String renderForm(
+			DDMForm ddmForm, DDMFormLayout ddmFormLayout,
+			DDMFormRenderingContext ddmFormRenderingContext)
+		throws DDMFormRenderingException {
+
+		return _ddmFormRenderer.render(
+			ddmForm, ddmFormLayout, ddmFormRenderingContext);
+	}
+
 	protected static DDMFormBuilderSettingsRetriever
 		getDDMFormBuilderSettingsRetriever() {
 
@@ -152,6 +237,56 @@ public class DDMFormTaglibUtil {
 	}
 
 	@Reference(unbind = "-")
+	protected void setDDMFormInstanceLocalService(
+		DDMFormInstanceLocalService ddmFormInstanceLocalService) {
+
+		_ddmFormInstanceLocalService = ddmFormInstanceLocalService;
+	}
+
+	@Reference(unbind = "-")
+	protected void setDDMFormInstanceRecordLocalService(
+		DDMFormInstanceRecordLocalService ddmFormInstanceRecordLocalService) {
+
+		_ddmFormInstanceRecordLocalService = ddmFormInstanceRecordLocalService;
+	}
+
+	@Reference(unbind = "-")
+	protected void setDDMFormInstanceRecordVersionLocalService(
+		DDMFormInstanceRecordVersionLocalService
+			ddmFormInstanceRecordVersionLocalService) {
+
+		_ddmFormInstanceRecordVersionLocalService =
+			ddmFormInstanceRecordVersionLocalService;
+	}
+
+	@Reference(unbind = "-")
+	protected void setDDMFormInstanceVersionLocalService(
+		DDMFormInstanceVersionLocalService ddmFormInstanceVersionLocalService) {
+
+		_ddmFormInstanceVersionLocalService =
+			ddmFormInstanceVersionLocalService;
+	}
+
+	@Reference(unbind = "-")
+	protected void setDDMFormRenderer(DDMFormRenderer ddmFormRenderer) {
+		_ddmFormRenderer = ddmFormRenderer;
+	}
+
+	@Reference(unbind = "-")
+	protected void setDDMFormValuesFactory(
+		DDMFormValuesFactory ddmFormValuesFactory) {
+
+		_ddmFormValuesFactory = ddmFormValuesFactory;
+	}
+
+	@Reference(unbind = "-")
+	protected void setDDMFormValuesMerger(
+		DDMFormValuesMerger ddmFormValuesMerger) {
+
+		_ddmFormValuesMerger = ddmFormValuesMerger;
+	}
+
+	@Reference(unbind = "-")
 	protected void setDDMStructureLocalService(
 		DDMStructureLocalService ddmStructureLocalService) {
 
@@ -166,16 +301,42 @@ public class DDMFormTaglibUtil {
 	}
 
 	@Reference(unbind = "-")
+	protected void setGroupLocalService(GroupLocalService groupLocalService) {
+		_groupLocalService = groupLocalService;
+	}
+
+	@Reference(unbind = "-")
 	protected void setJSONFactory(JSONFactory jsonFactory) {
 		_jsonFactory = jsonFactory;
+	}
+
+	@Reference(unbind = "-")
+	protected void setWorkflowDefinitionLinkLocalService(
+		WorkflowDefinitionLinkLocalService workflowDefinitionLinkLocalService) {
+
+		_workflowDefinitionLinkLocalService =
+			workflowDefinitionLinkLocalService;
 	}
 
 	private static DDMFormBuilderContextFactory _ddmFormBuilderContextFactory;
 	private static DDMFormBuilderSettingsRetriever
 		_ddmFormBuilderSettingsRetriever;
+	private static DDMFormInstanceLocalService _ddmFormInstanceLocalService;
+	private static DDMFormInstanceRecordLocalService
+		_ddmFormInstanceRecordLocalService;
+	private static DDMFormInstanceRecordVersionLocalService
+		_ddmFormInstanceRecordVersionLocalService;
+	private static DDMFormInstanceVersionLocalService
+		_ddmFormInstanceVersionLocalService;
+	private static DDMFormRenderer _ddmFormRenderer;
+	private static DDMFormValuesFactory _ddmFormValuesFactory;
+	private static DDMFormValuesMerger _ddmFormValuesMerger;
 	private static DDMStructureLocalService _ddmStructureLocalService;
 	private static DDMStructureVersionLocalService
 		_ddmStructureVersionLocalService;
+	private static GroupLocalService _groupLocalService;
 	private static JSONFactory _jsonFactory;
+	private static WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
 
 }

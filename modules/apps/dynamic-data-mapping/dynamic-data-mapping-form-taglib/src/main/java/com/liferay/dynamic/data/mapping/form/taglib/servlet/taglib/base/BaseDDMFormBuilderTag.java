@@ -21,6 +21,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
+ * @author Pedro Queiroz
  * @author Rafael Praxedes
  * @generated
  */
