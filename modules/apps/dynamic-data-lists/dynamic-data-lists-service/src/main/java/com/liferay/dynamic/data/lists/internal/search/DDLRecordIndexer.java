@@ -220,16 +220,23 @@ public class DDLRecordIndexer extends BaseIndexer<DDLRecord> {
 		document.addKeyword(Field.VERSION, recordVersion.getVersion());
 
 		document.addKeyword("recordSetId", recordSet.getRecordSetId());
-		document.addKeyword("recordSetScope", recordSet.getScope());
 
-		DDMStructure ddmStructure = recordSet.getDDMStructure();
+		int scope = recordSet.getScope();
 
-		DDMFormValues ddmFormValues = storageEngine.getDDMFormValues(
-			recordVersion.getDDMStorageId());
+		document.addKeyword("recordSetScope", scope);
 
-		addDDMContent(recordVersion, ddmFormValues, document);
+		if (scope == DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS ||
+			scope == DDLRecordSetConstants.SCOPE_KALEO_FORMS) {
 
-		ddmIndexer.addAttributes(document, ddmStructure, ddmFormValues);
+			DDMStructure ddmStructure = recordSet.getDDMStructure();
+
+			DDMFormValues ddmFormValues = storageEngine.getDDMFormValues(
+				recordVersion.getDDMStorageId());
+
+			addDDMContent(recordVersion, ddmFormValues, document);
+
+			ddmIndexer.addAttributes(document, ddmStructure, ddmFormValues);
+		}
 
 		return document;
 	}

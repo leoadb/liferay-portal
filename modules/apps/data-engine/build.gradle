@@ -1,0 +1,44 @@
+apply plugin: "com.liferay.app.defaults.plugin"
+
+allprojects {
+	apply plugin: 'java'
+	apply plugin: 'jacoco'
+
+	jacoco {
+		toolVersion = '0.8.1'
+	}
+}
+
+subprojects {
+	jacocoTestReport {
+		additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+		sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+		classDirectories =  files(sourceSets.main.output)
+		reports {
+			html.enabled = true
+			xml.enabled = true
+			csv.enabled = false
+		}
+	}
+}
+
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+	dependsOn = subprojects.test
+	additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
+	sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+	classDirectories = files(subprojects.sourceSets.main.output)
+	executionData = files(subprojects.jacocoTestReport.executionData)
+	reports {
+		html.enabled = true
+		xml.enabled = true
+		csv.enabled = false
+	}
+	onlyIf = {
+		true
+	}
+	doFirst {
+		executionData = files(executionData.findAll {
+			it.exists()
+		})
+	}
+}
