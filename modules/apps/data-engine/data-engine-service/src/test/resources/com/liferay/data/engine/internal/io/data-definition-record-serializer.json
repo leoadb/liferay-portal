@@ -1,0 +1,11 @@
+{
+	"column1": "test",
+	"column2": {
+		"en_US": "value 2",
+		"pt_BR": "valor 2"
+	},
+	"column3": [
+		10,
+		11
+	]
+}
