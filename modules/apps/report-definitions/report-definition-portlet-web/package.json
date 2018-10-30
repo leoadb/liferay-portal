@@ -1,0 +1,19 @@
+{
+	"devDependencies": {
+		"babel-cli": "6.26.0",
+		"babel-plugin-transform-class-properties": "^6.24.1",
+		"babel-plugin-transform-object-rest-spread": "^6.26.0",
+		"babel-preset-env": "^1.7.0",
+		"babel-preset-liferay-project": "1.6.1",
+		"babel-preset-metal-jsx": "^0.1.1",
+		"liferay-npm-bundler": "^2.2.1",
+		"liferay-npm-bundler-preset-standard": "1.6.1"
+	},
+	"main": "js/main.es.js",
+	"name": "report-definitions-web",
+	"private": true,
+	"scripts": {
+		"build": "babel --source-maps -d classes/META-INF/resources src/main/resources/META-INF/resources && liferay-npm-bundler"
+	},
+	"version": "1.0.0"
+}

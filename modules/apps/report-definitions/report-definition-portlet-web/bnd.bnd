@@ -1,0 +1,6 @@
+Bundle-Name: Report Definitions Portlet
+Bundle-SymbolicName: report.definition.portlet.web
+Bundle-Version: 1.0.0
+Export-Package: report.definition.portlet.web.constants
+Web-ContextPath: /report-definitions-web
+-includeresource: package.json
