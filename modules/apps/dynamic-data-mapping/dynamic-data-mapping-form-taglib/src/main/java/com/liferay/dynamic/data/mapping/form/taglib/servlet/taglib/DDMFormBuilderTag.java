@@ -56,6 +56,24 @@ public class DDMFormBuilderTag extends BaseDDMFormBuilderTag {
 	}
 
 	@Override
+	protected String getEndPage() {
+		if (getUseExperimentalInterface()) {
+			return "/ddm_form_builder/experimental/end.jsp";
+		}
+
+		return super.getEndPage();
+	}
+
+	@Override
+	protected String getStartPage() {
+		if (getUseExperimentalInterface()) {
+			return "/ddm_form_builder/experimental/start.jsp";
+		}
+
+		return super.getStartPage();
+	}
+
+	@Override
 	protected void setAttributes(HttpServletRequest request) {
 		super.setAttributes(request);
 
@@ -81,7 +99,6 @@ public class DDMFormBuilderTag extends BaseDDMFormBuilderTag {
 		setNamespacedAttribute(
 			request, "fieldSettingsDDMFormContextURL",
 			ddmFormBuilderSettingsResponse.getFieldSettingsDDMFormContextURL());
-
 		setNamespacedAttribute(
 			request, "formBuilderContext", getDDMFormBuilderContext(request));
 		setNamespacedAttribute(
@@ -90,6 +107,9 @@ public class DDMFormBuilderTag extends BaseDDMFormBuilderTag {
 		setNamespacedAttribute(
 			request, "functionsURL",
 			ddmFormBuilderSettingsResponse.getFunctionsURL());
+		setNamespacedAttribute(
+			request, "javaScriptPackage",
+			DDMFormTaglibUtil.getJavaScriptPackage());
 		setNamespacedAttribute(
 			request, "rolesURL", ddmFormBuilderSettingsResponse.getRolesURL());
 		setNamespacedAttribute(

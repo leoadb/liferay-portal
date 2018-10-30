@@ -17,7 +17,10 @@
 <%@ page import="com.liferay.portal.kernel.json.JSONArray" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %>
 
-<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
+taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
+
+<liferay-theme:defineObjects />
 
 <%
 String dataProviderInstancesURL = (String)request.getAttribute("liferay-form:ddm-form-builder:dataProviderInstancesURL");
@@ -29,6 +32,7 @@ String fieldSettingsDDMFormContextURL = (String)request.getAttribute("liferay-fo
 String formBuilderContext = (String)request.getAttribute("liferay-form:ddm-form-builder:formBuilderContext");
 String functionsMetadata = (String)request.getAttribute("liferay-form:ddm-form-builder:functionsMetadata");
 String functionsURL = (String)request.getAttribute("liferay-form:ddm-form-builder:functionsURL");
+String javaScriptPackage = (String)request.getAttribute("liferay-form:ddm-form-builder:javaScriptPackage");
 String rolesURL = (String)request.getAttribute("liferay-form:ddm-form-builder:rolesURL");
 String serializedDDMFormRules = (String)request.getAttribute("liferay-form:ddm-form-builder:serializedDDMFormRules");
 %>

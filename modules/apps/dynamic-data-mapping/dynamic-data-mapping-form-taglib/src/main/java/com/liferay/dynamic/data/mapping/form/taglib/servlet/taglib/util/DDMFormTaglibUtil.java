@@ -40,6 +40,8 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesMerger;
+import com.liferay.frontend.js.loader.modules.extender.npm.JSPackage;
+import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONSerializer;
@@ -182,6 +184,12 @@ public class DDMFormTaglibUtil {
 		return _groupLocalService.fetchGroup(groupId);
 	}
 
+	public static String getJavaScriptPackage() {
+		JSPackage jsPackage = _npmResolver.getJSPackage();
+
+		return jsPackage.getResolvedId();
+	}
+
 	public static DDMFormInstanceVersion getLatestDDMFormInstanceVersion(
 			long ddmFormInstanceId, int status)
 		throws PortalException {
@@ -312,6 +320,11 @@ public class DDMFormTaglibUtil {
 	}
 
 	@Reference(unbind = "-")
+	protected void setNPMResolver(NPMResolver npmResolver) {
+		_npmResolver = npmResolver;
+	}
+
+	@Reference(unbind = "-")
 	protected void setWorkflowDefinitionLinkLocalService(
 		WorkflowDefinitionLinkLocalService workflowDefinitionLinkLocalService) {
 
@@ -337,6 +350,7 @@ public class DDMFormTaglibUtil {
 		_ddmStructureVersionLocalService;
 	private static GroupLocalService _groupLocalService;
 	private static JSONFactory _jsonFactory;
+	private static NPMResolver _npmResolver;
 	private static WorkflowDefinitionLinkLocalService
 		_workflowDefinitionLinkLocalService;
 

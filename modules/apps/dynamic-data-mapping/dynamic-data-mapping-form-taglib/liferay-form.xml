@@ -50,6 +50,13 @@
 				<defaultValue>true</defaultValue>
 				<required>false</required>
 			</attribute>
+			<attribute>
+				<name>useExperimentalInterface</name>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
+				<defaultValue>true</defaultValue>
+				<required>false</required>
+			</attribute>
 		</attributes>
 	</component>
 	<component bodyContent="true" name="DDMFormRenderer" writeJSP="true">
