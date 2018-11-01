@@ -1,7 +1,9 @@
 import {Config} from 'metal-state';
 import {EventHandler} from 'metal-events';
 import {focusedFieldStructure, pageStructure} from '../../util/config.es';
+import {formatFieldName} from '../../util/fieldSupport.es';
 import {PagesVisitor} from '../../util/visitors.es';
+import AddButton from '../AddButton/AddButton.es';
 import autobind from 'autobind-decorator';
 import ClayModal from 'clay-modal';
 import Component from 'metal-jsx';
@@ -9,7 +11,6 @@ import dom from 'metal-dom';
 import FormRenderer from '../../components/Form/index.es';
 import FormSupport from '../../components/Form/FormSupport.es';
 import Sidebar from '../../components/Sidebar/index.es';
-import {formatFieldName} from '../../util/fieldSupport.es';
 
 /**
  * Builder.
@@ -375,16 +376,9 @@ class Builder extends Component {
 	}
 
 	syncVisible(visible) {
-		const addButton = document.querySelector('#addFieldButton');
-
 		super.syncVisible(visible);
 
 		if (visible) {
-			addButton.classList.remove('hide');
-
-			this._eventHandler.add(
-				dom.on('#addFieldButton', 'click', this._handleAddFieldButtonClicked.bind(this))
-			);
 		}
 		else {
 			this._eventHandler.removeAllListeners();
@@ -396,6 +390,7 @@ class Builder extends Component {
 	 * @private
 	 */
 
+	@autobind
 	_handleAddFieldButtonClicked() {
 		this.openSidebar();
 	}
@@ -573,6 +568,12 @@ class Builder extends Component {
 						/>
 					</div>
 				</div>
+				<AddButton
+					events={{
+						click: this._handleAddFieldButtonClicked
+					}}
+					spritemap={spritemap}
+				/>
 				<Sidebar
 					events={sidebarEvents}
 					fieldTypes={fieldTypes}
