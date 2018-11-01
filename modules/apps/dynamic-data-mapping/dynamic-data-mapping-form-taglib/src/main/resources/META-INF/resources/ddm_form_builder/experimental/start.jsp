@@ -16,6 +16,10 @@
 
 <%@ include file="/ddm_form_builder/init.jsp" %>
 
+<liferay-util:html-top>
+	<link href="<%= PortalUtil.getStaticResourceURL(request, "/o/dynamic-data-mapping-form-builder/metal/css/main.css") %>" rel="stylesheet" type="text/css" />
+</liferay-util:html-top>
+
 <div id="teste"></div>
 
 <aui:script require='<%= javaScriptPackage + "/ddm_form_builder/experimental/js/main.es as FormBuilderTagLib" %>'>

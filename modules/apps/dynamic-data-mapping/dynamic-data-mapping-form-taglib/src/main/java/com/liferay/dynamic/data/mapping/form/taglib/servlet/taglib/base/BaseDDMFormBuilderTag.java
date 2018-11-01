@@ -116,7 +116,7 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 		_fieldSetClassNameId = 0;
 		_refererPortletNamespace = null;
 		_showPagination = true;
-		_useExperimentalInterface = true;
+		_useExperimentalInterface = false;
 	}
 
 	@Override
@@ -156,6 +156,6 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 	private long _fieldSetClassNameId = 0;
 	private java.lang.String _refererPortletNamespace = null;
 	private boolean _showPagination = true;
-	private boolean _useExperimentalInterface = true;
+	private boolean _useExperimentalInterface = false;
 
 }

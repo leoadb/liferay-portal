@@ -54,7 +54,7 @@
 				<name>useExperimentalInterface</name>
 				<inputType>boolean</inputType>
 				<outputType>boolean</outputType>
-				<defaultValue>true</defaultValue>
+				<defaultValue>false</defaultValue>
 				<required>false</required>
 			</attribute>
 		</attributes>
