@@ -14,20 +14,23 @@ $c: '.sidebar-container';
 		transform: translateX(0%);
 	}
 
-	.sidebar-body {
-		overflow: visible;
-	}
-
 	.list-group-item:hover {
 		background-color: #F0F5FF;
 	}
 
 	.ddm-sidebar-body {
-		height: calc(100vh - 160px);
-		overflow: auto;
+		overflow: hidden;
 	}
 
 	.ddm-empty {
 		display: none;
+	}
+
+	.sidebar-body {
+		overflow: visible;
+	}
+
+	.tab-pane {
+		overflow: hidden;
 	}
 }

@@ -237,6 +237,8 @@ class Sidebar extends Component {
 	 */
 
 	_handleDragStarted() {
+		this.refreshDragAndDrop();
+
 		this.close();
 	}
 
@@ -400,7 +402,8 @@ class Sidebar extends Component {
 			{
 				dragPlaceholder: Drag.Placeholder.CLONE,
 				sources: '.ddm-drag-item',
-				targets: '.ddm-target'
+				targets: '.ddm-target',
+				useShim: false
 			}
 		);
 
@@ -409,7 +412,7 @@ class Sidebar extends Component {
 				DragDrop.Events.END,
 				this._handleDragEnded.bind(this)
 			),
-			this._dragAndDrop.on(DragDrop.Events.DRAG, this._handleDragStarted.bind(this))
+			this._dragAndDrop.on(Drag.Events.START, this._handleDragStarted.bind(this))
 		);
 	}
 
@@ -642,7 +645,7 @@ class Sidebar extends Component {
 								role="tabpanel"
 							>
 
-								<div class="panel-body p-0 m-0 list-group">
+								<div class="draggable-container panel-body p-0 m-0 list-group">
 									{fieldTypesGroup[key].fields.map(
 										fieldType => (
 											<FieldTypeBox
@@ -685,7 +688,7 @@ class Sidebar extends Component {
 					<li class="tbar-item tbar-item-expand text-left">
 						<div class="tbar-section">
 							<span class="text-truncate-inline">
-								<span class="text-truncate">{'Add Elements'}</span>
+								<span class="text-truncate">{Liferay.Language.get('add-elements')}</span>
 							</span>
 						</div>
 					</li>
@@ -730,7 +733,7 @@ class Sidebar extends Component {
 				)}
 				<li class="tbar-item">
 					<a
-						class="component-action"
+						class="component-action sidebar-close"
 						data-onclick={this._handleCloseButtonClicked}
 						href="#1"
 						ref="close"
