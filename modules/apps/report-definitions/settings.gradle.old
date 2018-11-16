@@ -1,0 +1,1 @@
+include "report-definitions-api", "report-definitions-service", "report-definitions-portlet-web"

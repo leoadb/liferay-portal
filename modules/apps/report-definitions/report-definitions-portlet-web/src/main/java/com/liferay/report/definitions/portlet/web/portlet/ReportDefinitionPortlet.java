@@ -14,11 +14,17 @@
 
 package com.liferay.report.definitions.portlet.web.portlet;
 
+import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.frontend.js.loader.modules.extender.npm.JSPackage;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.report.definitions.portlet.web.configuration.activator.ReportDefinitionConfigurationActivator;
 import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionNPMKeys;
 import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionPortletKeys;
+import com.liferay.report.definitions.portlet.web.display.context.ReportDefinitionsDisplayContext;
+import com.liferay.report.definitions.service.ReportDefinitionLocalService;
 
 import java.io.IOException;
 
@@ -31,9 +37,12 @@ import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
- * @author brunobasto
+ * @author Bruno Basto
  */
 @Component(
 	immediate = true,
@@ -52,17 +61,17 @@ import org.osgi.service.component.annotations.Reference;
 public class ReportDefinitionPortlet extends MVCPortlet {
 
 	@Override
-	public void doView(
+	public void render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		JSPackage jsPackage = _npmResolver.getJSPackage();
+		try {
+			setRenderRequestAttributes(renderRequest, renderResponse);
+		} catch (PortalException e) {
+			e.printStackTrace();
+		}
 
-		renderRequest.setAttribute(
-			ReportDefinitionNPMKeys.BOOTSTRAP_REQUIRE,
-			jsPackage.getResolvedId());
-
-		super.doView(renderRequest, renderResponse);
+		super.render(renderRequest, renderResponse);
 	}
 
 	@Override
@@ -74,7 +83,46 @@ public class ReportDefinitionPortlet extends MVCPortlet {
 		super.include(path, actionRequest, actionResponse);
 	}
 
+	@Reference(unbind = "-")
+	protected void setDDMFormRenderer(DDMFormRenderer ddmFormRenderer) {
+		_ddmFormRenderer = ddmFormRenderer;
+	}
+
+	protected void setRenderRequestAttributes(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws PortalException {
+
+		JSPackage jsPackage = _npmResolver.getJSPackage();
+
+		renderRequest.setAttribute(
+			ReportDefinitionNPMKeys.BOOTSTRAP_REQUIRE,
+			jsPackage.getResolvedId());
+
+		ReportDefinitionsDisplayContext ddmDataProviderDisplayContext =
+			new ReportDefinitionsDisplayContext(
+				renderRequest, renderResponse, _ddmFormRenderer,
+				_reportDefinitionConfigurationActivator.getReportDefinitionConfiguration(),
+				_reportDefinitionLocalService);
+
+		renderRequest.setAttribute(
+			WebKeys.PORTLET_DISPLAY_CONTEXT, ddmDataProviderDisplayContext);
+	}
+
+	private DDMFormRenderer _ddmFormRenderer;
+
 	@Reference
 	private NPMResolver _npmResolver;
+
+	@Reference(
+		cardinality = ReferenceCardinality.OPTIONAL,
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY,
+		unbind = "unsetReportDefinitionConfigurationActivator"
+	)
+	private volatile ReportDefinitionConfigurationActivator
+		_reportDefinitionConfigurationActivator;
+
+	@Reference
+	private ReportDefinitionLocalService _reportDefinitionLocalService;
 
 }

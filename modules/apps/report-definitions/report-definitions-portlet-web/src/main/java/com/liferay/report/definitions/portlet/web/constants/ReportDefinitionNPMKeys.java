@@ -15,7 +15,7 @@
 package com.liferay.report.definitions.portlet.web.constants;
 
 /**
- * @author brunobasto
+ * @author Bruno Basto
  */
 public class ReportDefinitionNPMKeys {
 
