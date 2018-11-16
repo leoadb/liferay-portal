@@ -99,6 +99,10 @@ public class DDMFormBuilderTag extends BaseDDMFormBuilderTag {
 		setNamespacedAttribute(
 			request, "fieldSettingsDDMFormContextURL",
 			ddmFormBuilderSettingsResponse.getFieldSettingsDDMFormContextURL());
+
+		setNamespacedAttribute(
+			request, "fieldTypes",
+			DDMFormTaglibUtil.getDDMFormFieldTypesJSONArray(request));
 		setNamespacedAttribute(
 			request, "formBuilderContext", getDDMFormBuilderContext(request));
 		setNamespacedAttribute(

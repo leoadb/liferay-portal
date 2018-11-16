@@ -20,7 +20,7 @@
 	<link href="<%= PortalUtil.getStaticResourceURL(request, "/o/dynamic-data-mapping-form-builder/metal/css/main.css") %>" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
-<div id="teste"></div>
+<div id="<%= refererPortletNamespace %>formBuilder"></div>
 
 <aui:script require='<%= javaScriptPackage + "/ddm_form_builder/experimental/js/main.es as FormBuilderTagLib" %>'>
 FormBuilderTagLib.default(
@@ -29,12 +29,14 @@ FormBuilderTagLib.default(
 			pages: [],
 			successPageSettings: {}
 		},
+		dataSchemaInputId: '<%= HtmlUtil.escapeJS(dataSchemaInputId) %>',
 		dependencies: ['dynamic-data-mapping-form-field-type/metal'],
+		fieldTypes: <%= fieldTypes %>,
 		modules: Liferay.MODULES,
 		namespace: '<%= HtmlUtil.escapeJS(refererPortletNamespace) %>',
 		spritemap: '<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg'
 	},
-	'#teste',
+	'#<%= HtmlUtil.escapeJS(refererPortletNamespace) %>formBuilder',
 	function() {
 	}
 );

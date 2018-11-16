@@ -19,6 +19,8 @@
 <%@ include file="/init.jsp" %>
 
 <%
+java.lang.String dataSchemaInputId = GetterUtil.getString((java.lang.String)request.getAttribute("liferay-form:ddm-form-builder:dataSchemaInputId"));
+boolean useExperimentalInterface = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-form:ddm-form-builder:useExperimentalInterface")));
 java.lang.Long ddmStructureId = GetterUtil.getLong(String.valueOf(request.getAttribute("liferay-form:ddm-form-builder:ddmStructureId")));
 java.lang.Long ddmStructureVersionId = GetterUtil.getLong(String.valueOf(request.getAttribute("liferay-form:ddm-form-builder:ddmStructureVersionId")));
 java.lang.String defaultLanguageId = GetterUtil.getString((java.lang.String)request.getAttribute("liferay-form:ddm-form-builder:defaultLanguageId"));
@@ -26,7 +28,6 @@ java.lang.String editingLanguageId = GetterUtil.getString((java.lang.String)requ
 long fieldSetClassNameId = GetterUtil.getLong(String.valueOf(request.getAttribute("liferay-form:ddm-form-builder:fieldSetClassNameId")));
 java.lang.String refererPortletNamespace = GetterUtil.getString((java.lang.String)request.getAttribute("liferay-form:ddm-form-builder:refererPortletNamespace"));
 boolean showPagination = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-form:ddm-form-builder:showPagination")), true);
-boolean useExperimentalInterface = GetterUtil.getBoolean(String.valueOf(request.getAttribute("liferay-form:ddm-form-builder:useExperimentalInterface")));
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("liferay-form:ddm-form-builder:dynamicAttributes");
 %>
 

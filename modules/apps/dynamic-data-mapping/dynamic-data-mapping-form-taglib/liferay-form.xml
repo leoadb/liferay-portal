@@ -7,6 +7,21 @@
 	</authors>
 	<component bodyContent="true" name="DDMFormBuilder" writeJSP="true">
 		<attributes>
+
+			<attribute>
+				<name>dataSchemaInputId</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+				<required>false</required>
+			</attribute>
+			<attribute>
+				<name>useExperimentalInterface</name>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
+				<defaultValue>false</defaultValue>
+				<required>false</required>
+			</attribute>
+
 			<attribute>
 				<name>ddmStructureId</name>
 				<inputType>java.lang.Long</inputType>
@@ -48,13 +63,6 @@
 				<inputType>boolean</inputType>
 				<outputType>boolean</outputType>
 				<defaultValue>true</defaultValue>
-				<required>false</required>
-			</attribute>
-			<attribute>
-				<name>useExperimentalInterface</name>
-				<inputType>boolean</inputType>
-				<outputType>boolean</outputType>
-				<defaultValue>false</defaultValue>
 				<required>false</required>
 			</attribute>
 		</attributes>

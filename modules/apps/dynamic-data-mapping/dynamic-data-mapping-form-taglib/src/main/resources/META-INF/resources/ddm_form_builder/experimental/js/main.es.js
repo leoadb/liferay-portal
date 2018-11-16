@@ -1,17 +1,18 @@
+import {pageStructure} from 'dynamic-data-mapping-form-builder/metal/js/util/config.es';
+import autobind from 'autobind-decorator';
 import Component, {Config} from 'metal-jsx';
 import core from 'metal';
 import FormBuilder from 'dynamic-data-mapping-form-builder/metal/js/components/FormBuilder/FormBuilder.es.js';
 import LayoutProvider from 'dynamic-data-mapping-form-builder/metal/js/components/LayoutProvider/index.es';
 import loader from 'dynamic-data-mapping-form-builder/metal/js/components/FieldsLoader/index.es';
-import {pageStructure} from 'dynamic-data-mapping-form-builder/metal/js/util/config.es';
+import {PagesVisitor} from 'dynamic-data-mapping-form-builder/metal/js/util/visitors.es';
 
 /**
- * Form Builder.
+ * Form Builder TagLib.
  * @extends Component
  */
 class FormBuilderTagLib extends Component {
 	static PROPS = {
-
 		context: Config.shapeOf(
 			{
 				pages: Config.arrayOf(pageStructure),
@@ -20,6 +21,8 @@ class FormBuilderTagLib extends Component {
 				successPageSettings: Config.object()
 			}
 		).required().setter('_setContext'),
+
+		dataSchemaInputId: Config.string(),
 
 		/**
 		 * The namespace of the portlet.
@@ -50,6 +53,9 @@ class FormBuilderTagLib extends Component {
 
 		const layoutProviderProps = {
 			...this.props,
+			events: {
+				pagesChanged: this._handlePagesChanged
+			},
 			initialPages: context.pages,
 			initialPaginationMode: context.paginationMode,
 			initialSuccessPageSettings: context.successPageSettings,
@@ -67,6 +73,44 @@ class FormBuilderTagLib extends Component {
 				</LayoutProvider>
 			</div>
 		);
+	}
+
+	_serializeDataSchema(pages) {
+		const columnFields = ['indexable', 'label', 'localizable', 'name', 'repeatable', 'required', 'type'];
+		const dataSchemaColumns = [];
+		const pagesVisitor = new PagesVisitor(pages);
+
+		pagesVisitor.mapFields(
+			({settingsContext}) => {
+				const columnConfig = {};
+				const settingsContextVisitor = new PagesVisitor(settingsContext.pages);
+
+				settingsContextVisitor.mapFields(
+					({fieldName, value}) => {
+						if (columnFields.includes(fieldName)) {
+							columnConfig[fieldName] = value;
+						}
+					}
+				);
+
+				dataSchemaColumns.push(columnConfig);
+			}
+		);
+
+		return JSON.stringify(dataSchemaColumns);
+	}
+
+	@autobind
+	_handlePagesChanged({newVal}) {
+		const {dataSchemaInputId} = this.props;
+
+		if (dataSchemaInputId) {
+			const dataSchemaInput = document.querySelector(`#${dataSchemaInputId}`);
+
+			dataSchemaInput.value = this._serializeDataSchema(newVal);
+
+			console.log(dataSchemaInput.value);
+		}
 	}
 
 	_setContext(context) {

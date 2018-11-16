@@ -34,6 +34,14 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 		return super.doStartTag();
 	}
 
+	public java.lang.String getDataSchemaInputId() {
+		return _dataSchemaInputId;
+	}
+
+	public boolean getUseExperimentalInterface() {
+		return _useExperimentalInterface;
+	}
+
 	public java.lang.Long getDdmStructureId() {
 		return _ddmStructureId;
 	}
@@ -62,8 +70,12 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 		return _showPagination;
 	}
 
-	public boolean getUseExperimentalInterface() {
-		return _useExperimentalInterface;
+	public void setDataSchemaInputId(java.lang.String dataSchemaInputId) {
+		_dataSchemaInputId = dataSchemaInputId;
+	}
+
+	public void setUseExperimentalInterface(boolean useExperimentalInterface) {
+		_useExperimentalInterface = useExperimentalInterface;
 	}
 
 	public void setDdmStructureId(java.lang.Long ddmStructureId) {
@@ -94,10 +106,6 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 		_showPagination = showPagination;
 	}
 
-	public void setUseExperimentalInterface(boolean useExperimentalInterface) {
-		_useExperimentalInterface = useExperimentalInterface;
-	}
-
 	@Override
 	public void setPageContext(PageContext pageContext) {
 		super.setPageContext(pageContext);
@@ -109,6 +117,8 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_dataSchemaInputId = null;
+		_useExperimentalInterface = false;
 		_ddmStructureId = null;
 		_ddmStructureVersionId = null;
 		_defaultLanguageId = null;
@@ -116,7 +126,6 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 		_fieldSetClassNameId = 0;
 		_refererPortletNamespace = null;
 		_showPagination = true;
-		_useExperimentalInterface = false;
 	}
 
 	@Override
@@ -131,6 +140,8 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
+		setNamespacedAttribute(request, "dataSchemaInputId", _dataSchemaInputId);
+		setNamespacedAttribute(request, "useExperimentalInterface", _useExperimentalInterface);
 		setNamespacedAttribute(request, "ddmStructureId", _ddmStructureId);
 		setNamespacedAttribute(request, "ddmStructureVersionId", _ddmStructureVersionId);
 		setNamespacedAttribute(request, "defaultLanguageId", _defaultLanguageId);
@@ -138,7 +149,6 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 		setNamespacedAttribute(request, "fieldSetClassNameId", _fieldSetClassNameId);
 		setNamespacedAttribute(request, "refererPortletNamespace", _refererPortletNamespace);
 		setNamespacedAttribute(request, "showPagination", _showPagination);
-		setNamespacedAttribute(request, "useExperimentalInterface", _useExperimentalInterface);
 	}
 
 	protected static final String _ATTRIBUTE_NAMESPACE = "liferay-form:ddm-form-builder:";
@@ -149,6 +159,8 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 	private static final String _START_PAGE =
 		"/ddm_form_builder/start.jsp";
 
+	private java.lang.String _dataSchemaInputId = null;
+	private boolean _useExperimentalInterface = false;
 	private java.lang.Long _ddmStructureId = null;
 	private java.lang.Long _ddmStructureVersionId = null;
 	private java.lang.String _defaultLanguageId = null;
@@ -156,6 +168,5 @@ public abstract class BaseDDMFormBuilderTag extends com.liferay.taglib.util.Incl
 	private long _fieldSetClassNameId = 0;
 	private java.lang.String _refererPortletNamespace = null;
 	private boolean _showPagination = true;
-	private boolean _useExperimentalInterface = false;
 
 }
