@@ -79,7 +79,7 @@ class Form extends Component {
 		 * @type {!array}
 		 */
 
-		editingLanguageId: Config.string().value(themeDisplay.getDefaultLanguageId()),
+		editingLocale: Config.string().value(themeDisplay.getDefaultLanguageId()),
 
 		/**
 		 * A map with all translated values available as the form description.
@@ -484,6 +484,7 @@ class Form extends Component {
 	render() {
 		const {
 			context,
+			editingLocale,
 			formInstanceId,
 			namespace,
 			published,
@@ -520,6 +521,7 @@ class Form extends Component {
 						visible={showRuleBuilder}
 					/>
 					<FormBuilder
+						editingLocale={editingLocale}
 						namespace={this.props.namespace}
 						ref="builder"
 						visible={!showRuleBuilder}

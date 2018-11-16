@@ -77,13 +77,6 @@ if (!isFormPublished && isFormSaved) {
 						</svg>
 					</button>
 				</li>
-				<li class="nav-item">
-					<button class="btn btn-primary lfr-ddm-add-field lfr-ddm-plus-button nav-btn nav-btn-monospaced" id="addFieldButton">
-						<svg class="lexicon-icon">
-							<use xlink:href="<%= ddmFormAdminDisplayContext.getLexiconIconsPath() %>plus" />
-						</svg>
-					</button>
-				</li>
 			</ul>
 		</div>
 	</nav>
