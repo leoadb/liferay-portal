@@ -65,8 +65,8 @@ public interface ReportDefinitionLocalService extends BaseLocalService,
 	 * Never modify or reference this interface directly. Always use {@link ReportDefinitionLocalServiceUtil} to access the report definition local service. Add custom service methods to {@link com.liferay.report.definitions.service.impl.ReportDefinitionLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 	public ReportDefinition addReportDefinition(long userId, long groupId,
-		String name, String description, ServiceContext serviceContext)
-		throws PortalException;
+		String name, String description, long dataDefinitionId,
+		ServiceContext serviceContext) throws PortalException;
 
 	/**
 	* Adds the report definition to the database. Also notifies the appropriate model listeners.

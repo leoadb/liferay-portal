@@ -44,11 +44,12 @@ public class ReportDefinitionLocalServiceUtil {
 	 */
 	public static com.liferay.report.definitions.model.ReportDefinition addReportDefinition(
 		long userId, long groupId, String name, String description,
+		long dataDefinitionId,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .addReportDefinition(userId, groupId, name, description,
-			serviceContext);
+			dataDefinitionId, serviceContext);
 	}
 
 	/**

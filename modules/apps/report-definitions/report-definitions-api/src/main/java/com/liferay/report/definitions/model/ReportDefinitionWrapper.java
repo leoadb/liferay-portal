@@ -68,7 +68,7 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("columns", getColumns());
+		attributes.put("dataDefinitionId", getDataDefinitionId());
 		attributes.put("description", getDescription());
 		attributes.put("name", getName());
 		attributes.put("parametersDataSchemaId", getParametersDataSchemaId());
@@ -127,10 +127,10 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 			setModifiedDate(modifiedDate);
 		}
 
-		String columns = (String)attributes.get("columns");
+		Long dataDefinitionId = (Long)attributes.get("dataDefinitionId");
 
-		if (columns != null) {
-			setColumns(columns);
+		if (dataDefinitionId != null) {
+			setDataDefinitionId(dataDefinitionId);
 		}
 
 		String description = (String)attributes.get("description");
@@ -170,16 +170,6 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Returns the columns of this report definition.
-	*
-	* @return the columns of this report definition
-	*/
-	@Override
-	public String getColumns() {
-		return _reportDefinition.getColumns();
-	}
-
-	/**
 	* Returns the company ID of this report definition.
 	*
 	* @return the company ID of this report definition
@@ -197,6 +187,16 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	@Override
 	public Date getCreateDate() {
 		return _reportDefinition.getCreateDate();
+	}
+
+	/**
+	* Returns the data definition ID of this report definition.
+	*
+	* @return the data definition ID of this report definition
+	*/
+	@Override
+	public long getDataDefinitionId() {
+		return _reportDefinition.getDataDefinitionId();
 	}
 
 	/**
@@ -360,16 +360,6 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Sets the columns of this report definition.
-	*
-	* @param columns the columns of this report definition
-	*/
-	@Override
-	public void setColumns(String columns) {
-		_reportDefinition.setColumns(columns);
-	}
-
-	/**
 	* Sets the company ID of this report definition.
 	*
 	* @param companyId the company ID of this report definition
@@ -387,6 +377,16 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	@Override
 	public void setCreateDate(Date createDate) {
 		_reportDefinition.setCreateDate(createDate);
+	}
+
+	/**
+	* Sets the data definition ID of this report definition.
+	*
+	* @param dataDefinitionId the data definition ID of this report definition
+	*/
+	@Override
+	public void setDataDefinitionId(long dataDefinitionId) {
+		_reportDefinition.setDataDefinitionId(dataDefinitionId);
 	}
 
 	/**

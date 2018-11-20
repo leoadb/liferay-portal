@@ -211,19 +211,18 @@ public interface ReportDefinitionModel extends BaseModel<ReportDefinition>,
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the columns of this report definition.
+	 * Returns the data definition ID of this report definition.
 	 *
-	 * @return the columns of this report definition
+	 * @return the data definition ID of this report definition
 	 */
-	@AutoEscape
-	public String getColumns();
+	public long getDataDefinitionId();
 
 	/**
-	 * Sets the columns of this report definition.
+	 * Sets the data definition ID of this report definition.
 	 *
-	 * @param columns the columns of this report definition
+	 * @param dataDefinitionId the data definition ID of this report definition
 	 */
-	public void setColumns(String columns);
+	public void setDataDefinitionId(long dataDefinitionId);
 
 	/**
 	 * Returns the description of this report definition.
