@@ -14,23 +14,35 @@
 
 package com.liferay.report.definitions.portlet.web.portlet.action;
 
-import com.liferay.data.engine.io.DataSchemaDeserializer;
-import com.liferay.data.engine.service.DataSchemaLocalService;
+import com.liferay.data.engine.io.DataDefinitionDeserializer;
+import com.liferay.data.engine.io.DataDefinitionDeserializerApplyRequest;
+import com.liferay.data.engine.io.DataDefinitionDeserializerApplyResponse;
+import com.liferay.data.engine.model.DataDefinition;
+import com.liferay.data.engine.model.DataDefinitionColumn;
+import com.liferay.data.engine.service.DataDefinitionLocalService;
+import com.liferay.data.engine.service.DataDefinitionSaveRequest;
+import com.liferay.data.engine.service.DataDefinitionSaveResponse;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.report.definitions.model.ReportDefinition;
 import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionPortletKeys;
+import com.liferay.report.definitions.service.ReportDefinitionLocalService;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,12 +54,74 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ReportDefinitionPortletKeys.PORTLET_NAME,
-		"mvc.command.name=saveReportDefinition"
+		"mvc.command.name=abc"
 	},
 	service = MVCActionCommand.class
 )
 public class SaveReportDefinitionMVCActionCommand
 	extends BaseTransactionalMVCActionCommand {
+
+	protected ReportDefinition saveReportDefinition(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		long reportDefinitionId = ParamUtil.getLong(
+			actionRequest, "reportDefinitionId");
+
+		if (reportDefinitionId == 0) {
+			return addReportDefinition(actionRequest);
+		}
+
+		return updateReportDefinition(actionRequest, reportDefinitionId);
+	}
+
+	protected ReportDefinition addReportDefinition(
+			PortletRequest portletRequest)
+		throws Exception {
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			ReportDefinition.class.getName(), portletRequest);
+
+		String languageId = serviceContext.getLanguageId();
+
+		long userId = serviceContext.getUserId();
+		long groupId = ParamUtil.getLong(portletRequest, "groupId");
+
+		String name = ParamUtil.getString(portletRequest, "name");
+		String description = ParamUtil.getString(portletRequest, "description");
+
+		String definition = ParamUtil.getString(portletRequest, "definition");
+
+		DataDefinitionDeserializerApplyRequest dataDefinitionDeserializerApplyRequest =
+			DataDefinitionDeserializerApplyRequest.Builder.of(definition);
+
+		DataDefinitionDeserializerApplyResponse dataDefinitionDeserializerApplyResponse =
+			_dataDefinitionDeserializer.apply(
+				dataDefinitionDeserializerApplyRequest);
+
+		DataDefinition dataDefinition = new DataDefinition();
+
+		for (DataDefinitionColumn dataDefinitionColumn :
+				dataDefinitionDeserializerApplyResponse.
+				getDataDefinitionColumns()) {
+
+			dataDefinition.addColumn(dataDefinitionColumn);
+		}
+
+		dataDefinition.addName(languageId, name);
+		dataDefinition.addDescription(languageId, description);
+
+		DataDefinitionSaveRequest dataDefinitionSaveRequest =
+			DataDefinitionSaveRequest.Builder.of(
+				userId, groupId, dataDefinition);
+
+		DataDefinitionSaveResponse dataDefinitionSaveResponse =
+			_dataDefinitionLocalService.save(dataDefinitionSaveRequest);
+
+		return reportDefinitionLocalService.addReportDefinition(
+			userId, groupId, name, description,
+			dataDefinitionSaveResponse.getDataDefinitionId(), serviceContext);
+	}
 
 	@Override
 	protected void doTransactionalCommand(
@@ -68,9 +142,8 @@ public class SaveReportDefinitionMVCActionCommand
 		String redirect = ParamUtil.getString(actionRequest, "redirect");
 
 		try {
-			ReportDefinition reportDefinition =
-				saveReportDefinitionMVCCommandHelper.saveReportDefinition(
-					actionRequest, actionResponse);
+			ReportDefinition reportDefinition = saveReportDefinition(
+				actionRequest, actionResponse);
 
 			portletURL.setParameter(
 				"reportDefinitionId",
@@ -85,14 +158,33 @@ public class SaveReportDefinitionMVCActionCommand
 		}
 	}
 
-	@Reference(target = "(data.schema.deserializer.type=json)")
-	protected DataSchemaDeserializer _dataSchemaDeserializer;
+	protected ReportDefinition updateReportDefinition(
+			PortletRequest portletRequest, long reportDefinitionId)
+		throws Exception {
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			ReportDefinition.class.getName(), portletRequest);
+
+		String name = ParamUtil.getString(portletRequest, "name");
+		String description = ParamUtil.getString(portletRequest, "description");
+
+		return reportDefinitionLocalService.updateReportDefinition(
+			reportDefinitionId, name, description, serviceContext);
+	}
+
+	@Reference(target = "(data.definition.deserializer.type=json)")
+	protected DataDefinitionDeserializer _dataDefinitionDeserializer;
 
 	@Reference
-	protected DataSchemaLocalService _dataSchemaLocalService;
+	protected DataDefinitionLocalService _dataDefinitionLocalService;
 
 	@Reference
-	protected SaveReportDefinitionMVCCommandHelper
-		saveReportDefinitionMVCCommandHelper;
+	protected JSONFactory jsonFactory;
+
+	@Reference
+	protected ReportDefinitionLocalService reportDefinitionLocalService;
+
+	@Reference
+	private Portal _portal;
 
 }

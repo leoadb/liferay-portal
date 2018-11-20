@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + ReportDefinitionPortletKeys.PORTLET_NAME,
-		"mvc.command.name=/", "mvc.command.name=/report-definitions/view"
+		"mvc.command.name=/", "mvc.command.name=/view_report_definitions"
 	},
 	service = MVCRenderCommand.class
 )

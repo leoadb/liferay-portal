@@ -76,7 +76,7 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
-			{ "columns", Types.VARCHAR },
+			{ "dataDefinitionId", Types.BIGINT },
 			{ "description", Types.VARCHAR },
 			{ "name", Types.VARCHAR },
 			{ "parametersDataSchemaId", Types.BIGINT },
@@ -93,14 +93,14 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("columns", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("dataDefinitionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("parametersDataSchemaId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("sortColumns", Types.VARCHAR);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table ReportDefinition (uuid_ VARCHAR(75) null,reportDefinitionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,columns VARCHAR(75) null,description VARCHAR(75) null,name VARCHAR(75) null,parametersDataSchemaId LONG,sortColumns VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table ReportDefinition (uuid_ VARCHAR(75) null,reportDefinitionId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dataDefinitionId LONG,description VARCHAR(75) null,name VARCHAR(75) null,parametersDataSchemaId LONG,sortColumns VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table ReportDefinition";
 	public static final String ORDER_BY_JPQL = " ORDER BY reportDefinition.name ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY ReportDefinition.name ASC";
@@ -168,7 +168,7 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("columns", getColumns());
+		attributes.put("dataDefinitionId", getDataDefinitionId());
 		attributes.put("description", getDescription());
 		attributes.put("name", getName());
 		attributes.put("parametersDataSchemaId", getParametersDataSchemaId());
@@ -230,10 +230,10 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 			setModifiedDate(modifiedDate);
 		}
 
-		String columns = (String)attributes.get("columns");
+		Long dataDefinitionId = (Long)attributes.get("dataDefinitionId");
 
-		if (columns != null) {
-			setColumns(columns);
+		if (dataDefinitionId != null) {
+			setDataDefinitionId(dataDefinitionId);
 		}
 
 		String description = (String)attributes.get("description");
@@ -407,18 +407,13 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 	}
 
 	@Override
-	public String getColumns() {
-		if (_columns == null) {
-			return "";
-		}
-		else {
-			return _columns;
-		}
+	public long getDataDefinitionId() {
+		return _dataDefinitionId;
 	}
 
 	@Override
-	public void setColumns(String columns) {
-		_columns = columns;
+	public void setDataDefinitionId(long dataDefinitionId) {
+		_dataDefinitionId = dataDefinitionId;
 	}
 
 	@Override
@@ -523,7 +518,7 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 		reportDefinitionImpl.setUserName(getUserName());
 		reportDefinitionImpl.setCreateDate(getCreateDate());
 		reportDefinitionImpl.setModifiedDate(getModifiedDate());
-		reportDefinitionImpl.setColumns(getColumns());
+		reportDefinitionImpl.setDataDefinitionId(getDataDefinitionId());
 		reportDefinitionImpl.setDescription(getDescription());
 		reportDefinitionImpl.setName(getName());
 		reportDefinitionImpl.setParametersDataSchemaId(getParametersDataSchemaId());
@@ -649,13 +644,7 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 			reportDefinitionCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
-		reportDefinitionCacheModel.columns = getColumns();
-
-		String columns = reportDefinitionCacheModel.columns;
-
-		if ((columns != null) && (columns.length() == 0)) {
-			reportDefinitionCacheModel.columns = null;
-		}
+		reportDefinitionCacheModel.dataDefinitionId = getDataDefinitionId();
 
 		reportDefinitionCacheModel.description = getDescription();
 
@@ -706,8 +695,8 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 		sb.append(getCreateDate());
 		sb.append(", modifiedDate=");
 		sb.append(getModifiedDate());
-		sb.append(", columns=");
-		sb.append(getColumns());
+		sb.append(", dataDefinitionId=");
+		sb.append(getDataDefinitionId());
 		sb.append(", description=");
 		sb.append(getDescription());
 		sb.append(", name=");
@@ -762,8 +751,8 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 		sb.append(getModifiedDate());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>columns</column-name><column-value><![CDATA[");
-		sb.append(getColumns());
+			"<column><column-name>dataDefinitionId</column-name><column-value><![CDATA[");
+		sb.append(getDataDefinitionId());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>description</column-name><column-value><![CDATA[");
@@ -805,7 +794,7 @@ public class ReportDefinitionModelImpl extends BaseModelImpl<ReportDefinition>
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
-	private String _columns;
+	private long _dataDefinitionId;
 	private String _description;
 	private String _name;
 	private long _parametersDataSchemaId;

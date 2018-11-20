@@ -23,7 +23,7 @@
 
 		<!-- Other fields -->
 
-		<column name="columns" type="String" />
+		<column name="dataDefinitionId" type="long" />
 		<column name="description" type="String" />
 		<column name="name" type="String" />
 		<column name="parametersDataSchemaId" type="long" />

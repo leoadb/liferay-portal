@@ -42,7 +42,7 @@ public class ReportDefinitionLocalServiceImpl
 
 	@Override
 	public ReportDefinition addReportDefinition(
-			long userId, long groupId, String name, String description,
+			long userId, long groupId, String name, String description, long dataDefinitionId,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -62,22 +62,11 @@ public class ReportDefinitionLocalServiceImpl
 		reportDefinition.setUserName(user.getFullName());
 		reportDefinition.setDescription(description);
 		reportDefinition.setName(name);
+		reportDefinition.setDataDefinitionId(dataDefinitionId);
 
 		reportDefinitionPersistence.update(reportDefinition);
 
-		// Resources
-
-//		if (serviceContext.isAddGroupPermissions() ||
-//			serviceContext.isAddGuestPermissions()) {
-//
-//			addReportDefinitionResources(
-//				reportDefinition, serviceContext.isAddGroupPermissions(),
-//				serviceContext.isAddGuestPermissions());
-//		}
-//		else {
-//			addReportDefinitionResources(
-//				reportDefinition, serviceContext.getModelPermissions());
-//		}
+		// TODO Resources
 
 		return reportDefinition;
 	}

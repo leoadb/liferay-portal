@@ -14,6 +14,19 @@
 
 package com.liferay.report.definitions.portlet.web.portlet;
 
+import java.io.IOException;
+
+import javax.portlet.Portlet;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
+
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.frontend.js.loader.modules.extender.npm.JSPackage;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
@@ -25,21 +38,6 @@ import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionNPMK
 import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionPortletKeys;
 import com.liferay.report.definitions.portlet.web.display.context.ReportDefinitionsDisplayContext;
 import com.liferay.report.definitions.service.ReportDefinitionLocalService;
-
-import java.io.IOException;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Bruno Basto
@@ -72,15 +70,6 @@ public class ReportDefinitionPortlet extends MVCPortlet {
 		}
 
 		super.render(renderRequest, renderResponse);
-	}
-
-	@Override
-	protected void include(
-			String path, ActionRequest actionRequest,
-			ActionResponse actionResponse)
-		throws IOException, PortletException {
-
-		super.include(path, actionRequest, actionResponse);
 	}
 
 	@Reference(unbind = "-")

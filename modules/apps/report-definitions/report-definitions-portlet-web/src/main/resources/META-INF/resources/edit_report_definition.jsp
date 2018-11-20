@@ -20,8 +20,12 @@
 String redirect = ParamUtil.getString(request, "redirect");
 %>
 
-<aui:form action="" method="post" name="fm">
-	<aui:input name="dataSchema" type="hidden" />
+<portlet:actionURL name="abc" var="saveReportDefinitionURL">
+	<portlet:param name="mvcRenderCommandName" value="/view_report_definitions" />
+</portlet:actionURL>
+
+<aui:form action="<%= saveReportDefinitionURL %>" method="post" name="fm">
+	<aui:input name="definition" type="hidden" />
 
 	<div class="container-fluid-1280 report-definitions-form">
 		<div class="lfr-form-content">

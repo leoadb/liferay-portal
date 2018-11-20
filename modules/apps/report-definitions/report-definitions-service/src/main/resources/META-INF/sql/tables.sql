@@ -7,7 +7,7 @@ create table ReportDefinition (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	columns VARCHAR(75) null,
+	dataDefinitionId LONG,
 	description VARCHAR(75) null,
 	name VARCHAR(75) null,
 	parametersDataSchemaId LONG,

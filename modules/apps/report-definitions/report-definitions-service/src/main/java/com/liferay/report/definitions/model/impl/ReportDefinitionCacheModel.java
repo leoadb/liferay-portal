@@ -83,8 +83,8 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", columns=");
-		sb.append(columns);
+		sb.append(", dataDefinitionId=");
+		sb.append(dataDefinitionId);
 		sb.append(", description=");
 		sb.append(description);
 		sb.append(", name=");
@@ -135,12 +135,7 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 			reportDefinitionImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		if (columns == null) {
-			reportDefinitionImpl.setColumns("");
-		}
-		else {
-			reportDefinitionImpl.setColumns(columns);
-		}
+		reportDefinitionImpl.setDataDefinitionId(dataDefinitionId);
 
 		if (description == null) {
 			reportDefinitionImpl.setDescription("");
@@ -184,7 +179,8 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		columns = objectInput.readUTF();
+
+		dataDefinitionId = objectInput.readLong();
 		description = objectInput.readUTF();
 		name = objectInput.readUTF();
 
@@ -220,12 +216,7 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
-		if (columns == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(columns);
-		}
+		objectOutput.writeLong(dataDefinitionId);
 
 		if (description == null) {
 			objectOutput.writeUTF("");
@@ -259,7 +250,7 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public String columns;
+	public long dataDefinitionId;
 	public String description;
 	public String name;
 	public long parametersDataSchemaId;
