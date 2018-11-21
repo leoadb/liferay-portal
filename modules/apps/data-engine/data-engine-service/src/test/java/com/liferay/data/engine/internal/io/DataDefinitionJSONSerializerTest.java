@@ -44,7 +44,7 @@ public class DataDefinitionJSONSerializerTest extends BaseTestCase {
 
 		DataDefinitionColumn dataDefinitionColumn1 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"name", DataDefinitionColumnType.TEXT
+				"name", DataDefinitionColumnType.STRING
 			).labels(
 				nameLabels
 			).build();
@@ -58,7 +58,7 @@ public class DataDefinitionJSONSerializerTest extends BaseTestCase {
 
 		DataDefinitionColumn dataDefinitionColumn2 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"email", DataDefinitionColumnType.TEXT
+				"email", DataDefinitionColumnType.STRING
 			).labels(
 				emailLabels
 			).build();

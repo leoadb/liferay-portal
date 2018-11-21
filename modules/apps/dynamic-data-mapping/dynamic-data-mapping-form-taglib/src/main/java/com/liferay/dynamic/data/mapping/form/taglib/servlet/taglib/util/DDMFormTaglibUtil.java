@@ -14,6 +14,10 @@
 
 package com.liferay.dynamic.data.mapping.form.taglib.servlet.taglib.util;
 
+import com.liferay.data.engine.io.DataDefinitionSerializer;
+import com.liferay.data.engine.io.DataDefinitionSerializerApplyRequest;
+import com.liferay.data.engine.io.DataDefinitionSerializerApplyResponse;
+import com.liferay.data.engine.model.DataDefinitionColumn;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderContextFactory;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderContextRequest;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderContextResponse;
@@ -88,6 +92,26 @@ public class DDMFormTaglibUtil {
 		return _ddmFormValuesFactory.create(request, ddmForm);
 	}
 
+	public static String getDataDefinitionColumnsJSON(
+		List<DataDefinitionColumn> dataDefinitionColumns) {
+
+		if (dataDefinitionColumns == null) {
+			return "[]";
+		}
+
+		DataDefinitionSerializerApplyRequest
+			dataDefinitionSerializerApplyRequest =
+				DataDefinitionSerializerApplyRequest.Builder.of(
+					dataDefinitionColumns);
+
+		DataDefinitionSerializerApplyResponse
+			dataDefinitionSerializerApplyResponse =
+				_dataDefinitionSerializer.apply(
+					dataDefinitionSerializerApplyRequest);
+
+		return dataDefinitionSerializerApplyResponse.getContent();
+	}
+
 	public static DDMForm getDDMForm(
 		long ddmStructureId, long ddmStructureVersionId) {
 
@@ -157,11 +181,8 @@ public class DDMFormTaglibUtil {
 					new DDMFormRenderingContext();
 
 				ddmFormRenderingContext.setHttpServletRequest(request);
-	//			ddmFormRenderingContext.setHttpServletResponse(response);
 				ddmFormRenderingContext.setContainerId("settings");
 				ddmFormRenderingContext.setLocale(themeDisplay.getLocale());
-	//			ddmFormRenderingContext.setPortletNamespace(
-	//			_renderResponse.getNamespace());
 
 				Map<String, Object> settingsContext =
 					_ddmFormTemplateContextFactory.create(
@@ -318,6 +339,13 @@ public class DDMFormTaglibUtil {
 		return ddmFormFieldTypesSerializerSerializeResponse.getContent();
 	}
 
+	@Reference(target = "(data.definition.serializer.type=json)", unbind = "-")
+	protected void setDataDefinitionSerializer(
+		DataDefinitionSerializer dataDefinitionSerializer) {
+
+		_dataDefinitionSerializer = dataDefinitionSerializer;
+	}
+
 	@Reference(unbind = "-")
 	protected void setDDMFormBuilderContextFactory(
 		DDMFormBuilderContextFactory ddmFormBuilderContextFactory) {
@@ -444,6 +472,7 @@ public class DDMFormTaglibUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMFormTaglibUtil.class);
 
+	private static DataDefinitionSerializer _dataDefinitionSerializer;
 	private static DDMFormBuilderContextFactory _ddmFormBuilderContextFactory;
 	private static DDMFormBuilderSettingsRetriever
 		_ddmFormBuilderSettingsRetriever;

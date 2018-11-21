@@ -64,7 +64,7 @@ public class DataDefinitionJSONDeserializerTest extends BaseTestCase {
 		Assert.assertEquals("name", dataDefinitionColumn.getName());
 
 		Assert.assertEquals(
-			DataDefinitionColumnType.TEXT, dataDefinitionColumn.getType());
+			DataDefinitionColumnType.STRING, dataDefinitionColumn.getType());
 
 		Map<String, String> labels = dataDefinitionColumn.getLabel();
 
@@ -79,7 +79,7 @@ public class DataDefinitionJSONDeserializerTest extends BaseTestCase {
 		Assert.assertEquals("email", dataDefinitionColumn.getName());
 
 		Assert.assertEquals(
-			DataDefinitionColumnType.TEXT, dataDefinitionColumn.getType());
+			DataDefinitionColumnType.STRING, dataDefinitionColumn.getType());
 
 		labels = dataDefinitionColumn.getLabel();
 

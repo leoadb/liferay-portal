@@ -67,7 +67,7 @@ public class DataStorageAdapterTest {
 
 		DataDefinitionColumn dataDefinitionColumn1 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"column1", DataDefinitionColumnType.TEXT
+				"column1", DataDefinitionColumnType.STRING
 			).build();
 
 		dataDefinition.addColumn(dataDefinitionColumn1);
@@ -114,7 +114,7 @@ public class DataStorageAdapterTest {
 
 		DataDefinitionColumn dataDefinitionColumn1 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"column1", DataDefinitionColumnType.TEXT
+				"column1", DataDefinitionColumnType.STRING
 			).build();
 
 		dataDefinition.addColumn(dataDefinitionColumn1);
@@ -138,14 +138,14 @@ public class DataStorageAdapterTest {
 
 		DataDefinitionColumn dataDefinitionColumn1 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"column1", DataDefinitionColumnType.TEXT
+				"column1", DataDefinitionColumnType.STRING
 			).build();
 
 		dataDefinition.addColumn(dataDefinitionColumn1);
 
 		DataDefinitionColumn dataDefinitionColumn2 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"column2", DataDefinitionColumnType.TEXT
+				"column2", DataDefinitionColumnType.STRING
 			).localizable(
 				true
 			).build();
@@ -223,7 +223,7 @@ public class DataStorageAdapterTest {
 
 		DataDefinitionColumn dataDefinitionColumn1 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"column1", DataDefinitionColumnType.TEXT
+				"column1", DataDefinitionColumnType.STRING
 			).build();
 
 		dataDefinition.addColumn(dataDefinitionColumn1);

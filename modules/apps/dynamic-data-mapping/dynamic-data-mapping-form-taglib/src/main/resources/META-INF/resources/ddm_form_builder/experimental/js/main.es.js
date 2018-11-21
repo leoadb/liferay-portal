@@ -22,7 +22,45 @@ class FormBuilderTagLib extends Component {
 			}
 		).required().setter('_setContext'),
 
-		dataSchemaInputId: Config.string(),
+		/**
+		 * The default language id of the form.
+		 * @default undefined
+		 * @instance
+		 * @memberof Form
+		 * @type {!array}
+		 */
+
+		defaultLanguageId: Config.string().value(themeDisplay.getDefaultLanguageId()),
+
+		/**
+		 * The default language id of the form.
+		 * @default undefined
+		 * @instance
+		 * @memberof Form
+		 * @type {!array}
+		 */
+
+		editingLocale: Config.string().value(themeDisplay.getDefaultLanguageId()),
+
+		/**
+		 * The columns for the data definition.
+		 * @default undefined
+		 * @instance
+		 * @memberof Form
+		 * @type {!array}
+		 */
+
+		dataDefinitionColumns: Config.array().value([]),
+
+		/**
+		 * The target input for the serialized data defintion columns.
+		 * @default undefined
+		 * @instance
+		 * @memberof Form
+		 * @type {!array}
+		 */
+
+		dataDefinitionInputId: Config.string(),
 
 		/**
 		 * The namespace of the portlet.
@@ -45,18 +83,23 @@ class FormBuilderTagLib extends Component {
 		spritemap: Config.string().required()
 	};
 
+	static STATE = {
+		initialPages: Config.array().valueFn('_valueFnInitialPages')
+	};
+
 	render() {
 		const {
 			context,
 			namespace
 		} = this.props;
+		const {initialPages} = this.state;
 
 		const layoutProviderProps = {
 			...this.props,
 			events: {
 				pagesChanged: this._handlePagesChanged
 			},
-			initialPages: context.pages,
+			initialPages,
 			initialPaginationMode: context.paginationMode,
 			initialSuccessPageSettings: context.successPageSettings,
 			ref: 'layoutProvider'
@@ -75,8 +118,12 @@ class FormBuilderTagLib extends Component {
 		);
 	}
 
+	_convertDataDefinitionColumnsToFormBuilderContext() {
+		const {dataDefinitionColumns} = this.props;
+	}
+
 	_serializeDataSchema(pages) {
-		const columnFields = ['indexable', 'label', 'localizable', 'name', 'repeatable', 'required', 'type'];
+		const columnFields = ['indexable', 'label', 'localizable', 'name', 'repeatable', 'required', 'dataType'];
 		const dataSchemaColumns = [];
 		const pagesVisitor = new PagesVisitor(pages);
 
@@ -86,9 +133,18 @@ class FormBuilderTagLib extends Component {
 				const settingsContextVisitor = new PagesVisitor(settingsContext.pages);
 
 				settingsContextVisitor.mapFields(
-					({fieldName, value}) => {
+					({fieldName, localizable, localizedValue, value}) => {
 						if (columnFields.includes(fieldName)) {
-							columnConfig[fieldName] = value;
+							if (localizable) {
+								columnConfig[fieldName] = localizedValue;
+							}
+							else {
+								if (fieldName === 'dataType') {
+									fieldName = 'type';
+								}
+
+								columnConfig[fieldName] = value;
+							}
 						}
 					}
 				);
@@ -102,10 +158,10 @@ class FormBuilderTagLib extends Component {
 
 	@autobind
 	_handlePagesChanged({newVal}) {
-		const {dataSchemaInputId} = this.props;
+		const {dataDefinitionInputId} = this.props;
 
-		if (dataSchemaInputId) {
-			const dataSchemaInput = document.querySelector(`#${dataSchemaInputId}`);
+		if (dataDefinitionInputId) {
+			const dataSchemaInput = document.querySelector(`#${dataDefinitionInputId}`);
 
 			dataSchemaInput.value = this._serializeDataSchema(newVal);
 
@@ -113,7 +169,7 @@ class FormBuilderTagLib extends Component {
 		}
 	}
 
-	_setContext(context) {
+	_setContext(context, fields = []) {
 		let {successPageSettings} = context;
 		const {successPage} = context;
 
@@ -147,7 +203,7 @@ class FormBuilderTagLib extends Component {
 							{
 								columns: [
 									{
-										fields: [],
+										fields,
 										size: 12
 									}
 								]
@@ -162,6 +218,23 @@ class FormBuilderTagLib extends Component {
 		}
 
 		return context;
+	}
+
+	_valueFnInitialPages() {
+		const {dataDefinitionColumns} = this.props;
+
+		const context = this._setContext(
+			dataDefinitionColumns.map(
+				column => {
+					return {
+						...column,
+						type: 'text'
+					};
+				}
+			)
+		);
+
+		return context.pages;
 	}
 }
 

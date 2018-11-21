@@ -14,6 +14,7 @@
 
 package com.liferay.dynamic.data.mapping.form.taglib.servlet.taglib;
 
+import com.liferay.data.engine.model.DataDefinitionColumn;
 import com.liferay.dynamic.data.mapping.form.builder.settings.DDMFormBuilderSettingsRequest;
 import com.liferay.dynamic.data.mapping.form.builder.settings.DDMFormBuilderSettingsResponse;
 import com.liferay.dynamic.data.mapping.form.taglib.servlet.taglib.base.BaseDDMFormBuilderTag;
@@ -22,6 +23,8 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -79,6 +82,14 @@ public class DDMFormBuilderTag extends BaseDDMFormBuilderTag {
 
 		DDMFormBuilderSettingsResponse ddmFormBuilderSettingsResponse =
 			getDDMFormBuilderSettings(request);
+
+		List<DataDefinitionColumn> dataDefinitionColumns =
+			(List<DataDefinitionColumn>)getDataDefinitionColumns();
+
+		setNamespacedAttribute(
+			request, "dataDefinitionColumnsJSON",
+			DDMFormTaglibUtil.getDataDefinitionColumnsJSON(
+				dataDefinitionColumns));
 
 		setNamespacedAttribute(
 			request, "dataProviderInstancesURL",

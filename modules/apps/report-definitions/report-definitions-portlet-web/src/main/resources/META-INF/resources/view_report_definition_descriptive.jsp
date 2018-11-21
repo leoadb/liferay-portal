@@ -47,28 +47,48 @@ PortletURL portletURL = displayContext.getPortletURL();
 					<portlet:param name="displayStyle" value="<%= displayStyle %>" />
 				</portlet:renderURL>
 
-				<liferay-ui:search-container-column-text
-					cssClass="table-cell-expand table-title"
-					href="<%= rowURL %>"
-					name="name"
-					value="<%= HtmlUtil.escape(reportDefinition.getName()) %>"
-				/>
+				<c:choose>
+					<c:when test='<%= displayStyle.equals("a") %>'>
+						<liferay-ui:search-container-column-icon
+							cssClass="asset-icon"
+							icon="forms"
+						/>
 
-				<liferay-ui:search-container-column-text
-					cssClass="table-cell-expand"
-					name="description"
-					value="<%= HtmlUtil.escape(reportDefinition.getDescription()) %>"
-				/>
+						<liferay-ui:search-container-column-jsp
+							colspan="<%= 2 %>"
+							href="<%= rowURL %>"
+							path="/view_report_definition_descriptive.jsp"
+						/>
 
-				<liferay-ui:search-container-column-date
-					cssClass="table-cell-expand-smaller"
-					name="modified-date"
-					value="<%= reportDefinition.getModifiedDate() %>"
-				/>
+						<liferay-ui:search-container-column-jsp
+							path="/report_definition_action.jsp"
+						/>
+					</c:when>
+					<c:otherwise>
+						<liferay-ui:search-container-column-text
+							cssClass="table-cell-expand table-title"
+							href="<%= rowURL %>"
+							name="name"
+							value="<%= HtmlUtil.escape(reportDefinition.getName()) %>"
+						/>
 
-				<liferay-ui:search-container-column-jsp
-					path="/report_definition_action.jsp"
-				/>
+						<liferay-ui:search-container-column-text
+							cssClass="table-cell-expand"
+							name="description"
+							value="<%= HtmlUtil.escape(reportDefinition.getDescription()) %>"
+						/>
+
+						<liferay-ui:search-container-column-date
+							cssClass="table-cell-expand-smaller"
+							name="modified-date"
+							value="<%= reportDefinition.getModifiedDate() %>"
+						/>
+
+						<liferay-ui:search-container-column-jsp
+							path="/report_definition_action.jsp"
+						/>
+					</c:otherwise>
+				</c:choose>
 			</liferay-ui:search-container-row>
 
 			<liferay-ui:search-iterator

@@ -14,6 +14,20 @@
 
 package com.liferay.report.definitions.portlet.web.portlet;
 
+import com.liferay.data.engine.io.DataDefinitionSerializer;
+import com.liferay.data.engine.service.DataDefinitionLocalService;
+import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
+import com.liferay.frontend.js.loader.modules.extender.npm.JSPackage;
+import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.report.definitions.portlet.web.configuration.activator.ReportDefinitionConfigurationActivator;
+import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionNPMKeys;
+import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionPortletKeys;
+import com.liferay.report.definitions.portlet.web.display.context.ReportDefinitionsDisplayContext;
+import com.liferay.report.definitions.service.ReportDefinitionLocalService;
+
 import java.io.IOException;
 
 import javax.portlet.Portlet;
@@ -26,18 +40,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-
-import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
-import com.liferay.frontend.js.loader.modules.extender.npm.JSPackage;
-import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.report.definitions.portlet.web.configuration.activator.ReportDefinitionConfigurationActivator;
-import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionNPMKeys;
-import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionPortletKeys;
-import com.liferay.report.definitions.portlet.web.display.context.ReportDefinitionsDisplayContext;
-import com.liferay.report.definitions.service.ReportDefinitionLocalService;
 
 /**
  * @author Bruno Basto
@@ -65,8 +67,9 @@ public class ReportDefinitionPortlet extends MVCPortlet {
 
 		try {
 			setRenderRequestAttributes(renderRequest, renderResponse);
-		} catch (PortalException e) {
-			e.printStackTrace();
+		}
+		catch (PortalException pe) {
+			pe.printStackTrace();
 		}
 
 		super.render(renderRequest, renderResponse);
@@ -90,12 +93,20 @@ public class ReportDefinitionPortlet extends MVCPortlet {
 		ReportDefinitionsDisplayContext ddmDataProviderDisplayContext =
 			new ReportDefinitionsDisplayContext(
 				renderRequest, renderResponse, _ddmFormRenderer,
-				_reportDefinitionConfigurationActivator.getReportDefinitionConfiguration(),
-				_reportDefinitionLocalService);
+				_reportDefinitionConfigurationActivator.
+					getReportDefinitionConfiguration(),
+				_reportDefinitionLocalService, _dataDefinitionLocalService,
+				_dataDefinitionSerializer);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT, ddmDataProviderDisplayContext);
 	}
+
+	@Reference
+	private DataDefinitionLocalService _dataDefinitionLocalService;
+
+	@Reference(target = "(data.definition.serializer.type=json)")
+	private DataDefinitionSerializer _dataDefinitionSerializer;
 
 	private DDMFormRenderer _ddmFormRenderer;
 

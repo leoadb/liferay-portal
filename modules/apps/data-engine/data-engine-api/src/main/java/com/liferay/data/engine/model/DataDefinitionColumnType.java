@@ -19,7 +19,7 @@ package com.liferay.data.engine.model;
  */
 public enum DataDefinitionColumnType {
 
-	DATE("date"), NUMBER("number"), TEXT("text");
+	DATE("date"), NUMBER("number"), STRING("string");
 
 	public static DataDefinitionColumnType parse(String value) {
 		if (DATE.getValue().equals(value)) {
@@ -28,8 +28,8 @@ public enum DataDefinitionColumnType {
 		else if (NUMBER.getValue().equals(value)) {
 			return NUMBER;
 		}
-		else if (TEXT.getValue().equals(value)) {
-			return TEXT;
+		else if (STRING.getValue().equals(value)) {
+			return STRING;
 		}
 		else {
 			throw new IllegalArgumentException("Invalid value " + value);

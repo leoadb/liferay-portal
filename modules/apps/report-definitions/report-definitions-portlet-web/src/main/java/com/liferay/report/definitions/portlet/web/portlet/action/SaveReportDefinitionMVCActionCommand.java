@@ -23,7 +23,6 @@ import com.liferay.data.engine.service.DataDefinitionLocalService;
 import com.liferay.data.engine.service.DataDefinitionSaveRequest;
 import com.liferay.data.engine.service.DataDefinitionSaveResponse;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
@@ -33,7 +32,6 @@ import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.report.definitions.model.ReportDefinition;
 import com.liferay.report.definitions.portlet.web.constants.ReportDefinitionPortletKeys;
@@ -42,7 +40,6 @@ import com.liferay.report.definitions.service.ReportDefinitionLocalService;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -61,20 +58,6 @@ import org.osgi.service.component.annotations.Reference;
 public class SaveReportDefinitionMVCActionCommand
 	extends BaseTransactionalMVCActionCommand {
 
-	protected ReportDefinition saveReportDefinition(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws Exception {
-
-		long reportDefinitionId = ParamUtil.getLong(
-			actionRequest, "reportDefinitionId");
-
-		if (reportDefinitionId == 0) {
-			return addReportDefinition(actionRequest);
-		}
-
-		return updateReportDefinition(actionRequest, reportDefinitionId);
-	}
-
 	protected ReportDefinition addReportDefinition(
 			PortletRequest portletRequest)
 		throws Exception {
@@ -85,25 +68,27 @@ public class SaveReportDefinitionMVCActionCommand
 		String languageId = serviceContext.getLanguageId();
 
 		long userId = serviceContext.getUserId();
-		long groupId = ParamUtil.getLong(portletRequest, "groupId");
+		long groupId = serviceContext.getScopeGroupId();
 
 		String name = ParamUtil.getString(portletRequest, "name");
 		String description = ParamUtil.getString(portletRequest, "description");
 
 		String definition = ParamUtil.getString(portletRequest, "definition");
 
-		DataDefinitionDeserializerApplyRequest dataDefinitionDeserializerApplyRequest =
-			DataDefinitionDeserializerApplyRequest.Builder.of(definition);
+		DataDefinitionDeserializerApplyRequest
+			dataDefinitionDeserializerApplyRequest =
+				DataDefinitionDeserializerApplyRequest.Builder.of(definition);
 
-		DataDefinitionDeserializerApplyResponse dataDefinitionDeserializerApplyResponse =
-			_dataDefinitionDeserializer.apply(
-				dataDefinitionDeserializerApplyRequest);
+		DataDefinitionDeserializerApplyResponse
+			dataDefinitionDeserializerApplyResponse =
+				_dataDefinitionDeserializer.apply(
+					dataDefinitionDeserializerApplyRequest);
 
 		DataDefinition dataDefinition = new DataDefinition();
 
 		for (DataDefinitionColumn dataDefinitionColumn :
 				dataDefinitionDeserializerApplyResponse.
-				getDataDefinitionColumns()) {
+					getDataDefinitionColumns()) {
 
 			dataDefinition.addColumn(dataDefinitionColumn);
 		}
@@ -118,7 +103,7 @@ public class SaveReportDefinitionMVCActionCommand
 		DataDefinitionSaveResponse dataDefinitionSaveResponse =
 			_dataDefinitionLocalService.save(dataDefinitionSaveRequest);
 
-		return reportDefinitionLocalService.addReportDefinition(
+		return _reportDefinitionLocalService.addReportDefinition(
 			userId, groupId, name, description,
 			dataDefinitionSaveResponse.getDataDefinitionId(), serviceContext);
 	}
@@ -158,6 +143,20 @@ public class SaveReportDefinitionMVCActionCommand
 		}
 	}
 
+	protected ReportDefinition saveReportDefinition(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		long reportDefinitionId = ParamUtil.getLong(
+			actionRequest, "reportDefinitionId");
+
+		if (reportDefinitionId == 0) {
+			return addReportDefinition(actionRequest);
+		}
+
+		return updateReportDefinition(actionRequest, reportDefinitionId);
+	}
+
 	protected ReportDefinition updateReportDefinition(
 			PortletRequest portletRequest, long reportDefinitionId)
 		throws Exception {
@@ -168,23 +167,17 @@ public class SaveReportDefinitionMVCActionCommand
 		String name = ParamUtil.getString(portletRequest, "name");
 		String description = ParamUtil.getString(portletRequest, "description");
 
-		return reportDefinitionLocalService.updateReportDefinition(
+		return _reportDefinitionLocalService.updateReportDefinition(
 			reportDefinitionId, name, description, serviceContext);
 	}
 
 	@Reference(target = "(data.definition.deserializer.type=json)")
-	protected DataDefinitionDeserializer _dataDefinitionDeserializer;
+	private DataDefinitionDeserializer _dataDefinitionDeserializer;
 
 	@Reference
-	protected DataDefinitionLocalService _dataDefinitionLocalService;
+	private DataDefinitionLocalService _dataDefinitionLocalService;
 
 	@Reference
-	protected JSONFactory jsonFactory;
-
-	@Reference
-	protected ReportDefinitionLocalService reportDefinitionLocalService;
-
-	@Reference
-	private Portal _portal;
+	private ReportDefinitionLocalService _reportDefinitionLocalService;
 
 }

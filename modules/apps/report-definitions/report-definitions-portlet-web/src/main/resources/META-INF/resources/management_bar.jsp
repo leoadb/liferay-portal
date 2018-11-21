@@ -31,4 +31,5 @@
 	selectable="<%= !user.isDefaultUser() %>"
 	sortingOrder="<%= displayContext.getOrderByType() %>"
 	sortingURL="<%= displayContext.getSortingURL() %>"
+	viewTypeItems="<%= displayContext.getViewTypesItems() %>"
 />

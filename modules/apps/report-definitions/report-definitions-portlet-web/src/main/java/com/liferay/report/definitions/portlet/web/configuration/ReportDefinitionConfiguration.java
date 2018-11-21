@@ -26,7 +26,8 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 @Meta.OCD(
 	id = "com.liferay.report.definitions.portlet.web.configuration.ReportDefinitionConfiguration",
-	localization = "content/Language", name = "report-definition-configuration-name"
+	localization = "content/Language",
+	name = "report-definition-configuration-name"
 )
 public interface ReportDefinitionConfiguration {
 

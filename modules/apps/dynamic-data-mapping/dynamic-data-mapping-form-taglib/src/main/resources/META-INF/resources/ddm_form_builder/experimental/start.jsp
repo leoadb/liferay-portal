@@ -29,7 +29,8 @@ FormBuilderTagLib.default(
 			pages: [],
 			successPageSettings: {}
 		},
-		dataSchemaInputId: '<%= HtmlUtil.escapeJS(dataSchemaInputId) %>',
+		dataDefinitionColumns: <%= dataDefinitionColumnsJSON %>,
+		dataDefinitionInputId: '<%= HtmlUtil.escapeJS(dataDefinitionInputId) %>',
 		dependencies: ['dynamic-data-mapping-form-field-type/metal'],
 		fieldTypes: <%= fieldTypes %>,
 		modules: Liferay.MODULES,

@@ -14,6 +14,15 @@
 
 package com.liferay.report.definitions.portlet.web.display.context;
 
+import com.liferay.data.engine.exception.DataDefinitionException;
+import com.liferay.data.engine.io.DataDefinitionSerializer;
+import com.liferay.data.engine.io.DataDefinitionSerializerApplyRequest;
+import com.liferay.data.engine.io.DataDefinitionSerializerApplyResponse;
+import com.liferay.data.engine.model.DataDefinition;
+import com.liferay.data.engine.model.DataDefinitionColumn;
+import com.liferay.data.engine.service.DataDefinitionGetRequest;
+import com.liferay.data.engine.service.DataDefinitionGetResponse;
+import com.liferay.data.engine.service.DataDefinitionLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
@@ -26,18 +35,24 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PrefsParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.report.definitions.model.ReportDefinition;
@@ -49,11 +64,13 @@ import com.liferay.report.definitions.service.ReportDefinitionLocalService;
 import com.liferay.report.definitions.util.comparator.ReportDefinitionModifiedDateComparator;
 import com.liferay.report.definitions.util.comparator.ReportDefinitionNameComparator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletSession;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -69,7 +86,9 @@ public class ReportDefinitionsDisplayContext {
 		RenderRequest renderRequest, RenderResponse renderResponse,
 		DDMFormRenderer ddmFormRenderer,
 		ReportDefinitionConfiguration reportDefinitionConfiguration,
-		ReportDefinitionLocalService reportDefinitionLocalService) {
+		ReportDefinitionLocalService reportDefinitionLocalService,
+		DataDefinitionLocalService dataDefinitionLocalService,
+		DataDefinitionSerializer dataDefinitionSerializer) {
 
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
@@ -78,6 +97,8 @@ public class ReportDefinitionsDisplayContext {
 		_reportDefinitionsRequestHelper = new ReportDefinitionsRequestHelper(
 			renderRequest);
 		_reportDefinitionLocalService = reportDefinitionLocalService;
+		_dataDefinitionLocalService = dataDefinitionLocalService;
+		_dataDefinitionSerializer = dataDefinitionSerializer;
 	}
 
 	public List<DropdownItem> getActionItemsDropdownItems() {
@@ -252,6 +273,105 @@ public class ReportDefinitionsDisplayContext {
 		return portletURL;
 	}
 
+	public ReportDefinition getReportDefinition() {
+		if (_reportDefinition != null) {
+			return _reportDefinition;
+		}
+
+		_reportDefinition = _reportDefinitionLocalService.fetchReportDefinition(
+			getReportDefinitionId());
+
+		return _reportDefinition;
+	}
+
+	public String getReportDefinitionData() throws PortalException {
+		ReportDefinition reportDefinition = getReportDefinition();
+
+		if (reportDefinition != null) {
+			DataDefinition dataDefinition = getDataDefinition();
+
+			DataDefinitionSerializerApplyRequest
+				dataDefinitionSerializerApplyRequest =
+					DataDefinitionSerializerApplyRequest.Builder.of(
+						dataDefinition.getColumns());
+
+			DataDefinitionSerializerApplyResponse
+				dataDefinitionSerializerApplyResponse =
+					_dataDefinitionSerializer.apply(
+						dataDefinitionSerializerApplyRequest);
+
+			return dataDefinitionSerializerApplyResponse.getContent();
+		}
+
+		return ParamUtil.getString(
+			_reportDefinitionsRequestHelper.getRequest(), "definition");
+	}
+
+	public List<DataDefinitionColumn> getDataDefinitionColumns() {
+		try {
+			DataDefinition dataDefinition = getDataDefinition();
+
+			return dataDefinition.getColumns();
+		}
+		catch (DataDefinitionException dde) {
+			_log.debug(dde);
+		}
+
+		return Collections.emptyList();
+	}
+
+	public DataDefinition getDataDefinition()
+		throws DataDefinitionException {
+		ReportDefinition reportDefinition = getReportDefinition();
+
+		DataDefinitionGetRequest dataDefinitionGetRequest =
+			DataDefinitionGetRequest.Builder.of(
+				reportDefinition.getDataDefinitionId());
+
+		DataDefinitionGetResponse dataDefinitionGetResponse =
+			_dataDefinitionLocalService.get(dataDefinitionGetRequest);
+
+		return dataDefinitionGetResponse.getDataDefinition();
+	}
+
+	public String getReportDefinitionDescription() throws PortalException {
+		ReportDefinition reportDefinition = getReportDefinition();
+
+		if (reportDefinition != null) {
+			return reportDefinition.getDescription();
+		}
+
+		return ParamUtil.getString(
+			_reportDefinitionsRequestHelper.getRequest(), "description");
+	}
+
+	public long getReportDefinitionId() {
+		if (_reportDefinitionId != 0) {
+			return _reportDefinitionId;
+		}
+
+		_reportDefinitionId = PrefsParamUtil.getLong(
+			_renderRequest.getPreferences(), _renderRequest,
+			"reportDefinitionId");
+
+		if (_reportDefinitionId == 0) {
+			_reportDefinitionId = getReportDefinitionIdFromSession();
+		}
+
+		return _reportDefinitionId;
+	}
+
+	public String getReportDefinitionName() throws PortalException {
+		ReportDefinition reportDefinition = getReportDefinition();
+
+		if (reportDefinition != null) {
+			return reportDefinition.getName();
+		}
+
+		return ParamUtil.getString(
+			_reportDefinitionsRequestHelper.getRequest(), "name");
+	}
+
 	public long getScopeGroupId() {
 		return _reportDefinitionsRequestHelper.getScopeGroupId();
 	}
@@ -323,6 +443,26 @@ public class ReportDefinitionsDisplayContext {
 		return searchContainer.getTotal();
 	}
 
+	public List<ViewTypeItem> getViewTypesItems() throws Exception {
+		PortletURL portletURL = PortletURLUtil.clone(
+			getPortletURL(), _renderResponse);
+
+		return new ViewTypeItemList(portletURL, getDisplayStyle()) {
+			{
+				String[] viewTypes = getDisplayViews();
+
+				for (String viewType : viewTypes) {
+					if (viewType.equals("descriptive")) {
+						addListViewTypeItem();
+					}
+					else {
+						addTableViewTypeItem();
+					}
+				}
+			}
+		};
+	}
+
 	public boolean isDisabledManagementBar() {
 		if (hasResults()) {
 			return false;
@@ -391,8 +531,8 @@ public class ReportDefinitionsDisplayContext {
 							getPortletURL(), "navigation", "all");
 						dropdownItem.setLabel(
 							LanguageUtil.get(
-									_reportDefinitionsRequestHelper.getRequest(),
-									"all"));
+								_reportDefinitionsRequestHelper.getRequest(),
+								"all"));
 					});
 			}
 		};
@@ -408,8 +548,7 @@ public class ReportDefinitionsDisplayContext {
 			dropdownItem.setHref(getPortletURL(), "orderByCol", orderByCol);
 			dropdownItem.setLabel(
 				LanguageUtil.get(
-						_reportDefinitionsRequestHelper.getRequest(),
-						orderByCol));
+					_reportDefinitionsRequestHelper.getRequest(), orderByCol));
 		};
 	}
 
@@ -422,17 +561,24 @@ public class ReportDefinitionsDisplayContext {
 		};
 	}
 
+	protected long getReportDefinitionIdFromSession() {
+		PortletSession portletSession = _renderRequest.getPortletSession();
+
+		return GetterUtil.getLong(
+			portletSession.getAttribute("reportDefinitionId"));
+	}
+
 	protected OrderByComparator<ReportDefinition>
 		getReportDefinitionOrderByComparator(
 			String orderByCol, String orderByType) {
 
-	boolean orderByAsc = false;
+		boolean orderByAsc = false;
 
 		if (orderByType.equals("asc")) {
 			orderByAsc = true;
 		}
 
-	OrderByComparator<ReportDefinition> orderByComparator = null;
+		OrderByComparator<ReportDefinition> orderByComparator = null;
 
 		if (orderByCol.equals("modified-date")) {
 			orderByComparator = new ReportDefinitionModifiedDateComparator(
@@ -442,7 +588,7 @@ public class ReportDefinitionsDisplayContext {
 			orderByComparator = new ReportDefinitionNameComparator(orderByAsc);
 		}
 
-	return orderByComparator;
+		return orderByComparator;
 	}
 
 	protected boolean hasResults() {
@@ -485,11 +631,18 @@ public class ReportDefinitionsDisplayContext {
 
 	private static final String[] _DISPLAY_VIEWS = {"descriptive", "list"};
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		ReportDefinitionsDisplayContext.class);
+
+	private final DataDefinitionLocalService _dataDefinitionLocalService;
+	private final DataDefinitionSerializer _dataDefinitionSerializer;
 	private final DDMFormRenderer _ddmFormRenderer;
 	private String _displayStyle;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
+	private ReportDefinition _reportDefinition;
 	private final ReportDefinitionConfiguration _reportDefinitionConfiguration;
+	private long _reportDefinitionId;
 	private final ReportDefinitionLocalService _reportDefinitionLocalService;
 	private final ReportDefinitionsRequestHelper
 		_reportDefinitionsRequestHelper;

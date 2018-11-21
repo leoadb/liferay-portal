@@ -94,7 +94,7 @@ public class DataDefinitionLocalServiceTest {
 
 		DataDefinitionColumn dataDefinitionColumn =
 			DataDefinitionColumn.Builder.newBuilder(
-				"name", DataDefinitionColumnType.TEXT
+				"name", DataDefinitionColumnType.STRING
 			).labels(
 				expectedNameLabels
 			).build();
@@ -149,7 +149,7 @@ public class DataDefinitionLocalServiceTest {
 
 		DataDefinitionColumn dataDefinitionColumn1 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"column1", DataDefinitionColumnType.TEXT
+				"column1", DataDefinitionColumnType.STRING
 			).labels(
 				column1Labels
 			).build();
@@ -246,7 +246,7 @@ public class DataDefinitionLocalServiceTest {
 
 		DataDefinitionColumn dataDefinitionColumn =
 			DataDefinitionColumn.Builder.newBuilder(
-				"name", DataDefinitionColumnType.TEXT
+				"name", DataDefinitionColumnType.STRING
 			).labels(
 				expectedNameLabels
 			).build();
@@ -357,7 +357,7 @@ public class DataDefinitionLocalServiceTest {
 
 		DataDefinitionColumn expectedDataDefinitionColumn1 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"name", DataDefinitionColumnType.TEXT
+				"name", DataDefinitionColumnType.STRING
 			).labels(
 				expectedNameLabels
 			).build();
@@ -371,7 +371,7 @@ public class DataDefinitionLocalServiceTest {
 
 		DataDefinitionColumn expectedDataDefinitionColumn2 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"email", DataDefinitionColumnType.TEXT
+				"email", DataDefinitionColumnType.STRING
 			).labels(
 				expectedEmailLabels
 			).build();
@@ -448,7 +448,7 @@ public class DataDefinitionLocalServiceTest {
 
 		DataDefinitionColumn dataDefinitionColumn1 =
 			DataDefinitionColumn.Builder.newBuilder(
-				"title", DataDefinitionColumnType.TEXT
+				"title", DataDefinitionColumnType.STRING
 			).labels(
 				expectedTitleLabels
 			).localizable(
@@ -485,7 +485,7 @@ public class DataDefinitionLocalServiceTest {
 
 			DataDefinitionColumn dataDefinitionColumn2 =
 				DataDefinitionColumn.Builder.newBuilder(
-					"description", DataDefinitionColumnType.TEXT
+					"description", DataDefinitionColumnType.STRING
 				).labels(
 					expectedDescriptionLabels
 				).localizable(
