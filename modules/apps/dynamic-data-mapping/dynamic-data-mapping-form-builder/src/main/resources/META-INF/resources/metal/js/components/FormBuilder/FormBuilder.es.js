@@ -1,15 +1,15 @@
 import {Config} from 'metal-state';
 import {EventHandler} from 'metal-events';
 import {focusedFieldStructure, pageStructure} from '../../util/config.es';
+import {formatFieldName} from '../../util/fieldSupport.es';
 import {PagesVisitor} from '../../util/visitors.es';
+import AddButton from '../AddButton/AddButton.es';
 import autobind from 'autobind-decorator';
 import ClayModal from 'clay-modal';
 import Component from 'metal-jsx';
-import dom from 'metal-dom';
 import FormRenderer from '../../components/Form/index.es';
 import FormSupport from '../../components/Form/FormSupport.es';
 import Sidebar from '../../components/Sidebar/index.es';
-import {formatFieldName} from '../../util/fieldSupport.es';
 
 /**
  * Builder.
@@ -22,7 +22,7 @@ class Builder extends Component {
 		/**
 		 * @default []
 		 * @instance
-		 * @memberof FormRenderer
+		 * @memberof FormBuilder
 		 * @type {?array<object>}
 		 */
 
@@ -34,11 +34,19 @@ class Builder extends Component {
 		/**
 		 * @default
 		 * @instance
-		 * @memberof FormRenderer
+		 * @memberof FormBuilder
 		 * @type {?number}
 		 */
 
 		activePage: Config.number().value(0),
+
+		/**
+		 * @instance
+		 * @memberof FormBuilder
+		 * @type {?object}
+		 */
+
+		editingLocale: Config.string(),
 
 		/**
 		 * @default {}
@@ -52,7 +60,7 @@ class Builder extends Component {
 		/**
 		 * @default []
 		 * @instance
-		 * @memberof FormRenderer
+		 * @memberof FormBuilder
 		 * @type {?array<object>}
 		 */
 
@@ -60,7 +68,7 @@ class Builder extends Component {
 
 		/**
 		 * @instance
-		 * @memberof LayoutProvider
+		 * @memberof FormBuilder
 		 * @type {string}
 		 */
 
@@ -68,7 +76,7 @@ class Builder extends Component {
 
 		/**
 		 * @instance
-		 * @memberof Builder
+		 * @memberof FormBuilder
 		 * @type {object}
 		 */
 
@@ -86,8 +94,8 @@ class Builder extends Component {
 	 * @private
 	 */
 
-	_normalizeSettingsContextPages(pages, namespace, fieldType, newFieldName) {
-		const translationManager = Liferay.component(`${namespace}translationManager`);
+	_normalizeSettingsContextPages(pages, fieldType, newFieldName) {
+		const {editingLocale} = this.props;
 		const visitor = new PagesVisitor(pages);
 
 		return visitor.mapFields(
@@ -106,7 +114,7 @@ class Builder extends Component {
 						...field,
 						localizedValue: {
 							...field.localizedValue,
-							[translationManager.get('editingLocale')]: fieldType.label
+							[editingLocale]: fieldType.label
 						},
 						type: 'text',
 						value: fieldType.label
@@ -213,8 +221,6 @@ class Builder extends Component {
 
 	_handleFieldAdded(event) {
 		const {fieldType} = event;
-		const {namespace} = this.props;
-
 		const newFieldName = FormSupport.generateFieldName(fieldType.name);
 		const settingsContext = fieldType.settingsContext;
 		const {pages} = settingsContext;
@@ -228,7 +234,7 @@ class Builder extends Component {
 					fieldName: newFieldName,
 					settingsContext: {
 						...settingsContext,
-						pages: this._normalizeSettingsContextPages(pages, namespace, fieldType, newFieldName)
+						pages: this._normalizeSettingsContextPages(pages, fieldType, newFieldName)
 					},
 					type: fieldType.name
 				}
@@ -255,7 +261,7 @@ class Builder extends Component {
 	 */
 
 	_handleFieldEdited({fieldInstance, value}) {
-		const {focusedField, namespace} = this.props;
+		const {editingLocale, focusedField} = this.props;
 		const {columnIndex, instanceId, pageIndex, rowIndex, settingsContext} = focusedField;
 		const properties = {columnIndex,
 			pageIndex,
@@ -272,8 +278,6 @@ class Builder extends Component {
 
 		const visitor = new PagesVisitor(settingsContext.pages);
 
-		const translationManager = Liferay.component(`${namespace}translationManager`);
-
 		properties.settingsContext = {
 			...settingsContext,
 			columnIndex,
@@ -288,7 +292,7 @@ class Builder extends Component {
 						if (field.localizable) {
 							field.localizedValue = {
 								...field.localizedValue,
-								[translationManager.get('editingLocale')]: value
+								[editingLocale]: value
 							};
 						}
 					}
@@ -375,16 +379,9 @@ class Builder extends Component {
 	}
 
 	syncVisible(visible) {
-		const addButton = document.querySelector('#addFieldButton');
-
 		super.syncVisible(visible);
 
 		if (visible) {
-			addButton.classList.remove('hide');
-
-			this._eventHandler.add(
-				dom.on('#addFieldButton', 'click', this._handleAddFieldButtonClicked.bind(this))
-			);
 		}
 		else {
 			this._eventHandler.removeAllListeners();
@@ -396,6 +393,7 @@ class Builder extends Component {
 	 * @private
 	 */
 
+	@autobind
 	_handleAddFieldButtonClicked() {
 		this.openSidebar();
 	}
@@ -534,9 +532,15 @@ class Builder extends Component {
 		};
 
 		return (
-			<div>
-				<div class="container">
-					<div class="sheet">
+			<div class="form-builder">
+				<AddButton
+					events={{
+						click: this._handleAddFieldButtonClicked
+					}}
+					spritemap={spritemap}
+				/>
+				<div class="form-builder-canvas">
+					<div class="container sheet">
 						<FormRenderer
 							activePage={activePage}
 							editable={true}

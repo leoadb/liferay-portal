@@ -328,6 +328,10 @@ textarea[class^="form-builder-page-header"] {
 }
 
 .ddm-form-builder {
+	.form-builder-canvas {
+		width: 100%;
+	}
+
 	.modal {
 		display: none;
 		margin: inherit;
