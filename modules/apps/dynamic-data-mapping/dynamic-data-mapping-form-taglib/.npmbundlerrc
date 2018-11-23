@@ -1,0 +1,26 @@
+{
+	"config": {
+		"imports": {
+			"dynamic-data-mapping-form-builder": {
+				"/": ">=2.0.0"
+			},
+			"dynamic-data-mapping-form-field-type": {
+				"/": ">=4.0.0"
+			},
+			"frontend-js-metal-web": {
+				"metal": ">=2.16.5",
+				"metal-component": ">=2.16.5",
+				"metal-soy": ">=2.16.5",
+				"metal-jsx": ">=2.16.5",
+				"metal-state": ">=2.16.5",
+				"metal-dom": ">=2.16.5",
+				"metal-events": ">=2.16.5"
+			}
+		}
+	},
+	"ignore": [
+		"**/*.js",
+		"!**/*.es.js"
+	],
+	"output": "classes/META-INF/resources"
+}

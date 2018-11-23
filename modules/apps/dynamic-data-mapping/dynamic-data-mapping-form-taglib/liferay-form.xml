@@ -8,6 +8,18 @@
 	<component bodyContent="true" name="DDMFormBuilder" writeJSP="true">
 		<attributes>
 			<attribute>
+				<name>dataDefinitionColumns</name>
+				<inputType><![CDATA[java.util.List<com.liferay.data.engine.model.DataDefinitionColumn>]]></inputType>
+				<outputType><![CDATA[java.util.List<com.liferay.data.engine.model.DataDefinitionColumn>]]></outputType>
+				<required>false</required>
+			</attribute>
+			<attribute>
+				<name>dataDefinitionInputId</name>
+				<inputType>java.lang.String</inputType>
+				<outputType>java.lang.String</outputType>
+				<required>false</required>
+			</attribute>
+			<attribute>
 				<name>ddmStructureId</name>
 				<inputType>java.lang.Long</inputType>
 				<outputType>java.lang.Long</outputType>
@@ -48,6 +60,13 @@
 				<inputType>boolean</inputType>
 				<outputType>boolean</outputType>
 				<defaultValue>true</defaultValue>
+				<required>false</required>
+			</attribute>
+			<attribute>
+				<name>useExperimentalInterface</name>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
+				<defaultValue>false</defaultValue>
 				<required>false</required>
 			</attribute>
 		</attributes>

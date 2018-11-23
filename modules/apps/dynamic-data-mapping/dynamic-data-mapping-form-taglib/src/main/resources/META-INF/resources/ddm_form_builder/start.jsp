@@ -17,7 +17,6 @@
 <%@ include file="/ddm_form_builder/init.jsp" %>
 
 <aui:script use="liferay-ddm-form-builder, liferay-ddm-form-builder-fieldset, liferay-ddm-form-builder-rule-builder">
-
 	Liferay.namespace('DDM').Settings = {
 		evaluatorURL: '<%= HtmlUtil.escapeJS(evaluatorURL) %>',
 		fieldSetDefinitionURL: '<%= HtmlUtil.escapeJS(fieldSetDefinitionURL) %>',
