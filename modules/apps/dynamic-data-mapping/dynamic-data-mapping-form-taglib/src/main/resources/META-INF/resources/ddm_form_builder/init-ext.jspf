@@ -15,9 +15,14 @@
 --%>
 
 <%@ page import="com.liferay.portal.kernel.json.JSONArray" %><%@
-page import="com.liferay.portal.kernel.util.HtmlUtil" %>
+page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.PortalUtil" %>
 
-<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
+taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
+taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
+
+<liferay-theme:defineObjects />
 
 <%
 String dataProviderInstancesURL = (String)request.getAttribute("liferay-form:ddm-form-builder:dataProviderInstancesURL");
@@ -26,9 +31,12 @@ String evaluatorURL = (String)request.getAttribute("liferay-form:ddm-form-builde
 String fieldSetDefinitionURL = (String)request.getAttribute("liferay-form:ddm-form-builder:fieldSetDefinitionURL");
 JSONArray fieldSets = (JSONArray)request.getAttribute("liferay-form:ddm-form-builder:fieldSets");
 String fieldSettingsDDMFormContextURL = (String)request.getAttribute("liferay-form:ddm-form-builder:fieldSettingsDDMFormContextURL");
+JSONArray fieldTypes = (JSONArray)request.getAttribute("liferay-form:ddm-form-builder:fieldTypes");
 String formBuilderContext = (String)request.getAttribute("liferay-form:ddm-form-builder:formBuilderContext");
 String functionsMetadata = (String)request.getAttribute("liferay-form:ddm-form-builder:functionsMetadata");
 String functionsURL = (String)request.getAttribute("liferay-form:ddm-form-builder:functionsURL");
+String javaScriptPackage = (String)request.getAttribute("liferay-form:ddm-form-builder:javaScriptPackage");
 String rolesURL = (String)request.getAttribute("liferay-form:ddm-form-builder:rolesURL");
 String serializedDDMFormRules = (String)request.getAttribute("liferay-form:ddm-form-builder:serializedDDMFormRules");
+String dataDefinitionColumnsJSON = (String)request.getAttribute("liferay-form:ddm-form-builder:dataDefinitionColumnsJSON");
 %>

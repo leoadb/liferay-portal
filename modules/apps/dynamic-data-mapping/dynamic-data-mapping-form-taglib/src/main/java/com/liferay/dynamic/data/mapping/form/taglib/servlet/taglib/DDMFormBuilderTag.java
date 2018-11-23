@@ -14,6 +14,7 @@
 
 package com.liferay.dynamic.data.mapping.form.taglib.servlet.taglib;
 
+import com.liferay.data.engine.model.DataDefinitionColumn;
 import com.liferay.dynamic.data.mapping.form.builder.settings.DDMFormBuilderSettingsRequest;
 import com.liferay.dynamic.data.mapping.form.builder.settings.DDMFormBuilderSettingsResponse;
 import com.liferay.dynamic.data.mapping.form.taglib.servlet.taglib.base.BaseDDMFormBuilderTag;
@@ -22,6 +23,8 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,11 +59,37 @@ public class DDMFormBuilderTag extends BaseDDMFormBuilderTag {
 	}
 
 	@Override
+	protected String getEndPage() {
+		if (getUseExperimentalInterface()) {
+			return "/ddm_form_builder/experimental/end.jsp";
+		}
+
+		return super.getEndPage();
+	}
+
+	@Override
+	protected String getStartPage() {
+		if (getUseExperimentalInterface()) {
+			return "/ddm_form_builder/experimental/start.jsp";
+		}
+
+		return super.getStartPage();
+	}
+
+	@Override
 	protected void setAttributes(HttpServletRequest request) {
 		super.setAttributes(request);
 
 		DDMFormBuilderSettingsResponse ddmFormBuilderSettingsResponse =
 			getDDMFormBuilderSettings(request);
+
+		List<DataDefinitionColumn> dataDefinitionColumns =
+			(List<DataDefinitionColumn>)getDataDefinitionColumns();
+
+		setNamespacedAttribute(
+			request, "dataDefinitionColumnsJSON",
+			DDMFormTaglibUtil.getDataDefinitionColumnsJSON(
+				dataDefinitionColumns));
 
 		setNamespacedAttribute(
 			request, "dataProviderInstancesURL",
@@ -83,6 +112,9 @@ public class DDMFormBuilderTag extends BaseDDMFormBuilderTag {
 			ddmFormBuilderSettingsResponse.getFieldSettingsDDMFormContextURL());
 
 		setNamespacedAttribute(
+			request, "fieldTypes",
+			DDMFormTaglibUtil.getDDMFormFieldTypesJSONArray(request));
+		setNamespacedAttribute(
 			request, "formBuilderContext", getDDMFormBuilderContext(request));
 		setNamespacedAttribute(
 			request, "functionsMetadata",
@@ -90,6 +122,9 @@ public class DDMFormBuilderTag extends BaseDDMFormBuilderTag {
 		setNamespacedAttribute(
 			request, "functionsURL",
 			ddmFormBuilderSettingsResponse.getFunctionsURL());
+		setNamespacedAttribute(
+			request, "javaScriptPackage",
+			DDMFormTaglibUtil.getJavaScriptPackage());
 		setNamespacedAttribute(
 			request, "rolesURL", ddmFormBuilderSettingsResponse.getRolesURL());
 		setNamespacedAttribute(

@@ -9,6 +9,17 @@
 		<tag-class>com.liferay.dynamic.data.mapping.form.taglib.servlet.taglib.DDMFormBuilderTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
+			<name>dataDefinitionColumns</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.util.List</type>
+		</attribute>
+		<attribute>
+			<name>dataDefinitionInputId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>ddmStructureId</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -43,6 +54,12 @@
 		</attribute>
 		<attribute>
 			<name>showPagination</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<name>useExperimentalInterface</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
