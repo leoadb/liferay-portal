@@ -14,12 +14,12 @@
 
 package com.liferay.report.definitions.portlet.web.portlet.action;
 
+import com.liferay.data.engine.exception.DataDefinitionColumnsDeserializerException;
 import com.liferay.data.engine.exception.DataDefinitionException;
-import com.liferay.data.engine.io.DataDefinitionDeserializer;
-import com.liferay.data.engine.io.DataDefinitionDeserializerApplyRequest;
-import com.liferay.data.engine.io.DataDefinitionDeserializerApplyResponse;
+import com.liferay.data.engine.io.DataDefinitionColumnsDeserializer;
+import com.liferay.data.engine.io.DataDefinitionColumnsDeserializerApplyRequest;
+import com.liferay.data.engine.io.DataDefinitionColumnsDeserializerApplyResponse;
 import com.liferay.data.engine.model.DataDefinition;
-import com.liferay.data.engine.model.DataDefinitionColumn;
 import com.liferay.data.engine.service.DataDefinitionLocalService;
 import com.liferay.data.engine.service.DataDefinitionSaveRequest;
 import com.liferay.data.engine.service.DataDefinitionSaveResponse;
@@ -56,6 +56,8 @@ import javax.portlet.PortletRequest;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import java.util.Locale;
+
 /**
  * @author Bruno Basto
  */
@@ -76,7 +78,7 @@ public class SaveReportDefinitionMVCActionCommand
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			ReportDefinition.class.getName(), actionRequest);
 
-		String languageId = serviceContext.getLanguageId();
+		Locale locale = serviceContext.getLocale();
 
 		long userId = serviceContext.getUserId();
 		long groupId = serviceContext.getScopeGroupId();
@@ -89,7 +91,8 @@ public class SaveReportDefinitionMVCActionCommand
 		String definition = ParamUtil.getString(actionRequest, "definition");
 
 		long dataDefinitionId = _saveDataDefinition(
-			languageId, userId, groupId, 0L, name, description, definition);
+			userId, groupId, 0L, name, description, definition,
+			locale);
 
 		// Available Columns
 
@@ -199,7 +202,7 @@ public class SaveReportDefinitionMVCActionCommand
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			ReportDefinition.class.getName(), actionRequest);
 
-		String languageId = serviceContext.getLanguageId();
+		Locale locale = serviceContext.getLocale();
 
 		long userId = serviceContext.getUserId();
 		long groupId = serviceContext.getScopeGroupId();
@@ -222,8 +225,8 @@ public class SaveReportDefinitionMVCActionCommand
 		long dataDefinitionId = reportDefinition.getDataDefinitionId();
 
 		_saveDataDefinition(
-			languageId, userId, groupId, dataDefinitionId, name, description,
-			definition);
+			userId, groupId, dataDefinitionId, name, description,
+			definition, locale);
 
 		return _reportDefinitionLocalService.updateReportDefinition(
 			userId, groupId, reportDefinitionId, name, description,
@@ -231,31 +234,29 @@ public class SaveReportDefinitionMVCActionCommand
 	}
 
 	private long _saveDataDefinition(
-			String languageId, long userId, long groupId, long dataDefinitionId,
-			String name, String description, String definition)
-		throws DataDefinitionException {
+			long userId, long groupId, long dataDefinitionId,
+			String name, String description, String definition, Locale locale)
+		throws DataDefinitionException,
+		DataDefinitionColumnsDeserializerException {
 
-		DataDefinitionDeserializerApplyRequest
+		DataDefinitionColumnsDeserializerApplyRequest
 			dataDefinitionDeserializerApplyRequest =
-				DataDefinitionDeserializerApplyRequest.Builder.of(definition);
+				DataDefinitionColumnsDeserializerApplyRequest.Builder.of(
+					definition);
 
-		DataDefinitionDeserializerApplyResponse
+		DataDefinitionColumnsDeserializerApplyResponse
 			dataDefinitionDeserializerApplyResponse =
-				_dataDefinitionDeserializer.apply(
+				_dataDefinitionColumnsDeserializer.apply(
 					dataDefinitionDeserializerApplyRequest);
 
-		DataDefinition dataDefinition = new DataDefinition();
+		DataDefinition.Builder builder = DataDefinition.Builder.newBuilder(
+			dataDefinitionDeserializerApplyResponse.getDataDefinitionColumns());
 
-		for (DataDefinitionColumn dataDefinitionColumn :
-				dataDefinitionDeserializerApplyResponse.
-					getDataDefinitionColumns()) {
+		builder.description(locale, description);
+		builder.name(locale, name);
+		builder.dataDefinitionId(dataDefinitionId);
 
-			dataDefinition.addColumn(dataDefinitionColumn);
-		}
-
-		dataDefinition.addName(languageId, name);
-		dataDefinition.addDescription(languageId, description);
-		dataDefinition.setDataDefinitionId(dataDefinitionId);
+		DataDefinition dataDefinition = builder.build();
 
 		DataDefinitionSaveRequest dataDefinitionSaveRequest =
 			DataDefinitionSaveRequest.Builder.of(
@@ -268,7 +269,8 @@ public class SaveReportDefinitionMVCActionCommand
 	}
 
 	@Reference(target = "(data.definition.deserializer.type=json)")
-	private DataDefinitionDeserializer _dataDefinitionDeserializer;
+	private DataDefinitionColumnsDeserializer
+		_dataDefinitionColumnsDeserializer;
 
 	@Reference
 	private DataDefinitionLocalService _dataDefinitionLocalService;
