@@ -14,7 +14,7 @@
 
 package com.liferay.report.definitions.portlet.web.portlet;
 
-import com.liferay.data.engine.io.DataDefinitionSerializer;
+import com.liferay.data.engine.io.DataDefinitionColumnsSerializer;
 import com.liferay.data.engine.service.DataDefinitionLocalService;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.storage.DDMStorageAdapterTracker;
@@ -96,8 +96,8 @@ public class ReportDefinitionPortlet extends MVCPortlet {
 				renderRequest, renderResponse, _ddmFormRenderer,
 				_reportDefinitionConfigurationActivator.
 					getReportDefinitionConfiguration(),
-				_reportDefinitionLocalService, _dataDefinitionLocalService,
-				_dataDefinitionSerializer, _ddmStorageAdapterTracker);
+				_reportDefinitionLocalService, _dataDefinitionColumnsSerializer,
+				_dataDefinitionLocalService, _ddmStorageAdapterTracker);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT, ddmDataProviderDisplayContext);
@@ -107,7 +107,7 @@ public class ReportDefinitionPortlet extends MVCPortlet {
 	private DataDefinitionLocalService _dataDefinitionLocalService;
 
 	@Reference(target = "(data.definition.serializer.type=json)")
-	private DataDefinitionSerializer _dataDefinitionSerializer;
+	private DataDefinitionColumnsSerializer _dataDefinitionColumnsSerializer;
 
 	private DDMFormRenderer _ddmFormRenderer;
 

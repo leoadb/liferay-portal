@@ -14,9 +14,9 @@
 
 package com.liferay.report.definitions.portlet.web.display.context;
 
-import com.liferay.data.engine.io.DataDefinitionSerializer;
-import com.liferay.data.engine.io.DataDefinitionSerializerApplyRequest;
-import com.liferay.data.engine.io.DataDefinitionSerializerApplyResponse;
+import com.liferay.data.engine.io.DataDefinitionColumnsSerializer;
+import com.liferay.data.engine.io.DataDefinitionColumnsSerializerApplyRequest;
+import com.liferay.data.engine.io.DataDefinitionColumnsSerializerApplyResponse;
 import com.liferay.data.engine.model.DataDefinition;
 import com.liferay.data.engine.model.DataDefinitionColumn;
 import com.liferay.data.engine.service.DataDefinitionGetRequest;
@@ -92,8 +92,8 @@ public class ReportDefinitionsDisplayContext {
 		DDMFormRenderer ddmFormRenderer,
 		ReportDefinitionConfiguration reportDefinitionConfiguration,
 		ReportDefinitionLocalService reportDefinitionLocalService,
+		DataDefinitionColumnsSerializer dataDefinitionColumnsSerializer,
 		DataDefinitionLocalService dataDefinitionLocalService,
-		DataDefinitionSerializer dataDefinitionSerializer,
 		DDMStorageAdapterTracker ddmStorageAdapterTracker) {
 
 		_renderRequest = renderRequest;
@@ -103,8 +103,8 @@ public class ReportDefinitionsDisplayContext {
 		_reportDefinitionsRequestHelper = new ReportDefinitionsRequestHelper(
 			renderRequest);
 		_reportDefinitionLocalService = reportDefinitionLocalService;
+		_dataDefinitionColumnsSerializer = dataDefinitionColumnsSerializer;
 		_dataDefinitionLocalService = dataDefinitionLocalService;
-		_dataDefinitionSerializer = dataDefinitionSerializer;
 		_ddmStorageAdapterTracker = ddmStorageAdapterTracker;
 	}
 
@@ -359,17 +359,17 @@ public class ReportDefinitionsDisplayContext {
 		if (reportDefinition != null) {
 			DataDefinition dataDefinition = getDataDefinition();
 
-			DataDefinitionSerializerApplyRequest
-				dataDefinitionSerializerApplyRequest =
-					DataDefinitionSerializerApplyRequest.Builder.of(
+			DataDefinitionColumnsSerializerApplyRequest
+				dataDefinitionColumnsSerializerApplyRequest =
+					DataDefinitionColumnsSerializerApplyRequest.Builder.of(
 						dataDefinition.getColumns());
 
-			DataDefinitionSerializerApplyResponse
-				dataDefinitionSerializerApplyResponse =
-					_dataDefinitionSerializer.apply(
-						dataDefinitionSerializerApplyRequest);
+			DataDefinitionColumnsSerializerApplyResponse
+				dataDefinitionColumnsSerializerApplyResponse =
+					_dataDefinitionColumnsSerializer.apply(
+						dataDefinitionColumnsSerializerApplyRequest);
 
-			return dataDefinitionSerializerApplyResponse.getContent();
+			return dataDefinitionColumnsSerializerApplyResponse.getContent();
 		}
 
 		return ParamUtil.getString(
@@ -681,8 +681,9 @@ public class ReportDefinitionsDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ReportDefinitionsDisplayContext.class);
 
+	private final DataDefinitionColumnsSerializer
+		_dataDefinitionColumnsSerializer;
 	private final DataDefinitionLocalService _dataDefinitionLocalService;
-	private final DataDefinitionSerializer _dataDefinitionSerializer;
 	private final DDMFormRenderer _ddmFormRenderer;
 	private final DDMStorageAdapterTracker _ddmStorageAdapterTracker;
 	private String _displayStyle;

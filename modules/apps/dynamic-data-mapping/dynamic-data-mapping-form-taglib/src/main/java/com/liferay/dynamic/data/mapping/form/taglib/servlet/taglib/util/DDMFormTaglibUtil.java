@@ -14,9 +14,10 @@
 
 package com.liferay.dynamic.data.mapping.form.taglib.servlet.taglib.util;
 
-import com.liferay.data.engine.io.DataDefinitionSerializer;
-import com.liferay.data.engine.io.DataDefinitionSerializerApplyRequest;
-import com.liferay.data.engine.io.DataDefinitionSerializerApplyResponse;
+import com.liferay.data.engine.exception.DataDefinitionColumnsSerializerException;
+import com.liferay.data.engine.io.DataDefinitionColumnsSerializer;
+import com.liferay.data.engine.io.DataDefinitionColumnsSerializerApplyRequest;
+import com.liferay.data.engine.io.DataDefinitionColumnsSerializerApplyResponse;
 import com.liferay.data.engine.model.DataDefinitionColumn;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderContextFactory;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderContextRequest;
@@ -99,17 +100,22 @@ public class DDMFormTaglibUtil {
 			return "[]";
 		}
 
-		DataDefinitionSerializerApplyRequest
-			dataDefinitionSerializerApplyRequest =
-				DataDefinitionSerializerApplyRequest.Builder.of(
+		DataDefinitionColumnsSerializerApplyRequest
+			dataDefinitionColumnsSerializerApplyRequest =
+				DataDefinitionColumnsSerializerApplyRequest.Builder.of(
 					dataDefinitionColumns);
 
-		DataDefinitionSerializerApplyResponse
-			dataDefinitionSerializerApplyResponse =
-				_dataDefinitionSerializer.apply(
-					dataDefinitionSerializerApplyRequest);
+		try {
+			DataDefinitionColumnsSerializerApplyResponse
+				dataDefinitionSerializerApplyResponse =
+					_dataDefinitionColumnsSerializer.apply(
+						dataDefinitionColumnsSerializerApplyRequest);
 
-		return dataDefinitionSerializerApplyResponse.getContent();
+			return dataDefinitionSerializerApplyResponse.getContent();
+		}
+		catch (DataDefinitionColumnsSerializerException e) {
+			return "[]";
+		}
 	}
 
 	public static DDMForm getDDMForm(
@@ -340,10 +346,10 @@ public class DDMFormTaglibUtil {
 	}
 
 	@Reference(target = "(data.definition.serializer.type=json)", unbind = "-")
-	protected void setDataDefinitionSerializer(
-		DataDefinitionSerializer dataDefinitionSerializer) {
+	protected void setDataDefinitionColumnsSerializer(
+		DataDefinitionColumnsSerializer dataDefinitionColumnsSerializer) {
 
-		_dataDefinitionSerializer = dataDefinitionSerializer;
+		_dataDefinitionColumnsSerializer = dataDefinitionColumnsSerializer;
 	}
 
 	@Reference(unbind = "-")
@@ -472,7 +478,8 @@ public class DDMFormTaglibUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMFormTaglibUtil.class);
 
-	private static DataDefinitionSerializer _dataDefinitionSerializer;
+	private static DataDefinitionColumnsSerializer
+		_dataDefinitionColumnsSerializer;
 	private static DDMFormBuilderContextFactory _ddmFormBuilderContextFactory;
 	private static DDMFormBuilderSettingsRetriever
 		_ddmFormBuilderSettingsRetriever;
