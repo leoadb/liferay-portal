@@ -589,7 +589,7 @@ AUI.add(
 													}
 												);
 
-												if (callback && (typeof callback == 'function')) {
+												if (callback) {
 													callback.call();
 												}
 											}
@@ -610,7 +610,7 @@ AUI.add(
 								);
 							}
 							else {
-								if (callback && (typeof callback == 'function')) {
+								if (callback) {
 									callback.call();
 								}
 							}
