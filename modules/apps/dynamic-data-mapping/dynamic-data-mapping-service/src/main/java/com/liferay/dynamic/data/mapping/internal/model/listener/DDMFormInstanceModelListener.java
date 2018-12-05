@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Akos Thurzo
  */
 @Component(immediate = true, service = ModelListener.class)
-public class DDMFormInstanceStagingModelListener
+public class DDMFormInstanceModelListener
 	extends BaseModelListener<DDMFormInstance> {
 
 	@Override
