@@ -93,7 +93,7 @@ public class UpgradeCheckboxFieldToCheckboxMultipleField
 		StringBundler sb = new StringBundler(6);
 
 		sb.append("select DDMStructure.definition, DDMStructure.version, ");
-		sb.append("DDLRecordSet.recordSetId, DDMStructure.structureId from ");
+		sb.append("DDMStructure.structureId, DDLRecordSet.recordSetId from ");
 		sb.append("DDLRecordSet inner join DDMStructure on ");
 		sb.append("DDLRecordSet.DDMStructureId = DDMStructure.structureId ");
 		sb.append("where DDLRecordSet.scope = ? and DDMStructure.definition ");
@@ -118,8 +118,8 @@ public class UpgradeCheckboxFieldToCheckboxMultipleField
 				while (rs.next()) {
 					String definition = rs.getString(1);
 					String version = rs.getString(2);
-					long recordSetId = rs.getLong(3);
-					long structureId = rs.getLong(4);
+					long structureId = rs.getLong(3);
+					long recordSetId = rs.getLong(4);
 
 					String newDefinition = upgradeRecordSetStructureDefinition(
 						definition);
