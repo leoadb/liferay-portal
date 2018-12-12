@@ -20,6 +20,7 @@ import com.liferay.data.engine.service.DEDataDefinitionDeleteRequest;
 import com.liferay.data.engine.service.DEDataDefinitionDeleteResponse;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
+import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -34,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true, service = DEDataDefinitionDeleteRequestExecutor.class
 )
-public class DEDataDefinitionDeletaRequestExecutorImpl
+public class DEDataDefinitionDeleteRequestExecutorImpl
 	implements DEDataDefinitionDeleteRequestExecutor {
 
 	@Override
@@ -52,6 +53,11 @@ public class DEDataDefinitionDeletaRequestExecutorImpl
 
 			return DEDataDefinitionDeleteResponse.Builder.of(
 				deDataDefinitionId);
+		}
+		catch (NoSuchStructureException nsse)
+		{
+			throw new DEDataDefinitionException.NoSuchDataDefinition(
+				deDataDefinitionDeleteRequest.getDEDataDefinitionId(), nsse);
 		}
 		catch (Exception e) {
 			throw new DEDataDefinitionException(e);
