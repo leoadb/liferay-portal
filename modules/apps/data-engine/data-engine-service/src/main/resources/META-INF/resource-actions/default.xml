@@ -18,6 +18,9 @@
 				<action-key>VIEW</action-key>
 			</supports>
 			<site-member-defaults>
+				<action-key>ADD_DATA_DEFINITION</action-key>
+				<action-key>DELETE</action-key>
+				<action-key>UPDATE</action-key>
 				<action-key>VIEW</action-key>
 			</site-member-defaults>
 			<guest-defaults>
@@ -44,6 +47,8 @@
 				<action-key>VIEW</action-key>
 			</supports>
 			<site-member-defaults>
+				<action-key>DELETE</action-key>
+				<action-key>UPDATE</action-key>
 				<action-key>VIEW</action-key>
 			</site-member-defaults>
 			<guest-defaults>
