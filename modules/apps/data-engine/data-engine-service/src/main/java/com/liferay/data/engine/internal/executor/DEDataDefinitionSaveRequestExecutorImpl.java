@@ -36,11 +36,9 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -122,14 +120,14 @@ public class DEDataDefinitionSaveRequestExecutorImpl
 	}
 
 	protected Map<Locale, String> createLocalizedMap(Map<String, String> map) {
-		Set<Map.Entry<String, String>> set = map.entrySet();
+		Map<Locale, String> localeMap = new HashMap<>();
 
-		Stream<Map.Entry<String, String>> stream = set.stream();
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			localeMap.put(
+				LocaleUtil.fromLanguageId(entry.getKey()), entry.getValue());
+		}
 
-		return stream.collect(
-			Collectors.toMap(
-				entry -> LocaleUtil.fromLanguageId(entry.getKey()),
-				entry -> entry.getValue()));
+		return localeMap;
 	}
 
 	protected String serialize(DEDataDefinition deDataDefinition)
