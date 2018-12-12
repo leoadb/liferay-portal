@@ -1,0 +1,75 @@
+schema {
+	mutation: MutationType
+	query: QueryType
+}
+
+input LocalizedValueInput {
+	key: String!
+	value: String!
+}
+
+input DataDefinitionFieldInput {
+	defaultValue: String
+	indexable: Boolean
+	labels: [LocalizedValueInput]
+	localizable: Boolean
+	name: String!
+	repeatable: Boolean
+	required: Boolean
+	tips: [LocalizedValueInput]
+	type: String!
+}
+
+input DataDefinitionInput {
+	dataDefinitionId: ID
+	descriptions: [LocalizedValueInput]
+	fields: [DataDefinitionFieldInput]!
+	names: [LocalizedValueInput]!
+	storageType: String!
+}
+
+type LocalizedValueType {
+	key: String
+	value: String
+}
+
+type DataDefinitionFieldType {
+	defaultValue: String
+	indexable: Boolean
+	labels: [LocalizedValueType]
+	localizable: Boolean
+	name: String
+	repeatable: Boolean
+	required: Boolean
+	tips: [LocalizedValueType]
+	type: String
+}
+
+type SaveDataDefinitionType {
+	dataDefinition: DataDefinitionType
+}
+
+type DeleteDataDefinitionType {
+	dataDefinition: DataDefinitionType
+}
+
+type GetDataDefinitionType {
+	dataDefinition: DataDefinitionType
+}
+
+type DataDefinitionType {
+	dataDefinitionId: ID
+	descriptions: [LocalizedValueType]
+	fields: [DataDefinitionFieldType]
+	names: [LocalizedValueType]
+	storageType: String
+}
+
+type QueryType {
+	getDataDefinition(dataDefinitionId: ID!, languageId: String!): GetDataDefinitionType
+}
+
+type MutationType {
+	deleteDataDefinition(dataDefinitionId: ID!, languageId: String!): DeleteDataDefinitionType
+	saveDataDefinition(userId: ID!, groupId: ID!, dataDefinitionInput: DataDefinitionInput!, languageId: String!): SaveDataDefinitionType
+}
