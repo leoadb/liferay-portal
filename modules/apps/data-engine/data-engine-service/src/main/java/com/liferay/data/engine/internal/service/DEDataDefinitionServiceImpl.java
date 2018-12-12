@@ -28,6 +28,7 @@ import com.liferay.data.engine.service.DEDataDefinitionGetResponse;
 import com.liferay.data.engine.service.DEDataDefinitionSaveRequest;
 import com.liferay.data.engine.service.DEDataDefinitionSaveResponse;
 import com.liferay.data.engine.service.DEDataDefinitionService;
+import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -67,6 +68,13 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 
 			throw dedde;
 		}
+		catch (NoSuchStructureException nsse)
+		{
+			_log.error(nsse, nsse);
+
+			throw new DEDataDefinitionException.NoSuchDataDefinition(
+				deDataDefinitionDeleteRequest.getDEDataDefinitionId(), nsse);
+		}
 		catch (Exception e) {
 			_log.error(e, e);
 
@@ -93,6 +101,13 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 
 			throw dedde;
 		}
+		catch (NoSuchStructureException nsse)
+		{
+			_log.error(nsse, nsse);
+
+			throw new DEDataDefinitionException.NoSuchDataDefinition(
+				deDataDefinitionGetRequest.getDEDataDefinitionId(), nsse);
+		}
 		catch (Exception e) {
 			_log.error(e, e);
 
@@ -105,10 +120,10 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 			DEDataDefinitionSaveRequest deDataDefinitionSaveRequest)
 		throws DEDataDefinitionException {
 
-		try {
-			DEDataDefinition deDataDefinition =
-				deDataDefinitionSaveRequest.getDEDataDefinition();
+		DEDataDefinition deDataDefinition =
+			deDataDefinitionSaveRequest.getDEDataDefinition();
 
+		try {
 			long deDataDefinitionId = deDataDefinition.getDEDataDefinitionId();
 
 			if (deDataDefinitionId == 0) {
@@ -132,6 +147,18 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 			_log.error(dedde, dedde);
 
 			throw dedde;
+		}
+		catch (NoSuchStructureException nsse)
+		{
+			_log.error(nsse, nsse);
+
+			throw new DEDataDefinitionException.NoSuchDataDefinition(
+				deDataDefinition.getDEDataDefinitionId(), nsse);
+		}
+		catch (PrincipalException.MustHavePermission mhp)
+		{
+			throw new DEDataDefinitionException.MustHavePermission(
+				mhp.actionId, mhp);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

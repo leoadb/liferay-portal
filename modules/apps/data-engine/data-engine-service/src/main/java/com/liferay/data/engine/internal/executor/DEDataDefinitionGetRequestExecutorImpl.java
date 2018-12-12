@@ -25,6 +25,7 @@ import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.model.DEDataDefinitionField;
 import com.liferay.data.engine.service.DEDataDefinitionGetRequest;
 import com.liferay.data.engine.service.DEDataDefinitionGetResponse;
+import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 
@@ -53,6 +54,11 @@ public class DEDataDefinitionGetRequestExecutorImpl
 				deDataDefinitionId);
 
 			return DEDataDefinitionGetResponse.Builder.of(map(ddmStructure));
+		}
+		catch (NoSuchStructureException nsse)
+		{
+			throw new DEDataDefinitionException.NoSuchDataDefinition(
+				deDataDefinitionGetRequest.getDEDataDefinitionId(), nsse);
 		}
 		catch (Exception e) {
 			throw new DEDataDefinitionException(e);
