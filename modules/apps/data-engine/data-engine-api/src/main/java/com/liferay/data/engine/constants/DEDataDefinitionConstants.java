@@ -22,6 +22,9 @@ public class DEDataDefinitionConstants {
 	public static final String ADD_DATA_DEFINITION_ACTION =
 		"ADD_DATA_DEFINITION";
 
+	public static final String DATA_DEFINITION_PORTLET =
+		"com_liferay_data_engine_web_portlet_DEDataDefinitionPortlet";
+
 	public static final String MODEL_RESOURCE_NAME =
 		"com.liferay.data.engine.model.DEDataDefinition";
 
