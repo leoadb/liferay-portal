@@ -138,6 +138,17 @@ public class DERequestExecutorTest {
 		}
 	}
 
+	@Test(expected = DEDataDefinitionException.NoSuchDataDefinition.class)
+	public void testDeleteNoSuchDataDefinition() throws Exception {
+		DEDataDefinitionDeleteRequest deDataDefinitionDeleteRequest =
+			DEDataDefinitionRequestBuilder.deleteBuilder(
+			).byId(
+				1
+			).build();
+
+		_deDeleteRequestExecutor.execute(deDataDefinitionDeleteRequest);
+	}
+
 	@Test
 	public void testGet() throws Exception {
 		Map<String, String> field1Labels = new HashMap() {
@@ -228,6 +239,17 @@ public class DERequestExecutorTest {
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	@Test(expected = DEDataDefinitionException.NoSuchDataDefinition.class)
+	public void testGetNoSuchDataDefinition() throws Exception {
+		DEDataDefinitionGetRequest deDataDefinitionGetRequest =
+			DEDataDefinitionRequestBuilder.getBuilder(
+			).byId(
+				1
+			).build();
+
+		_deGetRequestExecutor.execute(deDataDefinitionGetRequest);
 	}
 
 	@Test
@@ -432,6 +454,36 @@ public class DERequestExecutorTest {
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	@Test(expected = DEDataDefinitionException.NoSuchDataDefinition.class)
+	public void testUpdateNoSuchDataDefinition() throws Exception {
+		DEDataDefinitionField deDataDefinitionField1 =
+			new DEDataDefinitionField("field", "string");
+
+		DEDataDefinition deDataDefinition = new DEDataDefinition(
+			Arrays.asList(deDataDefinitionField1));
+
+		deDataDefinition.setDEDataDefinitionId(1);
+
+		deDataDefinition.addDescription(
+			LocaleUtil.US, "Definition description");
+		deDataDefinition.addDescription(
+			LocaleUtil.BRAZIL, "Descrição da definição");
+		deDataDefinition.addName(LocaleUtil.US, "Definition");
+		deDataDefinition.addName(LocaleUtil.BRAZIL, "Definição");
+		deDataDefinition.setStorageType("json");
+
+		DEDataDefinitionSaveRequest deDataDefinitionSaveRequest =
+			DEDataDefinitionRequestBuilder.saveBuilder(
+				deDataDefinition
+			).onBehalfOf(
+				_user.getUserId()
+			).inGroup(
+				_group.getGroupId()
+			).build();
+
+		_deSaveRequestExecutor.execute(deDataDefinitionSaveRequest);
 	}
 
 	protected ModelPermissions createModelPermissions() {
