@@ -26,6 +26,7 @@ import com.liferay.data.engine.service.DEDataDefinitionSaveRequest;
 import com.liferay.data.engine.service.DEDataDefinitionSaveResponse;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
+import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
@@ -57,12 +58,12 @@ public class DEDataDefinitionSaveRequestExecutorImpl
 			DEDataDefinitionSaveRequest deDataDefinitionSaveRequest)
 		throws DEDataDefinitionException {
 
+		DEDataDefinition deDataDefinition =
+			deDataDefinitionSaveRequest.getDEDataDefinition();
+
+		long deDataDefinitionId = deDataDefinition.getDEDataDefinitionId();
+
 		try {
-			DEDataDefinition deDataDefinition =
-				deDataDefinitionSaveRequest.getDEDataDefinition();
-
-			long deDataDefinitionId = deDataDefinition.getDEDataDefinitionId();
-
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
@@ -96,6 +97,11 @@ public class DEDataDefinitionSaveRequestExecutorImpl
 			}
 
 			return DEDataDefinitionSaveResponse.Builder.of(deDataDefinitionId);
+		}
+		catch (NoSuchStructureException nsse)
+		{
+			throw new DEDataDefinitionException.NoSuchDataDefinition(
+				deDataDefinitionId, nsse);
 		}
 		catch (Exception e) {
 			throw new DEDataDefinitionException(e);
