@@ -16,9 +16,9 @@ package com.liferay.data.engine.internal.service;
 
 import com.liferay.data.engine.constants.DEActionKeys;
 import com.liferay.data.engine.exception.DEDataDefinitionException;
-import com.liferay.data.engine.executor.DEDeleteRequestExecutor;
-import com.liferay.data.engine.executor.DEGetRequestExecutor;
-import com.liferay.data.engine.executor.DESaveRequestExecutor;
+import com.liferay.data.engine.internal.executor.DEDataDefinitionDeleteRequestExecutor;
+import com.liferay.data.engine.internal.executor.DEDataDefinitionGetRequestExecutor;
+import com.liferay.data.engine.internal.executor.DEDataDefinitionSaveRequestExecutor;
 import com.liferay.data.engine.internal.security.permission.DEDataEnginePermissionSupport;
 import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.service.DEDataDefinitionDeleteRequest;
@@ -60,13 +60,8 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 			_modelResourcePermission.check(
 				getPermissionChecker(), deDataDefinitionId, ActionKeys.DELETE);
 
-			return deDeleteRequestExecutor.execute(
+			return deDataDefinitionDeleteRequestExecutor.execute(
 				deDataDefinitionDeleteRequest);
-		}
-		catch (DEDataDefinitionException dedde) {
-			_log.error(dedde, dedde);
-
-			throw dedde;
 		}
 		catch (NoSuchStructureException nsse) {
 			_log.error(nsse, nsse);
@@ -93,12 +88,8 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 			_modelResourcePermission.check(
 				getPermissionChecker(), deDataDefinitionId, ActionKeys.VIEW);
 
-			return deGetRequestExecutor.execute(deDataDefinitionGetRequest);
-		}
-		catch (DEDataDefinitionException dedde) {
-			_log.error(dedde, dedde);
-
-			throw dedde;
+			return deDataDefinitionGetRequestExecutor.execute(
+				deDataDefinitionGetRequest);
 		}
 		catch (NoSuchStructureException nsse) {
 			_log.error(nsse, nsse);
@@ -136,7 +127,8 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 			}
 
 			DEDataDefinitionSaveResponse deDataDefinitionSaveResponse =
-				deSaveRequestExecutor.execute(deDataDefinitionSaveRequest);
+				deDataDefinitionSaveRequestExecutor.execute(
+					deDataDefinitionSaveRequest);
 
 			return DEDataDefinitionSaveResponse.Builder.of(
 				deDataDefinitionSaveResponse.getDEDataDefinitionId());
@@ -203,16 +195,19 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 	}
 
 	@Reference
+	protected DEDataDefinitionDeleteRequestExecutor
+		deDataDefinitionDeleteRequestExecutor;
+
+	@Reference
+	protected DEDataDefinitionGetRequestExecutor
+		deDataDefinitionGetRequestExecutor;
+
+	@Reference
+	protected DEDataDefinitionSaveRequestExecutor
+		deDataDefinitionSaveRequestExecutor;
+
+	@Reference
 	protected DEDataEnginePermissionSupport deDataEnginePermissionSupport;
-
-	@Reference
-	protected DEDeleteRequestExecutor deDeleteRequestExecutor;
-
-	@Reference
-	protected DEGetRequestExecutor deGetRequestExecutor;
-
-	@Reference
-	protected DESaveRequestExecutor deSaveRequestExecutor;
 
 	@Reference
 	protected Portal portal;
