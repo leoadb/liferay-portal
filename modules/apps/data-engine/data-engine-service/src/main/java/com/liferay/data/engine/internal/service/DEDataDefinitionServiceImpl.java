@@ -18,6 +18,7 @@ import com.liferay.data.engine.constants.DEActionKeys;
 import com.liferay.data.engine.exception.DEDataDefinitionException;
 import com.liferay.data.engine.internal.executor.DEDataDefinitionDeleteRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataDefinitionGetRequestExecutor;
+import com.liferay.data.engine.internal.executor.DEDataDefinitionSaveModelPermissionsRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataDefinitionSaveRequestExecutor;
 import com.liferay.data.engine.internal.security.permission.DEDataEnginePermissionSupport;
 import com.liferay.data.engine.model.DEDataDefinition;
@@ -25,6 +26,8 @@ import com.liferay.data.engine.service.DEDataDefinitionDeleteRequest;
 import com.liferay.data.engine.service.DEDataDefinitionDeleteResponse;
 import com.liferay.data.engine.service.DEDataDefinitionGetRequest;
 import com.liferay.data.engine.service.DEDataDefinitionGetResponse;
+import com.liferay.data.engine.service.DEDataDefinitionSaveModelPermissionsRequest;
+import com.liferay.data.engine.service.DEDataDefinitionSaveModelPermissionsResponse;
 import com.liferay.data.engine.service.DEDataDefinitionSaveRequest;
 import com.liferay.data.engine.service.DEDataDefinitionSaveResponse;
 import com.liferay.data.engine.service.DEDataDefinitionService;
@@ -105,6 +108,31 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 	}
 
 	@Override
+	public DEDataDefinitionSaveModelPermissionsResponse execute(
+			DEDataDefinitionSaveModelPermissionsRequest
+				deDataDefinitionSaveModelPermissionsRequest)
+		throws DEDataDefinitionException {
+
+		try {
+			checkPermission(
+				deDataDefinitionSaveModelPermissionsRequest.getScopedGroupId(),
+				ActionKeys.DEFINE_PERMISSIONS, getPermissionChecker());
+
+			return deDataDefinitionSaveModelPermissionsRequestExecutor.execute(
+				deDataDefinitionSaveModelPermissionsRequest);
+		}
+		catch (PrincipalException.MustHavePermission mhp) {
+			throw new DEDataDefinitionException.MustHavePermission(
+				mhp.actionId, mhp);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new DEDataDefinitionException(e);
+		}
+	}
+
+	@Override
 	public DEDataDefinitionSaveResponse execute(
 			DEDataDefinitionSaveRequest deDataDefinitionSaveRequest)
 		throws DEDataDefinitionException {
@@ -116,8 +144,9 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 			long deDataDefinitionId = deDataDefinition.getDEDataDefinitionId();
 
 			if (deDataDefinitionId == 0) {
-				checkCreateDataDefinitionPermission(
+				checkPermission(
 					deDataDefinitionSaveRequest.getGroupId(),
+					DEActionKeys.ADD_DATA_DEFINITION_ACTION,
 					getPermissionChecker());
 			}
 			else {
@@ -155,18 +184,17 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 		}
 	}
 
-	protected void checkCreateDataDefinitionPermission(
-			long groupId, PermissionChecker permissionChecker)
+	protected void checkPermission(
+			long classPK, String actionId, PermissionChecker permissionChecker)
 		throws PortalException {
 
 		String resourceName = DEDataEnginePermissionSupport.RESOURCE_NAME;
-		String actionId = DEActionKeys.ADD_DATA_DEFINITION_ACTION;
 
 		if (!deDataEnginePermissionSupport.contains(
-				permissionChecker, resourceName, groupId, actionId)) {
+				permissionChecker, resourceName, classPK, actionId)) {
 
 			throw new PrincipalException.MustHavePermission(
-				permissionChecker, resourceName, groupId, actionId);
+				permissionChecker, resourceName, classPK, actionId);
 		}
 	}
 
@@ -201,6 +229,10 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 	@Reference
 	protected DEDataDefinitionGetRequestExecutor
 		deDataDefinitionGetRequestExecutor;
+
+	@Reference
+	protected DEDataDefinitionSaveModelPermissionsRequestExecutor
+		deDataDefinitionSaveModelPermissionsRequestExecutor;
 
 	@Reference
 	protected DEDataDefinitionSaveRequestExecutor
