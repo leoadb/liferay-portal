@@ -15,15 +15,10 @@
 package com.liferay.dynamic.data.mapping.form.renderer.internal;
 
 import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluator;
-import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.form.renderer.internal.util.DDMFormTemplateContextFactoryUtil;
-import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializer;
-import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializerSerializeRequest;
-import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializerSerializeResponse;
-import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializerTracker;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
@@ -129,13 +124,6 @@ public class DDMFormTemplateContextFactoryImpl
 
 		templateContext.put(
 			"evaluatorURL", getDDMFormContextProviderServletURL());
-
-		List<DDMFormFieldType> ddmFormFieldTypes =
-			_ddmFormFieldTypeServicesTracker.getDDMFormFieldTypes();
-
-		if (!ddmFormRenderingContext.isViewMode()) {
-			templateContext.put("fieldTypes", serialize(ddmFormFieldTypes));
-		}
 
 		templateContext.put("groupId", ddmFormRenderingContext.getGroupId());
 
@@ -301,22 +289,6 @@ public class DDMFormTemplateContextFactoryImpl
 		return "ddm.paginated_form";
 	}
 
-	protected String serialize(List<DDMFormFieldType> ddmFormFieldTypes) {
-		DDMFormFieldTypesSerializer ddmFormFieldTypesSerializer =
-			_ddmFormFieldTypesSerializerTracker.getDDMFormFieldTypesSerializer(
-				"json");
-
-		DDMFormFieldTypesSerializerSerializeRequest.Builder builder =
-			DDMFormFieldTypesSerializerSerializeRequest.Builder.newBuilder(
-				ddmFormFieldTypes);
-
-		DDMFormFieldTypesSerializerSerializeResponse
-			ddmFormFieldTypesSerializerSerializeResponse =
-				ddmFormFieldTypesSerializer.serialize(builder.build());
-
-		return ddmFormFieldTypesSerializerSerializeResponse.getContent();
-	}
-
 	protected void setDDMFormFieldsEvaluableProperty(DDMForm ddmForm) {
 		Map<String, DDMFormField> ddmFormFieldsMap =
 			ddmForm.getDDMFormFieldsMap(true);
@@ -372,10 +344,6 @@ public class DDMFormTemplateContextFactoryImpl
 
 	@Reference
 	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;
-
-	@Reference
-	private DDMFormFieldTypesSerializerTracker
-		_ddmFormFieldTypesSerializerTracker;
 
 	private final DDMFormTemplateContextFactoryHelper
 		_ddmFormTemplateContextFactoryHelper =
