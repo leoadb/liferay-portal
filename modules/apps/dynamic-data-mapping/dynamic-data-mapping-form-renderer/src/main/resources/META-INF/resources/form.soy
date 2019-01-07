@@ -37,14 +37,18 @@
 		AUI().use(
 			'liferay-ddm-form-renderer',
 			function(A) {lb}
-				if (Liferay.DMMFieldTypesReady) {lb}
+				var renderForm = function() {lb}
 					{call .render_form data="all" /}
+				{rb};
+
+				if (Liferay.DMMFieldTypesReady) {lb}
+					renderForm();
 				{rb}
 				else {lb}
 					Liferay.onceAfter(
 						'DMMFieldTypesReady',
 						function ()  {lb}
-							{call .render_form data="all" /}
+							renderForm();
 						{rb}
 					);
 				{rb}
