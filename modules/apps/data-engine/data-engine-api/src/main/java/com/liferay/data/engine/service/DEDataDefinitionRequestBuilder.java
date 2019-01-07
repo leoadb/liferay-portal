@@ -43,4 +43,12 @@ public class DEDataDefinitionRequestBuilder {
 			companyId, scopedGroupId, deDataDefinitionId);
 	}
 
+	public static DEDataDefinitionSavePermissionsRequest.Builder
+		savePermissionsBuilder(
+			long companyId, long scopedGroupId, String... roleNames) {
+
+		return new DEDataDefinitionSavePermissionsRequest.Builder(
+			companyId, scopedGroupId, roleNames);
+	}
+
 }

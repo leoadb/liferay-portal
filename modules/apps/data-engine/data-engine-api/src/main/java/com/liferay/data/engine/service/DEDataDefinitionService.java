@@ -34,6 +34,11 @@ public interface DEDataDefinitionService {
 
 	public DEDataDefinitionSaveModelPermissionsResponse execute(
 			DEDataDefinitionSaveModelPermissionsRequest
+				deDataDefinitionSaveModelPermissionsRequest)
+		throws DEDataDefinitionException;
+
+	public DEDataDefinitionSavePermissionsResponse execute(
+			DEDataDefinitionSavePermissionsRequest
 				deDataDefinitionSavePermissionsRequest)
 		throws DEDataDefinitionException;
 
