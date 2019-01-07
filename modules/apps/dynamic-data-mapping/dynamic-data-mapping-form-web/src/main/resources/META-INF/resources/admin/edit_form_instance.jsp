@@ -147,22 +147,6 @@ renderResponse.setTitle((formInstance == null) ? LanguageUtil.get(request, "new-
 			refererPortletNamespace="<%= liferayPortletResponse.getNamespace() %>"
 		/>
 
-		<liferay-util:html-top
-			outputKey="loadDDMFieldTypes"
-		>
-			<aui:script use="liferay-ddm-form-renderer-types,liferay-ddm-soy-template-util">
-				Liferay.DDM.SoyTemplateUtil.loadModules(
-					function() {
-						Liferay.DDM.Renderer.FieldTypes.register(<%= ddmFormAdminDisplayContext.getDDMFormFieldTypesJSONArray() %>);
-
-						Liferay.DMMFieldTypesReady = true;
-
-						Liferay.fire('DMMFieldTypesReady');
-					}
-				);
-			</aui:script>
-		</liferay-util:html-top>
-
 		<aui:script use="liferay-ddm-form-portlet">
 			Liferay.namespace('DDM').FormSettings = {
 				autosaveInterval: '<%= ddmFormAdminDisplayContext.getAutosaveInterval() %>',
