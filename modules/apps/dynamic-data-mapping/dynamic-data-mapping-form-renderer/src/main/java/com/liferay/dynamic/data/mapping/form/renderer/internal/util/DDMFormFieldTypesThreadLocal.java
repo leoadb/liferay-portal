@@ -31,24 +31,12 @@ public class DDMFormFieldTypesThreadLocal {
 		return false;
 	}
 
-	public static boolean isFieldTypesRequested() {
-		if (_threadLocalCache.get("fieldTypesRequested") == Boolean.TRUE) {
-			return true;
-		}
-
-		return false;
-	}
-
 	public static void removeAll() {
 		_threadLocalCache.removeAll();
 	}
 
 	public static void setFieldTypesProvided(boolean fieldTypesProvided) {
 		_threadLocalCache.put("fieldTypesProvided", fieldTypesProvided);
-	}
-
-	public static void setFieldTypesRequested(boolean fieldTypesRequested) {
-		_threadLocalCache.put("fieldTypesRequested", fieldTypesRequested);
 	}
 
 	private static final ThreadLocalCache<Boolean> _threadLocalCache =

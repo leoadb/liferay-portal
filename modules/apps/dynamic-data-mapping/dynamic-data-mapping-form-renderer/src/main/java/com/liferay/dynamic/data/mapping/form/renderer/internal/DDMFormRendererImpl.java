@@ -21,7 +21,6 @@ import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingException;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.form.renderer.internal.servlet.taglib.DDMFormFieldTypesDynamicInclude;
-import com.liferay.dynamic.data.mapping.form.renderer.internal.util.DDMFormFieldTypesThreadLocal;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.util.DDM;
@@ -146,8 +145,6 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 		String html = render(template, templateNamespace);
 
 		String javaScript = render(template, "ddm.form_renderer_js");
-
-		DDMFormFieldTypesThreadLocal.setFieldTypesRequested(true);
 
 		DynamicIncludeUtil.include(
 			ddmFormRenderingContext.getHttpServletRequest(),

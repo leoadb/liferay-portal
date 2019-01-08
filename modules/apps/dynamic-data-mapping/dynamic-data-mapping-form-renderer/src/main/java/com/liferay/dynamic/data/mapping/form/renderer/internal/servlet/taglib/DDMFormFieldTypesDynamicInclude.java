@@ -53,9 +53,7 @@ public class DDMFormFieldTypesDynamicInclude extends BaseDynamicInclude {
 			String key)
 		throws IOException {
 
-		if (DDMFormFieldTypesThreadLocal.isFieldTypesProvided() ||
-			!DDMFormFieldTypesThreadLocal.isFieldTypesRequested()) {
-
+		if (DDMFormFieldTypesThreadLocal.isFieldTypesProvided()) {
 			return;
 		}
 
