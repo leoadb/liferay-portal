@@ -14,7 +14,6 @@
 
 package com.liferay.dynamic.data.mapping.form.renderer.internal.util;
 
-import com.liferay.dynamic.data.mapping.form.renderer.internal.DDMFormRendererImpl;
 import com.liferay.portal.kernel.cache.thread.local.Lifecycle;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCache;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
@@ -54,6 +53,6 @@ public class DDMFormFieldTypesThreadLocal {
 
 	private static final ThreadLocalCache<Boolean> _threadLocalCache =
 		ThreadLocalCacheManager.getThreadLocalCache(
-			Lifecycle.REQUEST, DDMFormRendererImpl.class.getName());
+			Lifecycle.REQUEST, DDMFormFieldTypesThreadLocal.class.getName());
 
 }
