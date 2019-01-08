@@ -14,6 +14,7 @@
 
 package com.liferay.dynamic.data.mapping.form.renderer.internal.servlet.taglib;
 
+import com.liferay.dynamic.data.mapping.form.renderer.internal.servlet.taglib.helper.DDMFormFieldTypesDynamicIncludeHelper;
 import com.liferay.dynamic.data.mapping.form.renderer.internal.util.DDMFormFieldTypesThreadLocal;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Bruno Basto
@@ -37,12 +39,20 @@ public class DDMFormRendererBottomDynamicInclude extends BaseDynamicInclude {
 			String key)
 		throws IOException {
 
+		if (DDMFormFieldTypesThreadLocal.isFieldTypesRequested()) {
+			_ddmFormFieldTypesDynamicIncludeHelper.include(request, response);
+		}
+
 		DDMFormFieldTypesThreadLocal.removeAll();
 	}
 
 	@Override
 	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#pre");
+		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
+
+	@Reference
+	private DDMFormFieldTypesDynamicIncludeHelper
+		_ddmFormFieldTypesDynamicIncludeHelper;
 
 }

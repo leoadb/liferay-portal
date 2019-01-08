@@ -23,8 +23,8 @@ import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
  */
 public class DDMFormFieldTypesThreadLocal {
 
-	public static boolean isFieldTypesProvided() {
-		if (_threadLocalCache.get("fieldTypesProvided") == Boolean.TRUE) {
+	public static boolean isFieldTypesRequested() {
+		if (_threadLocalCache.get("fieldTypesRequested") == Boolean.TRUE) {
 			return true;
 		}
 
@@ -35,8 +35,8 @@ public class DDMFormFieldTypesThreadLocal {
 		_threadLocalCache.removeAll();
 	}
 
-	public static void setFieldTypesProvided(boolean fieldTypesProvided) {
-		_threadLocalCache.put("fieldTypesProvided", fieldTypesProvided);
+	public static void setFieldTypesRequested(boolean fieldTypesRequested) {
+		_threadLocalCache.put("fieldTypesRequested", fieldTypesRequested);
 	}
 
 	private static final ThreadLocalCache<Boolean> _threadLocalCache =

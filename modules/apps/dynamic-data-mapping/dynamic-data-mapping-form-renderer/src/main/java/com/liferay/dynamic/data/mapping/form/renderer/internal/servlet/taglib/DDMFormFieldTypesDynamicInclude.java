@@ -14,26 +14,14 @@
 
 package com.liferay.dynamic.data.mapping.form.renderer.internal.servlet.taglib;
 
-import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
-import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
+import com.liferay.dynamic.data.mapping.form.renderer.internal.servlet.taglib.helper.DDMFormFieldTypesDynamicIncludeHelper;
 import com.liferay.dynamic.data.mapping.form.renderer.internal.util.DDMFormFieldTypesThreadLocal;
-import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializer;
-import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializerSerializeRequest;
-import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializerSerializeResponse;
-import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializerTracker;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
-import com.liferay.portal.kernel.servlet.taglib.aui.ScriptData;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,34 +41,16 @@ public class DDMFormFieldTypesDynamicInclude extends BaseDynamicInclude {
 			String key)
 		throws IOException {
 
-		if (DDMFormFieldTypesThreadLocal.isFieldTypesProvided()) {
-			return;
-		}
-
-		ScriptData scriptData = new ScriptData();
-
-		Map<String, String> values = new HashMap<>();
-
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		values.put(
-			"fieldTypes",
-			serialize(_ddmFormFieldTypeServicesTracker.getDDMFormFieldTypes()));
-
-		scriptData.append(
-			null,
-			StringUtil.replaceToStringBundler(
-				_TMPL_CONTENT, StringPool.POUND, StringPool.POUND, values),
-			_MODULES, ScriptData.ModulesType.AUI);
-
-		scriptData.writeTo(response.getWriter());
-
 		if (themeDisplay.isAjax()) {
+			_ddmFormFieldTypesDynamicIncludeHelper.include(request, response);
+
 			DDMFormFieldTypesThreadLocal.removeAll();
 		}
 		else {
-			DDMFormFieldTypesThreadLocal.setFieldTypesProvided(true);
+			DDMFormFieldTypesThreadLocal.setFieldTypesRequested(true);
 		}
 	}
 
@@ -90,34 +60,8 @@ public class DDMFormFieldTypesDynamicInclude extends BaseDynamicInclude {
 			DDMFormFieldTypesDynamicInclude.class.getName());
 	}
 
-	protected String serialize(List<DDMFormFieldType> ddmFormFieldTypes) {
-		DDMFormFieldTypesSerializer ddmFormFieldTypesSerializer =
-			_ddmFormFieldTypesSerializerTracker.getDDMFormFieldTypesSerializer(
-				"json");
-
-		DDMFormFieldTypesSerializerSerializeRequest.Builder builder =
-			DDMFormFieldTypesSerializerSerializeRequest.Builder.newBuilder(
-				ddmFormFieldTypes);
-
-		DDMFormFieldTypesSerializerSerializeResponse
-			ddmFormFieldTypesSerializerSerializeResponse =
-				ddmFormFieldTypesSerializer.serialize(builder.build());
-
-		return ddmFormFieldTypesSerializerSerializeResponse.getContent();
-	}
-
-	private static final String _MODULES =
-		"liferay-ddm-form-renderer-types,liferay-ddm-soy-template-util";
-
-	private static final String _TMPL_CONTENT = StringUtil.read(
-		DDMFormFieldTypesDynamicInclude.class,
-		"/META-INF/resources/dynamic_include/field_types.tmpl");
-
 	@Reference
-	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;
-
-	@Reference
-	private DDMFormFieldTypesSerializerTracker
-		_ddmFormFieldTypesSerializerTracker;
+	private DDMFormFieldTypesDynamicIncludeHelper
+		_ddmFormFieldTypesDynamicIncludeHelper;
 
 }
