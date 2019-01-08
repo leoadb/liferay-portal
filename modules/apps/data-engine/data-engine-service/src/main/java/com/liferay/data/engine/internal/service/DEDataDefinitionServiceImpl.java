@@ -36,8 +36,6 @@ import com.liferay.data.engine.service.DEDataDefinitionSaveResponse;
 import com.liferay.data.engine.service.DEDataDefinitionService;
 import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -69,15 +67,15 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 			return deDataDefinitionDeleteRequestExecutor.execute(
 				deDataDefinitionDeleteRequest);
 		}
+		catch (PrincipalException.MustHavePermission mhp) {
+			throw new DEDataDefinitionException.MustHavePermission(
+				mhp.actionId, mhp);
+		}
 		catch (NoSuchStructureException nsse) {
-			_log.error(nsse, nsse);
-
 			throw new DEDataDefinitionException.NoSuchDataDefinition(
 				deDataDefinitionDeleteRequest.getDEDataDefinitionId(), nsse);
 		}
 		catch (Exception e) {
-			_log.error(e, e);
-
 			throw new DEDataDefinitionException(e);
 		}
 	}
@@ -97,15 +95,15 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 			return deDataDefinitionGetRequestExecutor.execute(
 				deDataDefinitionGetRequest);
 		}
+		catch (PrincipalException.MustHavePermission mhp) {
+			throw new DEDataDefinitionException.MustHavePermission(
+				mhp.actionId, mhp);
+		}
 		catch (NoSuchStructureException nsse) {
-			_log.error(nsse, nsse);
-
 			throw new DEDataDefinitionException.NoSuchDataDefinition(
 				deDataDefinitionGetRequest.getDEDataDefinitionId(), nsse);
 		}
 		catch (Exception e) {
-			_log.error(e, e);
-
 			throw new DEDataDefinitionException(e);
 		}
 	}
@@ -129,8 +127,6 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 				mhp.actionId, mhp);
 		}
 		catch (Exception e) {
-			_log.error(e, e);
-
 			throw new DEDataDefinitionException(e);
 		}
 	}
@@ -154,13 +150,9 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 				mhp.actionId, mhp);
 		}
 		catch (DEDataDefinitionException dedde) {
-			_log.error(dedde, dedde);
-
 			throw dedde;
 		}
 		catch (Exception e) {
-			_log.error(e, e);
-
 			throw new DEDataDefinitionException(e);
 		}
 	}
@@ -196,13 +188,9 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 				deDataDefinitionSaveResponse.getDEDataDefinitionId());
 		}
 		catch (DEDataDefinitionException dedde) {
-			_log.error(dedde, dedde);
-
 			throw dedde;
 		}
 		catch (NoSuchStructureException nsse) {
-			_log.error(nsse, nsse);
-
 			throw new DEDataDefinitionException.NoSuchDataDefinition(
 				deDataDefinition.getDEDataDefinitionId(), nsse);
 		}
@@ -211,8 +199,6 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 				mhp.actionId, mhp);
 		}
 		catch (Exception e) {
-			_log.error(e, e);
-
 			throw new DEDataDefinitionException(e);
 		}
 	}
@@ -280,9 +266,6 @@ public class DEDataDefinitionServiceImpl implements DEDataDefinitionService {
 
 	@Reference
 	protected Portal portal;
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DEDataDefinitionServiceImpl.class);
 
 	private ModelResourcePermission<DEDataDefinition> _modelResourcePermission;
 
