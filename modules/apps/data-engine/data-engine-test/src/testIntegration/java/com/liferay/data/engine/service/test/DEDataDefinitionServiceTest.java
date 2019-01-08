@@ -19,7 +19,10 @@ import com.liferay.data.engine.exception.DEDataDefinitionException;
 import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.model.DEDataDefinitionField;
 import com.liferay.data.engine.service.DEDataDefinitionDeleteRequest;
+import com.liferay.data.engine.service.DEDataDefinitionGetRequest;
+import com.liferay.data.engine.service.DEDataDefinitionGetResponse;
 import com.liferay.data.engine.service.DEDataDefinitionRequestBuilder;
+import com.liferay.data.engine.service.DEDataDefinitionSaveModelPermissionsRequest;
 import com.liferay.data.engine.service.DEDataDefinitionSaveRequest;
 import com.liferay.data.engine.service.DEDataDefinitionSaveResponse;
 import com.liferay.data.engine.service.DEDataDefinitionService;
@@ -48,6 +51,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -123,6 +127,175 @@ public class DEDataDefinitionServiceTest {
 		deleteDataDefinition(user, deDataDefinitionId);
 	}
 
+	@Test
+	public void testGet() throws Exception {
+		long deDataDefinitionId = insertDEDataDefinition(_adminUser, _group);
+
+		DEDataDefinition deDataDefinition = getDataDefinition(
+			_siteMember, deDataDefinitionId);
+
+		Assert.assertEquals(
+			deDataDefinitionId, deDataDefinition.getDEDataDefinitionId());
+	}
+
+	@Test(expected = DEDataDefinitionException.NoSuchDataDefinition.class)
+	public void testGetNoSuchDataDefinition() throws Exception {
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_siteMember));
+
+			ServiceContext serviceContext = createServiceContext(
+				_siteMember, _group);
+
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			DEDataDefinitionGetRequest deDataDefinitionGetRequest =
+				DEDataDefinitionRequestBuilder.getBuilder(
+				).byId(
+					1
+				).build();
+
+			_deDataDefinitionService.execute(deDataDefinitionGetRequest);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@Test(expected = DEDataDefinitionException.MustHavePermission.class)
+	public void testGetWithNoPermission() throws Exception {
+		long deDataDefinitionId = insertDEDataDefinition(_adminUser, _group);
+
+		User user = _userLocalService.getDefaultUser(
+			TestPropsValues.getCompanyId());
+
+		getDataDefinition(user, deDataDefinitionId);
+	}
+
+	@Test
+	public void testGrantPermissionDelete() throws Exception {
+		long deDataDefinitionId = insertDEDataDefinition(_adminUser, _group);
+
+		User organizationUser = UserTestUtil.addGroupUser(
+			_group, RoleConstants.GUEST);
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_adminUser));
+
+			ServiceContext serviceContext = createServiceContext(
+				organizationUser, _group);
+
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			DEDataDefinitionSaveModelPermissionsRequest
+				deDataDefinitionSaveModelPermissionsRequest =
+					DEDataDefinitionRequestBuilder.saveModelPermissionsBuilder(
+						TestPropsValues.getCompanyId(), _group.getGroupId(),
+						deDataDefinitionId
+					).grantTo(
+						organizationUser.getUserId()
+					).inGroup(
+						_group.getGroupId()
+					).allowDelete(
+					).build();
+
+			_deDataDefinitionService.execute(
+				deDataDefinitionSaveModelPermissionsRequest);
+
+			deleteDataDefinition(organizationUser, deDataDefinitionId);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@Test
+	public void testInsert() throws Exception {
+		insertDEDataDefinition(_siteMember, _group);
+	}
+
+	//@Test(expected = DEDataDefinitionException.MustHavePermission.class)
+	public void testInsertWithNoPermission() throws Exception {
+	}
+
+	@Test
+	public void testUpdate() throws Exception {
+		Map<String, String> field1Labels = new HashMap() {
+			{
+				put("en_US", "Field 1");
+			}
+		};
+
+		DEDataDefinitionField deDataDefinitionField = new DEDataDefinitionField(
+			"field1", "string");
+
+		deDataDefinitionField.addLabels(field1Labels);
+
+		DEDataDefinition expectedDEDataDefinition = new DEDataDefinition(
+			Arrays.asList(deDataDefinitionField));
+
+		expectedDEDataDefinition.addName(LocaleUtil.US, "Definition 1");
+		expectedDEDataDefinition.setStorageType("json");
+
+		DEDataDefinitionSaveRequest deDataDefinitionSaveRequest =
+			DEDataDefinitionRequestBuilder.saveBuilder(
+				expectedDEDataDefinition
+			).onBehalfOf(
+				_siteMember.getUserId()
+			).inGroup(
+				_group.getGroupId()
+			).build();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_adminUser));
+
+			ServiceContext serviceContext = createServiceContext(
+				_siteMember, _group);
+
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			DEDataDefinitionSaveResponse deDataDefinitionSaveResponse =
+				_deDataDefinitionService.execute(deDataDefinitionSaveRequest);
+
+			long deDataDefinitionId =
+				deDataDefinitionSaveResponse.getDEDataDefinitionId();
+
+			expectedDEDataDefinition.setPrimaryKeyObj(deDataDefinitionId);
+
+			DEDataDefinition deDataDefinition = getDataDefinition(
+				_siteMember, deDataDefinitionId);
+
+			Assert.assertEquals(expectedDEDataDefinition, deDataDefinition);
+
+			expectedDEDataDefinition.addName(
+				LocaleUtil.BRAZIL, "Definition BR");
+
+			DEDataDefinitionSaveRequest deDataDefinitionSaveRequest2 =
+				DEDataDefinitionRequestBuilder.saveBuilder(
+					expectedDEDataDefinition
+				).onBehalfOf(
+					_siteMember.getUserId()
+				).inGroup(
+					_group.getGroupId()
+				).build();
+
+			DEDataDefinitionSaveResponse deDataDefinitionSaveResponse2 =
+				_deDataDefinitionService.execute(deDataDefinitionSaveRequest2);
+
+			DEDataDefinition deDataDefinitionAfterUpdate = getDataDefinition(
+				_siteMember,
+				deDataDefinitionSaveResponse2.getDEDataDefinitionId());
+
+			Assert.assertEquals(
+				expectedDEDataDefinition, deDataDefinitionAfterUpdate);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
 	protected ServiceContext createServiceContext(User user, Group group) {
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -162,6 +335,34 @@ public class DEDataDefinitionServiceTest {
 				).build();
 
 			_deDataDefinitionService.execute(deDataDefinitionDeleteRequest);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	protected DEDataDefinition getDataDefinition(
+			User user, long deDataDefinitionId)
+		throws Exception {
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(user));
+
+			ServiceContext serviceContext = createServiceContext(user, _group);
+
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			DEDataDefinitionGetRequest deDataDefinitionGetRequest =
+				DEDataDefinitionRequestBuilder.getBuilder(
+				).byId(
+					deDataDefinitionId
+				).build();
+
+			DEDataDefinitionGetResponse deDataDefinitionGetResponse =
+				_deDataDefinitionService.execute(deDataDefinitionGetRequest);
+
+			return deDataDefinitionGetResponse.getDeDataDefinition();
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
