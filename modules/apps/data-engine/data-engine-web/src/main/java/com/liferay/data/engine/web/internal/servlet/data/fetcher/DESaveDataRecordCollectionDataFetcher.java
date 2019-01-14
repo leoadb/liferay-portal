@@ -112,7 +112,7 @@ public class DESaveDataRecordCollectionDataFetcher
 			NoSuchDataRecordCollection nsdrc) {
 
 			errorMessage = getMessage(
-				languageId, "no-data-record_collection-exists-with-id-x",
+				languageId, "no-data-record-collection-exists-with-id-x",
 				nsdrc.getDEDataRecordCollectionId());
 		}
 		catch (Exception e) {
