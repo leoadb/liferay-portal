@@ -150,6 +150,61 @@ public class DEDataRecordCollectionServiceTest {
 	}
 
 	@Test
+	public void testDelete() throws Exception {
+		DEDataRecordCollection deDataRecordCollection =
+			DEDataEngineTestUtil.insertDEDataRecordCollection(
+				_adminUser, _group, _deDataDefinitionService,
+				_deDataRecordCollectionService);
+
+		DEDataRecordCollectionSaveModelPermissionsRequest.Builder builder =
+			DEDataRecordCollectionRequestBuilder.saveModelPermissionsBuilder(
+				TestPropsValues.getCompanyId(), _group.getGroupId(),
+				deDataRecordCollection.getDEDataRecordCollectionId()
+			).grantTo(
+				_siteMember.getUserId()
+			).inGroup(
+				_group.getGroupId()
+			).allowDelete();
+
+		DEDataRecordCollectionSaveModelPermissionsRequest
+			deDataRecordCollectionSaveModelPermissionsRequest = builder.build();
+
+		_deDataRecordCollectionService.execute(
+			deDataRecordCollectionSaveModelPermissionsRequest);
+
+		DEDataEngineTestUtil.deleteDEDataRecordCollection(
+			_siteMember, deDataRecordCollection.getDEDataRecordCollectionId(),
+			_deDataRecordCollectionService);
+	}
+
+	@Test(
+		expected =
+			DEDataRecordCollectionException.NoSuchDataRecordCollection.class
+	)
+	public void testDeleteNoSuchDataRecordCollection() throws Exception {
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_siteMember));
+
+		DEDataEngineTestUtil.deleteDEDataRecordCollection(
+			_siteMember, 1, _deDataRecordCollectionService);
+	}
+
+	@Test(expected = DEDataRecordCollectionException.MustHavePermission.class)
+	public void testDeleteWithNoPermission() throws Exception {
+		DEDataRecordCollection deDataRecordCollection =
+			DEDataEngineTestUtil.insertDEDataRecordCollection(
+				_adminUser, _group, _deDataDefinitionService,
+				_deDataRecordCollectionService);
+
+		User user = _userLocalService.getDefaultUser(
+			TestPropsValues.getCompanyId());
+
+		DEDataEngineTestUtil.deleteDEDataRecordCollection(
+			user, deDataRecordCollection.getDEDataRecordCollectionId(),
+			_deDataRecordCollectionService);
+	}
+
+	@Test
 	public void testInsert() throws Exception {
 		DEDataRecordCollection deDataRecordCollection =
 			DEDataEngineTestUtil.insertDEDataRecordCollection(
