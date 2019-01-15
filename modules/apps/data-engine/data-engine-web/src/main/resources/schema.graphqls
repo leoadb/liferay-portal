@@ -121,6 +121,10 @@ type DeleteDataDefinitionType {
 	dataDefinition: DataDefinition
 }
 
+type DeleteDataRecordCollectionType {
+	dataRecordCollection: DataRecordCollection
+}
+
 type GetDataDefinitionType {
 	dataDefinition: DataDefinition
 }
@@ -160,6 +164,7 @@ type SavePermissionsDataRecordCollectionType {
 
 type MutationType {
 	deleteDataDefinition(dataDefinitionId: ID!, languageId: String!): DeleteDataDefinitionType
+	deleteDataRecordCollection(dataRecordCollectionId: ID!, languageId: String!): DeleteDataRecordCollectionType
 	deleteDataRecordCollectionModelPermissions(deleteDataRecordCollectionModelPermissionsInput: DeleteDataRecordCollectionModelPermissionsInput!, languageId: String!): DeleteModelPermissionsDataRecordCollectionType
 	deleteDataRecordCollectionPermissions(deleteDataRecordCollectionPermissionsInput: DeleteDataRecordCollectionPermissionsInput!, languageId: String!): DeletePermissionsDataRecordCollectionType
 	saveDataDefinition(userId: ID!, groupId: ID!, dataDefinition: DataDefinitionInput!, languageId: String!): SaveDataDefinitionType
