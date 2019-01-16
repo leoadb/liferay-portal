@@ -39,9 +39,11 @@ import java.util.Map;
 public class DEDataRecordCollectionSaveRequestExecutor {
 
 	public DEDataRecordCollectionSaveRequestExecutor(
+		DEDataEngineRequestExecutor deDataEngineRequestExecutor,
 		DDLRecordSetLocalService ddlRecordSetLocalService, Portal portal,
 		ResourceLocalService resourceLocalService) {
 
+		_deDataEngineRequestExecutor = deDataEngineRequestExecutor;
 		_ddlRecordSetLocalService = ddlRecordSetLocalService;
 		_portal = portal;
 		_resourceLocalService = resourceLocalService;
@@ -65,8 +67,10 @@ public class DEDataRecordCollectionSaveRequestExecutor {
 
 		serviceContext.setAttribute("addRecordSetResources", Boolean.FALSE);
 
+		DDLRecordSet ddlRecordSet = null;
+
 		if (deDataRecordCollectionId == 0) {
-			DDLRecordSet ddlRecordSet = createDDLRecordSet(
+			ddlRecordSet = createDDLRecordSet(
 				deDataRecordCollectionSaveRequest.getUserId(),
 				deDataRecordCollectionSaveRequest.getGroupId(),
 				deDataRecordCollection, serviceContext);
@@ -89,11 +93,12 @@ public class DEDataRecordCollectionSaveRequestExecutor {
 				DDLRecordSetConstants.SCOPE_DATA_ENGINE, serviceContext);
 		}
 		else {
-			updateDDLRecordSet(deDataRecordCollection, serviceContext);
+			ddlRecordSet = updateDDLRecordSet(
+				deDataRecordCollection, serviceContext);
 		}
 
 		return DEDataRecordCollectionSaveResponse.Builder.of(
-			deDataRecordCollectionId);
+			_deDataEngineRequestExecutor.map(ddlRecordSet));
 	}
 
 	protected DDLRecordSet createDDLRecordSet(
@@ -127,7 +132,7 @@ public class DEDataRecordCollectionSaveRequestExecutor {
 		return localeMap;
 	}
 
-	protected void updateDDLRecordSet(
+	protected DDLRecordSet updateDDLRecordSet(
 			DEDataRecordCollection deDataRecordCollection,
 			ServiceContext serviceContext)
 		throws PortalException {
@@ -140,13 +145,14 @@ public class DEDataRecordCollectionSaveRequestExecutor {
 		DEDataDefinition deDataDefinition =
 			deDataRecordCollection.getDEDataDefinition();
 
-		_ddlRecordSetLocalService.updateRecordSet(
+		return _ddlRecordSetLocalService.updateRecordSet(
 			deDataRecordCollection.getDEDataRecordCollectionId(),
 			deDataDefinition.getDEDataDefinitionId(), nameMap, descriptionMap,
 			0, serviceContext);
 	}
 
 	private final DDLRecordSetLocalService _ddlRecordSetLocalService;
+	private final DEDataEngineRequestExecutor _deDataEngineRequestExecutor;
 	private final Portal _portal;
 	private final ResourceLocalService _resourceLocalService;
 

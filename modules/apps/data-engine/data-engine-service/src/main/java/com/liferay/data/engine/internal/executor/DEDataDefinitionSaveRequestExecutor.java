@@ -44,12 +44,14 @@ import java.util.Map;
 public class DEDataDefinitionSaveRequestExecutor {
 
 	public DEDataDefinitionSaveRequestExecutor(
+		DEDataEngineRequestExecutor deDataEngineRequestExecutor,
 		DDLRecordSetLocalService ddlRecordSetLocalService,
 		DDMStructureLocalService ddmStructureLocalService,
 		DEDataDefinitionFieldsSerializerTracker
 			deDataDefinitionFieldsSerializerTracker,
 		Portal portal, ResourceLocalService resourceLocalService) {
 
+		_deDataEngineRequestExecutor = deDataEngineRequestExecutor;
 		_ddlRecordSetLocalService = ddlRecordSetLocalService;
 		_ddmStructureLocalService = ddmStructureLocalService;
 		_deDataDefinitionFieldsSerializerTracker =
@@ -70,8 +72,10 @@ public class DEDataDefinitionSaveRequestExecutor {
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
+		DDMStructure ddmStructure = null;
+
 		if (deDataDefinitionId == 0) {
-			DDMStructure ddmStructure = createDDMStructure(
+			ddmStructure = createDDMStructure(
 				deDataDefinitionSaveRequest.getUserId(),
 				deDataDefinitionSaveRequest.getGroupId(),
 				_portal.getClassNameId(DEDataDefinition.class),
@@ -94,12 +98,13 @@ public class DEDataDefinitionSaveRequestExecutor {
 				DDLRecordSetConstants.SCOPE_DATA_ENGINE, serviceContext);
 		}
 		else {
-			updateDDMStructure(
+			ddmStructure = updateDDMStructure(
 				deDataDefinitionSaveRequest.getUserId(), deDataDefinition,
 				serviceContext);
 		}
 
-		return DEDataDefinitionSaveResponse.Builder.of(deDataDefinitionId);
+		return DEDataDefinitionSaveResponse.Builder.of(
+			_deDataEngineRequestExecutor.map(ddmStructure));
 	}
 
 	protected DDMStructure createDDMStructure(
@@ -150,7 +155,7 @@ public class DEDataDefinitionSaveRequestExecutor {
 		return deDataDefinitionFieldsSerializerApplyResponse.getContent();
 	}
 
-	protected void updateDDMStructure(
+	protected DDMStructure updateDDMStructure(
 			long userId, DEDataDefinition deDataDefinition,
 			ServiceContext serviceContext)
 		throws PortalException {
@@ -160,7 +165,7 @@ public class DEDataDefinitionSaveRequestExecutor {
 		Map<Locale, String> descriptionMap = createLocalizedMap(
 			deDataDefinition.getDescription());
 
-		_ddmStructureLocalService.updateStructure(
+		return _ddmStructureLocalService.updateStructure(
 			userId, deDataDefinition.getDEDataDefinitionId(),
 			DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID, nameMap,
 			descriptionMap, serialize(deDataDefinition), serviceContext);
@@ -170,6 +175,7 @@ public class DEDataDefinitionSaveRequestExecutor {
 	private final DDMStructureLocalService _ddmStructureLocalService;
 	private final DEDataDefinitionFieldsSerializerTracker
 		_deDataDefinitionFieldsSerializerTracker;
+	private final DEDataEngineRequestExecutor _deDataEngineRequestExecutor;
 	private final Portal _portal;
 	private final ResourceLocalService _resourceLocalService;
 
