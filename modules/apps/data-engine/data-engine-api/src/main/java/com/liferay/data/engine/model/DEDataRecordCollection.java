@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Leonardo Barros
@@ -50,6 +51,33 @@ public class DEDataRecordCollection implements ClassedModel, Serializable {
 			_name.put(
 				LocaleUtil.toLanguageId(entry.getKey()), entry.getValue());
 		}
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof DEDataRecordCollection)) {
+			return false;
+		}
+
+		DEDataRecordCollection deDataRecordCollection =
+			(DEDataRecordCollection)obj;
+
+		if (Objects.equals(
+				_deDataRecordCollectionId,
+				deDataRecordCollection._deDataRecordCollectionId) &&
+			Objects.equals(_description, deDataRecordCollection._description) &&
+			Objects.equals(_name, deDataRecordCollection._name) &&
+			Objects.equals(
+				_deDataDefinition, deDataRecordCollection._deDataDefinition)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public DEDataDefinition getDEDataDefinition() {
