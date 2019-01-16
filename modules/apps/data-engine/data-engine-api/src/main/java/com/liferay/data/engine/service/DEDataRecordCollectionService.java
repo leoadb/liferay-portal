@@ -36,6 +36,10 @@ public interface DEDataRecordCollectionService {
 				deDataRecordCollectionDeleteRequest)
 		throws DEDataRecordCollectionException;
 
+	public DEDataRecordCollectionGetResponse execute(
+			DEDataRecordCollectionGetRequest deDataRecordCollectionGetRequest)
+		throws DEDataRecordCollectionException;
+
 	public DEDataRecordCollectionSaveModelPermissionsResponse execute(
 			DEDataRecordCollectionSaveModelPermissionsRequest
 				deDataRecordCollectionSaveModelPermissionsRequest)
