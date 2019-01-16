@@ -129,6 +129,10 @@ type GetDataDefinitionType {
 	dataDefinition: DataDefinition
 }
 
+type GetDataRecordCollectionType {
+	dataRecordCollection: DataRecordCollection
+}
+
 type ListDataDefinitionType {
 	dataDefinitions: [DataDefinition]
 }
@@ -178,8 +182,8 @@ type MutationType {
 type QueryType {
 	countDataDefinition(companyId: ID!, groupId: ID!, languageId: String!): CountDataDefinitionType
 	getDataDefinition(dataDefinitionId: ID!, languageId: String!): GetDataDefinitionType
+	getDataRecordCollection(dataRecordCollectionId: ID!, languageId: String!): GetDataRecordCollectionType
 	listDataDefinition(companyId: ID!, groupId: ID!, languageId: String!, start: Int!, end: Int!): ListDataDefinitionType
-
 }
 
 type SaveDataDefinitionType {
