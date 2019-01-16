@@ -89,8 +89,7 @@ public class DESaveDataDefinitionDataFetcher
 					).build());
 
 			DataDefinition dataDefinition = createDataDefinition(
-				deDataDefinitionSaveResponse.getDEDataDefinitionId(),
-				deDataDefinition);
+				deDataDefinitionSaveResponse.getDEDataDefinition());
 
 			saveDataDefinitionType.setDataDefinition(dataDefinition);
 		}
