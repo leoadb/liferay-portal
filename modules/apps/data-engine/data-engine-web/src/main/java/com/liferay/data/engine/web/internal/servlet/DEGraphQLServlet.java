@@ -25,6 +25,7 @@ import com.liferay.data.engine.web.internal.servlet.data.fetcher.DEDeleteDataRec
 import com.liferay.data.engine.web.internal.servlet.data.fetcher.DEDeleteModelPermissionsDataRecordCollectionDataFetcher;
 import com.liferay.data.engine.web.internal.servlet.data.fetcher.DEDeletePermissionsDataRecordCollectionDataFetcher;
 import com.liferay.data.engine.web.internal.servlet.data.fetcher.DEGetDataDefinitionDataFetcher;
+import com.liferay.data.engine.web.internal.servlet.data.fetcher.DEGetDataRecordCollectionDataFetcher;
 import com.liferay.data.engine.web.internal.servlet.data.fetcher.DEListDataDefinitionDataFetcher;
 import com.liferay.data.engine.web.internal.servlet.data.fetcher.DESaveDataDefinitionDataFetcher;
 import com.liferay.data.engine.web.internal.servlet.data.fetcher.DESaveDataRecordCollectionDataFetcher;
@@ -161,6 +162,22 @@ public class DEGraphQLServlet extends HttpServlet {
 				"countDataDefinition", _deCountDataDefinitionDataFetcher));
 
 		runtimeWiringBuilder.type(
+			"QueryType",
+			typeWiring -> typeWiring.dataFetcher(
+				"getDataDefinition", _deGetDataDefinitionDataFetcher));
+
+		runtimeWiringBuilder.type(
+			"QueryType",
+			typeWiring -> typeWiring.dataFetcher(
+				"getDataRecordCollection",
+				_deGetDataRecordCollectionDataFetcher));
+
+		runtimeWiringBuilder.type(
+			"QueryType",
+			typeWiring -> typeWiring.dataFetcher(
+				"listDataDefinition", _deListDataDefinitionDataFetcher));
+
+		runtimeWiringBuilder.type(
 			"MutationType",
 			typeWiring -> typeWiring.dataFetcher(
 				"deleteDataDefinition", _deDeleteDataDefinitionDataFetcher));
@@ -182,16 +199,6 @@ public class DEGraphQLServlet extends HttpServlet {
 			typeWiring -> typeWiring.dataFetcher(
 				"deleteDataRecordCollectionPermissions",
 				_deDeletePermissionsDataRecordCollectionDataFetcher));
-
-		runtimeWiringBuilder.type(
-			"QueryType",
-			typeWiring -> typeWiring.dataFetcher(
-				"getDataDefinition", _deGetDataDefinitionDataFetcher));
-
-		runtimeWiringBuilder.type(
-			"QueryType",
-			typeWiring -> typeWiring.dataFetcher(
-				"listDataDefinition", _deListDataDefinitionDataFetcher));
 
 		runtimeWiringBuilder.type(
 			"MutationType",
@@ -401,6 +408,10 @@ public class DEGraphQLServlet extends HttpServlet {
 
 	@Reference
 	private DEGetDataDefinitionDataFetcher _deGetDataDefinitionDataFetcher;
+
+	@Reference
+	private DEGetDataRecordCollectionDataFetcher
+		_deGetDataRecordCollectionDataFetcher;
 
 	@Reference
 	private DEListDataDefinitionDataFetcher _deListDataDefinitionDataFetcher;
