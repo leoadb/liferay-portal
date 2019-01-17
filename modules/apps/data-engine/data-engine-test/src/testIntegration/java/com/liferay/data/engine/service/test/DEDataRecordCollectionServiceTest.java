@@ -20,9 +20,11 @@ import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.model.DEDataRecordCollection;
 import com.liferay.data.engine.service.DEDataDefinitionService;
 import com.liferay.data.engine.service.DEDataRecordCollectionRequestBuilder;
+import com.liferay.data.engine.service.DEDataRecordCollectionSavePermissionsRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionSaveRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionService;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -34,6 +36,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -69,6 +72,79 @@ public class DEDataRecordCollectionServiceTest {
 			_group, RoleConstants.SITE_MEMBER);
 
 		_adminUser = UserTestUtil.addOmniAdminUser();
+	}
+
+	@Test
+	public void testAddDataRecordCollectionPermission() throws Exception {
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_adminUser));
+
+		Role role = RoleTestUtil.addRole("Teste", RoleConstants.TYPE_REGULAR);
+
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addGroupUser(group, "Teste");
+
+		DEDataRecordCollectionSavePermissionsRequest
+			deDataRecordCollectionSavePermissionsRequest =
+				DEDataRecordCollectionRequestBuilder.savePermissionsBuilder(
+					TestPropsValues.getCompanyId(), _group.getGroupId(),
+					role.getName()
+				).allowAddDataRecordCollection(
+				).build();
+
+		try {
+			_deDataRecordCollectionService.execute(
+				deDataRecordCollectionSavePermissionsRequest);
+
+			DEDataDefinition deDataDefinition =
+				DEDataEngineTestUtil.insertDEDataDefinition(
+					_adminUser, group, _deDataDefinitionService);
+
+			DEDataRecordCollection deDataRecordCollection =
+				DEDataEngineTestUtil.insertDEDataRecordCollection(
+					user, group, deDataDefinition,
+					_deDataRecordCollectionService);
+
+			Assert.assertTrue(
+				deDataRecordCollection.getDEDataRecordCollectionId() > 0);
+		}
+		finally {
+			DEDataEngineTestUtil.deleteDEDataRecordCollectionPermissions(
+				TestPropsValues.getCompanyId(), _adminUser, _group.getGroupId(),
+				role.getName(), _deDataRecordCollectionService);
+		}
+	}
+
+	@Test(expected = DEDataRecordCollectionException.MustHavePermission.class)
+	public void testAddDataRecordCollectionPermissionWithNoPermission()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addGroupUser(group, RoleConstants.GUEST);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		DEDataRecordCollectionSavePermissionsRequest
+			deDataRecordCollectionSavePermissionsRequest =
+				DEDataRecordCollectionRequestBuilder.savePermissionsBuilder(
+					TestPropsValues.getCompanyId(), user.getGroupId(),
+					RoleConstants.ORGANIZATION_USER
+				).allowAddDataRecordCollection(
+				).build();
+
+		try {
+			_deDataRecordCollectionService.execute(
+				deDataRecordCollectionSavePermissionsRequest);
+		}
+		finally {
+			DEDataEngineTestUtil.deleteDEDataRecordCollectionPermissions(
+				TestPropsValues.getCompanyId(), _adminUser, _group.getGroupId(),
+				RoleConstants.ORGANIZATION_USER,
+				_deDataRecordCollectionService);
+		}
 	}
 
 	@Test
