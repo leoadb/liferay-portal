@@ -17,9 +17,9 @@ package com.liferay.data.engine.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.exception.DEDataRecordCollectionException;
 import com.liferay.data.engine.model.DEDataDefinition;
+import com.liferay.data.engine.model.DEDataRecord;
 import com.liferay.data.engine.model.DEDataRecordCollection;
 import com.liferay.data.engine.service.DEDataDefinitionService;
-import com.liferay.data.engine.service.DEDataRecordCollectionDeleteModelPermissionsRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionGetRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionRequestBuilder;
 import com.liferay.data.engine.service.DEDataRecordCollectionSaveModelPermissionsRequest;
@@ -351,6 +351,15 @@ public class DEDataRecordCollectionServiceTest {
 
 		Assert.assertTrue(
 			deDataRecordCollection.getDEDataRecordCollectionId() > 0);
+	}
+
+	@Test
+	public void testInsertRecord() throws Exception {
+		DEDataRecord deDataRecord = DEDataEngineTestUtil.insertDEDataRecord(
+			_siteMember, _group, _deDataDefinitionService,
+			_deDataRecordCollectionService);
+
+		Assert.assertTrue(deDataRecord.getDEDataRecordId() > 0);
 	}
 
 	@Test(expected = DEDataRecordCollectionException.MustHavePermission.class)

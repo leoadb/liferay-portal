@@ -16,6 +16,7 @@ package com.liferay.data.engine.service.test;
 
 import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.model.DEDataDefinitionField;
+import com.liferay.data.engine.model.DEDataRecord;
 import com.liferay.data.engine.model.DEDataRecordCollection;
 import com.liferay.data.engine.service.DEDataDefinitionGetRequest;
 import com.liferay.data.engine.service.DEDataDefinitionGetResponse;
@@ -29,6 +30,8 @@ import com.liferay.data.engine.service.DEDataRecordCollectionDeleteRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionGetRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionGetResponse;
 import com.liferay.data.engine.service.DEDataRecordCollectionRequestBuilder;
+import com.liferay.data.engine.service.DEDataRecordCollectionSaveRecordRequest;
+import com.liferay.data.engine.service.DEDataRecordCollectionSaveRecordResponse;
 import com.liferay.data.engine.service.DEDataRecordCollectionSaveRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionSaveResponse;
 import com.liferay.data.engine.service.DEDataRecordCollectionService;
@@ -220,6 +223,67 @@ public class DEDataEngineTestUtil {
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	public static DEDataRecord insertDEDataRecord(
+			User user, Group group,
+			DEDataDefinitionService deDataDefinitionService,
+			DEDataRecordCollectionService deDataRecordCollectionService)
+		throws Exception {
+
+		DEDataDefinition deDataDefinition = insertDEDataDefinition(
+			user, group, deDataDefinitionService);
+
+		DEDataRecordCollection deDataRecordCollection =
+			insertDEDataRecordCollection(
+				user, group, deDataDefinition, deDataRecordCollectionService);
+
+		DEDataRecord deDataRecord = new DEDataRecord();
+
+		deDataRecord.setDEDataRecordCollection(deDataRecordCollection);
+
+		Map<String, Object> values = new HashMap() {
+			{
+				put("name", "Liferay");
+				put("email", "test@liferay.com");
+			}
+		};
+
+		deDataRecord.setValues(values);
+
+		DEDataRecordCollectionSaveRecordRequest
+			deDataRecordCollectionSaveRecordRequest =
+				DEDataRecordCollectionRequestBuilder.saveRecordBuilder(
+					deDataRecord
+				).inGroup(
+					group.getGroupId()
+				).onBehalfOf(
+					user.getUserId()
+				).build();
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					group, user.getUserId());
+
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(user));
+
+			DEDataRecordCollectionSaveRecordResponse
+				deDataRecordCollectionSaveRecordResponse =
+					deDataRecordCollectionService.execute(
+						deDataRecordCollectionSaveRecordRequest);
+
+			deDataRecord =
+				deDataRecordCollectionSaveRecordResponse.getDEDataRecord();
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+
+		return deDataRecord;
 	}
 
 	public static DEDataRecordCollection insertDEDataRecordCollection(
