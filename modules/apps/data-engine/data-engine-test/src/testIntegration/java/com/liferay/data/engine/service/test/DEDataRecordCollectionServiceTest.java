@@ -202,6 +202,19 @@ public class DEDataRecordCollectionServiceTest {
 			_siteMember, 1, _deDataRecordCollectionService);
 	}
 
+	@Test
+	public void testDeleteRecord() throws Exception {
+		DEDataRecord deDataRecord = DEDataEngineTestUtil.insertDEDataRecord(
+			_siteMember, _group, _deDataDefinitionService,
+			_deDataRecordCollectionService);
+
+		long deDataRecordId = DEDataEngineTestUtil.deleteDEDataRecord(
+			_siteMember, _group, deDataRecord.getDEDataRecordId(),
+			_deDataRecordCollectionService);
+
+		Assert.assertEquals(deDataRecord.getDEDataRecordId(), deDataRecordId);
+	}
+
 	@Test(expected = DEDataRecordCollectionException.MustHavePermission.class)
 	public void testDeleteWithNoPermission() throws Exception {
 		DEDataRecordCollection deDataRecordCollection =
