@@ -31,9 +31,19 @@ public interface DEDataRecordCollectionService {
 				deDataRecordCollectionDeletePermissionsRequest)
 		throws DEDataRecordCollectionException;
 
+	public DEDataRecordCollectionDeleteRecordResponse execute(
+			DEDataRecordCollectionDeleteRecordRequest
+				deDataRecordCollectionDeleteRecordRequest)
+		throws DEDataRecordCollectionException;
+
 	public DEDataRecordCollectionDeleteResponse execute(
 			DEDataRecordCollectionDeleteRequest
 				deDataRecordCollectionDeleteRequest)
+		throws DEDataRecordCollectionException;
+
+	public DEDataRecordCollectionGetRecordResponse execute(
+			DEDataRecordCollectionGetRecordRequest
+				deDataRecordCollectionGetRecordRequest)
 		throws DEDataRecordCollectionException;
 
 	public DEDataRecordCollectionGetResponse execute(
