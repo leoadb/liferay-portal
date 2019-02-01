@@ -14,7 +14,7 @@
 
 package com.liferay.data.engine.internal.io;
 
-import com.liferay.data.engine.io.DEDataDefinitionFieldsDeserializer;
+import com.liferay.data.engine.io.DEDataDefinitionDeserializer;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Map;
@@ -31,14 +31,14 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  * @author Leonardo Barros
  */
 @Component(
-	immediate = true, service = DEDataDefinitionFieldsDeserializerTracker.class
+	immediate = true, service = DEDataDefinitionDeserializerTracker.class
 )
-public class DEDataDefinitionFieldsDeserializerTracker {
+public class DEDataDefinitionDeserializerTracker {
 
-	public DEDataDefinitionFieldsDeserializer
-		getDEDataDefinitionFieldsDeserializer(String type) {
+	public DEDataDefinitionDeserializer getDEDataDefinitionDeserializer(
+		String type) {
 
-		return _deDataDefinitionFieldsDeserializers.get(type);
+		return _deDataDefinitionDeserializers.get(type);
 	}
 
 	@Reference(
@@ -46,33 +46,32 @@ public class DEDataDefinitionFieldsDeserializerTracker {
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY
 	)
-	protected void addDEDataDefinitionFieldsDeserializer(
-		DEDataDefinitionFieldsDeserializer deDataDefinitionFieldsDeserializer,
+	protected void addDEDataDefinitionDeserializer(
+		DEDataDefinitionDeserializer deDataDefinitionDeserializer,
 		Map<String, Object> properties) {
 
 		String type = MapUtil.getString(
 			properties, "data.definition.deserializer.type");
 
-		_deDataDefinitionFieldsDeserializers.put(
-			type, deDataDefinitionFieldsDeserializer);
+		_deDataDefinitionDeserializers.put(type, deDataDefinitionDeserializer);
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_deDataDefinitionFieldsDeserializers.clear();
+		_deDataDefinitionDeserializers.clear();
 	}
 
-	protected void removeDEDataDefinitionFieldsDeserializer(
-		DEDataDefinitionFieldsDeserializer deDataDefinitionFieldsDeserializer,
+	protected void removeDEDataDefinitionDeserializer(
+		DEDataDefinitionDeserializer deDataDefinitionDeserializer,
 		Map<String, Object> properties) {
 
 		String type = MapUtil.getString(
 			properties, "data.definition.deserializer.type");
 
-		_deDataDefinitionFieldsDeserializers.remove(type);
+		_deDataDefinitionDeserializers.remove(type);
 	}
 
-	private final Map<String, DEDataDefinitionFieldsDeserializer>
-		_deDataDefinitionFieldsDeserializers = new TreeMap<>();
+	private final Map<String, DEDataDefinitionDeserializer>
+		_deDataDefinitionDeserializers = new TreeMap<>();
 
 }
