@@ -93,7 +93,6 @@ public abstract class DEBaseDataDefinitionDataFetcher
 			deDataDefinitionField.isLocalizable());
 		dataDefinitionFieldType.setRepeatable(
 			deDataDefinitionField.isRepeatable());
-		dataDefinitionFieldType.setRequired(deDataDefinitionField.isRequired());
 		dataDefinitionFieldType.setTips(
 			getLocalizedValuesType(deDataDefinitionField.getTip()));
 
