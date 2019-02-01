@@ -27,7 +27,6 @@ import com.liferay.data.engine.internal.executor.DEDataRecordCollectionSaveModel
 import com.liferay.data.engine.internal.executor.DEDataRecordCollectionSavePermissionsRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataRecordCollectionSaveRecordRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataRecordCollectionSaveRequestExecutor;
-import com.liferay.data.engine.internal.io.DEDataDefinitionFieldsDeserializerTracker;
 import com.liferay.data.engine.internal.security.permission.DEDataEnginePermissionSupport;
 import com.liferay.data.engine.internal.storage.DEDataStorageTracker;
 import com.liferay.data.engine.model.DEDataDefinition;

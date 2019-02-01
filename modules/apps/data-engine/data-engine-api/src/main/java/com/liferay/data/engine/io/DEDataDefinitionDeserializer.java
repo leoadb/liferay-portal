@@ -14,16 +14,16 @@
 
 package com.liferay.data.engine.io;
 
-import com.liferay.data.engine.exception.DEDataDefinitionFieldsDeserializerException;
+import com.liferay.data.engine.exception.DEDataDefinitionDeserializerException;
 
 /**
  * @author Leonardo Barros
  */
-public interface DEDataDefinitionFieldsDeserializer {
+public interface DEDataDefinitionDeserializer {
 
-	public DEDataDefinitionFieldsDeserializerApplyResponse apply(
-			DEDataDefinitionFieldsDeserializerApplyRequest
-				deDataDefinitionFieldsDeserializerApplyRequest)
-		throws DEDataDefinitionFieldsDeserializerException;
+	public DEDataDefinitionDeserializerApplyResponse apply(
+			DEDataDefinitionDeserializerApplyRequest
+				deDataDefinitionDeserializerApplyRequest)
+		throws DEDataDefinitionDeserializerException;
 
 }
