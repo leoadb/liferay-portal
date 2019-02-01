@@ -17,7 +17,7 @@ package com.liferay.data.engine.io;
 /**
  * @author Leonardo Barros
  */
-public final class DEDataDefinitionFieldsDeserializerApplyRequest {
+public final class DEDataDefinitionSerializerApplyResponse {
 
 	public String getContent() {
 		return _content;
@@ -29,7 +29,7 @@ public final class DEDataDefinitionFieldsDeserializerApplyRequest {
 			return new Builder(content);
 		}
 
-		public static DEDataDefinitionFieldsDeserializerApplyRequest of(
+		public static DEDataDefinitionSerializerApplyResponse of(
 			String content) {
 
 			return newBuilder(
@@ -37,21 +37,21 @@ public final class DEDataDefinitionFieldsDeserializerApplyRequest {
 			).build();
 		}
 
-		public DEDataDefinitionFieldsDeserializerApplyRequest build() {
-			return _deDataDefinitionFieldsDeserializerApplyRequest;
+		public DEDataDefinitionSerializerApplyResponse build() {
+			return _deDataDefinitionSerializerApplyResponse;
 		}
 
 		private Builder(String content) {
-			_deDataDefinitionFieldsDeserializerApplyRequest._content = content;
+			_deDataDefinitionSerializerApplyResponse._content = content;
 		}
 
-		private DEDataDefinitionFieldsDeserializerApplyRequest
-			_deDataDefinitionFieldsDeserializerApplyRequest =
-				new DEDataDefinitionFieldsDeserializerApplyRequest();
+		private final DEDataDefinitionSerializerApplyResponse
+			_deDataDefinitionSerializerApplyResponse =
+				new DEDataDefinitionSerializerApplyResponse();
 
 	}
 
-	private DEDataDefinitionFieldsDeserializerApplyRequest() {
+	private DEDataDefinitionSerializerApplyResponse() {
 	}
 
 	private String _content;

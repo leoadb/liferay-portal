@@ -14,7 +14,7 @@
 
 package com.liferay.data.engine.internal.io;
 
-import com.liferay.data.engine.io.DEDataDefinitionFieldsSerializer;
+import com.liferay.data.engine.io.DEDataDefinitionSerializer;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Map;
@@ -30,15 +30,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Leonardo Barros
  */
-@Component(
-	immediate = true, service = DEDataDefinitionFieldsSerializerTracker.class
-)
-public class DEDataDefinitionFieldsSerializerTracker {
+@Component(immediate = true, service = DEDataDefinitionSerializerTracker.class)
+public class DEDataDefinitionSerializerTracker {
 
-	public DEDataDefinitionFieldsSerializer getDEDataDefinitionFieldsSerializer(
+	public DEDataDefinitionSerializer getDEDataDefinitionSerializer(
 		String type) {
 
-		return _deDataDefinitionFieldsSerializers.get(type);
+		return _deDataDefinitionSerializers.get(type);
 	}
 
 	@Reference(
@@ -46,33 +44,32 @@ public class DEDataDefinitionFieldsSerializerTracker {
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY
 	)
-	protected void addDEDataDefinitionFieldsSerializer(
-		DEDataDefinitionFieldsSerializer deDataDefinitionFieldsSerializer,
+	protected void addDEDataDefinitionSerializer(
+		DEDataDefinitionSerializer deDataDefinitionSerializer,
 		Map<String, Object> properties) {
 
 		String type = MapUtil.getString(
 			properties, "data.definition.serializer.type");
 
-		_deDataDefinitionFieldsSerializers.put(
-			type, deDataDefinitionFieldsSerializer);
+		_deDataDefinitionSerializers.put(type, deDataDefinitionSerializer);
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_deDataDefinitionFieldsSerializers.clear();
+		_deDataDefinitionSerializers.clear();
 	}
 
-	protected void removeDEDataDefinitionFieldsSerializer(
-		DEDataDefinitionFieldsSerializer deDataDefinitionFieldsSerializer,
+	protected void removeDEDataDefinitionSerializer(
+		DEDataDefinitionSerializer deDataDefinitionSerializer,
 		Map<String, Object> properties) {
 
 		String type = MapUtil.getString(
 			properties, "data.definition.serializer.type");
 
-		_deDataDefinitionFieldsSerializers.remove(type);
+		_deDataDefinitionSerializers.remove(type);
 	}
 
-	private final Map<String, DEDataDefinitionFieldsSerializer>
-		_deDataDefinitionFieldsSerializers = new TreeMap<>();
+	private final Map<String, DEDataDefinitionSerializer>
+		_deDataDefinitionSerializers = new TreeMap<>();
 
 }
