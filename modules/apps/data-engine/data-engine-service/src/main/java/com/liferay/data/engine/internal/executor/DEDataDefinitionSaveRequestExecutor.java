@@ -14,11 +14,11 @@
 
 package com.liferay.data.engine.internal.executor;
 
-import com.liferay.data.engine.exception.DEDataDefinitionFieldsSerializerException;
-import com.liferay.data.engine.internal.io.DEDataDefinitionFieldsSerializerTracker;
-import com.liferay.data.engine.io.DEDataDefinitionFieldsSerializer;
-import com.liferay.data.engine.io.DEDataDefinitionFieldsSerializerApplyRequest;
-import com.liferay.data.engine.io.DEDataDefinitionFieldsSerializerApplyResponse;
+import com.liferay.data.engine.exception.DEDataDefinitionSerializerException;
+import com.liferay.data.engine.internal.io.DEDataDefinitionSerializerTracker;
+import com.liferay.data.engine.io.DEDataDefinitionSerializer;
+import com.liferay.data.engine.io.DEDataDefinitionSerializerApplyRequest;
+import com.liferay.data.engine.io.DEDataDefinitionSerializerApplyResponse;
 import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.service.DEDataDefinitionSaveRequest;
 import com.liferay.data.engine.service.DEDataDefinitionSaveResponse;
@@ -46,7 +46,7 @@ public class DEDataDefinitionSaveRequestExecutor {
 	public DEDataDefinitionSaveRequestExecutor(
 		DDLRecordSetLocalService ddlRecordSetLocalService,
 		DDMStructureLocalService ddmStructureLocalService,
-		DEDataDefinitionFieldsSerializerTracker
+		DEDataDefinitionSerializerTracker
 			deDataDefinitionFieldsSerializerTracker,
 		Portal portal, ResourceLocalService resourceLocalService) {
 
@@ -131,18 +131,18 @@ public class DEDataDefinitionSaveRequestExecutor {
 	}
 
 	protected String serialize(DEDataDefinition deDataDefinition)
-		throws DEDataDefinitionFieldsSerializerException {
+		throws DEDataDefinitionSerializerException {
 
-		DEDataDefinitionFieldsSerializer deDataDefinitionFieldsSerializer =
+		DEDataDefinitionSerializer deDataDefinitionFieldsSerializer =
 			_deDataDefinitionFieldsSerializerTracker.
-				getDEDataDefinitionFieldsSerializer("json");
+				getDEDataDefinitionSerializer("json");
 
-		DEDataDefinitionFieldsSerializerApplyRequest
+		DEDataDefinitionSerializerApplyRequest
 			deDataDefinitionFieldsSerializerApplyRequest =
-				DEDataDefinitionFieldsSerializerApplyRequest.Builder.of(
-					deDataDefinition.getDEDataDefinitionFields());
+				DEDataDefinitionSerializerApplyRequest.Builder.of(
+					deDataDefinition);
 
-		DEDataDefinitionFieldsSerializerApplyResponse
+		DEDataDefinitionSerializerApplyResponse
 			deDataDefinitionFieldsSerializerApplyResponse =
 				deDataDefinitionFieldsSerializer.apply(
 					deDataDefinitionFieldsSerializerApplyRequest);
@@ -168,7 +168,7 @@ public class DEDataDefinitionSaveRequestExecutor {
 
 	private final DDLRecordSetLocalService _ddlRecordSetLocalService;
 	private final DDMStructureLocalService _ddmStructureLocalService;
-	private final DEDataDefinitionFieldsSerializerTracker
+	private final DEDataDefinitionSerializerTracker
 		_deDataDefinitionFieldsSerializerTracker;
 	private final Portal _portal;
 	private final ResourceLocalService _resourceLocalService;

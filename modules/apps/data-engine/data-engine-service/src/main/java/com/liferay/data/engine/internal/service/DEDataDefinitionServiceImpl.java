@@ -26,8 +26,8 @@ import com.liferay.data.engine.internal.executor.DEDataDefinitionSaveRequestExec
 import com.liferay.data.engine.internal.executor.DEDataDefinitionSearchCountExecutor;
 import com.liferay.data.engine.internal.executor.DEDataDefinitionSearchExecutor;
 import com.liferay.data.engine.internal.executor.DEDataEngineRequestExecutor;
-import com.liferay.data.engine.internal.io.DEDataDefinitionFieldsDeserializerTracker;
-import com.liferay.data.engine.internal.io.DEDataDefinitionFieldsSerializerTracker;
+import com.liferay.data.engine.internal.io.DEDataDefinitionDeserializerTracker;
+import com.liferay.data.engine.internal.io.DEDataDefinitionSerializerTracker;
 import com.liferay.data.engine.internal.security.permission.DEDataEnginePermissionSupport;
 import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.service.DEDataDefinitionCountRequest;
@@ -453,11 +453,11 @@ public class DEDataDefinitionServiceImpl
 	protected DDMStructureService ddmStructureService;
 
 	@Reference
-	protected DEDataDefinitionFieldsDeserializerTracker
+	protected DEDataDefinitionDeserializerTracker
 		deDataDefinitionFieldsDeserializerTracker;
 
 	@Reference
-	protected DEDataDefinitionFieldsSerializerTracker
+	protected DEDataDefinitionSerializerTracker
 		deDataDefinitionFieldsSerializerTracker;
 
 	@Reference

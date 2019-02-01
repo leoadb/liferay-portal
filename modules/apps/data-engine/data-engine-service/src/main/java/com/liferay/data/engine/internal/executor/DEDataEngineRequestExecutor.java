@@ -14,16 +14,13 @@
 
 package com.liferay.data.engine.internal.executor;
 
-import com.liferay.data.engine.exception.DEDataDefinitionFieldsDeserializerException;
-import com.liferay.data.engine.internal.io.DEDataDefinitionFieldsDeserializerTracker;
-import com.liferay.data.engine.io.DEDataDefinitionFieldsDeserializer;
-import com.liferay.data.engine.io.DEDataDefinitionFieldsDeserializerApplyRequest;
-import com.liferay.data.engine.io.DEDataDefinitionFieldsDeserializerApplyResponse;
+import com.liferay.data.engine.exception.DEDataDefinitionDeserializerException;
+import com.liferay.data.engine.internal.io.DEDataDefinitionDeserializerTracker;
+import com.liferay.data.engine.io.DEDataDefinitionDeserializer;
+import com.liferay.data.engine.io.DEDataDefinitionDeserializerApplyRequest;
+import com.liferay.data.engine.io.DEDataDefinitionDeserializerApplyResponse;
 import com.liferay.data.engine.model.DEDataDefinition;
-import com.liferay.data.engine.model.DEDataDefinitionField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
-
-import java.util.List;
 
 /**
  * @author Jeyvison Nascimento
@@ -31,7 +28,7 @@ import java.util.List;
 public class DEDataEngineRequestExecutor {
 
 	public DEDataEngineRequestExecutor(
-		DEDataDefinitionFieldsDeserializerTracker
+		DEDataDefinitionDeserializerTracker
 			deDataDefinitionFieldsDeserializerTracker) {
 
 		this.deDataDefinitionFieldsDeserializerTracker =
@@ -39,15 +36,14 @@ public class DEDataEngineRequestExecutor {
 	}
 
 	public DEDataDefinition map(DDMStructure ddmStructure)
-		throws DEDataDefinitionFieldsDeserializerException {
+		throws DEDataDefinitionDeserializerException {
 
-		DEDataDefinition deDataDefinition = new DEDataDefinition();
+		DEDataDefinition deDataDefinition = deserialize(
+			ddmStructure.getDefinition());
 
 		deDataDefinition.addDescriptions(ddmStructure.getDescriptionMap());
 		deDataDefinition.addNames(ddmStructure.getNameMap());
 		deDataDefinition.setCreateDate(ddmStructure.getCreateDate());
-		deDataDefinition.setDEDataDefinitionFields(
-			deserialize(ddmStructure.getDefinition()));
 		deDataDefinition.setDEDataDefinitionId(ddmStructure.getStructureId());
 		deDataDefinition.setModifiedDate(ddmStructure.getModifiedDate());
 		deDataDefinition.setStorageType(ddmStructure.getStorageType());
@@ -56,30 +52,29 @@ public class DEDataEngineRequestExecutor {
 		return deDataDefinition;
 	}
 
-	protected List<DEDataDefinitionField> deserialize(String content)
-		throws DEDataDefinitionFieldsDeserializerException {
+	protected DEDataDefinition deserialize(String content)
+		throws DEDataDefinitionDeserializerException {
 
-		DEDataDefinitionFieldsDeserializer deDataDefinitionFieldsDeserializer =
+		DEDataDefinitionDeserializer deDataDefinitionFieldsDeserializer =
 			deDataDefinitionFieldsDeserializerTracker.
-				getDEDataDefinitionFieldsDeserializer("json");
+				getDEDataDefinitionDeserializer("json");
 
-		DEDataDefinitionFieldsDeserializerApplyRequest
+		DEDataDefinitionDeserializerApplyRequest
 			deDataDefinitionFieldsDeserializerApplyRequest =
-				DEDataDefinitionFieldsDeserializerApplyRequest.Builder.
-					newBuilder(
-						content
-					).build();
+				DEDataDefinitionDeserializerApplyRequest.Builder.newBuilder(
+					content
+				).build();
 
-		DEDataDefinitionFieldsDeserializerApplyResponse
+		DEDataDefinitionDeserializerApplyResponse
 			deDataDefinitionFieldsDeserializerApplyResponse =
 				deDataDefinitionFieldsDeserializer.apply(
 					deDataDefinitionFieldsDeserializerApplyRequest);
 
 		return deDataDefinitionFieldsDeserializerApplyResponse.
-			getDeDataDefinitionFields();
+			getDEDataDefinition();
 	}
 
-	protected DEDataDefinitionFieldsDeserializerTracker
+	protected DEDataDefinitionDeserializerTracker
 		deDataDefinitionFieldsDeserializerTracker;
 
 }
