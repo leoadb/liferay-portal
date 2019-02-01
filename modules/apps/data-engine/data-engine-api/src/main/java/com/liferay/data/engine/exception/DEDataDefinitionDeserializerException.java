@@ -19,22 +19,20 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Leonardo Barros
  */
-public class DEDataDefinitionFieldsSerializerException extends PortalException {
+public class DEDataDefinitionDeserializerException extends PortalException {
 
-	public DEDataDefinitionFieldsSerializerException() {
+	public DEDataDefinitionDeserializerException() {
 	}
 
-	public DEDataDefinitionFieldsSerializerException(String msg) {
+	public DEDataDefinitionDeserializerException(String msg) {
 		super(msg);
 	}
 
-	public DEDataDefinitionFieldsSerializerException(
-		String msg, Throwable cause) {
-
+	public DEDataDefinitionDeserializerException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
-	public DEDataDefinitionFieldsSerializerException(Throwable cause) {
+	public DEDataDefinitionDeserializerException(Throwable cause) {
 		super(cause);
 	}
 
