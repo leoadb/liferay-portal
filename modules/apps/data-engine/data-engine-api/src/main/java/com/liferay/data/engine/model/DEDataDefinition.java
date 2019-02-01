@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,21 @@ public final class DEDataDefinition implements ClassedModel, Serializable {
 		List<DEDataDefinitionField> deDataDefinitionFields) {
 
 		_deDataDefinitionFields.addAll(deDataDefinitionFields);
+	}
+
+	public void addDEDataDefinitionValidationRule(
+		DEDataDefinitionValidationRule deDataDefinitionValidationRule) {
+
+		_deDataDefinitionValidationRules.add(deDataDefinitionValidationRule);
+	}
+
+	public void addDEDataDefinitionValidationRules(
+		List<DEDataDefinitionValidationRule> deDataDefinitionValidationRules) {
+
+		if (deDataDefinitionValidationRules != null) {
+			_deDataDefinitionValidationRules.addAll(
+				deDataDefinitionValidationRules);
+		}
 	}
 
 	public void addDescription(Locale locale, String description) {
@@ -105,6 +121,12 @@ public final class DEDataDefinition implements ClassedModel, Serializable {
 
 	public long getDEDataDefinitionId() {
 		return _deDataDefinitionId;
+	}
+
+	public List<DEDataDefinitionValidationRule>
+		getDEDataDefinitionValidationRules() {
+
+		return Collections.unmodifiableList(_deDataDefinitionValidationRules);
 	}
 
 	public Map<String, String> getDescription() {
@@ -176,6 +198,17 @@ public final class DEDataDefinition implements ClassedModel, Serializable {
 		_deDataDefinitionId = deDataDefinitionId;
 	}
 
+	public void setDEDataDefinitionValidationRules(
+		List<DEDataDefinitionValidationRule> deDataDefinitionValidationRules) {
+
+		_deDataDefinitionValidationRules = new ArrayList<>();
+
+		if (deDataDefinitionValidationRules != null) {
+			_deDataDefinitionValidationRules.addAll(
+				deDataDefinitionValidationRules);
+		}
+	}
+
 	public void setDescription(Map<String, String> description) {
 		_description = description;
 
@@ -213,6 +246,8 @@ public final class DEDataDefinition implements ClassedModel, Serializable {
 	private List<DEDataDefinitionField> _deDataDefinitionFields =
 		new ArrayList<>();
 	private long _deDataDefinitionId;
+	private List<DEDataDefinitionValidationRule>
+		_deDataDefinitionValidationRules = new ArrayList<>();
 	private Map<String, String> _description = new HashMap<>();
 	private Date _modifiedDate;
 	private Map<String, String> _name = new HashMap<>();
