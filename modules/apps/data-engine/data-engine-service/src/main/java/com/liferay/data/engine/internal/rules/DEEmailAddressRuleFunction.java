@@ -34,8 +34,8 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	immediate = true,
-	property = {"data.definition.rule.function.name=" + DEDataDefinitionRuleConstants.EMAIL_ADDRESS_RULE,
-		"data.definition.rule.function.type=" + DEDataDefinitionRuleConstants.VALIDATION_RULE_TYPE},
+	property = {"de.data.definition.rule.function.name=" + DEDataDefinitionRuleConstants.EMAIL_ADDRESS_RULE,
+		"de.data.definition.rule.function.type=" + DEDataDefinitionRuleConstants.VALIDATION_RULE_TYPE},
 	service = DEDataDefinitionRuleFunction.class
 )
 public class DEEmailAddressRuleFunction

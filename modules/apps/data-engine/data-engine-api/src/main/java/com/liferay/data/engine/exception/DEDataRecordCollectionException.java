@@ -16,6 +16,10 @@ package com.liferay.data.engine.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author Leonardo Barros
  */
@@ -58,6 +62,21 @@ public class DEDataRecordCollectionException extends PortalException {
 		public GetDataRecord(Throwable cause) {
 			super(cause);
 		}
+
+	}
+
+	public static class InvalidDataRecord
+		extends DEDataRecordCollectionException {
+
+		public InvalidDataRecord(Map<String, Set<String>> validationErrors) {
+			_validationErrors = validationErrors;
+		}
+
+		public Map<String, Set<String>> getValidationErrors() {
+			return Collections.unmodifiableMap(_validationErrors);
+		}
+
+		private final Map<String, Set<String>> _validationErrors;
 
 	}
 

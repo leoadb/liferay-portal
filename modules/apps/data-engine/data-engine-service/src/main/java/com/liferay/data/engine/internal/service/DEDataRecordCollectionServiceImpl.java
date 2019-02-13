@@ -15,6 +15,7 @@
 package com.liferay.data.engine.internal.service;
 
 import com.liferay.data.engine.constants.DEActionKeys;
+import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.exception.DEDataRecordCollectionException;
 import com.liferay.data.engine.internal.executor.DEDataEngineRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataRecordCollectionDeleteModelPermissionsRequestExecutor;
@@ -27,12 +28,19 @@ import com.liferay.data.engine.internal.executor.DEDataRecordCollectionSaveModel
 import com.liferay.data.engine.internal.executor.DEDataRecordCollectionSavePermissionsRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataRecordCollectionSaveRecordRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataRecordCollectionSaveRequestExecutor;
+import com.liferay.data.engine.internal.io.DEDataDefinitionDeserializerTracker;
+import com.liferay.data.engine.internal.rules.DEDataDefinitionRuleFunctionTracker;
 import com.liferay.data.engine.internal.security.permission.DEDataEnginePermissionSupport;
 import com.liferay.data.engine.internal.storage.DEDataStorageTracker;
+import com.liferay.data.engine.internal.util.DEDataEngineUtil;
 import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.model.DEDataDefinitionField;
+import com.liferay.data.engine.model.DEDataDefinitionRule;
 import com.liferay.data.engine.model.DEDataRecord;
 import com.liferay.data.engine.model.DEDataRecordCollection;
+import com.liferay.data.engine.rules.DEDataDefinitionRuleFunction;
+import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
 import com.liferay.data.engine.service.DEDataRecordCollectionDeleteModelPermissionsRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionDeleteModelPermissionsResponse;
 import com.liferay.data.engine.service.DEDataRecordCollectionDeletePermissionsRequest;
@@ -70,9 +78,11 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Portal;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -413,7 +423,7 @@ public class DEDataRecordCollectionServiceImpl
 					DEActionKeys.UPDATE_DATA_RECORD);
 			}
 
-			verifyDataDefinitionFields(deDataRecordCollectionSaveRecordRequest);
+			validate(deDataRecordCollectionSaveRecordRequest);
 
 			DEDataRecordCollectionSaveRecordRequestExecutor
 				deDataRecordCollectionSaveRecordRequestExecutor =
@@ -493,6 +503,74 @@ public class DEDataRecordCollectionServiceImpl
 		}
 	}
 
+	protected DEDataDefinitionRuleFunctionApplyRequest
+		createDEDataDefinitionRuleFunctionApplyRequest(
+			DEDataDefinitionField deDataDefinitionField,
+			DEDataDefinitionRule deDataDefinitionRule, DEDataRecord deDataRecord) {
+
+		DEDataDefinitionRuleFunctionApplyRequest deDataDefinitionRuleFunctionApplyRequest =
+			new DEDataDefinitionRuleFunctionApplyRequest();
+
+		deDataDefinitionRuleFunctionApplyRequest.setDEDataDefinitionField(
+			deDataDefinitionField);
+		deDataDefinitionRuleFunctionApplyRequest.setParameters(
+			deDataDefinitionRule.getParameters());
+
+		Object value = DEDataEngineUtil.getDEDataDefinitionFieldValue(
+			deDataDefinitionField, deDataRecord.getValues());
+
+		deDataDefinitionRuleFunctionApplyRequest.setValue(value);
+
+		return deDataDefinitionRuleFunctionApplyRequest;
+	}
+
+	protected void doValidation(Map<String, DEDataDefinitionField> deDataDefinitionFields,
+			DEDataDefinitionRule deDataDefinitionRule, DEDataRecord deDataRecord,
+			Map<String, Set<String>> validationErrors) {
+
+		DEDataDefinitionRuleFunction deDataDefinitionRuleFunction =
+			deDataDefinitionRuleFunctionTracker.getDEDataDefinitionRuleFunction(
+				deDataDefinitionRule.getName());
+
+		if (deDataDefinitionRuleFunction == null) {
+			return;
+		}
+
+		for (String fieldName : deDataDefinitionRule.getDEDataDefinitionFieldNames()) {
+			DEDataDefinitionField deDataDefinitionField = deDataDefinitionFields.get(fieldName);
+
+			DEDataDefinitionRuleFunctionApplyRequest deDataDefinitionRuleFunctionApplyRequest =
+				createDEDataDefinitionRuleFunctionApplyRequest(
+					deDataDefinitionField, deDataDefinitionRule, deDataRecord);
+
+			DEDataDefinitionRuleFunctionApplyResponse deDataDefinitionRuleFunctionApplyResponse =
+				deDataDefinitionRuleFunction.apply(deDataDefinitionRuleFunctionApplyRequest);
+
+			if (!deDataDefinitionRuleFunctionApplyResponse.isValid()) {
+				Set<String> errorCodes = validationErrors.getOrDefault(fieldName, new HashSet<>());
+
+				errorCodes.add(deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
+
+				validationErrors.put(fieldName, errorCodes);
+			}
+		}
+	}
+
+	protected Set<String> getDEDataDefinitionFields(
+		DEDataDefinition deDataDefinition) {
+
+		List<DEDataDefinitionField> deDataDefinitionFields =
+			deDataDefinition.getDEDataDefinitionFields();
+
+		Stream<DEDataDefinitionField> stream = deDataDefinitionFields.stream();
+
+		return stream.map(
+			field -> field.getName()
+		).collect(
+			Collectors.toSet()
+		);
+	}
+
 	protected Map<String, DEDataDefinitionField> getDEDataDefinitionFieldsMap(
 		DEDataDefinition deDataDefinition) {
 
@@ -513,8 +591,7 @@ public class DEDataRecordCollectionServiceImpl
 	protected DEDataEngineRequestExecutor getDEDataEngineRequestExecutor() {
 		if (_deDataEngineRequestExecutor == null) {
 			_deDataEngineRequestExecutor = new DEDataEngineRequestExecutor(
-				deDataDefinitionFieldsDeserializerTracker,
-				deDataStorageTracker);
+				deDataDefinitionDeserializerTracker, deDataStorageTracker);
 		}
 
 		return _deDataEngineRequestExecutor;
@@ -646,6 +723,13 @@ public class DEDataRecordCollectionServiceImpl
 		return _deDataRecordCollectionSaveRequestExecutor;
 	}
 
+	protected boolean isValidationRule(DEDataDefinitionRule deDataDefinitionRule) {
+		String ruleType = deDataDefinitionRule.getRuleType();
+
+		return ruleType.equals(
+			DEDataDefinitionRuleConstants.VALIDATION_RULE_TYPE);
+	}
+
 	@Reference(
 		target = "(model.class.name=com.liferay.data.engine.model.DEDataRecordCollection)",
 		unbind = "-"
@@ -657,32 +741,79 @@ public class DEDataRecordCollectionServiceImpl
 		_modelResourcePermission = modelResourcePermission;
 	}
 
-	protected void verifyDataDefinitionFields(
-			DEDataRecordCollectionSaveRecordRequest
-				deDataRecordCollectionSaveRecordRequest)
+	protected void validate(
+			DEDataRecordCollectionSaveRecordRequest deDataRecordCollectionSaveRecordRequest)
 		throws DEDataRecordCollectionException {
 
-		DEDataRecord dataRecord =
-			deDataRecordCollectionSaveRecordRequest.getDEDataRecord();
+		validateDEDataDefinitionFields(deDataRecordCollectionSaveRecordRequest);
+		validateDEDataDefinitionFieldValues(deDataRecordCollectionSaveRecordRequest);
+	}
 
-		DEDataDefinition deDataDefinition = dataRecord.getDEDataDefinition();
+	protected void validateDEDataDefinitionFields(
+			DEDataRecordCollectionSaveRecordRequest deDataRecordCollectionSaveRecordRequest)
+		throws DEDataRecordCollectionException {
 
-		Map<String, Object> values = dataRecord.getValues();
+		DEDataRecord deDataRecord = deDataRecordCollectionSaveRecordRequest.getDEDataRecord();
+
+		DEDataDefinition deDataDefinition = deDataRecord.getDEDataDefinition();
+
+		Set<String> deDataDefinitionFields = getDEDataDefinitionFields(
+			deDataDefinition);
+
+		Map<String, Object> fieldValues = deDataRecord.getValues();
+
+		Set<String> fieldNames = fieldValues.keySet();
+
+		Stream<String> stream = fieldNames.stream();
+
+		List<String> orphanFieldNames = stream.filter(
+			fieldName -> !deDataDefinitionFields.contains(fieldName)
+		).collect(
+			Collectors.toList()
+		);
+
+		if (!orphanFieldNames.isEmpty()) {
+			throw new DEDataRecordCollectionException.NoSuchFields(
+				ArrayUtil.toStringArray(orphanFieldNames));
+		}
+	}
+
+	protected void validateDEDataDefinitionFieldValues(
+			DEDataRecordCollectionSaveRecordRequest deDataRecordCollectionSaveRecordRequest)
+		throws DEDataRecordCollectionException {
+
+		DEDataRecord deDataRecord = deDataRecordCollectionSaveRecordRequest.getDEDataRecord();
+
+		DEDataDefinition deDataDefinition = deDataRecord.getDEDataDefinition();
+
+		List<DEDataDefinitionRule> deDataDefinitionRules = deDataDefinition.getDEDataDefinitionRules();
+
+		Stream<DEDataDefinitionRule> stream = deDataDefinitionRules.stream();
+
+		List<DEDataDefinitionRule> deDataDefinitionValidationRules = stream.filter(
+			this::isValidationRule
+		).collect(
+			Collectors.toList()
+		);
+
+		if (deDataDefinitionValidationRules.isEmpty()) {
+			return;
+		}
 
 		Map<String, DEDataDefinitionField> deDataDefinitionFields =
 			getDEDataDefinitionFieldsMap(deDataDefinition);
 
-		List<String> fieldNames = new ArrayList<>();
+		Map<String, Set<String>> validationErrors = new HashMap<>();
 
-		for (Map.Entry<String, Object> entry : values.entrySet()) {
-			if (!deDataDefinitionFields.containsKey(entry.getKey())) {
-				fieldNames.add(entry.getKey());
-			}
+		for (DEDataDefinitionRule deDataDefinitionRule :
+				deDataDefinitionValidationRules) {
+
+			doValidation(
+				deDataDefinitionFields, deDataDefinitionRule, deDataRecord, validationErrors);
 		}
 
-		if (!fieldNames.isEmpty()) {
-			throw new DEDataRecordCollectionException.NoSuchFields(
-				ArrayUtil.toStringArray(fieldNames));
+		if (!validationErrors.isEmpty()) {
+			throw new DEDataRecordCollectionException.InvalidDataRecord(validationErrors);
 		}
 	}
 
@@ -696,8 +827,11 @@ public class DEDataRecordCollectionServiceImpl
 	protected DDMStorageLinkLocalService ddmStorageLinkLocalService;
 
 	@Reference
-	protected DEDataDefinitionFieldsDeserializerTracker
-		deDataDefinitionFieldsDeserializerTracker;
+	protected DEDataDefinitionDeserializerTracker
+		deDataDefinitionDeserializerTracker;
+
+	@Reference
+	protected DEDataDefinitionRuleFunctionTracker deDataDefinitionRuleFunctionTracker;
 
 	@Reference
 	protected DEDataStorageTracker deDataStorageTracker;
