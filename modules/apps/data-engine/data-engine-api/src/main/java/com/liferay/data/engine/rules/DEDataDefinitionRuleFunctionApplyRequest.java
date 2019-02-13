@@ -29,16 +29,6 @@ import java.util.Map;
 public final class DEDataDefinitionRuleFunctionApplyRequest {
 
 	/**
-	 * Add parameters to be used by the validator.
-	 *
-	 * @param name The parameter's name.
-	 * @param value The parameter's value.
-	 */
-	public void addParameter(String name, Object value) {
-		_parameters.put(name, value);
-	}
-
-	/**
 	 * @return A data definition field.
 	 * @review
 	 */
