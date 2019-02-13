@@ -17,6 +17,7 @@ package com.liferay.data.engine.service.test;
 import com.liferay.data.engine.exception.DEDataRecordCollectionException;
 import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.model.DEDataDefinitionField;
+import com.liferay.data.engine.model.DEDataDefinitionRule;
 import com.liferay.data.engine.model.DEDataRecord;
 import com.liferay.data.engine.model.DEDataRecordCollection;
 import com.liferay.data.engine.service.DEDataDefinitionDeleteModelPermissionsRequest;
@@ -349,41 +350,7 @@ public class DEDataEngineTestUtil {
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 		try {
-			Map<String, String> nameLabels = new HashMap() {
-				{
-					put("pt_BR", "Nome");
-					put("en_US", "Name");
-				}
-			};
-
-			DEDataDefinitionField deDataDefinitionField1 =
-				new DEDataDefinitionField("name", "string");
-
-			deDataDefinitionField1.addLabels(nameLabels);
-
-			Map<String, String> emailLabels = new HashMap() {
-				{
-					put("pt_BR", "Endereço de Email");
-					put("en_US", "Email Address");
-				}
-			};
-
-			DEDataDefinitionField deDataDefinitionField2 =
-				new DEDataDefinitionField("email", "string");
-
-			deDataDefinitionField2.addLabels(emailLabels);
-
-			DEDataDefinition deDataDefinition = new DEDataDefinition();
-
-			deDataDefinition.addDescription(
-				LocaleUtil.US, "Contact description");
-			deDataDefinition.addDescription(
-				LocaleUtil.BRAZIL, "Descrição do contato");
-			deDataDefinition.addName(LocaleUtil.US, "Contact");
-			deDataDefinition.addName(LocaleUtil.BRAZIL, "Contato");
-			deDataDefinition.setDEDataDefinitionFields(
-				Arrays.asList(deDataDefinitionField1, deDataDefinitionField2));
-			deDataDefinition.setStorageType("json");
+			DEDataDefinition deDataDefinition = createDataDefinition();
 
 			DEDataDefinitionSaveRequest deDataDefinitionSaveRequest =
 				DEDataDefinitionRequestBuilder.saveBuilder(
@@ -445,6 +412,46 @@ public class DEDataEngineTestUtil {
 					group.getGroupId()
 				).onBehalfOf(
 					user.getUserId()
+				).build();
+
+			DEDataDefinitionSaveResponse deDataDefinitionSaveResponse =
+				deDataDefinitionService.execute(deDataDefinitionSaveRequest);
+
+			return deDataDefinitionSaveResponse.getDEDataDefinition();
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	public static DEDataDefinition insertDEDataDefinitionWithRuleFunction(
+			User user, Group group,
+			DEDataDefinitionService deDataDefinitionService,
+			DEDataDefinitionRule deDataDefinitionRule)
+		throws Exception {
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), user.getUserId());
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			DEDataDefinition deDataDefinition = createDataDefinition();
+
+			deDataDefinition.setDEDataDefinitionRules(
+				Arrays.asList(deDataDefinitionRule));
+
+			DEDataDefinitionSaveRequest deDataDefinitionSaveRequest =
+				DEDataDefinitionRequestBuilder.saveBuilder(
+					deDataDefinition
+				).onBehalfOf(
+					user.getUserId()
+				).inGroup(
+					group.getGroupId()
 				).build();
 
 			DEDataDefinitionSaveResponse deDataDefinitionSaveResponse =
@@ -702,6 +709,45 @@ public class DEDataEngineTestUtil {
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	protected static DEDataDefinition createDataDefinition() {
+		Map<String, String> nameLabels = new HashMap() {
+			{
+				put("pt_BR", "Nome");
+				put("en_US", "Name");
+			}
+		};
+
+		DEDataDefinitionField deDataDefinitionField1 =
+			new DEDataDefinitionField("name", "string");
+
+		deDataDefinitionField1.addLabels(nameLabels);
+
+		Map<String, String> emailLabels = new HashMap() {
+			{
+				put("pt_BR", "Endereço de Email");
+				put("en_US", "Email Address");
+			}
+		};
+
+		DEDataDefinitionField deDataDefinitionField2 =
+			new DEDataDefinitionField("email", "string");
+
+		deDataDefinitionField2.addLabels(emailLabels);
+
+		DEDataDefinition deDataDefinition = new DEDataDefinition();
+
+		deDataDefinition.addDescription(LocaleUtil.US, "Contact description");
+		deDataDefinition.addDescription(
+			LocaleUtil.BRAZIL, "Descrição do contato");
+		deDataDefinition.addName(LocaleUtil.US, "Contact");
+		deDataDefinition.addName(LocaleUtil.BRAZIL, "Contato");
+		deDataDefinition.setDEDataDefinitionFields(
+			Arrays.asList(deDataDefinitionField1, deDataDefinitionField2));
+		deDataDefinition.setStorageType("json");
+
+		return deDataDefinition;
 	}
 
 }
