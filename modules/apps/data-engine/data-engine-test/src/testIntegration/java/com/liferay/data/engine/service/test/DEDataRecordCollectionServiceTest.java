@@ -16,8 +16,10 @@ package com.liferay.data.engine.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.constants.DEActionKeys;
+import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.exception.DEDataRecordCollectionException;
 import com.liferay.data.engine.model.DEDataDefinition;
+import com.liferay.data.engine.model.DEDataDefinitionRule;
 import com.liferay.data.engine.model.DEDataRecord;
 import com.liferay.data.engine.model.DEDataRecordCollection;
 import com.liferay.data.engine.service.DEDataDefinitionService;
@@ -1549,6 +1551,83 @@ public class DEDataRecordCollectionServiceTest {
 		DEDataEngineTestUtil.insertDEDataRecord(
 			user, _group, deDataRecordCollection,
 			_deDataRecordCollectionService);
+	}
+
+	@Test(expected = DEDataRecordCollectionException.InvalidDataRecord.class)
+	public void testInsertRecordWithAnInvalidFieldValue() throws Exception {
+		DEDataDefinitionRule deDataDefinitionRule = new DEDataDefinitionRule();
+
+		deDataDefinitionRule.setName(
+			DEDataDefinitionRuleConstants.EMAIL_ADDRESS_RULE);
+		deDataDefinitionRule.setRuleType(
+			DEDataDefinitionRuleConstants.VALIDATION_RULE_TYPE);
+
+		deDataDefinitionRule.getDEDataDefinitionFieldNames().add("email");
+
+		DEDataDefinition deDataDefinition =
+			DEDataEngineTestUtil.insertDEDataDefinitionWithRuleFunction(
+				_adminUser, _group, _deDataDefinitionService,
+				deDataDefinitionRule);
+
+		DEDataRecordCollection deDataRecordCollection =
+			DEDataEngineTestUtil.insertDEDataRecordCollection(
+				_adminUser, _group, deDataDefinition,
+				_deDataRecordCollectionService);
+
+		DEDataRecord deDataRecord = new DEDataRecord();
+
+		deDataRecord.setDEDataRecordCollection(deDataRecordCollection);
+
+		Map<String, Object> values = new HashMap() {
+			{
+				put("name", "Liferay");
+				put("email", "test");
+			}
+		};
+
+		deDataRecord.setValues(values);
+
+		DEDataRecordCollectionSaveRecordRequest
+			deDataRecordCollectionSaveRecordRequest =
+				DEDataRecordCollectionRequestBuilder.saveRecordBuilder(
+					deDataRecord
+				).inGroup(
+					_group.getGroupId()
+				).onBehalfOf(
+					_adminUser.getUserId()
+				).build();
+
+		DEDataEngineTestUtil.saveDataRecord(
+			_adminUser, _group, _deDataRecordCollectionService,
+			deDataRecordCollectionSaveRecordRequest);
+	}
+
+	@Test
+	public void testInsertRecordWithAValidFieldValue() throws Exception {
+		DEDataDefinitionRule deDataDefinitionRule = new DEDataDefinitionRule();
+
+		deDataDefinitionRule.setName(
+			DEDataDefinitionRuleConstants.EMAIL_ADDRESS_RULE);
+		deDataDefinitionRule.setRuleType(
+			DEDataDefinitionRuleConstants.VALIDATION_RULE_TYPE);
+
+		deDataDefinitionRule.getDEDataDefinitionFieldNames().add("email");
+
+		DEDataDefinition deDataDefinition =
+			DEDataEngineTestUtil.insertDEDataDefinitionWithRuleFunction(
+				_adminUser, _group, _deDataDefinitionService,
+				deDataDefinitionRule);
+
+		DEDataRecordCollection deDataRecordCollection =
+			DEDataEngineTestUtil.insertDEDataRecordCollection(
+				_adminUser, _group, deDataDefinition,
+				_deDataRecordCollectionService);
+
+		DEDataRecord deDataRecord = DEDataEngineTestUtil.insertDEDataRecord(
+			_adminUser, _group, deDataRecordCollection,
+			_deDataRecordCollectionService);
+
+		Assert.assertTrue(deDataRecord.getDEDataRecordId() > 0);
 	}
 
 	@Test(
