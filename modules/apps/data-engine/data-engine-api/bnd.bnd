@@ -6,5 +6,6 @@ Export-Package:\
 	com.liferay.data.engine.exception,\
 	com.liferay.data.engine.io,\
 	com.liferay.data.engine.model,\
+	com.liferay.data.engine.rules,\
 	com.liferay.data.engine.service,\
 	com.liferay.data.engine.storage
