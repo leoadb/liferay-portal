@@ -14,6 +14,7 @@
 
 package com.liferay.data.engine.internal.io;
 
+import com.liferay.data.engine.internal.util.DEDataEngineUtil;
 import com.liferay.data.engine.io.DEDataRecordValuesResponseBuilder;
 import com.liferay.data.engine.io.DEDataRecordValuesSerializer;
 import com.liferay.data.engine.io.DEDataRecordValuesSerializerApplyRequest;
@@ -83,12 +84,14 @@ public class DEDataRecordValuesJSONSerializer
 
 			DEDataDefinitionField deDataDefinitionField = entry.getValue();
 
+			Object value = DEDataEngineUtil.getDEDataDefinitionFieldValue(
+				deDataDefinitionField, values);
+
 			if (deDataDefinitionField.isLocalizable()) {
 				JSONObject localizedJSONObject = jsonFactory.createJSONObject();
 
 				addLocalizedValues(
-					localizedJSONObject,
-					(Map<String, Object>)values.get(entry.getKey()));
+					localizedJSONObject, (Map<String, Object>)value);
 
 				jsonObject.put(entry.getKey(), localizedJSONObject);
 			}
