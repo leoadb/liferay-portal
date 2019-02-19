@@ -18,10 +18,16 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.constants.DEActionKeys;
 import com.liferay.data.engine.exception.DEDataRecordCollectionException;
 import com.liferay.data.engine.model.DEDataDefinition;
+import com.liferay.data.engine.model.DEDataDefinitionField;
 import com.liferay.data.engine.model.DEDataRecord;
 import com.liferay.data.engine.model.DEDataRecordCollection;
+import com.liferay.data.engine.service.DEDataDefinitionRequestBuilder;
+import com.liferay.data.engine.service.DEDataDefinitionSaveRequest;
+import com.liferay.data.engine.service.DEDataDefinitionSaveResponse;
 import com.liferay.data.engine.service.DEDataDefinitionService;
 import com.liferay.data.engine.service.DEDataRecordCollectionDeleteRequest;
+import com.liferay.data.engine.service.DEDataRecordCollectionExportRecordsRequest;
+import com.liferay.data.engine.service.DEDataRecordCollectionExportRecordsResponse;
 import com.liferay.data.engine.service.DEDataRecordCollectionGetRequest;
 import com.liferay.data.engine.service.DEDataRecordCollectionRequestBuilder;
 import com.liferay.data.engine.service.DEDataRecordCollectionSaveModelPermissionsRequest;
@@ -50,9 +56,14 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +73,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  * @author Leonardo Barros
@@ -893,6 +906,123 @@ public class DEDataRecordCollectionServiceTest {
 			_siteMember, _group.getGroupId(),
 			deDataRecordCollection.getDEDataRecordCollectionId(),
 			_deDataRecordCollectionService);
+	}
+
+	@Test
+	public void testExportDataRecords() throws Exception {
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_adminUser));
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _adminUser.getUserId());
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			DEDataDefinition deDataDefinition = new DEDataDefinition();
+
+			Map<String, String> field1Labels = new HashMap() {
+				{
+					put("en_US", "Field 1");
+				}
+			};
+
+			DEDataDefinitionField deDataDefinitionField1 =
+				new DEDataDefinitionField("field1", "text");
+
+			deDataDefinitionField1.addLabels(field1Labels);
+
+			Map<String, String> field2Labels = new HashMap() {
+				{
+					put("en_US", "Field 2");
+				}
+			};
+
+			DEDataDefinitionField deDataDefinitionField2 =
+				new DEDataDefinitionField("field2", "numeric");
+
+			deDataDefinitionField2.addLabels(field2Labels);
+
+			deDataDefinition.addName(LocaleUtil.US, "Data Definition Test");
+			deDataDefinition.setDEDataDefinitionFields(
+				Arrays.asList(deDataDefinitionField1, deDataDefinitionField2));
+			deDataDefinition.setStorageType("json");
+
+			DEDataDefinitionSaveRequest deDataDefinitionSaveRequest =
+				DEDataDefinitionRequestBuilder.saveBuilder(
+					deDataDefinition
+				).inGroup(
+					_group.getGroupId()
+				).onBehalfOf(
+					_adminUser.getUserId()
+				).build();
+
+			DEDataDefinitionSaveResponse deDataDefinitionSaveResponse =
+				_deDataDefinitionService.execute(deDataDefinitionSaveRequest);
+
+			deDataDefinition =
+				deDataDefinitionSaveResponse.getDEDataDefinition();
+
+			DEDataRecordCollection deDataRecordCollection =
+				DEDataEngineTestUtil.insertDEDataRecordCollection(
+					_adminUser, _group, deDataDefinition,
+					_deDataRecordCollectionService);
+
+			DEDataRecord deDataRecord1 = new DEDataRecord();
+
+			Map<String, Object> values1 = new HashMap() {
+				{
+					put("field1", "Text 1");
+					put("field2", 1);
+				}
+			};
+
+			deDataRecord1.setValues(values1);
+
+			deDataRecord1.setDEDataRecordCollection(deDataRecordCollection);
+
+			DEDataEngineTestUtil.insertDEDataRecord(
+				_adminUser, _group, deDataRecord1,
+				_deDataRecordCollectionService);
+
+			DEDataRecord deDataRecord2 = new DEDataRecord();
+
+			Map<String, Object> values2 = new HashMap() {
+				{
+					put("field1", "Text 2");
+					put("field2", 2);
+				}
+			};
+
+			deDataRecord2.setValues(values2);
+
+			deDataRecord2.setDEDataRecordCollection(deDataRecordCollection);
+
+			DEDataEngineTestUtil.insertDEDataRecord(
+				_adminUser, _group, deDataRecord2,
+				_deDataRecordCollectionService);
+
+			DEDataRecordCollectionExportRecordsRequest
+				deDataRecordCollectionExportRecordsRequest =
+					DEDataRecordCollectionRequestBuilder.exportRecordsBuilder(
+						deDataRecordCollection.getDEDataRecordCollectionId(),
+						"json"
+					).build();
+
+			DEDataRecordCollectionExportRecordsResponse
+				deDataRecordCollectionExportRecordsResponse =
+					_deDataRecordCollectionService.execute(
+						deDataRecordCollectionExportRecordsRequest);
+
+			JSONAssert.assertEquals(
+				read("data-record-collection-export-records.json"),
+				deDataRecordCollectionExportRecordsResponse.getContent(),
+				false);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Test
@@ -2565,6 +2695,14 @@ public class DEDataRecordCollectionServiceTest {
 
 		deDataRecord = DEDataEngineTestUtil.updateDEDataRecord(
 			_siteMember, _group, deDataRecord, _deDataRecordCollectionService);
+	}
+
+	protected String read(String fileName) throws IOException {
+		Class<?> clazz = getClass();
+
+		InputStream inputStream = clazz.getResourceAsStream(fileName);
+
+		return StringUtil.read(inputStream);
 	}
 
 	protected void setUpPermissionThreadLocal() throws Exception {
