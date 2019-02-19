@@ -66,6 +66,19 @@ public interface DEDataRecordCollectionService {
 		throws DEDataRecordCollectionException;
 
 	/**
+	 * Export the list of records of a data record collection.
+	 *
+	 * @param deDataRecordCollectionExportRecordsRequest
+	 * @return {@DEDataRecordCollectionExportResponse}
+	 * @throws DEDataRecordCollectionException
+	 * @review
+	 */
+	public DEDataRecordCollectionExportRecordsResponse execute(
+			DEDataRecordCollectionExportRecordsRequest
+				deDataRecordCollectionExportRecordsRequest)
+		throws DEDataRecordCollectionException;
+
+	/**
 	 * Retrieves a {@link DEDataRecordCollection } from the database corresponding to the
 	 * ID passed as a parameter on the request.
 	 *

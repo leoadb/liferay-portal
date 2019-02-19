@@ -44,8 +44,22 @@ public class DEDataRecordCollectionRequestBuilder {
 			companyId, scopedGroupId, roleNames);
 	}
 
+	public static DEDataRecordCollectionExportRecordsRequest.Builder
+		exportRecordsBuilder(long deDataRecordCollectionId, String format) {
+
+		return new DEDataRecordCollectionExportRecordsRequest.Builder(
+			deDataRecordCollectionId, format);
+	}
+
 	public static DEDataRecordCollectionGetRequest.Builder getBuilder() {
 		return new DEDataRecordCollectionGetRequest.Builder();
+	}
+
+	public static DEDataRecordCollectionListRecordsRequest.Builder
+		listRecordsBuilder(long deDataRecordCollectionId) {
+
+		return new DEDataRecordCollectionListRecordsRequest.Builder(
+			deDataRecordCollectionId);
 	}
 
 	public static DEDataRecordCollectionSaveRequest.Builder saveBuilder(
