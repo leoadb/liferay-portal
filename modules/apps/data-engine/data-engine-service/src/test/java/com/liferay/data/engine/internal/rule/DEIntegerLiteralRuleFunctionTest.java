@@ -12,12 +12,12 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class DEEmptyRuleFunctionTest {
+public class DEIntegerLiteralRuleFunctionTest {
 
 	@Before
 	public void setUp() {
@@ -36,37 +36,16 @@ public class DEEmptyRuleFunctionTest {
 		_deDataDefinitionRuleFunctionApplyRequest.setDEDataDefinitionField(
 			_deDataDefinitionField);
 
-		_deEmptyRuleFunction = new DEEmptyRuleFunction();
+		_deIntegerLiteralRuleFunction = new DEIntegerLiteralRuleFunction();
 	}
 
 	@Test
-	public void testArrayWithEmptyValue() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue(
-			new String[] {" ", "value"});
+	public void testInteger() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("12312545");
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmptyRuleFunction.apply(
-					_deDataDefinitionRuleFunctionApplyRequest);
-
-		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
-		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_NOT_BE_EMPTY_ERROR,
-			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
-		Assert.assertEquals(
-			_deDataDefinitionField,
-			deDataDefinitionRuleFunctionApplyResponse.
-				getDEDataDefinitionField());
-	}
-
-	@Test
-	public void testArrayWithValues() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue(
-			new String[] {"text1", "text2", "text3"});
-
-		DEDataDefinitionRuleFunctionApplyResponse
-			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmptyRuleFunction.apply(
+				_deIntegerLiteralRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
@@ -79,35 +58,17 @@ public class DEEmptyRuleFunctionTest {
 	}
 
 	@Test
-	public void testEmpty() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue(" ");
+	public void testNotAInteger() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("number");
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmptyRuleFunction.apply(
+				_deIntegerLiteralRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
 		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_NOT_BE_EMPTY_ERROR,
-			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
-		Assert.assertEquals(
-			_deDataDefinitionField,
-			deDataDefinitionRuleFunctionApplyResponse.
-				getDEDataDefinitionField());
-	}
-
-	@Test
-	public void testNotEmpty() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("value");
-
-		DEDataDefinitionRuleFunctionApplyResponse
-			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmptyRuleFunction.apply(
-					_deDataDefinitionRuleFunctionApplyRequest);
-
-		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
-		Assert.assertNull(
+			DEDataDefinitionRuleConstants.VALUE_MUST_BE_INTEGER_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -119,12 +80,32 @@ public class DEEmptyRuleFunctionTest {
 	public void testNullValue() {
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmptyRuleFunction.apply(
+				_deIntegerLiteralRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
 		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_NOT_BE_EMPTY_ERROR,
+			DEDataDefinitionRuleConstants.VALUE_MUST_BE_INTEGER_ERROR,
+			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
+		Assert.assertEquals(
+			_deDataDefinitionField,
+			deDataDefinitionRuleFunctionApplyResponse.
+				getDEDataDefinitionField());
+	}
+
+	@Test
+	public void testOutbound() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue(
+			"2312321243423432423424234233234324324242");
+
+		DEDataDefinitionRuleFunctionApplyResponse
+			deDataDefinitionRuleFunctionApplyResponse =
+				_deIntegerLiteralRuleFunction.apply(
+					_deDataDefinitionRuleFunctionApplyRequest);
+
+		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
+		Assert.assertEquals(
+			DEDataDefinitionRuleConstants.VALUE_MUST_BE_INTEGER_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -133,9 +114,9 @@ public class DEEmptyRuleFunctionTest {
 	}
 
 	private final DEDataDefinitionField _deDataDefinitionField =
-		new DEDataDefinitionField("name", "text");
+		new DEDataDefinitionField("age", "numeric");
 	private DEDataDefinitionRuleFunctionApplyRequest
 		_deDataDefinitionRuleFunctionApplyRequest;
-	private DEEmptyRuleFunction _deEmptyRuleFunction;
+	private DEIntegerLiteralRuleFunction _deIntegerLiteralRuleFunction;
 
 }

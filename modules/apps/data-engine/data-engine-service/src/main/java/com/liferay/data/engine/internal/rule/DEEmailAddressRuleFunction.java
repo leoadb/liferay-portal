@@ -12,13 +12,13 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunction;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunction;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;

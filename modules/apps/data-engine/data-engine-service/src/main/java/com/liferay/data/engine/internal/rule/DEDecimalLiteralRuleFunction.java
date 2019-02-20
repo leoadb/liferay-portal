@@ -12,30 +12,30 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunction;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunction;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
 
-import org.apache.commons.lang.math.NumberUtils;
+import java.math.BigDecimal;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * It validates if a value is an integer number.
+ * It validates if a value is a decimal number.
  *
  * @author Leonardo Barros
  */
 @Component(
 	immediate = true,
-	property = {"de.data.definition.rule.function.name=" + DEDataDefinitionRuleConstants.INTEGER_LITERAL_RULE,
+	property = {"de.data.definition.rule.function.name=" + DEDataDefinitionRuleConstants.DECIMAL_LITERAL_RULE,
 		"de.data.definition.rule.function.type=" + DEDataDefinitionRuleConstants.VALIDATION_RULE_TYPE},
 	service = DEDataDefinitionRuleFunction.class
 )
-public class DEIntegerLiteralRuleFunction
+public class DEDecimalLiteralRuleFunction
 	implements DEDataDefinitionRuleFunction {
 
 	@Override
@@ -58,7 +58,7 @@ public class DEIntegerLiteralRuleFunction
 
 		deDataDefinitionRuleFunctionApplyResponse.setValid(false);
 		deDataDefinitionRuleFunctionApplyResponse.setErrorCode(
-			DEDataDefinitionRuleConstants.VALUE_MUST_BE_INTEGER_ERROR);
+			DEDataDefinitionRuleConstants.VALUE_MUST_BE_DECIMAL_ERROR);
 
 		Object value = deDataDefinitionRuleFunctionApplyRequest.getValue();
 
@@ -66,13 +66,15 @@ public class DEIntegerLiteralRuleFunction
 			return deDataDefinitionRuleFunctionApplyResponse;
 		}
 
-		Integer valueInteger = NumberUtils.toInt(
-			value.toString(), Integer.MIN_VALUE);
+		boolean result;
 
-		boolean result = false;
+		try {
+			new BigDecimal(value.toString());
 
-		if (valueInteger != Integer.MIN_VALUE) {
 			result = true;
+		}
+		catch (NumberFormatException nfe) {
+			result = false;
 		}
 
 		deDataDefinitionRuleFunctionApplyResponse.setValid(result);

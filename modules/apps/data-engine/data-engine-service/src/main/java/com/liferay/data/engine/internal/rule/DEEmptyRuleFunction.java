@@ -12,29 +12,31 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunction;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunction;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * It validates if a value is a valid URL.
+ * It validates if a value is not empty.
  *
  * @author Leonardo Barros
  */
 @Component(
 	immediate = true,
-	property = {"de.data.definition.rule.function.name=" + DEDataDefinitionRuleConstants.URL_RULE,
+	property = {"de.data.definition.rule.function.name=" + DEDataDefinitionRuleConstants.EMPTY_RULE,
 		"de.data.definition.rule.function.type=" + DEDataDefinitionRuleConstants.VALIDATION_RULE_TYPE},
 	service = DEDataDefinitionRuleFunction.class
 )
-public class DEURLRuleFunction implements DEDataDefinitionRuleFunction {
+public class DEEmptyRuleFunction implements DEDataDefinitionRuleFunction {
 
 	@Override
 	/**
@@ -56,7 +58,7 @@ public class DEURLRuleFunction implements DEDataDefinitionRuleFunction {
 
 		deDataDefinitionRuleFunctionApplyResponse.setValid(false);
 		deDataDefinitionRuleFunctionApplyResponse.setErrorCode(
-			DEDataDefinitionRuleConstants.INVALID_URL_ERROR);
+			DEDataDefinitionRuleConstants.VALUE_MUST_NOT_BE_EMPTY_ERROR);
 
 		Object value = deDataDefinitionRuleFunctionApplyRequest.getValue();
 
@@ -64,7 +66,20 @@ public class DEURLRuleFunction implements DEDataDefinitionRuleFunction {
 			return deDataDefinitionRuleFunctionApplyResponse;
 		}
 
-		boolean result = Validator.isUrl(value.toString());
+		boolean result;
+
+		if (isArray(value)) {
+			Object[] values = (Object[])value;
+
+			result = Stream.of(
+				values
+			).allMatch(
+				Validator::isNotNull
+			);
+		}
+		else {
+			result = Validator.isNotNull(value.toString());
+		}
 
 		deDataDefinitionRuleFunctionApplyResponse.setValid(result);
 
@@ -73,6 +88,12 @@ public class DEURLRuleFunction implements DEDataDefinitionRuleFunction {
 		}
 
 		return deDataDefinitionRuleFunctionApplyResponse;
+	}
+
+	protected boolean isArray(Object parameter) {
+		Class<?> clazz = parameter.getClass();
+
+		return clazz.isArray();
 	}
 
 }

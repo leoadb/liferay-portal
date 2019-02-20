@@ -12,12 +12,15 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +29,7 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class DEEmailAddressRuleFunctionTest {
+public class DEMatchExpressionRuleFunctionTest {
 
 	@Before
 	public void setUp() {
@@ -36,21 +39,29 @@ public class DEEmailAddressRuleFunctionTest {
 		_deDataDefinitionRuleFunctionApplyRequest.setDEDataDefinitionField(
 			_deDataDefinitionField);
 
-		_deEmailAddressRuleFunction = new DEEmailAddressRuleFunction();
+		_deMatchExpressionRuleFunction = new DEMatchExpressionRuleFunction();
 	}
 
 	@Test
-	public void testInvalidEmailAddress1() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("TEXT");
+	public void testInvalidRegex() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("test@liferay");
+
+		Map<String, Object> parameters = new HashMap<>();
+
+		parameters.put(
+			DEDataDefinitionRuleConstants.EXPRESSION_PARAMETER,
+			"\\\\S+[@\\S+\\.\\S+");
+
+		_deDataDefinitionRuleFunctionApplyRequest.setParameters(parameters);
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmailAddressRuleFunction.apply(
+				_deMatchExpressionRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
 		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.INVALID_EMAIL_ADDRESS_ERROR,
+			DEDataDefinitionRuleConstants.VALUE_MUST_MATCH_EXPRESSION_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -59,18 +70,25 @@ public class DEEmailAddressRuleFunctionTest {
 	}
 
 	@Test
-	public void testInvalidEmailAddress2() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue(
-			"TEXT,test@liferay.com");
+	public void testNotMatch() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("test@liferay");
+
+		Map<String, Object> parameters = new HashMap<>();
+
+		parameters.put(
+			DEDataDefinitionRuleConstants.EXPRESSION_PARAMETER,
+			"\\S+@\\S+\\.\\S+");
+
+		_deDataDefinitionRuleFunctionApplyRequest.setParameters(parameters);
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmailAddressRuleFunction.apply(
+				_deMatchExpressionRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
 		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.INVALID_EMAIL_ADDRESS_ERROR,
+			DEDataDefinitionRuleConstants.VALUE_MUST_MATCH_EXPRESSION_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -79,48 +97,20 @@ public class DEEmailAddressRuleFunctionTest {
 	}
 
 	@Test
-	public void testMultipleEmailAddress() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue(
-			"test1@liferay.com,test2@liferay.com");
-
-		DEDataDefinitionRuleFunctionApplyResponse
-			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmailAddressRuleFunction.apply(
-					_deDataDefinitionRuleFunctionApplyRequest);
-
-		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
-		Assert.assertNull(
-			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
-		Assert.assertEquals(
-			_deDataDefinitionField,
-			deDataDefinitionRuleFunctionApplyResponse.
-				getDEDataDefinitionField());
-	}
-
-	@Test
-	public void testNullValue() {
-		DEDataDefinitionRuleFunctionApplyResponse
-			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmailAddressRuleFunction.apply(
-					_deDataDefinitionRuleFunctionApplyRequest);
-
-		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
-		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.INVALID_EMAIL_ADDRESS_ERROR,
-			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
-		Assert.assertEquals(
-			_deDataDefinitionField,
-			deDataDefinitionRuleFunctionApplyResponse.
-				getDEDataDefinitionField());
-	}
-
-	@Test
-	public void testSingleEmailAddress() {
+	public void testValidMatch() {
 		_deDataDefinitionRuleFunctionApplyRequest.setValue("test@liferay.com");
 
+		Map<String, Object> parameters = new HashMap<>();
+
+		parameters.put(
+			DEDataDefinitionRuleConstants.EXPRESSION_PARAMETER,
+			"\\S+@\\S+\\.\\S+");
+
+		_deDataDefinitionRuleFunctionApplyRequest.setParameters(parameters);
+
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deEmailAddressRuleFunction.apply(
+				_deMatchExpressionRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
@@ -133,9 +123,9 @@ public class DEEmailAddressRuleFunctionTest {
 	}
 
 	private final DEDataDefinitionField _deDataDefinitionField =
-		new DEDataDefinitionField("email", "text");
+		new DEDataDefinitionField("field", "text");
 	private DEDataDefinitionRuleFunctionApplyRequest
 		_deDataDefinitionRuleFunctionApplyRequest;
-	private DEEmailAddressRuleFunction _deEmailAddressRuleFunction;
+	private DEMatchExpressionRuleFunction _deMatchExpressionRuleFunction;
 
 }

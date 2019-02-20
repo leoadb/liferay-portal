@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.data.engine.rules;
+package com.liferay.data.engine.rule;
 
 /**
  * This is an interface that a rule function must implements in order to apply

@@ -26,7 +26,7 @@ import java.util.Map;
  * It represents a rule that may be applied to a data definition.
  *
  * @author Leonardo Barros
- * @see com.liferay.data.engine.rules.DEDataDefinitionRuleFunction
+ * @see com.liferay.data.engine.rule.DEDataDefinitionRuleFunction
  * @review
  */
 public final class DEDataDefinitionRule implements Serializable {
@@ -45,13 +45,13 @@ public final class DEDataDefinitionRule implements Serializable {
 	 * The name must match the value of the property
 	 * "de.data.definition.rule.function.name" of a registered OSGI
 	 * component which implements {@link
-	 * com.liferay.data.engine.rules.DEDataDefinitionRuleFunction}.
+	 * com.liferay.data.engine.rule.DEDataDefinitionRuleFunction}.
 	 *
 	 * @param ruleType The rule function type.
 	 * The type must match the value of the property
 	 * "de.data.definition.rule.function.type" of a registered OSGI
 	 * component which implements {@link
-	 * com.liferay.data.engine.rules.DEDataDefinitionRuleFunction}.
+	 * com.liferay.data.engine.rule.DEDataDefinitionRuleFunction}.
 	 *
 	 * @param deDataDefinitionFieldNames A list of data definition field's name.
 	 * The rule must be applied to this list of fields.

@@ -12,15 +12,12 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class DEMatchExpressionRuleFunctionTest {
+public class DEEmptyRuleFunctionTest {
 
 	@Before
 	public void setUp() {
@@ -39,29 +36,22 @@ public class DEMatchExpressionRuleFunctionTest {
 		_deDataDefinitionRuleFunctionApplyRequest.setDEDataDefinitionField(
 			_deDataDefinitionField);
 
-		_deMatchExpressionRuleFunction = new DEMatchExpressionRuleFunction();
+		_deEmptyRuleFunction = new DEEmptyRuleFunction();
 	}
 
 	@Test
-	public void testInvalidRegex() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("test@liferay");
-
-		Map<String, Object> parameters = new HashMap<>();
-
-		parameters.put(
-			DEDataDefinitionRuleConstants.EXPRESSION_PARAMETER,
-			"\\\\S+[@\\S+\\.\\S+");
-
-		_deDataDefinitionRuleFunctionApplyRequest.setParameters(parameters);
+	public void testArrayWithEmptyValue() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue(
+			new String[] {" ", "value"});
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deMatchExpressionRuleFunction.apply(
+				_deEmptyRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
 		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_MATCH_EXPRESSION_ERROR,
+			DEDataDefinitionRuleConstants.VALUE_MUST_NOT_BE_EMPTY_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -70,47 +60,13 @@ public class DEMatchExpressionRuleFunctionTest {
 	}
 
 	@Test
-	public void testNotMatch() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("test@liferay");
-
-		Map<String, Object> parameters = new HashMap<>();
-
-		parameters.put(
-			DEDataDefinitionRuleConstants.EXPRESSION_PARAMETER,
-			"\\S+@\\S+\\.\\S+");
-
-		_deDataDefinitionRuleFunctionApplyRequest.setParameters(parameters);
+	public void testArrayWithValues() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue(
+			new String[] {"text1", "text2", "text3"});
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deMatchExpressionRuleFunction.apply(
-					_deDataDefinitionRuleFunctionApplyRequest);
-
-		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
-		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_MATCH_EXPRESSION_ERROR,
-			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
-		Assert.assertEquals(
-			_deDataDefinitionField,
-			deDataDefinitionRuleFunctionApplyResponse.
-				getDEDataDefinitionField());
-	}
-
-	@Test
-	public void testValidMatch() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("test@liferay.com");
-
-		Map<String, Object> parameters = new HashMap<>();
-
-		parameters.put(
-			DEDataDefinitionRuleConstants.EXPRESSION_PARAMETER,
-			"\\S+@\\S+\\.\\S+");
-
-		_deDataDefinitionRuleFunctionApplyRequest.setParameters(parameters);
-
-		DEDataDefinitionRuleFunctionApplyResponse
-			deDataDefinitionRuleFunctionApplyResponse =
-				_deMatchExpressionRuleFunction.apply(
+				_deEmptyRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
@@ -122,10 +78,64 @@ public class DEMatchExpressionRuleFunctionTest {
 				getDEDataDefinitionField());
 	}
 
+	@Test
+	public void testEmpty() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue(" ");
+
+		DEDataDefinitionRuleFunctionApplyResponse
+			deDataDefinitionRuleFunctionApplyResponse =
+				_deEmptyRuleFunction.apply(
+					_deDataDefinitionRuleFunctionApplyRequest);
+
+		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
+		Assert.assertEquals(
+			DEDataDefinitionRuleConstants.VALUE_MUST_NOT_BE_EMPTY_ERROR,
+			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
+		Assert.assertEquals(
+			_deDataDefinitionField,
+			deDataDefinitionRuleFunctionApplyResponse.
+				getDEDataDefinitionField());
+	}
+
+	@Test
+	public void testNotEmpty() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("value");
+
+		DEDataDefinitionRuleFunctionApplyResponse
+			deDataDefinitionRuleFunctionApplyResponse =
+				_deEmptyRuleFunction.apply(
+					_deDataDefinitionRuleFunctionApplyRequest);
+
+		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
+		Assert.assertNull(
+			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
+		Assert.assertEquals(
+			_deDataDefinitionField,
+			deDataDefinitionRuleFunctionApplyResponse.
+				getDEDataDefinitionField());
+	}
+
+	@Test
+	public void testNullValue() {
+		DEDataDefinitionRuleFunctionApplyResponse
+			deDataDefinitionRuleFunctionApplyResponse =
+				_deEmptyRuleFunction.apply(
+					_deDataDefinitionRuleFunctionApplyRequest);
+
+		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
+		Assert.assertEquals(
+			DEDataDefinitionRuleConstants.VALUE_MUST_NOT_BE_EMPTY_ERROR,
+			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
+		Assert.assertEquals(
+			_deDataDefinitionField,
+			deDataDefinitionRuleFunctionApplyResponse.
+				getDEDataDefinitionField());
+	}
+
 	private final DEDataDefinitionField _deDataDefinitionField =
-		new DEDataDefinitionField("field", "text");
+		new DEDataDefinitionField("name", "text");
 	private DEDataDefinitionRuleFunctionApplyRequest
 		_deDataDefinitionRuleFunctionApplyRequest;
-	private DEMatchExpressionRuleFunction _deMatchExpressionRuleFunction;
+	private DEEmptyRuleFunction _deEmptyRuleFunction;
 
 }

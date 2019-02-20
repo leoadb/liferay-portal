@@ -12,9 +12,9 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunction;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunction;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.ArrayList;

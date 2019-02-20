@@ -12,12 +12,12 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class DEDecimalLiteralRuleFunctionTest {
+public class DEEmailAddressRuleFunctionTest {
 
 	@Before
 	public void setUp() {
@@ -36,20 +36,21 @@ public class DEDecimalLiteralRuleFunctionTest {
 		_deDataDefinitionRuleFunctionApplyRequest.setDEDataDefinitionField(
 			_deDataDefinitionField);
 
-		_deDecimalLiteralRuleFunction = new DEDecimalLiteralRuleFunction();
+		_deEmailAddressRuleFunction = new DEEmailAddressRuleFunction();
 	}
 
 	@Test
-	public void testDecimalValue() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("1.2");
+	public void testInvalidEmailAddress1() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("TEXT");
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deDecimalLiteralRuleFunction.apply(
+				_deEmailAddressRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
-		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
-		Assert.assertNull(
+		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
+		Assert.assertEquals(
+			DEDataDefinitionRuleConstants.INVALID_EMAIL_ADDRESS_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -58,12 +59,33 @@ public class DEDecimalLiteralRuleFunctionTest {
 	}
 
 	@Test
-	public void testIntegerValue() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("3");
+	public void testInvalidEmailAddress2() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue(
+			"TEXT,test@liferay.com");
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deDecimalLiteralRuleFunction.apply(
+				_deEmailAddressRuleFunction.apply(
+					_deDataDefinitionRuleFunctionApplyRequest);
+
+		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
+		Assert.assertEquals(
+			DEDataDefinitionRuleConstants.INVALID_EMAIL_ADDRESS_ERROR,
+			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
+		Assert.assertEquals(
+			_deDataDefinitionField,
+			deDataDefinitionRuleFunctionApplyResponse.
+				getDEDataDefinitionField());
+	}
+
+	@Test
+	public void testMultipleEmailAddress() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue(
+			"test1@liferay.com,test2@liferay.com");
+
+		DEDataDefinitionRuleFunctionApplyResponse
+			deDataDefinitionRuleFunctionApplyResponse =
+				_deEmailAddressRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
@@ -79,12 +101,12 @@ public class DEDecimalLiteralRuleFunctionTest {
 	public void testNullValue() {
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deDecimalLiteralRuleFunction.apply(
+				_deEmailAddressRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
 		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_BE_DECIMAL_ERROR,
+			DEDataDefinitionRuleConstants.INVALID_EMAIL_ADDRESS_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -93,17 +115,16 @@ public class DEDecimalLiteralRuleFunctionTest {
 	}
 
 	@Test
-	public void testStringValue() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("NUMBER");
+	public void testSingleEmailAddress() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("test@liferay.com");
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deDecimalLiteralRuleFunction.apply(
+				_deEmailAddressRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
-		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
-		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_BE_DECIMAL_ERROR,
+		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
+		Assert.assertNull(
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -112,9 +133,9 @@ public class DEDecimalLiteralRuleFunctionTest {
 	}
 
 	private final DEDataDefinitionField _deDataDefinitionField =
-		new DEDataDefinitionField("salary", "numeric");
+		new DEDataDefinitionField("email", "text");
 	private DEDataDefinitionRuleFunctionApplyRequest
 		_deDataDefinitionRuleFunctionApplyRequest;
-	private DEDecimalLiteralRuleFunction _deDecimalLiteralRuleFunction;
+	private DEEmailAddressRuleFunction _deEmailAddressRuleFunction;
 
 }

@@ -12,12 +12,12 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Leonardo Barros
  */
-public class DEIntegerLiteralRuleFunctionTest {
+public class DEDecimalLiteralRuleFunctionTest {
 
 	@Before
 	public void setUp() {
@@ -36,16 +36,16 @@ public class DEIntegerLiteralRuleFunctionTest {
 		_deDataDefinitionRuleFunctionApplyRequest.setDEDataDefinitionField(
 			_deDataDefinitionField);
 
-		_deIntegerLiteralRuleFunction = new DEIntegerLiteralRuleFunction();
+		_deDecimalLiteralRuleFunction = new DEDecimalLiteralRuleFunction();
 	}
 
 	@Test
-	public void testInteger() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("12312545");
+	public void testDecimalValue() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("1.2");
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deIntegerLiteralRuleFunction.apply(
+				_deDecimalLiteralRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
@@ -58,17 +58,16 @@ public class DEIntegerLiteralRuleFunctionTest {
 	}
 
 	@Test
-	public void testNotAInteger() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue("number");
+	public void testIntegerValue() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("3");
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deIntegerLiteralRuleFunction.apply(
+				_deDecimalLiteralRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
-		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
-		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_BE_INTEGER_ERROR,
+		Assert.assertTrue(deDataDefinitionRuleFunctionApplyResponse.isValid());
+		Assert.assertNull(
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -80,12 +79,12 @@ public class DEIntegerLiteralRuleFunctionTest {
 	public void testNullValue() {
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deIntegerLiteralRuleFunction.apply(
+				_deDecimalLiteralRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
 		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_BE_INTEGER_ERROR,
+			DEDataDefinitionRuleConstants.VALUE_MUST_BE_DECIMAL_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -94,18 +93,17 @@ public class DEIntegerLiteralRuleFunctionTest {
 	}
 
 	@Test
-	public void testOutbound() {
-		_deDataDefinitionRuleFunctionApplyRequest.setValue(
-			"2312321243423432423424234233234324324242");
+	public void testStringValue() {
+		_deDataDefinitionRuleFunctionApplyRequest.setValue("NUMBER");
 
 		DEDataDefinitionRuleFunctionApplyResponse
 			deDataDefinitionRuleFunctionApplyResponse =
-				_deIntegerLiteralRuleFunction.apply(
+				_deDecimalLiteralRuleFunction.apply(
 					_deDataDefinitionRuleFunctionApplyRequest);
 
 		Assert.assertFalse(deDataDefinitionRuleFunctionApplyResponse.isValid());
 		Assert.assertEquals(
-			DEDataDefinitionRuleConstants.VALUE_MUST_BE_INTEGER_ERROR,
+			DEDataDefinitionRuleConstants.VALUE_MUST_BE_DECIMAL_ERROR,
 			deDataDefinitionRuleFunctionApplyResponse.getErrorCode());
 		Assert.assertEquals(
 			_deDataDefinitionField,
@@ -114,9 +112,9 @@ public class DEIntegerLiteralRuleFunctionTest {
 	}
 
 	private final DEDataDefinitionField _deDataDefinitionField =
-		new DEDataDefinitionField("age", "numeric");
+		new DEDataDefinitionField("salary", "numeric");
 	private DEDataDefinitionRuleFunctionApplyRequest
 		_deDataDefinitionRuleFunctionApplyRequest;
-	private DEIntegerLiteralRuleFunction _deIntegerLiteralRuleFunction;
+	private DEDecimalLiteralRuleFunction _deDecimalLiteralRuleFunction;
 
 }

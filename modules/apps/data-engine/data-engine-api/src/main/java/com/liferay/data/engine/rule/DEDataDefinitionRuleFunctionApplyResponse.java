@@ -12,24 +12,20 @@
  * details.
  */
 
-package com.liferay.data.engine.rules;
+package com.liferay.data.engine.rule;
 
 import com.liferay.data.engine.model.DEDataDefinitionField;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * It contains references that a rule function may needs during its execution.
+ * It represents the outcome of a rule function execution.
  *
  * @author Leonardo Barros
  * @review
  */
-public final class DEDataDefinitionRuleFunctionApplyRequest {
+public final class DEDataDefinitionRuleFunctionApplyResponse {
 
 	/**
-	 * @return A data definition field.
+	 * @return The data definition field.
 	 * @review
 	 */
 	public DEDataDefinitionField getDEDataDefinitionField() {
@@ -37,19 +33,19 @@ public final class DEDataDefinitionRuleFunctionApplyRequest {
 	}
 
 	/**
-	 * @return A map with parameters that may be used by the rule function.
+	 * @return The error code in case of a failure.
 	 * @review
 	 */
-	public Map<String, Object> getParameters() {
-		return Collections.unmodifiableMap(_parameters);
+	public String getErrorCode() {
+		return _errorCode;
 	}
 
 	/**
-	 * @return A value which must be verified.
+	 * @return True if the rule function executed successfully.
 	 * @review
 	 */
-	public Object getValue() {
-		return _value;
+	public boolean isValid() {
+		return _valid;
 	}
 
 	/**
@@ -65,28 +61,26 @@ public final class DEDataDefinitionRuleFunctionApplyRequest {
 	}
 
 	/**
-	 * Set parameters to be used by the rule function.
-	 *
-	 * @param parameters The parameters
+	 * It sets the error code in case of a failure.
+	 * @param errorCode The error code.
 	 * @review
 	 */
-	public void setParameters(Map<String, Object> parameters) {
-		if (parameters != null) {
-			_parameters.putAll(parameters);
-		}
+	public void setErrorCode(String errorCode) {
+		_errorCode = errorCode;
 	}
 
 	/**
-	 * It sets the value which must be verified.
-	 * @param value The value which must be verified
+	 * It sets the result of the rule function
+	 *
+	 * @param valid True if the rule function executed successfully.
 	 * @review
 	 */
-	public void setValue(Object value) {
-		_value = value;
+	public void setValid(boolean valid) {
+		_valid = valid;
 	}
 
 	private DEDataDefinitionField _deDataDefinitionField;
-	private final Map<String, Object> _parameters = new HashMap<>();
-	private Object _value;
+	private String _errorCode;
+	private boolean _valid;
 
 }

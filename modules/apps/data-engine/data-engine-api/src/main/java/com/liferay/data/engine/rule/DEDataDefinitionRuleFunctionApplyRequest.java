@@ -12,20 +12,24 @@
  * details.
  */
 
-package com.liferay.data.engine.rules;
+package com.liferay.data.engine.rule;
 
 import com.liferay.data.engine.model.DEDataDefinitionField;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * It represents the outcome of a rule function execution.
+ * It contains references that a rule function may needs during its execution.
  *
  * @author Leonardo Barros
  * @review
  */
-public final class DEDataDefinitionRuleFunctionApplyResponse {
+public final class DEDataDefinitionRuleFunctionApplyRequest {
 
 	/**
-	 * @return The data definition field.
+	 * @return A data definition field.
 	 * @review
 	 */
 	public DEDataDefinitionField getDEDataDefinitionField() {
@@ -33,19 +37,19 @@ public final class DEDataDefinitionRuleFunctionApplyResponse {
 	}
 
 	/**
-	 * @return The error code in case of a failure.
+	 * @return A map with parameters that may be used by the rule function.
 	 * @review
 	 */
-	public String getErrorCode() {
-		return _errorCode;
+	public Map<String, Object> getParameters() {
+		return Collections.unmodifiableMap(_parameters);
 	}
 
 	/**
-	 * @return True if the rule function executed successfully.
+	 * @return A value which must be verified.
 	 * @review
 	 */
-	public boolean isValid() {
-		return _valid;
+	public Object getValue() {
+		return _value;
 	}
 
 	/**
@@ -61,26 +65,28 @@ public final class DEDataDefinitionRuleFunctionApplyResponse {
 	}
 
 	/**
-	 * It sets the error code in case of a failure.
-	 * @param errorCode The error code.
+	 * Set parameters to be used by the rule function.
+	 *
+	 * @param parameters The parameters
 	 * @review
 	 */
-	public void setErrorCode(String errorCode) {
-		_errorCode = errorCode;
+	public void setParameters(Map<String, Object> parameters) {
+		if (parameters != null) {
+			_parameters.putAll(parameters);
+		}
 	}
 
 	/**
-	 * It sets the result of the rule function
-	 *
-	 * @param valid True if the rule function executed successfully.
+	 * It sets the value which must be verified.
+	 * @param value The value which must be verified
 	 * @review
 	 */
-	public void setValid(boolean valid) {
-		_valid = valid;
+	public void setValue(Object value) {
+		_value = value;
 	}
 
 	private DEDataDefinitionField _deDataDefinitionField;
-	private String _errorCode;
-	private boolean _valid;
+	private final Map<String, Object> _parameters = new HashMap<>();
+	private Object _value;
 
 }

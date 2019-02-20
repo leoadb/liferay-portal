@@ -35,7 +35,7 @@ public class DEDataDefinitionRuleFactory {
 	 * The name must match the value of the property
 	 * "de.data.definition.rule.function.name" of a registered OSGI
 	 * component which implements {@link
-	 * com.liferay.data.engine.rules.DEDataDefinitionRuleFunction}.
+	 * com.liferay.data.engine.rule.DEDataDefinitionRuleFunction}.
 	 *
 	 * @param deDataDefinitionFieldNames A list of data definition field's name.
 	 * @return The rule function created.

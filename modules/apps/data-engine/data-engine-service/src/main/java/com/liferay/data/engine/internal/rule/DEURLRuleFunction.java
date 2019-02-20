@@ -12,31 +12,29 @@
  * details.
  */
 
-package com.liferay.data.engine.internal.rules;
+package com.liferay.data.engine.internal.rule;
 
 import com.liferay.data.engine.constants.DEDataDefinitionRuleConstants;
 import com.liferay.data.engine.model.DEDataDefinitionField;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunction;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyRequest;
-import com.liferay.data.engine.rules.DEDataDefinitionRuleFunctionApplyResponse;
-
-import java.math.BigDecimal;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunction;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyRequest;
+import com.liferay.data.engine.rule.DEDataDefinitionRuleFunctionApplyResponse;
+import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * It validates if a value is a decimal number.
+ * It validates if a value is a valid URL.
  *
  * @author Leonardo Barros
  */
 @Component(
 	immediate = true,
-	property = {"de.data.definition.rule.function.name=" + DEDataDefinitionRuleConstants.DECIMAL_LITERAL_RULE,
+	property = {"de.data.definition.rule.function.name=" + DEDataDefinitionRuleConstants.URL_RULE,
 		"de.data.definition.rule.function.type=" + DEDataDefinitionRuleConstants.VALIDATION_RULE_TYPE},
 	service = DEDataDefinitionRuleFunction.class
 )
-public class DEDecimalLiteralRuleFunction
-	implements DEDataDefinitionRuleFunction {
+public class DEURLRuleFunction implements DEDataDefinitionRuleFunction {
 
 	@Override
 	/**
@@ -58,7 +56,7 @@ public class DEDecimalLiteralRuleFunction
 
 		deDataDefinitionRuleFunctionApplyResponse.setValid(false);
 		deDataDefinitionRuleFunctionApplyResponse.setErrorCode(
-			DEDataDefinitionRuleConstants.VALUE_MUST_BE_DECIMAL_ERROR);
+			DEDataDefinitionRuleConstants.INVALID_URL_ERROR);
 
 		Object value = deDataDefinitionRuleFunctionApplyRequest.getValue();
 
@@ -66,16 +64,7 @@ public class DEDecimalLiteralRuleFunction
 			return deDataDefinitionRuleFunctionApplyResponse;
 		}
 
-		boolean result;
-
-		try {
-			new BigDecimal(value.toString());
-
-			result = true;
-		}
-		catch (NumberFormatException nfe) {
-			result = false;
-		}
+		boolean result = Validator.isUrl(value.toString());
 
 		deDataDefinitionRuleFunctionApplyResponse.setValid(result);
 
