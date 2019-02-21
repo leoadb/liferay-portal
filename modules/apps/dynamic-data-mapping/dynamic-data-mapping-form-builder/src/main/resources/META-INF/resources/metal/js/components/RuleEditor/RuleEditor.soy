@@ -55,8 +55,8 @@
 		]>
 	}
 	{@param actionTypes: list<[
-			value: string,
-			name: string
+			label: string,
+			value: string
 		]>
 	}
 	{@param calculatorOptions: list<[
@@ -330,8 +330,8 @@
 
 {template .renderAction}
 	{@param actionTypes: list<[
-			value: string,
-			name: string
+			label: string,
+			value: string
 		]>
 	}
 	{@param calculatorFields: list<[
@@ -479,9 +479,11 @@
 							</span>
 						</h4>
 					</div>
+
 					{if $showTargetDefault or $showTargetAutofill or $showTargetCalculator}
 						{let $options: ($showTargetAutofill) ? $dataProvider : ($showTargetDefault ? $fieldOptions : ($showTargetCalculator ? $calculatorResultOptions : [])) /}
 						{let $ref: $showTargetCalculator ? 'calculatorResult' : 'actionTarget' /}
+
 						{call .renderActionTarget}
 							{param _handleTargetSelection: $_handleTargetSelection /}
 							{param index: $index /}
@@ -556,7 +558,7 @@
 
 {template .renderActionTarget}
 	{@param index: int}
-	{@param options: any}
+	{@param options: ?}
 	{@param ref: string}
 	{@param spritemap: string}
 	{@param? _handleTargetSelection: any}
@@ -612,12 +614,7 @@
 	]>}
 	{@param? fixedOptions: any}
 	{@param? logicalOperator: string}
-	{@param? operators:  list<[
-		name: string,
-		parameterTypes: list<string>,
-		returnType: string,
-		value: string
-	]>}
+	{@param? operators:  ?}
 	{@param? roles: list<[
 		label: string,
 		value: string
@@ -775,13 +772,7 @@
 	]}
 	{@param? _handleOperatorEdited: any}
 	{@param? firstOperandType: string}
-	{@param? operators:  list<[
-			value: string,
-			name: string,
-			parameterTypes: list<string>,
-			returnType: string
-		]>
-	}
+	{@param? operators:  ?}
 	{@param? selectedOperator: string}
 
 	{let $readOnly: $firstOperandType ? false : true /}

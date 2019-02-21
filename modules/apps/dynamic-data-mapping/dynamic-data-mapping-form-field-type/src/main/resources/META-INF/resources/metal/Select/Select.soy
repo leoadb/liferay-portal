@@ -5,29 +5,11 @@
 	{@param? _handleClick: any}
 	{@param? _handleItemClicked: any}
 	{@param? disableEmptyOption: bool}
-	{@param? fixedOptions: list<[
-		checked: bool,
-		disabled: bool,
-		id: string,
-		inline: bool,
-		label: string,
-		name: string,
-		showLabel: bool,
-		value: string
-	]>}
+	{@param? fixedOptions: ?}
 	{@param? id: string}
 	{@param? label: string}
 	{@param? open: bool}
-	{@param? options: list<[
-		checked: bool,
-		disabled: bool,
-		id: string,
-		inline: bool,
-		label: string,
-		name: string,
-		showLabel: bool,
-		value: string
-	]>}
+	{@param? options: ?}
 	{@param? placeholder: string}
 	{@param? predefinedValue: string}
 	{@param? readOnly: bool}
@@ -37,7 +19,6 @@
 	{@param? showLabel: bool}
 	{@param? spritemap: string}
 	{@param? tip: string}
-	{@param? value: string}
 
 	{call FieldBase.render}
 		{param contentRenderer kind="html"}
@@ -55,7 +36,6 @@
 				{param selectedLabel: $selectedLabel /}
 				{param spritemap: $spritemap /}
 				{param strings: $strings /}
-				{param value: $value /}
 			{/call}
 		{/param}
 
@@ -71,31 +51,13 @@
 
 {template .content}
 	{@param strings: [chooseAnOption: string]}
-	{@param? _handleItemClicked: any}
 	{@param? _handleClick: any}
+	{@param? _handleItemClicked: any}
 	{@param? disableEmptyOption: bool}
-	{@param? fixedOptions: list<[
-		checked: bool,
-		disabled: bool,
-		id: string,
-		inline: bool,
-		label: string,
-		name: string,
-		showLabel: bool,
-		value: string
-	]>}
+	{@param? fixedOptions: ?}
 	{@param? id: string}
 	{@param? open: bool}
-	{@param? options: list<[
-		checked: bool,
-		disabled: bool,
-		id: string,
-		inline: bool,
-		label: string,
-		name: string,
-		showLabel: bool,
-		value: string
-	]>}
+	{@param? options: ?}
 	{@param? placeholder: string}
 	{@param? readOnly: bool}
 	{@param? selectedLabel: string}
@@ -150,24 +112,12 @@
 	{@param? _handleItemClicked: any}
 	{@param? disableEmptyOption: bool}
 	{@param? fixedOptions: list<[
-		checked: bool,
-		disabled: bool,
-		id: string,
-		inline: bool,
 		label: string,
-		name: string,
-		showLabel: bool,
 		value: string
 	]>}
 	{@param? open: bool}
 	{@param? options: list<[
-		checked: bool,
-		disabled: bool,
-		id: string,
-		inline: bool,
 		label: string,
-		name: string,
-		showLabel: bool,
 		value: string
 	]>}
 	{@param? placeholder: string}

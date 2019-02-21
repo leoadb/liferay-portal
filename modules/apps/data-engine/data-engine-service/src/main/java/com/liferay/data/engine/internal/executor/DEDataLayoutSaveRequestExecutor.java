@@ -20,6 +20,7 @@ import com.liferay.data.engine.internal.io.DEDataLayoutSerializerTracker;
 import com.liferay.data.engine.io.DEDataLayoutSerializer;
 import com.liferay.data.engine.io.DEDataLayoutSerializerApplyRequest;
 import com.liferay.data.engine.io.DEDataLayoutSerializerApplyResponse;
+import com.liferay.data.engine.model.DEDataDefinition;
 import com.liferay.data.engine.model.DEDataLayout;
 import com.liferay.data.engine.service.DEDataLayoutSaveRequest;
 import com.liferay.data.engine.service.DEDataLayoutSaveResponse;
@@ -67,13 +68,16 @@ public class DEDataLayoutSaveRequestExecutor {
 				throw new DEDataLayoutException.InvalidName();
 			}
 
+			DEDataDefinition deDataDefinition =
+				deDataLayout.getDEDataDefinition();
+
 			if (deDataLayout.getDEDataLayoutId() == null) {
 				ddmStructureLayout =
 					_ddmStructureLayoutLocalService.addStructureLayout(
 						deDataLayoutSaveRequest.getUserId(),
 						deDataLayoutSaveRequest.getGroupId(),
 						_getDDMStructureVersionId(
-							deDataLayout.getDEDataDefinitionId()),
+							deDataDefinition.getDEDataDefinitionId()),
 						name, deDataLayout.getDescription(),
 						_serializeDEDataLayout(deDataLayout),
 						ServiceContextThreadLocal.getServiceContext());
@@ -83,7 +87,7 @@ public class DEDataLayoutSaveRequestExecutor {
 					_ddmStructureLayoutLocalService.updateStructureLayout(
 						deDataLayout.getDEDataLayoutId(),
 						_getDDMStructureVersionId(
-							deDataLayout.getDEDataDefinitionId()),
+							deDataDefinition.getDEDataDefinitionId()),
 						name, deDataLayout.getDescription(),
 						_serializeDEDataLayout(deDataLayout),
 						ServiceContextThreadLocal.getServiceContext());

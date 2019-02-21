@@ -15,10 +15,13 @@
 package com.liferay.data.engine.internal.service;
 
 import com.liferay.data.engine.exception.DEDataLayoutException;
+import com.liferay.data.engine.internal.executor.DEDataEngineRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataLayoutGetRequestExecutor;
 import com.liferay.data.engine.internal.executor.DEDataLayoutSaveRequestExecutor;
+import com.liferay.data.engine.internal.io.DEDataDefinitionDeserializerTracker;
 import com.liferay.data.engine.internal.io.DEDataLayoutDeserializerTracker;
 import com.liferay.data.engine.internal.io.DEDataLayoutSerializerTracker;
+import com.liferay.data.engine.internal.storage.DEDataStorageTracker;
 import com.liferay.data.engine.service.DEDataLayoutGetRequest;
 import com.liferay.data.engine.service.DEDataLayoutGetResponse;
 import com.liferay.data.engine.service.DEDataLayoutSaveRequest;
@@ -28,6 +31,7 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -37,15 +41,27 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = DEDataLayoutService.class)
 public class DEDataLayoutServiceImpl implements DEDataLayoutService {
 
+	@Activate
+	public void activate() {
+		_deDataEngineRequestExecutor = new DEDataEngineRequestExecutor(
+			ddmStructureVersionLocalService,
+			deDataDefinitionDeserializerTracker,
+			deDataLayoutDeserializerTracker, deDataStorageTracker);
+
+		_deDataLayoutGetRequestExecutor = new DEDataLayoutGetRequestExecutor(
+			ddmStructureLayoutLocalService, _deDataEngineRequestExecutor);
+
+		_deDataLayoutSaveRequestExecutor = new DEDataLayoutSaveRequestExecutor(
+			ddmStructureLayoutLocalService, ddmStructureVersionLocalService,
+			ddmStructureLocalService, deDataLayoutSerializerTracker);
+	}
+
 	@Override
 	public DEDataLayoutGetResponse execute(
 			DEDataLayoutGetRequest deDataLayoutGetRequest)
 		throws DEDataLayoutException {
 
-		DEDataLayoutGetRequestExecutor deDataLayoutGetRequestExecutor =
-			getDEDataLayoutGetRequestExecutor();
-
-		return deDataLayoutGetRequestExecutor.execute(deDataLayoutGetRequest);
+		return _deDataLayoutGetRequestExecutor.execute(deDataLayoutGetRequest);
 	}
 
 	@Override
@@ -53,54 +69,34 @@ public class DEDataLayoutServiceImpl implements DEDataLayoutService {
 			DEDataLayoutSaveRequest deDataLayoutSaveRequest)
 		throws DEDataLayoutException {
 
-		DEDataLayoutSaveRequestExecutor deDataLayoutSaveRequestExecutor =
-			getDEDataLayoutSaveRequestExecutor();
-
-		return deDataLayoutSaveRequestExecutor.execute(deDataLayoutSaveRequest);
-	}
-
-	public DEDataLayoutGetRequestExecutor getDEDataLayoutGetRequestExecutor() {
-		if (_deDataLayoutGetRequestExecutor == null) {
-			_deDataLayoutGetRequestExecutor =
-				new DEDataLayoutGetRequestExecutor(
-					_ddmStructureLayoutLocalService,
-					_ddmStructureVersionLocalService,
-					_deDataLayoutDeserializerTracker);
-		}
-
-		return _deDataLayoutGetRequestExecutor;
-	}
-
-	public DEDataLayoutSaveRequestExecutor
-		getDEDataLayoutSaveRequestExecutor() {
-
-		if (_deDataLayoutSaveRequestExecutor == null) {
-			_deDataLayoutSaveRequestExecutor =
-				new DEDataLayoutSaveRequestExecutor(
-					_ddmStructureLayoutLocalService,
-					_ddmStructureVersionLocalService, _ddmStructureLocalService,
-					_deDataLayoutSerializerTracker);
-		}
-
-		return _deDataLayoutSaveRequestExecutor;
+		return _deDataLayoutSaveRequestExecutor.execute(
+			deDataLayoutSaveRequest);
 	}
 
 	@Reference
-	private DDMStructureLayoutLocalService _ddmStructureLayoutLocalService;
+	protected DDMStructureLayoutLocalService ddmStructureLayoutLocalService;
 
 	@Reference
-	private DDMStructureLocalService _ddmStructureLocalService;
+	protected DDMStructureLocalService ddmStructureLocalService;
 
 	@Reference
-	private DDMStructureVersionLocalService _ddmStructureVersionLocalService;
+	protected DDMStructureVersionLocalService ddmStructureVersionLocalService;
 
 	@Reference
-	private DEDataLayoutDeserializerTracker _deDataLayoutDeserializerTracker;
+	protected DEDataDefinitionDeserializerTracker
+		deDataDefinitionDeserializerTracker;
 
+	@Reference
+	protected DEDataLayoutDeserializerTracker deDataLayoutDeserializerTracker;
+
+	@Reference
+	protected DEDataLayoutSerializerTracker deDataLayoutSerializerTracker;
+
+	@Reference
+	protected DEDataStorageTracker deDataStorageTracker;
+
+	private DEDataEngineRequestExecutor _deDataEngineRequestExecutor;
 	private DEDataLayoutGetRequestExecutor _deDataLayoutGetRequestExecutor;
 	private DEDataLayoutSaveRequestExecutor _deDataLayoutSaveRequestExecutor;
-
-	@Reference
-	private DEDataLayoutSerializerTracker _deDataLayoutSerializerTracker;
 
 }

@@ -9,7 +9,7 @@
 	{@param? required: bool}
 	{@param? showLabel: bool}
 	{@param? spritemap: string}
-	{@param? value: string}
+	{@param? value: ?}
 
 	{call FieldBase.render}
 		{param contentRenderer kind="html"}
@@ -34,7 +34,7 @@
 	{@param? readOnly: bool}
 	{@param? placeholder: string}
 	{@param? spritemap: string}
-	{@param? value: string}
+	{@param? value: ?}
 
 	{let $attributes kind="attributes"}
 		class="form-control"
