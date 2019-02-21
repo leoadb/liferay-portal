@@ -16,6 +16,8 @@ package com.liferay.data.engine.service;
 
 import com.liferay.data.engine.model.DEDataLayout;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author Jeyvison Nascimento
  */
@@ -23,6 +25,13 @@ public class DEDataLayoutRequestBuilder {
 
 	public static DEDataLayoutGetRequest.Builder getBuilder() {
 		return new DEDataLayoutGetRequest.Builder();
+	}
+
+	public static DEDataLayoutRenderRequest.Builder renderBuilder(
+		DEDataLayout deDataLayout, HttpServletRequest httpServletRequest) {
+
+		return new DEDataLayoutRenderRequest.Builder(
+			deDataLayout, httpServletRequest);
 	}
 
 	public static DEDataLayoutSaveRequest.Builder saveBuilder(

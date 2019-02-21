@@ -17,13 +17,19 @@ package com.liferay.data.engine.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.exception.DEDataLayoutException;
 import com.liferay.data.engine.model.DEDataDefinition;
+import com.liferay.data.engine.model.DEDataDefinitionField;
 import com.liferay.data.engine.model.DEDataLayout;
 import com.liferay.data.engine.model.DEDataLayoutColumn;
 import com.liferay.data.engine.model.DEDataLayoutPage;
 import com.liferay.data.engine.model.DEDataLayoutRow;
+import com.liferay.data.engine.service.DEDataDefinitionRequestBuilder;
+import com.liferay.data.engine.service.DEDataDefinitionSaveRequest;
+import com.liferay.data.engine.service.DEDataDefinitionSaveResponse;
 import com.liferay.data.engine.service.DEDataDefinitionService;
 import com.liferay.data.engine.service.DEDataLayoutGetRequest;
 import com.liferay.data.engine.service.DEDataLayoutGetResponse;
+import com.liferay.data.engine.service.DEDataLayoutRenderRequest;
+import com.liferay.data.engine.service.DEDataLayoutRenderResponse;
 import com.liferay.data.engine.service.DEDataLayoutRequestBuilder;
 import com.liferay.data.engine.service.DEDataLayoutSaveRequest;
 import com.liferay.data.engine.service.DEDataLayoutSaveResponse;
@@ -31,6 +37,8 @@ import com.liferay.data.engine.service.DEDataLayoutService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -43,6 +51,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +64,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Jeyvison Nascimento
@@ -90,8 +101,7 @@ public class DEDataLayoutServiceTest {
 		DEDataLayout deDataLayout = _createDEDataLayout(
 			"layout", "this is a layout", "wizard", "en_US");
 
-		deDataLayout.setDEDataDefinitionId(
-			deDataDefinition.getDEDataDefinitionId());
+		deDataLayout.setDEDataDefinition(deDataDefinition);
 
 		DEDataLayoutSaveRequest deDataLayoutSaveRequest =
 			DEDataLayoutRequestBuilder.saveBuilder(
@@ -139,8 +149,7 @@ public class DEDataLayoutServiceTest {
 		DEDataLayout deDataLayout1 = _createDEDataLayout(
 			"layout", "this is a layout", "wizard", "en_US");
 
-		deDataLayout1.setDEDataDefinitionId(
-			deDataDefinition.getDEDataDefinitionId());
+		deDataLayout1.setDEDataDefinition(deDataDefinition);
 
 		DEDataLayoutSaveRequest deDataLayoutSaveRequest =
 			DEDataLayoutRequestBuilder.saveBuilder(
@@ -157,8 +166,7 @@ public class DEDataLayoutServiceTest {
 		DEDataLayout deDataLayout2 = _createDEDataLayout(
 			"layout", "this is a layout", "wizard", "en_US");
 
-		deDataLayout2.setDEDataDefinitionId(
-			deDataDefinition.getDEDataDefinitionId());
+		deDataLayout2.setDEDataDefinition(deDataDefinition);
 
 		deDataLayoutSaveRequest = DEDataLayoutRequestBuilder.saveBuilder(
 			deDataLayout2
@@ -183,8 +191,8 @@ public class DEDataLayoutServiceTest {
 		deDataLayout2 = deDataLayoutGetResponse.getDEDataLayout();
 
 		Assert.assertEquals(
-			deDataLayout1.getDEDataDefinitionId(),
-			deDataLayout2.getDEDataDefinitionId());
+			deDataLayout1.getDEDataDefinition(),
+			deDataLayout2.getDEDataDefinition());
 	}
 
 	@Test(expected = DEDataLayoutException.class)
@@ -200,7 +208,7 @@ public class DEDataLayoutServiceTest {
 		DEDataLayout deDataLayout1 = _createDEDataLayout(
 			"layout", "this is a layout", "wizard", "en_US");
 
-		deDataLayout1.setDEDataDefinitionId(-1L);
+		deDataLayout1.setDEDataDefinition(new DEDataDefinition());
 
 		DEDataLayoutSaveRequest deDataLayoutSaveRequest =
 			DEDataLayoutRequestBuilder.saveBuilder(
@@ -230,8 +238,7 @@ public class DEDataLayoutServiceTest {
 		DEDataLayout deDataLayout = _createDEDataLayout(
 			"layout", "this is a layout", "wizard", "en_US");
 
-		deDataLayout.setDEDataDefinitionId(
-			deDataDefinition.getDEDataDefinitionId());
+		deDataLayout.setDEDataDefinition(deDataDefinition);
 
 		deDataLayout.setName(null);
 
@@ -263,8 +270,7 @@ public class DEDataLayoutServiceTest {
 		DEDataLayout deDataLayout = _createDEDataLayout(
 			"layout", "this is a layout", "wizard", "en_US");
 
-		deDataLayout.setDEDataDefinitionId(
-			deDataDefinition.getDEDataDefinitionId());
+		deDataLayout.setDEDataDefinition(deDataDefinition);
 
 		deDataLayout.setDEDataLayoutId(-1L);
 
@@ -278,6 +284,71 @@ public class DEDataLayoutServiceTest {
 			).build();
 
 		_deDataLayoutService.execute(deDataLayoutSaveRequest);
+	}
+
+	@Test
+	public void testRender() throws Exception {
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, _user.getGroupId());
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			Map<String, String> field1Labels = new HashMap() {
+				{
+					put("en_US", "Field Default");
+				}
+			};
+
+			DEDataDefinitionField deDataDefinitionField =
+				new DEDataDefinitionField("field1", "text");
+
+			deDataDefinitionField.addLabels(field1Labels);
+
+			DEDataDefinition deDataDefinition = new DEDataDefinition();
+
+			deDataDefinition.addName(LocaleUtil.US, "Definition Test");
+			deDataDefinition.setDEDataDefinitionFields(
+				Arrays.asList(deDataDefinitionField));
+			deDataDefinition.setStorageType("json");
+
+			DEDataDefinitionSaveRequest deDataDefinitionSaveRequest =
+				DEDataDefinitionRequestBuilder.saveBuilder(
+					deDataDefinition
+				).inGroup(
+					_group.getGroupId()
+				).onBehalfOf(
+					_user.getUserId()
+				).build();
+
+			DEDataDefinitionSaveResponse deDataDefinitionSaveResponse =
+				_deDataDefinitionService.execute(deDataDefinitionSaveRequest);
+
+			deDataDefinition =
+				deDataDefinitionSaveResponse.getDEDataDefinition();
+
+			DEDataLayout deDataLayout = _createDEDataLayout(
+				"layout", "this is a layout", "wizard", "en_US");
+
+			deDataLayout.setDEDataDefinition(deDataDefinition);
+
+			DEDataLayoutRenderRequest deDataLayoutRenderRequest =
+				DEDataLayoutRequestBuilder.renderBuilder(
+					deDataLayout, new MockHttpServletRequest()
+				).build();
+
+			DEDataLayoutRenderResponse deDataLayoutRenderResponse =
+				_deDataLayoutService.execute(deDataLayoutRenderRequest);
+
+			Assert.assertNotNull(deDataLayoutRenderResponse.getHtml());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Test(expected = DEDataLayoutException.class)
@@ -319,8 +390,7 @@ public class DEDataLayoutServiceTest {
 		DEDataLayout deDataLayout = _createDEDataLayout(
 			"layout", "this is a layout", "wizard", "en_US");
 
-		deDataLayout.setDEDataDefinitionId(
-			deDataDefinition.getDEDataDefinitionId());
+		deDataLayout.setDEDataDefinition(deDataDefinition);
 
 		DEDataLayoutSaveRequest deDataLayoutSaveRequest =
 			DEDataLayoutRequestBuilder.saveBuilder(
@@ -350,8 +420,7 @@ public class DEDataLayoutServiceTest {
 		DEDataLayout deDataLayout = _createDEDataLayout(
 			"layout", "this is a layout", "wizard", "en_US");
 
-		deDataLayout.setDEDataDefinitionId(
-			deDataDefinition.getDEDataDefinitionId());
+		deDataLayout.setDEDataDefinition(deDataDefinition);
 
 		DEDataLayoutSaveRequest deDataLayoutSaveRequest =
 			DEDataLayoutRequestBuilder.saveBuilder(
@@ -399,7 +468,7 @@ public class DEDataLayoutServiceTest {
 		String languageId) {
 
 		DEDataLayoutColumn deDataLayoutColumn = _createDEDataLayoutColumn(
-			12, "field");
+			12, "field1");
 
 		Queue<DEDataLayoutColumn> deDataLayoutColumns = new ArrayDeque<>();
 

@@ -36,6 +36,18 @@ public interface DEDataLayoutService {
 		throws DEDataLayoutException;
 
 	/**
+	 * Render a layout
+	 *
+	 * @param deDataLayoutRenderRequest
+	 * @return The {@link DEDataLayoutRenderResponse} object
+	 * @throws DEDataLayoutException
+	 * @review
+	 */
+	public DEDataLayoutRenderResponse execute(
+			DEDataLayoutRenderRequest deDataLayoutRenderRequest)
+		throws DEDataLayoutException;
+
+	/**
 	 * Saves a DEDataLayout
 	 * @param deDataLayoutSaveRequest
 	 * @return The {@link DEDataLayoutSaveResponse} object
