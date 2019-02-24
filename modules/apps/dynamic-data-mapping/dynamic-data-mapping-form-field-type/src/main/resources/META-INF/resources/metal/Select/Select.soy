@@ -1,9 +1,11 @@
 {namespace Select}
 
 {template .render}
-	{@param strings: [chooseAnOption: string]}
+	{@param spritemap: string}
+	{@param strings: [chooseAnOption: string, dynamicallyLoadedData: string]}
 	{@param? _handleClick: any}
 	{@param? _handleItemClicked: any}
+	{@param? dataSourceType: string}
 	{@param? disableEmptyOption: bool}
 	{@param? fixedOptions: list<[
 		label: string,
@@ -23,7 +25,6 @@
 	{@param? required: bool}
 	{@param? selectedLabel: string}
 	{@param? showLabel: bool}
-	{@param? spritemap: string}
 	{@param? tip: string}
 
 	{call FieldBase.render}
@@ -31,12 +32,9 @@
 			{call .content}
 				{param _handleClick: $_handleClick /}
 				{param _handleItemClicked: $_handleItemClicked /}
-				{param disableEmptyOption: $disableEmptyOption /}
-				{param fixedOptions: $fixedOptions /}
+				{param dataSourceType: $dataSourceType /}
 				{param id: $id /}
-				{param open: $open /}
 				{param options: $options /}
-				{param placeholder: $placeholder /}
 				{param predefinedValue: $predefinedValue /}
 				{param readOnly: $readOnly /}
 				{param selectedLabel: $selectedLabel /}
@@ -44,8 +42,6 @@
 				{param strings: $strings /}
 			{/call}
 		{/param}
-
-		{param id: $id /}
 		{param label: $label /}
 		{param repeatable: $repeatable /}
 		{param required: $required /}
@@ -56,9 +52,11 @@
 {/template}
 
 {template .content}
-	{@param strings: [chooseAnOption: string]}
-	{@param? _handleItemClicked: any}
+	{@param spritemap: string}
+	{@param strings: [chooseAnOption: string, dynamicallyLoadedData: string]}
 	{@param? _handleClick: any}
+	{@param? _handleItemClicked: any}
+	{@param? dataSourceType: string}
 	{@param? disableEmptyOption: bool}
 	{@param? fixedOptions: list<[
 		label: string,
@@ -73,54 +71,24 @@
 	{@param? placeholder: string}
 	{@param? readOnly: bool}
 	{@param? selectedLabel: string}
-	{@param? spritemap: string}
-
-	<div class="form-builder-select-field input-group-container">
-		{let $attributes kind="attributes"}
-			class="form-control select-field-trigger"
-
-			{if $id}
-				id="{$id}"
-			{/if}
-
-			{if $readOnly}
-				disabled
-			{/if}
-
-			data-onclick="{$_handleClick}"
-		{/let}
-
-		<div {$attributes}>
-			{if $selectedLabel}
-				<div class="option-selected">{$selectedLabel}</div>
-			{else}
-				<div class="option-selected option-selected-placeholder">{$placeholder}</div>
-			{/if}
-
-			<a class="select-arrow-down-container" href="javascript:;">
-				{if $spritemap}
-					{call ClayIcon.render}
-						{param spritemap: $spritemap /}
-						{param symbol: 'caret-double' /}
-					{/call}
-				{/if}
-			</a>
-		</div>
-	</div>
 
 	{call .listItems}
 		{param _handleItemClicked: $_handleItemClicked /}
-		{param disableEmptyOption: $disableEmptyOption /}
-		{param fixedOptions: $fixedOptions /}
-		{param open: $open /}
+		{param _handleClick: $_handleClick /}
+		{param dataSourceType: $dataSourceType /}
+		{param id: $id /}
+		{param readOnly: $readOnly /}
 		{param options: $options /}
-		{param placeholder: $placeholder /}
+		{param selectedLabel: $selectedLabel /}
+		{param spritemap: $spritemap /}
 		{param strings: $strings /}
 	{/call}
 {/template}
 
 {template .listItems}
-	{@param strings: [chooseAnOption: string]}
+	{@param spritemap: string}
+	{@param strings: [chooseAnOption: string, dynamicallyLoadedData: string]}
+	{@param? _handleClick: any}
 	{@param? _handleItemClicked: any}
 	{@param? disableEmptyOption: bool}
 	{@param? fixedOptions: list<[
@@ -133,6 +101,8 @@
 		value: string
 	]>}
 	{@param? placeholder: string}
+	{@param? readOnly: bool}
+	{@param? selectedLabel: string}
 
 	{let $attributes kind="attributes"}
 		class="dropdown-menu
@@ -146,26 +116,48 @@
 	{/let}
 
 	{if $options}
-		<div {$attributes}>
-			<ul class="list-unstyled">
-				{if not $disableEmptyOption}
-					<li class="dropdown-item" data-option-value="">{$placeholder or $strings.chooseAnOption}</li>
-				{/if}
+		{let $attributes kind="attributes"}
+			class="form-control select-field-trigger"
+			{if $id}
+				id="{$id}"
+			{/if}
 
-				{if length($options) > 0}
-					{foreach $option in $options}
-						<li class="dropdown-item" data-option-value="{$option.value}">{$option.label}</li>
-					{/foreach}
-				{/if}
+			{if $readOnly}
+				disabled
+			{/if}
+				data-onclick="{$_handleClick}"
+		{/let}
 
-				{if $fixedOptions and length($fixedOptions) > 0}
-					<li class="dropdown-divider"></li>
+		{let $trigger kind="html"}
+			<div class="form-builder-select-field input-group-container">
+				<div {$attributes}>
+					{if $selectedLabel}
+						<div class="option-selected">{$selectedLabel}</div>
+					{else}
+						<div class="option-selected option-selected-placeholder">{$strings.chooseAnOption}</div>
+					{/if}
 
-					{foreach $fixedOption in $fixedOptions}
-						<li class="dropdown-item"  data-option-value="{$fixedOption.value}">{$fixedOption.label}</li>
-					{/foreach}
-				{/if}
-			</ul>
-		</div>
+					<a class="select-arrow-down-container" href="javascript:;">
+						{if $spritemap}
+							{call ClayIcon.render}
+								{param spritemap: $spritemap /}
+								{param symbol: 'caret-double' /}
+							{/call}
+						{/if}
+					</a>
+				</div>
+			</div>
+		{/let}
+
+		{call ClayDropdownBase.render}
+			{param events: [
+				'itemClicked': $_handleItemClicked
+			]/}
+			{param elementClasses: 'ddm-btn-full' /}
+			{param items: $options /}
+			{param searchable: length($options) > 6 ? true : false /}
+			{param spritemap: $spritemap /}
+			{param label: $trigger /}
+		{/call}
 	{/if}
 {/template}
