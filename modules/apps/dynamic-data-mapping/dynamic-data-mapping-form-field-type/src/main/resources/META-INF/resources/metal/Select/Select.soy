@@ -1,30 +1,22 @@
 {namespace Select}
 
 {template .render}
-	{@param spritemap: string}
-	{@param strings: [chooseAnOption: string]}
+	{@param strings: [chooseAnOption: string, chooseOptions: string]}
+	{@param value: list<string>}
 	{@param? _handleClick: any}
 	{@param? _handleItemClicked: any}
+	{@param? _handleLabelClosed: any}
 	{@param? dataSourceType: string}
-	{@param? disableEmptyOption: bool}
-	{@param? fixedOptions: list<[
-		label: string,
-		value: string
-	]>}
+	{@param? expanded: bool}
 	{@param? id: string}
 	{@param? label: string}
-	{@param? open: bool}
-	{@param? options: list<[
-		label: string,
-		value: string
-	]>}
-	{@param? placeholder: string}
-	{@param? predefinedValue: string}
+	{@param? multiple: bool}
+	{@param? options: list<?>}
 	{@param? readOnly: bool}
 	{@param? repeatable: bool}
 	{@param? required: bool}
-	{@param? selectedLabel: string}
 	{@param? showLabel: bool}
+	{@param spritemap: string}
 	{@param? tip: string}
 
 	{call FieldBase.render}
@@ -32,17 +24,20 @@
 			{call .content}
 				{param _handleClick: $_handleClick /}
 				{param _handleItemClicked: $_handleItemClicked /}
+				{param _handleLabelClosed: $_handleLabelClosed /}
 				{param dataSourceType: $dataSourceType /}
+				{param expanded: $expanded /}
 				{param id: $id /}
+				{param multiple: $multiple /}
 				{param options: $options /}
-				{param predefinedValue: $predefinedValue /}
 				{param readOnly: $readOnly /}
-				{param selectedLabel: $selectedLabel /}
 				{param spritemap: $spritemap /}
 				{param strings: $strings /}
+				{param value: $value /}
 			{/call}
 		{/param}
 		{param label: $label /}
+		{param ref: 'base' /}
 		{param repeatable: $repeatable /}
 		{param required: $required /}
 		{param showLabel: $showLabel /}
@@ -53,67 +48,16 @@
 
 {template .content}
 	{@param spritemap: string}
-	{@param strings: [chooseAnOption: string]}
+	{@param strings: [chooseAnOption: string, chooseOptions: string]}
+	{@param value: list<string>}
 	{@param? _handleClick: any}
 	{@param? _handleItemClicked: any}
-	{@param? dataSourceType: string}
-	{@param? disableEmptyOption: bool}
-	{@param? fixedOptions: list<[
-		label: string,
-		value: string
-	]>}
+	{@param? _handleLabelClosed: any}
+	{@param? expanded: bool}
 	{@param? id: string}
-	{@param? open: bool}
-	{@param? options: list<[
-		label: string,
-		value: string
-	]>}
-	{@param? placeholder: string}
+	{@param? multiple: bool}
+	{@param? options: list<?>}
 	{@param? readOnly: bool}
-	{@param? selectedLabel: string}
-
-	{call .listItems}
-		{param _handleItemClicked: $_handleItemClicked /}
-		{param _handleClick: $_handleClick /}
-		{param dataSourceType: $dataSourceType /}
-		{param id: $id /}
-		{param readOnly: $readOnly /}
-		{param options: $options /}
-		{param selectedLabel: $selectedLabel /}
-		{param spritemap: $spritemap /}
-		{param strings: $strings /}
-	{/call}
-{/template}
-
-{template .listItems}
-	{@param spritemap: string}
-	{@param strings: [chooseAnOption: string]}
-	{@param? _handleClick: any}
-	{@param? _handleItemClicked: any}
-	{@param? disableEmptyOption: bool}
-	{@param? fixedOptions: list<[
-		label: string,
-		value: string
-	]>}
-	{@param? open: bool}
-	{@param? options: list<[
-		label: string,
-		value: string
-	]>}
-	{@param? placeholder: string}
-	{@param? readOnly: bool}
-	{@param? selectedLabel: string}
-
-	{let $attributes kind="attributes"}
-		class="dropdown-menu
-
-		{if $open}
-			{sp}dropdown-opened
-		{/if}
-		"
-		data-onclick="{$_handleItemClicked}"
-
-	{/let}
 
 	{if $options}
 		{let $attributes kind="attributes"}
@@ -133,10 +77,44 @@
 		{let $trigger kind="html"}
 			<div class="form-builder-select-field input-group-container">
 				<div {$attributes}>
-					{if $selectedLabel}
-						<div class="option-selected">{$selectedLabel}</div>
-					{else}
-						<div class="option-selected option-selected-placeholder">{$strings.chooseAnOption}</div>
+					{if $multiple}
+						<ul class="multiple-label-list">
+					{/if}
+
+					{for $currentValue in $value}
+						{for $option in $options}
+							{if $currentValue == $option.value}
+								{if $multiple}
+									<li>
+										{call ClayLabel.render}
+											{param closeable: true /}
+											{param elementClasses: 'ddm-select-option-label' /}
+											{param data: [
+												'value': $option.value
+											] /}
+											{param events: [
+												'close': $_handleLabelClosed
+											]/}
+											{param label: $option.label /}
+											{param spritemap: $spritemap /}
+										{/call}
+									</li>
+								{else}
+									<div class="option-selected">{$option.label}</div>
+								{/if}
+							{/if}
+						{/for}
+
+						{ifempty}
+							{if $multiple}
+								<div class="option-selected option-selected-placeholder">{$strings.chooseOptions}</div>
+							{else}
+								<div class="option-selected option-selected-placeholder">{$strings.chooseAnOption}</div>
+							{/if}
+					{/for}
+
+					{if $multiple}
+						</ul>
 					{/if}
 
 					<a class="select-arrow-down-container" href="javascript:;">
@@ -156,8 +134,10 @@
 			{param events: [
 				'itemClicked': $_handleItemClicked
 			]/}
-			{param elementClasses: 'ddm-btn-full' /}
+			{param elementClasses: 'ddm-btn-full ddm-select-dropdown' /}
+			{param expanded: $expanded /}
 			{param items: $options /}
+			{param ref: 'dropdown' /}
 			{param searchable: length($options) > 6 ? true : false /}
 			{param spritemap: $spritemap /}
 			{param label: $trigger /}
