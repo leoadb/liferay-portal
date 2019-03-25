@@ -27,9 +27,10 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -79,7 +80,9 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 			Long dataDefinitionId, DataLayout dataLayout)
 		throws Exception {
 
-		if (ArrayUtil.isEmpty(dataLayout.getName())) {
+		Map<String, String> name = dataLayout.getName();
+
+		if (name.isEmpty()) {
 			throw new Exception("Name is required");
 		}
 
@@ -104,7 +107,9 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 	public DataLayout putDataLayout(Long dataLayoutId, DataLayout dataLayout)
 		throws Exception {
 
-		if (ArrayUtil.isEmpty(dataLayout.getName())) {
+		Map<String, String> name = dataLayout.getName();
+
+		if (name.isEmpty()) {
 			throw new Exception("Name is required");
 		}
 

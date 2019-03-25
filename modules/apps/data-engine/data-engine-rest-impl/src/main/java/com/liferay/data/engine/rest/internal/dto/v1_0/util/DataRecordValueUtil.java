@@ -16,13 +16,11 @@ package com.liferay.data.engine.rest.internal.dto.v1_0.util;
 
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
-import com.liferay.data.engine.rest.dto.v1_0.DataRecordValue;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.vulcan.util.TransformUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,32 +34,27 @@ import java.util.stream.StreamSupport;
  */
 public class DataRecordValueUtil {
 
-	public static DataRecordValue[] toDataRecordValues(
+	public static Map<String, ?> toDataRecordValues(
 			DataDefinition dataDefinition, String json)
 		throws Exception {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
 
-		return TransformUtil.transform(
-			dataDefinition.getDataDefinitionFields(),
-			dataDefinitionField -> {
-				if (!jsonObject.has(dataDefinitionField.getName())) {
-					return null;
-				}
+		Map<String, Object> map = new HashMap<>();
 
-				return new DataRecordValue() {
-					{
-						key = dataDefinitionField.getName();
-						value = _toDataRecordValueValue(
-							dataDefinitionField, jsonObject);
-					}
-				};
-			},
-			DataRecordValue.class);
+		for (DataDefinitionField dataDefinitionField :
+				dataDefinition.getDataDefinitionFields()) {
+
+			map.put(
+				dataDefinitionField.getName(),
+				_toDataRecordValueValue(dataDefinitionField, jsonObject));
+		}
+
+		return map;
 	}
 
 	public static String toJSON(
-			DataDefinition dataDefinition, DataRecordValue[] dataRecordValues)
+			DataDefinition dataDefinition, Map<String, ?> dataRecordValues)
 		throws Exception {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
@@ -110,14 +103,12 @@ public class DataRecordValueUtil {
 	}
 
 	private static Map<String, Object> _toDataRecordValuesValues(
-			DataRecordValue[] dataRecordValues)
-		throws Exception {
+		Map<String, ?> dataRecordValues) {
 
 		Map<String, Object> dataRecordValuesValues = new HashMap<>();
 
-		for (DataRecordValue dataRecordValue : dataRecordValues) {
-			dataRecordValuesValues.put(
-				dataRecordValue.getKey(), dataRecordValue.getValue());
+		for (Map.Entry<String, ?> entry : dataRecordValues.entrySet()) {
+			dataRecordValuesValues.put(entry.getKey(), entry.getValue());
 		}
 
 		return dataRecordValuesValues;

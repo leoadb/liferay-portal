@@ -32,13 +32,10 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 
 import java.net.URI;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Generated;
-
-import javax.validation.constraints.NotNull;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -72,7 +69,7 @@ public abstract class BaseDataLayoutResourceImpl implements DataLayoutResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataLayout")})
 	public Page<DataLayout> getContentSpaceDataLayoutPage(
-			@NotNull @PathParam("content-space-id") Long contentSpaceId,
+			@PathParam("content-space-id") Long contentSpaceId,
 			@Context Pagination pagination)
 		throws Exception {
 
@@ -86,7 +83,7 @@ public abstract class BaseDataLayoutResourceImpl implements DataLayoutResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataLayout")})
 	public DataLayout postDataDefinitionDataLayout(
-			@NotNull @PathParam("data-definition-id") Long dataDefinitionId,
+			@PathParam("data-definition-id") Long dataDefinitionId,
 			DataLayout dataLayout)
 		throws Exception {
 
@@ -99,7 +96,7 @@ public abstract class BaseDataLayoutResourceImpl implements DataLayoutResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataLayout")})
 	public boolean deleteDataLayout(
-			@NotNull @PathParam("data-layout-id") Long dataLayoutId)
+			@PathParam("data-layout-id") Long dataLayoutId)
 		throws Exception {
 
 		return false;
@@ -111,7 +108,7 @@ public abstract class BaseDataLayoutResourceImpl implements DataLayoutResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataLayout")})
 	public DataLayout getDataLayout(
-			@NotNull @PathParam("data-layout-id") Long dataLayoutId)
+			@PathParam("data-layout-id") Long dataLayoutId)
 		throws Exception {
 
 		return new DataLayout();
@@ -124,7 +121,7 @@ public abstract class BaseDataLayoutResourceImpl implements DataLayoutResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataLayout")})
 	public DataLayout putDataLayout(
-			@NotNull @PathParam("data-layout-id") Long dataLayoutId,
+			@PathParam("data-layout-id") Long dataLayoutId,
 			DataLayout dataLayout)
 		throws Exception {
 
@@ -160,10 +157,9 @@ public abstract class BaseDataLayoutResourceImpl implements DataLayoutResource {
 	}
 
 	protected <T, R> List<R> transform(
-		Collection<T> collection,
-		UnsafeFunction<T, R, Exception> unsafeFunction) {
+		List<T> list, UnsafeFunction<T, R, Exception> unsafeFunction) {
 
-		return TransformUtil.transform(collection, unsafeFunction);
+		return TransformUtil.transform(list, unsafeFunction);
 	}
 
 	protected <T, R> R[] transform(
@@ -174,11 +170,10 @@ public abstract class BaseDataLayoutResourceImpl implements DataLayoutResource {
 	}
 
 	protected <T, R> R[] transformToArray(
-		Collection<T> collection,
-		UnsafeFunction<T, R, Exception> unsafeFunction, Class<?> clazz) {
+		List<T> list, UnsafeFunction<T, R, Exception> unsafeFunction,
+		Class<?> clazz) {
 
-		return TransformUtil.transformToArray(
-			collection, unsafeFunction, clazz);
+		return TransformUtil.transformToArray(list, unsafeFunction, clazz);
 	}
 
 	protected <T, R> List<R> transformToList(

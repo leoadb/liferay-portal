@@ -24,6 +24,8 @@ import com.liferay.petra.string.StringBundler;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 
+import java.util.Map;
+
 import javax.annotation.Generated;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -63,17 +65,18 @@ public class DataLayoutPage {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected DataLayoutRow[] dataLayoutRows;
 
-	public LocalizedValue[] getDescription() {
+	public Map<String, String> getDescription() {
 		return description;
 	}
 
-	public void setDescription(LocalizedValue[] description) {
+	public void setDescription(Map<String, String> description) {
 		this.description = description;
 	}
 
 	@JsonIgnore
 	public void setDescription(
-		UnsafeSupplier<LocalizedValue[], Exception> descriptionUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
 
 		try {
 			description = descriptionUnsafeSupplier.get();
@@ -85,19 +88,19 @@ public class DataLayoutPage {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected LocalizedValue[] description;
+	protected Map<String, String> description;
 
-	public LocalizedValue[] getTitle() {
+	public Map<String, String> getTitle() {
 		return title;
 	}
 
-	public void setTitle(LocalizedValue[] title) {
+	public void setTitle(Map<String, String> title) {
 		this.title = title;
 	}
 
 	@JsonIgnore
 	public void setTitle(
-		UnsafeSupplier<LocalizedValue[], Exception> titleUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception> titleUnsafeSupplier) {
 
 		try {
 			title = titleUnsafeSupplier.get();
@@ -109,7 +112,7 @@ public class DataLayoutPage {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected LocalizedValue[] title;
+	protected Map<String, String> title;
 
 	public String toString() {
 		StringBundler sb = new StringBundler();
@@ -139,43 +142,12 @@ public class DataLayoutPage {
 
 		sb.append("\"description\": ");
 
-		if (description == null) {
-			sb.append("null");
-		}
-		else {
-			sb.append("[");
-
-			for (int i = 0; i < description.length; i++) {
-				sb.append(description[i]);
-
-				if ((i + 1) < description.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
+		sb.append(description);
 		sb.append(", ");
 
 		sb.append("\"title\": ");
 
-		if (title == null) {
-			sb.append("null");
-		}
-		else {
-			sb.append("[");
-
-			for (int i = 0; i < title.length; i++) {
-				sb.append(title[i]);
-
-				if ((i + 1) < title.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
+		sb.append(title);
 
 		sb.append("}");
 

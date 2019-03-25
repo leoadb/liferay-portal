@@ -24,6 +24,8 @@ import com.liferay.petra.string.StringBundler;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 
+import java.util.Map;
+
 import javax.annotation.Generated;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -62,17 +64,18 @@ public class DataRecordCollection {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long dataDefinitionId;
 
-	public LocalizedValue[] getDescription() {
+	public Map<String, String> getDescription() {
 		return description;
 	}
 
-	public void setDescription(LocalizedValue[] description) {
+	public void setDescription(Map<String, String> description) {
 		this.description = description;
 	}
 
 	@JsonIgnore
 	public void setDescription(
-		UnsafeSupplier<LocalizedValue[], Exception> descriptionUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
 
 		try {
 			description = descriptionUnsafeSupplier.get();
@@ -84,7 +87,7 @@ public class DataRecordCollection {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected LocalizedValue[] description;
+	protected Map<String, String> description;
 
 	public Long getId() {
 		return id;
@@ -108,17 +111,17 @@ public class DataRecordCollection {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
 
-	public LocalizedValue[] getName() {
+	public Map<String, String> getName() {
 		return name;
 	}
 
-	public void setName(LocalizedValue[] name) {
+	public void setName(Map<String, String> name) {
 		this.name = name;
 	}
 
 	@JsonIgnore
 	public void setName(
-		UnsafeSupplier<LocalizedValue[], Exception> nameUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception> nameUnsafeSupplier) {
 
 		try {
 			name = nameUnsafeSupplier.get();
@@ -130,7 +133,7 @@ public class DataRecordCollection {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected LocalizedValue[] name;
+	protected Map<String, String> name;
 
 	public String toString() {
 		StringBundler sb = new StringBundler();
@@ -144,23 +147,7 @@ public class DataRecordCollection {
 
 		sb.append("\"description\": ");
 
-		if (description == null) {
-			sb.append("null");
-		}
-		else {
-			sb.append("[");
-
-			for (int i = 0; i < description.length; i++) {
-				sb.append(description[i]);
-
-				if ((i + 1) < description.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
+		sb.append(description);
 		sb.append(", ");
 
 		sb.append("\"id\": ");
@@ -170,22 +157,7 @@ public class DataRecordCollection {
 
 		sb.append("\"name\": ");
 
-		if (name == null) {
-			sb.append("null");
-		}
-		else {
-			sb.append("[");
-
-			for (int i = 0; i < name.length; i++) {
-				sb.append(name[i]);
-
-				if ((i + 1) < name.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
+		sb.append(name);
 
 		sb.append("}");
 

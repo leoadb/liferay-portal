@@ -24,6 +24,8 @@ import com.liferay.petra.string.StringBundler;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 
+import java.util.Map;
+
 import javax.annotation.Generated;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,6 +39,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "DataDefinitionField")
 public class DataDefinitionField {
+
+	public Map<String, ?> getCustomProperties() {
+		return customProperties;
+	}
+
+	public void setCustomProperties(Map<String, ?> customProperties) {
+		this.customProperties = customProperties;
+	}
+
+	@JsonIgnore
+	public void setCustomProperties(
+		UnsafeSupplier<Map<String, ?>, Exception>
+			customPropertiesUnsafeSupplier) {
+
+		try {
+			customProperties = customPropertiesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Map<String, ?> customProperties;
 
 	public String getDefaultValue() {
 		return defaultValue;
@@ -132,17 +159,17 @@ public class DataDefinitionField {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean indexable;
 
-	public LocalizedValue[] getLabel() {
+	public Map<String, String> getLabel() {
 		return label;
 	}
 
-	public void setLabel(LocalizedValue[] label) {
+	public void setLabel(Map<String, String> label) {
 		this.label = label;
 	}
 
 	@JsonIgnore
 	public void setLabel(
-		UnsafeSupplier<LocalizedValue[], Exception> labelUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception> labelUnsafeSupplier) {
 
 		try {
 			label = labelUnsafeSupplier.get();
@@ -154,7 +181,7 @@ public class DataDefinitionField {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected LocalizedValue[] label;
+	protected Map<String, String> label;
 
 	public Boolean getLocalizable() {
 		return localizable;
@@ -226,17 +253,17 @@ public class DataDefinitionField {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean repeatable;
 
-	public LocalizedValue[] getTip() {
+	public Map<String, String> getTip() {
 		return tip;
 	}
 
-	public void setTip(LocalizedValue[] tip) {
+	public void setTip(Map<String, String> tip) {
 		this.tip = tip;
 	}
 
 	@JsonIgnore
 	public void setTip(
-		UnsafeSupplier<LocalizedValue[], Exception> tipUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception> tipUnsafeSupplier) {
 
 		try {
 			tip = tipUnsafeSupplier.get();
@@ -248,12 +275,17 @@ public class DataDefinitionField {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected LocalizedValue[] tip;
+	protected Map<String, String> tip;
 
 	public String toString() {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		sb.append("\"customProperties\": ");
+
+		sb.append(customProperties);
+		sb.append(", ");
 
 		sb.append("\"defaultValue\": ");
 
@@ -281,23 +313,7 @@ public class DataDefinitionField {
 
 		sb.append("\"label\": ");
 
-		if (label == null) {
-			sb.append("null");
-		}
-		else {
-			sb.append("[");
-
-			for (int i = 0; i < label.length; i++) {
-				sb.append(label[i]);
-
-				if ((i + 1) < label.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
+		sb.append(label);
 		sb.append(", ");
 
 		sb.append("\"localizable\": ");
@@ -319,22 +335,7 @@ public class DataDefinitionField {
 
 		sb.append("\"tip\": ");
 
-		if (tip == null) {
-			sb.append("null");
-		}
-		else {
-			sb.append("[");
-
-			for (int i = 0; i < tip.length; i++) {
-				sb.append(tip[i]);
-
-				if ((i + 1) < tip.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
+		sb.append(tip);
 
 		sb.append("}");
 

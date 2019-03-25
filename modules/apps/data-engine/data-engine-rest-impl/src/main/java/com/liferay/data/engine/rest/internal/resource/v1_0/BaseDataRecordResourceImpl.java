@@ -32,13 +32,10 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 
 import java.net.URI;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Generated;
-
-import javax.validation.constraints.NotNull;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -72,8 +69,7 @@ public abstract class BaseDataRecordResourceImpl implements DataRecordResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataRecord")})
 	public Page<DataRecord> getDataRecordCollectionDataRecordsPage(
-			@NotNull @PathParam("data-record-collection-id") Long
-				dataRecordCollectionId,
+			@PathParam("data-record-collection-id") Long dataRecordCollectionId,
 			@Context Pagination pagination)
 		throws Exception {
 
@@ -87,8 +83,7 @@ public abstract class BaseDataRecordResourceImpl implements DataRecordResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataRecord")})
 	public DataRecord postDataRecordCollectionDataRecord(
-			@NotNull @PathParam("data-record-collection-id") Long
-				dataRecordCollectionId,
+			@PathParam("data-record-collection-id") Long dataRecordCollectionId,
 			DataRecord dataRecord)
 		throws Exception {
 
@@ -101,7 +96,7 @@ public abstract class BaseDataRecordResourceImpl implements DataRecordResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataRecord")})
 	public boolean deleteDataRecord(
-			@NotNull @PathParam("data-record-id") Long dataRecordId)
+			@PathParam("data-record-id") Long dataRecordId)
 		throws Exception {
 
 		return false;
@@ -113,7 +108,7 @@ public abstract class BaseDataRecordResourceImpl implements DataRecordResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataRecord")})
 	public DataRecord getDataRecord(
-			@NotNull @PathParam("data-record-id") Long dataRecordId)
+			@PathParam("data-record-id") Long dataRecordId)
 		throws Exception {
 
 		return new DataRecord();
@@ -126,7 +121,7 @@ public abstract class BaseDataRecordResourceImpl implements DataRecordResource {
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "DataRecord")})
 	public DataRecord putDataRecord(
-			@NotNull @PathParam("data-record-id") Long dataRecordId,
+			@PathParam("data-record-id") Long dataRecordId,
 			DataRecord dataRecord)
 		throws Exception {
 
@@ -162,10 +157,9 @@ public abstract class BaseDataRecordResourceImpl implements DataRecordResource {
 	}
 
 	protected <T, R> List<R> transform(
-		Collection<T> collection,
-		UnsafeFunction<T, R, Exception> unsafeFunction) {
+		List<T> list, UnsafeFunction<T, R, Exception> unsafeFunction) {
 
-		return TransformUtil.transform(collection, unsafeFunction);
+		return TransformUtil.transform(list, unsafeFunction);
 	}
 
 	protected <T, R> R[] transform(
@@ -176,11 +170,10 @@ public abstract class BaseDataRecordResourceImpl implements DataRecordResource {
 	}
 
 	protected <T, R> R[] transformToArray(
-		Collection<T> collection,
-		UnsafeFunction<T, R, Exception> unsafeFunction, Class<?> clazz) {
+		List<T> list, UnsafeFunction<T, R, Exception> unsafeFunction,
+		Class<?> clazz) {
 
-		return TransformUtil.transformToArray(
-			collection, unsafeFunction, clazz);
+		return TransformUtil.transformToArray(list, unsafeFunction, clazz);
 	}
 
 	protected <T, R> List<R> transformToList(

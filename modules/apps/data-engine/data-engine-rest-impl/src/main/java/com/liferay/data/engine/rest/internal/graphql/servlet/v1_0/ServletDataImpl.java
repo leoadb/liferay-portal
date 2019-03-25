@@ -16,20 +16,11 @@ package com.liferay.data.engine.rest.internal.graphql.servlet.v1_0;
 
 import com.liferay.data.engine.rest.internal.graphql.mutation.v1_0.Mutation;
 import com.liferay.data.engine.rest.internal.graphql.query.v1_0.Query;
-import com.liferay.data.engine.rest.resource.v1_0.DataDefinitionResource;
-import com.liferay.data.engine.rest.resource.v1_0.DataLayoutResource;
-import com.liferay.data.engine.rest.resource.v1_0.DataRecordCollectionResource;
-import com.liferay.data.engine.rest.resource.v1_0.DataRecordResource;
 import com.liferay.portal.vulcan.graphql.servlet.ServletData;
 
 import javax.annotation.Generated;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.ComponentServiceObjects;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceScope;
 
 /**
  * @author Jeyvison Nascimento
@@ -38,27 +29,6 @@ import org.osgi.service.component.annotations.ReferenceScope;
 @Component(immediate = true, service = ServletData.class)
 @Generated("")
 public class ServletDataImpl implements ServletData {
-
-	@Activate
-	public void activate(BundleContext bundleContext) {
-		Mutation.setDataDefinitionResourceComponentServiceObjects(
-			_dataDefinitionResourceComponentServiceObjects);
-		Mutation.setDataLayoutResourceComponentServiceObjects(
-			_dataLayoutResourceComponentServiceObjects);
-		Mutation.setDataRecordResourceComponentServiceObjects(
-			_dataRecordResourceComponentServiceObjects);
-		Mutation.setDataRecordCollectionResourceComponentServiceObjects(
-			_dataRecordCollectionResourceComponentServiceObjects);
-
-		Query.setDataDefinitionResourceComponentServiceObjects(
-			_dataDefinitionResourceComponentServiceObjects);
-		Query.setDataLayoutResourceComponentServiceObjects(
-			_dataLayoutResourceComponentServiceObjects);
-		Query.setDataRecordResourceComponentServiceObjects(
-			_dataRecordResourceComponentServiceObjects);
-		Query.setDataRecordCollectionResourceComponentServiceObjects(
-			_dataRecordCollectionResourceComponentServiceObjects);
-	}
 
 	@Override
 	public Mutation getMutation() {
@@ -74,21 +44,5 @@ public class ServletDataImpl implements ServletData {
 	public Query getQuery() {
 		return new Query();
 	}
-
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<DataDefinitionResource>
-		_dataDefinitionResourceComponentServiceObjects;
-
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<DataLayoutResource>
-		_dataLayoutResourceComponentServiceObjects;
-
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<DataRecordResource>
-		_dataRecordResourceComponentServiceObjects;
-
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<DataRecordCollectionResource>
-		_dataRecordCollectionResourceComponentServiceObjects;
 
 }

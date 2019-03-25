@@ -14,16 +14,13 @@
 
 package com.liferay.data.engine.rest.internal.dto.v1_0.util;
 
-import com.liferay.data.engine.rest.dto.v1_0.LocalizedValue;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -32,72 +29,58 @@ import java.util.Map;
  */
 public class LocalizedValueUtil {
 
-	public static JSONObject toJSONObject(LocalizedValue[] localizedValues)
-		throws Exception {
-
+	public static JSONObject toJSONObject(Map<String, String> localizedValues) {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		if (ArrayUtil.isEmpty(localizedValues)) {
+		if (localizedValues.isEmpty()) {
 			return jsonObject;
 		}
 
-		for (LocalizedValue localizedValue : localizedValues) {
-			jsonObject.put(localizedValue.getKey(), localizedValue.getValue());
+		for (Map.Entry<String, String> entry : localizedValues.entrySet()) {
+			jsonObject.put(entry.getKey(), entry.getValue());
 		}
 
 		return jsonObject;
 	}
 
 	public static Map<Locale, String> toLocalizationMap(
-		LocalizedValue[] localizedValues) {
+		Map<String, String> localizedValues) {
 
 		Map<Locale, String> localizationMap = new HashMap<>();
 
-		for (LocalizedValue localizedValue : localizedValues) {
+		for (Map.Entry<String, String> entry : localizedValues.entrySet()) {
 			localizationMap.put(
-				LocaleUtil.fromLanguageId(localizedValue.getKey()),
-				localizedValue.getValue());
+				LocaleUtil.fromLanguageId(entry.getKey()), entry.getValue());
 		}
 
 		return localizationMap;
 	}
 
-	public static LocalizedValue[] toLocalizedValues(JSONObject jsonObject) {
-		List<LocalizedValue> localizedValues = new ArrayList<>();
+	public static Map<String, String> toLocalizedValues(JSONObject jsonObject) {
+		Map<String, String> localizedValues = new HashMap<>();
 
 		Iterator<String> keys = jsonObject.keys();
 
 		while (keys.hasNext()) {
-			LocalizedValue localizedValue = new LocalizedValue();
-
 			String key = keys.next();
 
-			localizedValue.setKey(key);
-			localizedValue.setValue(jsonObject.getString(key));
-
-			localizedValues.add(localizedValue);
+			localizedValues.put(key, jsonObject.getString(key));
 		}
 
-		return localizedValues.toArray(
-			new LocalizedValue[localizedValues.size()]);
+		return localizedValues;
 	}
 
-	public static LocalizedValue[] toLocalizedValues(
+	public static Map<String, String> toLocalizedValues(
 		Map<Locale, String> localizationMap) {
 
-		List<LocalizedValue> localizedValues = new ArrayList<>();
+		Map<String, String> localizedValues = new HashMap<>();
 
 		for (Map.Entry<Locale, String> entry : localizationMap.entrySet()) {
-			LocalizedValue localizedValue = new LocalizedValue();
-
-			localizedValue.setKey(String.valueOf(entry.getKey()));
-			localizedValue.setValue(entry.getValue());
-
-			localizedValues.add(localizedValue);
+			localizedValues.put(
+				LanguageUtil.getLanguageId(entry.getKey()), entry.getValue());
 		}
 
-		return localizedValues.toArray(
-			new LocalizedValue[localizationMap.size()]);
+		return localizedValues;
 	}
 
 }

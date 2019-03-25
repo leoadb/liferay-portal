@@ -24,6 +24,8 @@ import com.liferay.petra.string.StringBundler;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 
+import java.util.Map;
+
 import javax.annotation.Generated;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -62,17 +64,17 @@ public class DataRecord {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long dataRecordCollectionId;
 
-	public DataRecordValue[] getDataRecordValues() {
+	public Map<String, ?> getDataRecordValues() {
 		return dataRecordValues;
 	}
 
-	public void setDataRecordValues(DataRecordValue[] dataRecordValues) {
+	public void setDataRecordValues(Map<String, ?> dataRecordValues) {
 		this.dataRecordValues = dataRecordValues;
 	}
 
 	@JsonIgnore
 	public void setDataRecordValues(
-		UnsafeSupplier<DataRecordValue[], Exception>
+		UnsafeSupplier<Map<String, ?>, Exception>
 			dataRecordValuesUnsafeSupplier) {
 
 		try {
@@ -85,7 +87,7 @@ public class DataRecord {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected DataRecordValue[] dataRecordValues;
+	protected Map<String, ?> dataRecordValues;
 
 	public Long getId() {
 		return id;
@@ -121,23 +123,7 @@ public class DataRecord {
 
 		sb.append("\"dataRecordValues\": ");
 
-		if (dataRecordValues == null) {
-			sb.append("null");
-		}
-		else {
-			sb.append("[");
-
-			for (int i = 0; i < dataRecordValues.length; i++) {
-				sb.append(dataRecordValues[i]);
-
-				if ((i + 1) < dataRecordValues.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
+		sb.append(dataRecordValues);
 		sb.append(", ");
 
 		sb.append("\"id\": ");

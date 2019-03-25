@@ -28,7 +28,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -92,7 +91,6 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
 		_resourceURL = new URL("http://localhost:8080/o/data-engine/v1.0");
@@ -100,7 +98,6 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
-		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
 
@@ -108,30 +105,10 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	public void testGetContentSpaceDataDefinitionsPage() throws Exception {
 		Long contentSpaceId =
 			testGetContentSpaceDataDefinitionsPage_getContentSpaceId();
-		Long irrelevantContentSpaceId =
-			testGetContentSpaceDataDefinitionsPage_getIrrelevantContentSpaceId();
-
-		if ((irrelevantContentSpaceId != null)) {
-			DataDefinition irrelevantDataDefinition =
-				testGetContentSpaceDataDefinitionsPage_addDataDefinition(
-					irrelevantContentSpaceId, randomIrrelevantDataDefinition());
-
-			Page<DataDefinition> page =
-				invokeGetContentSpaceDataDefinitionsPage(
-					irrelevantContentSpaceId, null, Pagination.of(1, 2));
-
-			Assert.assertEquals(1, page.getTotalCount());
-
-			assertEquals(
-				Arrays.asList(irrelevantDataDefinition),
-				(List<DataDefinition>)page.getItems());
-			assertValid(page);
-		}
 
 		DataDefinition dataDefinition1 =
 			testGetContentSpaceDataDefinitionsPage_addDataDefinition(
 				contentSpaceId, randomDataDefinition());
-
 		DataDefinition dataDefinition2 =
 			testGetContentSpaceDataDefinitionsPage_addDataDefinition(
 				contentSpaceId, randomDataDefinition());
@@ -157,11 +134,9 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		DataDefinition dataDefinition1 =
 			testGetContentSpaceDataDefinitionsPage_addDataDefinition(
 				contentSpaceId, randomDataDefinition());
-
 		DataDefinition dataDefinition2 =
 			testGetContentSpaceDataDefinitionsPage_addDataDefinition(
 				contentSpaceId, randomDataDefinition());
-
 		DataDefinition dataDefinition3 =
 			testGetContentSpaceDataDefinitionsPage_addDataDefinition(
 				contentSpaceId, randomDataDefinition());
@@ -211,13 +186,6 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		return testGroup.getGroupId();
 	}
 
-	protected Long
-			testGetContentSpaceDataDefinitionsPage_getIrrelevantContentSpaceId()
-		throws Exception {
-
-		return irrelevantGroup.getGroupId();
-	}
-
 	protected Page<DataDefinition> invokeGetContentSpaceDataDefinitionsPage(
 			Long contentSpaceId, String keywords, Pagination pagination)
 		throws Exception {
@@ -237,10 +205,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		options.setLocation(location);
 
-		String string = HttpUtil.URLtoString(options);
-
 		return _outputObjectMapper.readValue(
-			string,
+			HttpUtil.URLtoString(options),
 			new TypeReference<Page<DataDefinition>>() {
 			});
 	}
@@ -310,16 +276,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		options.setPost(true);
 
-		String string = HttpUtil.URLtoString(options);
-
-		try {
-			return _outputObjectMapper.readValue(string, DataDefinition.class);
-		}
-		catch (Exception e) {
-			Assert.fail("HTTP response: " + string);
-
-			throw e;
-		}
+		return _outputObjectMapper.readValue(
+			HttpUtil.URLtoString(options), DataDefinition.class);
 	}
 
 	protected Http.Response invokePostContentSpaceDataDefinitionResponse(
@@ -380,16 +338,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		options.setLocation(location);
 
-		String string = HttpUtil.URLtoString(options);
-
-		try {
-			return _outputObjectMapper.readValue(string, Boolean.class);
-		}
-		catch (Exception e) {
-			Assert.fail("HTTP response: " + string);
-
-			throw e;
-		}
+		return _outputObjectMapper.readValue(
+			HttpUtil.URLtoString(options), Boolean.class);
 	}
 
 	protected Http.Response invokeDeleteDataDefinitionResponse(
@@ -443,16 +393,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		options.setLocation(location);
 
-		String string = HttpUtil.URLtoString(options);
-
-		try {
-			return _outputObjectMapper.readValue(string, DataDefinition.class);
-		}
-		catch (Exception e) {
-			Assert.fail("HTTP response: " + string);
-
-			throw e;
-		}
+		return _outputObjectMapper.readValue(
+			HttpUtil.URLtoString(options), DataDefinition.class);
 	}
 
 	protected Http.Response invokeGetDataDefinitionResponse(
@@ -519,16 +461,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		options.setPut(true);
 
-		String string = HttpUtil.URLtoString(options);
-
-		try {
-			return _outputObjectMapper.readValue(string, DataDefinition.class);
-		}
-		catch (Exception e) {
-			Assert.fail("HTTP response: " + string);
-
-			throw e;
-		}
+		return _outputObjectMapper.readValue(
+			HttpUtil.URLtoString(options), DataDefinition.class);
 	}
 
 	protected Http.Response invokePutDataDefinitionResponse(
@@ -752,15 +686,10 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		};
 	}
 
-	protected DataDefinition randomIrrelevantDataDefinition() {
-		return randomDataDefinition();
-	}
-
 	protected DataDefinition randomPatchDataDefinition() {
 		return randomDataDefinition();
 	}
 
-	protected Group irrelevantGroup;
 	protected Group testGroup;
 
 	protected static class Page<T> {
@@ -820,17 +749,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		return options;
 	}
 
-	private String _toPath(String template, Object... values) {
-		if (ArrayUtil.isEmpty(values)) {
-			return template;
-		}
-
-		for (int i = 0; i < values.length; i++) {
-			template = template.replaceFirst(
-				"\\{.*\\}", String.valueOf(values[i]));
-		}
-
-		return template;
+	private String _toPath(String template, Object value) {
+		return template.replaceFirst("\\{.*\\}", String.valueOf(value));
 	}
 
 	private static BeanUtilsBean _beanUtilsBean = new BeanUtilsBean() {

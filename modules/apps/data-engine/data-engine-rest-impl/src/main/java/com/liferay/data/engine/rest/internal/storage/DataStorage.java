@@ -16,7 +16,6 @@ package com.liferay.data.engine.rest.internal.storage;
 
 import com.liferay.data.engine.rest.dto.v1_0.DataRecord;
 import com.liferay.data.engine.rest.dto.v1_0.DataRecordCollection;
-import com.liferay.data.engine.rest.dto.v1_0.DataRecordValue;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataRecordCollectionUtil;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataRecordValueUtil;
@@ -26,6 +25,8 @@ import com.liferay.dynamic.data.mapping.service.DDMContentLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.Map;
 
 /**
  * @author Jeyvison Nascimento
@@ -53,7 +54,7 @@ public class DataStorage {
 		return dataStorageId;
 	}
 
-	public DataRecordValue[] get(long dataDefinitionId, long dataStorageId)
+	public Map<String, ?> get(long dataDefinitionId, long dataStorageId)
 		throws Exception {
 
 		DDMContent ddmContent = _ddmContentLocalService.getContent(

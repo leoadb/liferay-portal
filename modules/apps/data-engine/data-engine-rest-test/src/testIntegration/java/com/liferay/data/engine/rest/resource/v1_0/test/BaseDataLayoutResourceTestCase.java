@@ -28,7 +28,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -92,7 +91,6 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
 		_resourceURL = new URL("http://localhost:8080/o/data-engine/v1.0");
@@ -100,7 +98,6 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
-		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
 
@@ -108,29 +105,10 @@ public abstract class BaseDataLayoutResourceTestCase {
 	public void testGetContentSpaceDataLayoutPage() throws Exception {
 		Long contentSpaceId =
 			testGetContentSpaceDataLayoutPage_getContentSpaceId();
-		Long irrelevantContentSpaceId =
-			testGetContentSpaceDataLayoutPage_getIrrelevantContentSpaceId();
-
-		if ((irrelevantContentSpaceId != null)) {
-			DataLayout irrelevantDataLayout =
-				testGetContentSpaceDataLayoutPage_addDataLayout(
-					irrelevantContentSpaceId, randomIrrelevantDataLayout());
-
-			Page<DataLayout> page = invokeGetContentSpaceDataLayoutPage(
-				irrelevantContentSpaceId, Pagination.of(1, 2));
-
-			Assert.assertEquals(1, page.getTotalCount());
-
-			assertEquals(
-				Arrays.asList(irrelevantDataLayout),
-				(List<DataLayout>)page.getItems());
-			assertValid(page);
-		}
 
 		DataLayout dataLayout1 =
 			testGetContentSpaceDataLayoutPage_addDataLayout(
 				contentSpaceId, randomDataLayout());
-
 		DataLayout dataLayout2 =
 			testGetContentSpaceDataLayoutPage_addDataLayout(
 				contentSpaceId, randomDataLayout());
@@ -156,11 +134,9 @@ public abstract class BaseDataLayoutResourceTestCase {
 		DataLayout dataLayout1 =
 			testGetContentSpaceDataLayoutPage_addDataLayout(
 				contentSpaceId, randomDataLayout());
-
 		DataLayout dataLayout2 =
 			testGetContentSpaceDataLayoutPage_addDataLayout(
 				contentSpaceId, randomDataLayout());
-
 		DataLayout dataLayout3 =
 			testGetContentSpaceDataLayoutPage_addDataLayout(
 				contentSpaceId, randomDataLayout());
@@ -205,13 +181,6 @@ public abstract class BaseDataLayoutResourceTestCase {
 		return testGroup.getGroupId();
 	}
 
-	protected Long
-			testGetContentSpaceDataLayoutPage_getIrrelevantContentSpaceId()
-		throws Exception {
-
-		return irrelevantGroup.getGroupId();
-	}
-
 	protected Page<DataLayout> invokeGetContentSpaceDataLayoutPage(
 			Long contentSpaceId, Pagination pagination)
 		throws Exception {
@@ -231,10 +200,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		options.setLocation(location);
 
-		String string = HttpUtil.URLtoString(options);
-
 		return _outputObjectMapper.readValue(
-			string,
+			HttpUtil.URLtoString(options),
 			new TypeReference<Page<DataLayout>>() {
 			});
 	}
@@ -302,16 +269,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		options.setPost(true);
 
-		String string = HttpUtil.URLtoString(options);
-
-		try {
-			return _outputObjectMapper.readValue(string, DataLayout.class);
-		}
-		catch (Exception e) {
-			Assert.fail("HTTP response: " + string);
-
-			throw e;
-		}
+		return _outputObjectMapper.readValue(
+			HttpUtil.URLtoString(options), DataLayout.class);
 	}
 
 	protected Http.Response invokePostDataDefinitionDataLayoutResponse(
@@ -368,16 +327,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		options.setLocation(location);
 
-		String string = HttpUtil.URLtoString(options);
-
-		try {
-			return _outputObjectMapper.readValue(string, Boolean.class);
-		}
-		catch (Exception e) {
-			Assert.fail("HTTP response: " + string);
-
-			throw e;
-		}
+		return _outputObjectMapper.readValue(
+			HttpUtil.URLtoString(options), Boolean.class);
 	}
 
 	protected Http.Response invokeDeleteDataLayoutResponse(Long dataLayoutId)
@@ -424,16 +375,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		options.setLocation(location);
 
-		String string = HttpUtil.URLtoString(options);
-
-		try {
-			return _outputObjectMapper.readValue(string, DataLayout.class);
-		}
-		catch (Exception e) {
-			Assert.fail("HTTP response: " + string);
-
-			throw e;
-		}
+		return _outputObjectMapper.readValue(
+			HttpUtil.URLtoString(options), DataLayout.class);
 	}
 
 	protected Http.Response invokeGetDataLayoutResponse(Long dataLayoutId)
@@ -493,16 +436,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		options.setPut(true);
 
-		String string = HttpUtil.URLtoString(options);
-
-		try {
-			return _outputObjectMapper.readValue(string, DataLayout.class);
-		}
-		catch (Exception e) {
-			Assert.fail("HTTP response: " + string);
-
-			throw e;
-		}
+		return _outputObjectMapper.readValue(
+			HttpUtil.URLtoString(options), DataLayout.class);
 	}
 
 	protected Http.Response invokePutDataLayoutResponse(
@@ -728,15 +663,10 @@ public abstract class BaseDataLayoutResourceTestCase {
 		};
 	}
 
-	protected DataLayout randomIrrelevantDataLayout() {
-		return randomDataLayout();
-	}
-
 	protected DataLayout randomPatchDataLayout() {
 		return randomDataLayout();
 	}
 
-	protected Group irrelevantGroup;
 	protected Group testGroup;
 
 	protected static class Page<T> {
@@ -796,17 +726,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 		return options;
 	}
 
-	private String _toPath(String template, Object... values) {
-		if (ArrayUtil.isEmpty(values)) {
-			return template;
-		}
-
-		for (int i = 0; i < values.length; i++) {
-			template = template.replaceFirst(
-				"\\{.*\\}", String.valueOf(values[i]));
-		}
-
-		return template;
+	private String _toPath(String template, Object value) {
+		return template.replaceFirst("\\{.*\\}", String.valueOf(value));
 	}
 
 	private static BeanUtilsBean _beanUtilsBean = new BeanUtilsBean() {
