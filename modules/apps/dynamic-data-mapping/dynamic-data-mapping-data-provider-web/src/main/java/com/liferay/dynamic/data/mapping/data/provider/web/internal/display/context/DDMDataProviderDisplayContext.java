@@ -20,7 +20,7 @@ import com.liferay.dynamic.data.mapping.data.provider.display.DDMDataProviderDis
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.constants.DDMDataProviderPortletKeys;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.context.util.DDMDataProviderRequestHelper;
-import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.registry.DDMDataProviderDisplayRegistry;
+import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.DDMDataProviderDisplayRegistry;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.search.DDMDataProviderSearch;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.security.permission.resource.DDMDataProviderInstancePermission;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.security.permission.resource.DDMFormPermission;

@@ -17,7 +17,7 @@ package com.liferay.dynamic.data.mapping.data.provider.web.internal.portlet;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.constants.DDMDataProviderPortletKeys;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.context.DDMDataProviderDisplayContext;
-import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.registry.DDMDataProviderDisplayRegistry;
+import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.DDMDataProviderDisplayRegistry;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerTracker;

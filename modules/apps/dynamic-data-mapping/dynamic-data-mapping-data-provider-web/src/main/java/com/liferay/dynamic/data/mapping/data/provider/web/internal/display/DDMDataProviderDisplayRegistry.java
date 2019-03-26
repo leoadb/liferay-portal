@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.data.provider.web.internal.display.registry;
+package com.liferay.dynamic.data.mapping.data.provider.web.internal.display;
 
 import aQute.bnd.annotation.ProviderType;
 
