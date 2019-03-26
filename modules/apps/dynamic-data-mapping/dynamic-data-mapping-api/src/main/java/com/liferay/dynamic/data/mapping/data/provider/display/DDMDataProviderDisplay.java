@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.data.provider;
+package com.liferay.dynamic.data.mapping.data.provider.display;
 
 import aQute.bnd.annotation.ProviderType;
 

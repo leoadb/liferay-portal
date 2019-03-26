@@ -15,7 +15,7 @@
 package com.liferay.dynamic.data.mapping.form.web.internal.display;
 
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
-import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderDisplay;
+import com.liferay.dynamic.data.mapping.data.provider.display.DDMDataProviderDisplay;
 import com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminDataProviderTabItem;
 import com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminFieldSetTabItem;
 import com.liferay.dynamic.data.mapping.form.web.internal.tab.item.DDMFormAdminTabItem;

@@ -16,7 +16,7 @@ package com.liferay.dynamic.data.mapping.data.provider.web.internal.display.regi
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderDisplay;
+import com.liferay.dynamic.data.mapping.data.provider.display.DDMDataProviderDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;

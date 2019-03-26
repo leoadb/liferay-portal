@@ -14,7 +14,7 @@
 
 package com.liferay.dynamic.data.mapping.data.provider.web.internal.display.context;
 
-import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderDisplay;
+import com.liferay.dynamic.data.mapping.data.provider.display.DDMDataProviderDisplay;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.constants.DDMDataProviderPortletKeys;
 import com.liferay.dynamic.data.mapping.util.DDMDisplayTabItem;
 import com.liferay.portal.kernel.language.LanguageUtil;
