@@ -39,6 +39,11 @@ import org.osgi.service.component.annotations.Component;
 public class DefaultDDMDataProviderDisplay implements DDMDataProviderDisplay {
 
 	@Override
+	public List<DDMDisplayTabItem> getDDMDisplayTabItems() {
+		return Arrays.asList(getDefaultDDMDisplayTabItem());
+	}
+
+	@Override
 	public DDMDisplayTabItem getDefaultDDMDisplayTabItem() {
 		return new DDMDisplayTabItem() {
 
@@ -65,11 +70,6 @@ public class DefaultDDMDataProviderDisplay implements DDMDataProviderDisplay {
 	@Override
 	public String getPortletId() {
 		return DDMDataProviderPortletKeys.DYNAMIC_DATA_MAPPING_DATA_PROVIDER;
-	}
-
-	@Override
-	public List<DDMDisplayTabItem> getDDMDisplayTabItems() {
-		return Arrays.asList(getDefaultDDMDisplayTabItem());
 	}
 
 	@Override

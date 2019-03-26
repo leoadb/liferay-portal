@@ -16,8 +16,8 @@ package com.liferay.dynamic.data.mapping.data.provider.web.internal.portlet;
 
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.constants.DDMDataProviderPortletKeys;
+import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.DDMDataProviderDisplayTracker;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.context.DDMDataProviderDisplayContext;
-import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.DDMDataProviderDisplayRegistry;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerTracker;
@@ -91,7 +91,7 @@ public class DDMDataProviderPortlet extends MVCPortlet {
 
 	@Reference(unbind = "-")
 	protected void setDDMDataProviderDisplayRegistry(
-		DDMDataProviderDisplayRegistry ddmDataProviderDisplayRegistry) {
+		DDMDataProviderDisplayTracker ddmDataProviderDisplayRegistry) {
 
 		_ddmDataProviderDisplayRegistry = ddmDataProviderDisplayRegistry;
 	}
@@ -127,7 +127,7 @@ public class DDMDataProviderPortlet extends MVCPortlet {
 		_userLocalService = userLocalService;
 	}
 
-	private DDMDataProviderDisplayRegistry _ddmDataProviderDisplayRegistry;
+	private DDMDataProviderDisplayTracker _ddmDataProviderDisplayRegistry;
 	private DDMDataProviderInstanceService _ddmDataProviderInstanceService;
 	private DDMDataProviderTracker _ddmDataProviderTracker;
 	private DDMFormRenderer _ddmFormRenderer;
