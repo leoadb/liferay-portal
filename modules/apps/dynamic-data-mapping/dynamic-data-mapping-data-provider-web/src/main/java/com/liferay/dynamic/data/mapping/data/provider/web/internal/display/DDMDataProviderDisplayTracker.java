@@ -14,8 +14,6 @@
 
 package com.liferay.dynamic.data.mapping.data.provider.web.internal.display;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.dynamic.data.mapping.data.provider.display.DDMDataProviderDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 
@@ -25,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -34,14 +33,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  * @author Lino Alves
  */
 @Component(immediate = true, service = DDMDataProviderDisplayTracker.class)
-@ProviderType
 public class DDMDataProviderDisplayTracker {
 
 	public DDMDataProviderDisplay getDDMDataProviderDisplay(String portletId) {
-		return _getDDMDataProviderDisplay(portletId);
+		return _ddmDataProviderDisplay.get(portletId);
 	}
 
-	public List<DDMDataProviderDisplay> getgetDDMDataProviderDisplays() {
+	public List<DDMDataProviderDisplay> getDDMDataProviderDisplays() {
 		return _getDDMDataProviderDisplays();
 	}
 
@@ -54,23 +52,22 @@ public class DDMDataProviderDisplayTracker {
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY
 	)
-	protected void setDDMDataProviderDisplay(
+	protected void addDDMDataProviderDisplay(
 		DDMDataProviderDisplay ddmDataProviderDisplay) {
 
 		_ddmDataProviderDisplay.put(
 			ddmDataProviderDisplay.getPortletId(), ddmDataProviderDisplay);
 	}
 
-	protected void unsetDDMDataProviderDisplay(
+	@Deactivate
+	protected void deactivate() {
+		_ddmDataProviderDisplay.clear();
+	}
+
+	protected void removeDDMDataProviderDisplay(
 		DDMDataProviderDisplay ddmDataProviderDisplay) {
 
 		_ddmDataProviderDisplay.remove(ddmDataProviderDisplay.getPortletId());
-	}
-
-	private DDMDataProviderDisplay _getDDMDataProviderDisplay(
-		String portletId) {
-
-		return _ddmDataProviderDisplay.get(portletId);
 	}
 
 	private List<DDMDataProviderDisplay> _getDDMDataProviderDisplays() {
