@@ -73,7 +73,7 @@ public class DDMDataProviderPortlet extends MVCPortlet {
 
 		DDMDataProviderDisplayContext ddmDataProviderDisplayContext =
 			new DDMDataProviderDisplayContext(
-				renderRequest, renderResponse, _ddmDataProviderDisplayRegistry,
+				renderRequest, renderResponse, _ddmDataProviderDisplayTracker,
 				_ddmDataProviderInstanceService, _ddmDataProviderTracker,
 				_ddmFormRenderer, getDDMFormValuesDeserializer(),
 				_userLocalService);
@@ -90,10 +90,10 @@ public class DDMDataProviderPortlet extends MVCPortlet {
 	}
 
 	@Reference(unbind = "-")
-	protected void setDDMDataProviderDisplayRegistry(
-		DDMDataProviderDisplayTracker ddmDataProviderDisplayRegistry) {
+	protected void setDDMDataProviderDisplayTracker(
+		DDMDataProviderDisplayTracker ddmDataProviderDisplayTracker) {
 
-		_ddmDataProviderDisplayRegistry = ddmDataProviderDisplayRegistry;
+		_ddmDataProviderDisplayTracker = ddmDataProviderDisplayTracker;
 	}
 
 	@Reference(unbind = "-")
@@ -127,7 +127,7 @@ public class DDMDataProviderPortlet extends MVCPortlet {
 		_userLocalService = userLocalService;
 	}
 
-	private DDMDataProviderDisplayTracker _ddmDataProviderDisplayRegistry;
+	private DDMDataProviderDisplayTracker _ddmDataProviderDisplayTracker;
 	private DDMDataProviderInstanceService _ddmDataProviderInstanceService;
 	private DDMDataProviderTracker _ddmDataProviderTracker;
 	private DDMFormRenderer _ddmFormRenderer;
