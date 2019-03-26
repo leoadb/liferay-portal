@@ -277,7 +277,7 @@ public class DDMDataProviderDisplayContext {
 					getDDMDataProviderDisplay();
 
 				for (DDMDisplayTabItem ddmDisplayTabItem :
-						ddmDataProviderDisplay.getTabItems()) {
+						ddmDataProviderDisplay.getDDMDisplayTabItems()) {
 
 					if (!ddmDisplayTabItem.isShow(liferayPortletRequest)) {
 						continue;
@@ -288,7 +288,7 @@ public class DDMDataProviderDisplayContext {
 							liferayPortletRequest, liferayPortletResponse));
 
 					DDMDisplayTabItem defaultDDMDisplayTabItem =
-						ddmDataProviderDisplay.getDefaultTabItem();
+						ddmDataProviderDisplay.getDefaultDDMDisplayTabItem();
 
 					String defaultDDMDisplayTabItemTitle = GetterUtil.getString(
 						defaultDDMDisplayTabItem.getTitle(

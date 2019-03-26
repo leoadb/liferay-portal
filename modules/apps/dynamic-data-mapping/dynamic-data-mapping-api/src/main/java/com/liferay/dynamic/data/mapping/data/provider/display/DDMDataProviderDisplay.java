@@ -27,11 +27,11 @@ import java.util.Locale;
 @ProviderType
 public interface DDMDataProviderDisplay {
 
-	public DDMDisplayTabItem getDefaultTabItem();
+	public List<DDMDisplayTabItem> getDDMDisplayTabItems();
+
+	public DDMDisplayTabItem getDefaultDDMDisplayTabItem();
 
 	public String getPortletId();
-
-	public List<DDMDisplayTabItem> getTabItems();
 
 	public String getTitle(Locale locale);
 

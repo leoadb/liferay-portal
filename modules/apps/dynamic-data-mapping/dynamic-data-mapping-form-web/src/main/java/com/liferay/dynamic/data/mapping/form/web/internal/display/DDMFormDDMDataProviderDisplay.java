@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
 public class DDMFormDDMDataProviderDisplay implements DDMDataProviderDisplay {
 
 	@Override
-	public DDMDisplayTabItem getDefaultTabItem() {
+	public DDMDisplayTabItem getDefaultDDMDisplayTabItem() {
 		return _ddmFormAdminDataProviderTabItem;
 	}
 
@@ -49,7 +49,7 @@ public class DDMFormDDMDataProviderDisplay implements DDMDataProviderDisplay {
 	}
 
 	@Override
-	public List<DDMDisplayTabItem> getTabItems() {
+	public List<DDMDisplayTabItem> getDDMDisplayTabItems() {
 		return Arrays.asList(
 			_ddmFormAdminTabItem, _ddmFormAdminFieldSetTabItem,
 			_ddmFormAdminDataProviderTabItem);
