@@ -14,6 +14,8 @@
 
 package com.liferay.dynamic.data.mapping.form.field.type;
 
+import com.liferay.petra.string.StringPool;
+
 /**
  * @author Marcellus Tavares
  */
@@ -23,5 +25,9 @@ public interface DDMFormFieldType {
 		getDDMFormFieldTypeSettings();
 
 	public String getName();
+
+	public default String getModuleName() {
+		return StringPool.BLANK;
+	}
 
 }

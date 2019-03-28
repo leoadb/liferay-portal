@@ -41,7 +41,7 @@
 		{param _handlePaginationRightClicked: $_handlePaginationRightClicked /}
 		{param _handleSuccesPageChanged: $_handleSuccesPageChanged /}
 		{param _handleUpdatePage: $_handleUpdatePage /}
-		{param activePage: $activePage /}
+		{param activePage: $activePage ? $activePage : 0 /}
 		{param contentRenderer: $contentRenderer /}
 		{param defaultPageTitle: $defaultPageTitle /}
 		{param dropdownExpanded: $dropdownExpanded /}
