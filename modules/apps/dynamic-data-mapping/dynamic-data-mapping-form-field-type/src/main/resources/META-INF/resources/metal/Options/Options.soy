@@ -1,13 +1,13 @@
 {namespace Options}
 
 {template .render}
+	{@param name: string}
 	{@param spritemap: string}
 	{@param? _handleOptionBlurred: any}
 	{@param? _handleOptionDeleted: any}
 	{@param? _handleOptionFocused: any}
 	{@param? _handleOptionLabelEdited: any}
 	{@param? _handleOptionValueEdited: any}
-	{@param? id: string}
 	{@param? items: list<[
 		disabled: bool,
 		generateKeyword: bool,
@@ -49,7 +49,7 @@
 										{param generateKeyword: $option.generateKeyword /}
 										{param keyword: $option.value /}
 										{param index: index($option) /}
-										{param name: 'option' + index($option) /}
+										{param name: $name + 'option' + index($option) /}
 										{param placeholder: $placeholder /}
 										{param readOnly: $readOnly ? $readOnly : $option.disabled /}
 										{param ref: 'option' + index($option) /}
@@ -79,7 +79,6 @@
 			{/if}
 		{/param}
 
-		{param id: $id /}
 		{param label: $label /}
 		{param repeatable: $repeatable /}
 		{param showLabel: $showLabel /}

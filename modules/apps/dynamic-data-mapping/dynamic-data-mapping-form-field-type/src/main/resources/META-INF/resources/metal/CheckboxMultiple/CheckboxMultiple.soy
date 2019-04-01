@@ -1,12 +1,11 @@
 {namespace CheckboxMultiple}
 
 {template .render}
-	{@param? id: string}
+	{@param name: string}
 	{@param? inline: bool}
 	{@param? label: string}
 	{@param? options: list<[
 		label: string,
-		name: string,
 		value: string
 	]>}
 	{@param? predefinedValue: list<any>}
@@ -23,6 +22,7 @@
 			{call .content}
 				{param disabled: $readOnly /}
 				{param inline: $inline /}
+				{param name: $name /}
 				{param options: $options /}
 				{param predefinedValue: $predefinedValue /}
 				{param showAsSwitcher: $showAsSwitcher /}
@@ -30,7 +30,6 @@
 			{/call}
 		{/param}
 
-		{param id: $id /}
 		{param label: $label /}
 		{param repeatable: $repeatable /}
 		{param required: $required /}
@@ -41,11 +40,11 @@
 {/template}
 
 {template .content}
+	{@param name: string}
 	{@param? disabled: bool}
 	{@param? inline: bool}
 	{@param? options: list<[
 		label: string,
-		name: string,
 		value: string
 	]>}
 	{@param? predefinedValue: list<any>}
@@ -65,8 +64,14 @@
 				{/let}
 				{if $showAsSwitcher}
 					<div class="lfr-ddm-form-field-checkbox-switch  {if $inline} lfr-ddm-form-field-checkbox-switch-inline {/if}">
-						<label class="simple-toggle-switch toggle-switch">
-							<input class="toggle-switch-check"  {if $isChecked == 'isChecked'}checked{/if} {if $disabled}disabled{/if} type="checkbox"/>
+						<label class="simple-toggle-switch toggle-switch" for="{$name}_{$option.value}">
+							<input
+								class="toggle-switch-check"
+								{if $isChecked == 'isChecked'}checked{/if}
+								{if $disabled}disabled{/if}
+								id="{$name}_{$option.value}"
+								name="{$name}"
+								type="checkbox"/>
 							<span aria-hidden="true" class="toggle-switch-bar">
 								<span class="toggle-switch-handle"></span>
 							</span>
@@ -79,6 +84,7 @@
 						{param disabled: $disabled /}
 						{param inline: $inline /}
 						{param label: $option.label /}
+						{param name: $name /}
 					{/call}
 				{/if}
 			{/for}

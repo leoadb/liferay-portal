@@ -77,16 +77,22 @@
 	<div class="ddm-page-container-layout">
 		{if $activePage == $pageIndex}
 			<div class="ddm-form-page pl-4 pr-4">
-				{call .form}
-					{param _handlePageDescriptionChanged: $_handlePageDescriptionChanged /}
-					{param _handlePageTitleChanged: $_handlePageTitleChanged /}
-					{param contentRenderer: $contentRenderer /}
-					{param descriptionPlaceholder: $descriptionPlaceholder /}
-					{param editable: $editable /}
-					{param page: $page /}
-					{param pageIndex: $pageIndex /}
-					{param titlePlaceholder: $titlePlaceholder /}
-				{/call}
+				{if $editable}
+					{call .editable_page}
+						{param _handlePageDescriptionChanged: $_handlePageDescriptionChanged /}
+						{param _handlePageTitleChanged: $_handlePageTitleChanged /}
+						{param contentRenderer: $contentRenderer /}
+						{param descriptionPlaceholder: $descriptionPlaceholder /}
+						{param editable: $editable /}
+						{param page: $page /}
+						{param pageIndex: $pageIndex /}
+						{param titlePlaceholder: $titlePlaceholder /}
+					{/call}
+				{else}
+					{call .non_editable_page}
+						{param page: $page /}
+					{/call}
+				{/if}
 
 				<div class="form-builder-layout">
 					{delcall PageRenderer.page variant="$contentRenderer"}
@@ -139,7 +145,19 @@
 	</div>
 {/deltemplate}
 
-{template .form}
+{template .non_editable_page}
+	{@param? page: ?}
+
+	{if $page.title}
+		<h3 class="form-builder-page-header-title form-control p-0">{$page.title}</h3>
+	{/if}
+
+	{if $page.description}
+		<h4 class="form-builder-page-header-description form-control p-0">{$page.description}</h4>
+	{/if}
+{/template}
+
+{template .editable_page}
 	{@param? _handlePageDescriptionChanged: any}
 	{@param? _handlePageTitleChanged: any}
 	{@param? descriptionPlaceholder: string}
@@ -371,7 +389,6 @@
 					{let $fieldType: $field.type /}
 
 					{delcall PageRenderer.RegisterFieldType variant="$fieldType" data="$field" allowemptydefault="true"}
-						{param readOnly: true  /}
 						{param events: [
 							'fieldBlurred': $_handleFieldBlurred,
 							'fieldEdited': $_handleFieldEdited

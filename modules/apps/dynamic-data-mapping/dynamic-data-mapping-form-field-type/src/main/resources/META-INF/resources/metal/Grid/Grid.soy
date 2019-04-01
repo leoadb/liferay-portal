@@ -1,10 +1,10 @@
 {namespace Grid}
 
 {template .render}
+	{@param name: string}
 	{@param columns: list<[label: string, value: ?]>}
 	{@param? readOnly: bool}
 	{@param? tip: string}
-	{@param? id: string}
 	{@param? label: string}
 	{@param? placeholder: string}
 	{@param? required: bool}
@@ -18,14 +18,13 @@
 			{call .content}
 				{param columns: $columns/}
 				{param disabled: $readOnly /}
-				{param id: $id /}
+				{param name: $name /}
 				{param placeholder: $placeholder /}
 				{param rows: $rows/}
 			{/call}
 		{/param}
 
 		{param tip: $tip /}
-		{param id: $id /}
 		{param label: $label /}
 		{param repeatable: $repeatable /}
 		{param required: $required /}
@@ -35,6 +34,7 @@
 {/template}
 
 {template .content}
+	{@param name: string}
 	{@param columns: list<[label: string, value: ?]>}
 	{@param rows: list<[label: string, value: ?]>}
 	{@param? disabled: bool}
@@ -54,7 +54,7 @@
 				<tbody>
 					{foreach $row in $rows}
 						{if $row.value}
-							<tr name="{$row.value}">
+							<tr name="{$name}_{$row.value}">
 								<td>{$row.label}</td>
 								{foreach $column in $columns}
 									{if $column.value}
@@ -64,7 +64,7 @@
 											{if $disabled}
 												disabled
 											{/if}
-											name="{$row.value}"
+											name="{$name}_{$row.value}"
 											type="radio"
 											value="{$column.value}"
 										{/let}

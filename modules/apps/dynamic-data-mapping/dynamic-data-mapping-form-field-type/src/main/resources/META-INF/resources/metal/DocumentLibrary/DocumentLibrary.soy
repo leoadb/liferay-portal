@@ -3,7 +3,6 @@
 {template .render}
 	{@param name: string}
 	{@param strings: [select: string]}
-	{@param? id: string}
 	{@param? label: string}
 	{@param? placeholder: string}
 	{@param? readOnly: bool}
@@ -18,7 +17,6 @@
 	{call FieldBase.render}
 		{param contentRenderer kind="html"}
 			{call .content}
-				{param id: $id /}
 				{param name: $name /}
 				{param placeholder: $placeholder /}
 				{param readOnly: $readOnly /}
@@ -28,7 +26,6 @@
 				{param value: $value /}
 			{/call}
 		{/param}
-		{param id: $id /}
 		{param label: $label /}
 		{param repeatable: $repeatable /}
 		{param required: $required /}
@@ -42,7 +39,6 @@
 {template .content}
 	{@param name: string}
 	{@param strings: [select: string]}
-	{@param? id: string}
 	{@param? placeholder: string}
 	{@param? readOnly: bool}
 	{@param? showLabel: bool}
@@ -50,12 +46,8 @@
 	{@param? value: ?}
 
 	{let $attributes kind="attributes"}
-		{if $id}
-			id="{$id}"
-		{/if}
-
+		id="{$name}"
 		name="{$name}"
-
 		type="hidden"
 
 		{if $placeholder}

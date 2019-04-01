@@ -1,8 +1,8 @@
 {namespace Checkbox}
 
 {template .render}
+	{@param name: string}
 	{@param? handleInputChangeEvent: any}
-	{@param? id: string}
 	{@param? label: string}
 	{@param? readOnly: bool}
 	{@param? repeatable: bool}
@@ -11,7 +11,7 @@
 	{@param? showLabel: bool}
 	{@param? spritemap: string}
 	{@param? tip: string}
-	{@param? value: bool}
+	{@param? value: ?}
 
 	{call FieldBase.render}
 		{param contentRenderer kind="html"}
@@ -20,12 +20,12 @@
 				{param checked: $value /}
 				{param disabled: $readOnly /}
 				{param label: $label /}
+				{param name: $name /}
 				{param showAsSwitcher: $showAsSwitcher /}
 				{param showLabel: $showLabel /}
 			{/call}
 		{/param}
 
-		{param id: $id /}
 		{param label: $label /}
 		{param repeatable: $repeatable /}
 		{param required: $required /}
@@ -36,6 +36,7 @@
 {/template}
 
 {template .content}
+	{@param name: string}
 	{@param? checked: bool}
 	{@param? disabled: bool}
 	{@param? handleInputChangeEvent: any}
@@ -44,7 +45,13 @@
 
 	{if $showAsSwitcher}
 		<label class="ddm-toggle-switch toggle-switch">
-			<input {if $checked}checked{/if} class="toggle-switch-check" data-onchange="{$handleInputChangeEvent}" type="checkbox">
+			<input
+				{if $checked}checked{/if}
+				class="toggle-switch-check"
+				data-onchange="{$handleInputChangeEvent}"
+				id="{$name}"
+				name="{$name}"
+				type="checkbox">
 			<span aria-hidden="true" class="toggle-switch-bar">
 				<span class="toggle-switch-handle"></span>
 				<span class="toggle-switch-text toggle-switch-text-right">{$label}</span>
@@ -54,6 +61,7 @@
 		{call ClayCheckbox.render}
 			{param disabled: $disabled /}
 			{param checked: $checked /}
+			{param name: $name /}
 		{/call}
 	{/if}
 {/template}

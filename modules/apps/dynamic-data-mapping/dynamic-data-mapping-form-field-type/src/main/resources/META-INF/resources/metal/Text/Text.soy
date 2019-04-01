@@ -8,7 +8,6 @@
 	{@param? _value: string}
 	{@param? displayStyle: string}
 	{@param? errorMessage: string}
-	{@param? id: string}
 	{@param? label: string}
 	{@param? placeholder: string}
 	{@param? predefinedValue: string}
@@ -27,7 +26,6 @@
 				{param _handleFieldChanged: $_handleFieldChanged /}
 				{param _handleFieldFocused: $_handleFieldFocused /}
 				{param displayStyle: $displayStyle /}
-				{param id: $id /}
 				{param name: $name /}
 				{param placeholder: $placeholder /}
 				{param predefinedValue: $predefinedValue /}
@@ -36,7 +34,6 @@
 			{/call}
 		{/param}
 		{param errorMessage: $errorMessage /}
-		{param id: $id /}
 		{param label: $label /}
 		{param repeatable: $repeatable /}
 		{param required: $required /}
@@ -53,7 +50,6 @@
 	{@param? _handleFieldChanged: any}
 	{@param? _handleFieldFocused: any}
 	{@param? displayStyle: string}
-	{@param? id: string}
 	{@param? placeholder: string}
 	{@param? predefinedValue: string}
 	{@param? readOnly: bool}
@@ -62,31 +58,25 @@
 	{let $attributes kind="attributes"}
 		class="ddm-field-text form-control"
 
-		name="{$name}"
-
-		type="text"
-
-		data-oninput="{$_handleFieldChanged}"
+		data-onblur="{$_handleFieldBlurred}"
 
 		data-onfocus="{$_handleFieldFocused}"
-
-		{if $id}
-			id="{$id}"
-		{/if}
-
-		{if $placeholder}
-			placeholder="{$placeholder}"
-		{/if}
-
-		type="text"
-
-		data-onblur="{$_handleFieldBlurred}"
 
 		data-oninput="{$_handleFieldChanged}"
 
 		{if $readOnly}
 			disabled="disabled"
 		{/if}
+
+		id="{$name}"
+
+		name="{$name}"
+
+		{if $placeholder}
+			placeholder="{$placeholder}"
+		{/if}
+
+		type="text"
 
 		{if $value}
 			value="{$value}"

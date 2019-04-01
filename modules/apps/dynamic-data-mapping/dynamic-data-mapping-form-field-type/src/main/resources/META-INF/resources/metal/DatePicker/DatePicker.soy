@@ -25,7 +25,6 @@
 	{@param? elementClasses: string}
 	{@param? expanded: bool}
 	{@param? firstDayOfWeek: int}
-	{@param? id: string}
 	{@param? label: string}
 	{@param? months: list<?>}
 	{@param? placeholder: string}
@@ -36,7 +35,7 @@
 	{@param? showLabel: bool}
 	{@param? tip: string}
 	{@param? tooltip: string}
-	{@param? value: string}
+	{@param? value: ?}
 	{@param? weekdaysShort: list<string>}
 
 	{call FieldBase.render}
@@ -61,7 +60,6 @@
 				{param elementClasses: $elementClasses /}
 				{param expanded: $expanded /}
 				{param firstDayOfWeek: $firstDayOfWeek /}
-				{param id: $id /}
 				{param months: $months /}
 				{param placeholder: $placeholder /}
 				{param weekdaysShort: $weekdaysShort /}
@@ -73,7 +71,6 @@
 				{param predefinedValue: $predefinedValue /}
 			{/call}
 		{/param}
-		{param id: $id /}
 		{param label: $label /}
 		{param ref: 'base' /}
 		{param repeatable: $repeatable /}
@@ -86,6 +83,7 @@
 {/template}
 
 {template .content}
+	{@param name: string}
 	{@param spritemap: string}
 	{@param years: list<?>}
 	{@param? _daySelected: any}
@@ -105,13 +103,12 @@
 	{@param? elementClasses: string}
 	{@param? expanded: bool}
 	{@param? firstDayOfWeek: int}
-	{@param? id: string}
 	{@param? months: list<?>}
 	{@param? placeholder: string}
 	{@param? readOnly: bool}
 	{@param? weekdaysShort: list<string>}
 	{@param? predefinedValue: string}
-	{@param? value: string}
+	{@param? value: ?}
 
 	{let $attributes kind="attributes"}
 		class="input-group
@@ -119,10 +116,6 @@
 				{sp}{$elementClasses}
 			{/if}
 		"
-
-		{if $id}
-			id="{$id}"
-		{/if}
 	{/let}
 
 	<div {$attributes}>
@@ -136,6 +129,8 @@
 				data-onblur="{$_handleInputBlurred}"
 				data-onclick="{$_handleInputFocused}"
 				data-oninput="{$_handleOnInput}"
+				id={$name}
+				name={$name}
 
 				{if $readOnly}
 					disabled="disabled"

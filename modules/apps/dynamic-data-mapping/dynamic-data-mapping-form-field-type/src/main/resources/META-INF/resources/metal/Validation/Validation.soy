@@ -3,7 +3,6 @@
 {template .render}
 	{@param name: string}
 	{@param? _updateValue: any}
-	{@param? id: string}
 	{@param spritemap: string}
 	{@param? dataType: string}
 	{@param? enableValidation: bool}
@@ -38,7 +37,6 @@
 		{param dataType: $dataType /}
 		{param enableValidation: $enableValidation /}
 		{param errorMessage: $errorMessage /}
-		{param id: $id /}
 		{param label: $label /}
 		{param name: $name /}
 		{param parameterMessage: $parameterMessage /}
@@ -88,6 +86,7 @@
 				'fieldEdited': $_updateValue
 			] /}
 			{param label: $label /}
+			{param name: $name + '_enableValidation' /}
 			{param ref: 'enableValidation' /}
 			{param showAsSwitcher: true /}
 			{param spritemap: $spritemap /}
@@ -100,8 +99,10 @@
 				'fieldEdited': $_updateValue
 			] /}
 			{param label: $strings.ifInput /}
+			{param name: $name /}
 			{param options: $validations /}
 			{param placeholder: $strings?.chooseAnOption /}
+			{param predefinedValue: null /}
 			{param ref: 'selectedValidation' /}
 			{param spritemap: $spritemap /}
 			{param strings: [
