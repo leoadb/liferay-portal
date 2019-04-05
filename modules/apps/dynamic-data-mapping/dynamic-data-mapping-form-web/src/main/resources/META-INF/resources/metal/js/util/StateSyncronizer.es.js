@@ -58,23 +58,34 @@ class StateSyncronizer extends Component {
 	}
 
 	syncInputs() {
-		const {namespace, settingsDDMForm} = this.props;
+		const {namespace, published, settingsDDMForm} = this.props;
 		const state = this.getState();
 		const {
 			description,
 			name
 		} = state;
 
-		const publishedField = settingsDDMForm.getField('published');
+		const settingsPageVisitor = new PagesVisitor(settingsDDMForm.pages);
 
-		publishedField.set('value', this.props.published);
-
-		const settings = settingsDDMForm.get('context');
+		const settingsPages = settingsPageVisitor.mapFields(
+			field => {
+				if (field.fieldName === 'published') {
+					return {
+						...field,
+						value: published
+					};
+				}
+			}
+		);
 
 		document.querySelector(`#${namespace}name`).value = JSON.stringify(name);
 		document.querySelector(`#${namespace}description`).value = JSON.stringify(description);
 		document.querySelector(`#${namespace}serializedFormBuilderContext`).value = this._getSerializedFormBuilderContext();
-		document.querySelector(`#${namespace}serializedSettingsContext`).value = JSON.stringify(settings);
+		document.querySelector(`#${namespace}serializedSettingsContext`).value = JSON.stringify(
+			{
+				'pages': settingsPages
+			}
+		);
 	}
 
 	_getSerializedFormBuilderContext() {
