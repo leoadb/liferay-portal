@@ -228,15 +228,6 @@ public class DDMFormDisplayContext {
 			ddmFormRenderingContext.setDDMFormValues(mergedDDMFormValues);
 		}
 
-		boolean showSubmitButton = isShowSubmitButton();
-
-		ddmFormRenderingContext.setShowSubmitButton(showSubmitButton);
-
-		String submitLabel = getSubmitLabel(
-			ddmFormInstance, ddmFormRenderingContext.getLocale());
-
-		ddmFormRenderingContext.setSubmitLabel(submitLabel);
-
 		if (!hasAddFormInstanceRecordPermission()) {
 			ddmFormRenderingContext.setReadOnly(true);
 		}
@@ -310,6 +301,29 @@ public class DDMFormDisplayContext {
 			ddmFormInstance.getSettingsModel();
 
 		return ddmFormInstanceSettings.redirectURL();
+	}
+
+	public String getSubmitLabel() throws PortalException {
+		DDMForm ddmForm = getDDMForm();
+
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(
+			_renderRequest);
+
+		ResourceBundle resourceBundle = getResourceBundle(
+			getLocale(request, ddmForm));
+
+		DDMFormInstance ddmFormInstance = getFormInstance();
+
+		ThemeDisplay themeDisplay = getThemeDisplay();
+
+		boolean workflowEnabled = hasWorkflowEnabled(
+			ddmFormInstance, themeDisplay);
+
+		if (workflowEnabled) {
+			return LanguageUtil.get(resourceBundle, "submit-for-publication");
+		}
+
+		return LanguageUtil.get(resourceBundle, "submit-form");
 	}
 
 	public boolean hasAddFormInstanceRecordPermission() throws PortalException {
@@ -431,6 +445,16 @@ public class DDMFormDisplayContext {
 			getPortletId(), ActionKeys.CONFIGURATION);
 
 		return _showConfigurationIcon;
+	}
+
+	public boolean isShowSubmitButton() {
+		boolean preview = ParamUtil.getBoolean(_renderRequest, "preview");
+
+		if (preview) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public boolean isShowSuccessPage() throws PortalException {
@@ -645,23 +669,6 @@ public class DDMFormDisplayContext {
 			moduleResourceBundle, portalResourceBundle);
 	}
 
-	protected String getSubmitLabel(
-		DDMFormInstance ddmFormInstance, Locale locale) {
-
-		ThemeDisplay themeDisplay = getThemeDisplay();
-
-		boolean workflowEnabled = hasWorkflowEnabled(
-			ddmFormInstance, themeDisplay);
-
-		ResourceBundle resourceBundle = getResourceBundle(locale);
-
-		if (workflowEnabled) {
-			return LanguageUtil.get(resourceBundle, "submit-for-publication");
-		}
-
-		return LanguageUtil.get(resourceBundle, "submit-form");
-	}
-
 	protected ThemeDisplay getThemeDisplay() {
 		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -744,16 +751,6 @@ public class DDMFormDisplayContext {
 		String urlCurrent = themeDisplay.getURLCurrent();
 
 		return urlCurrent.contains("/shared");
-	}
-
-	protected boolean isShowSubmitButton() {
-		boolean preview = ParamUtil.getBoolean(_renderRequest, "preview");
-
-		if (preview) {
-			return false;
-		}
-
-		return true;
 	}
 
 	private static final String _DDM_FORM_FIELD_NAME_CAPTCHA = "_CAPTCHA_";
