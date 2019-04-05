@@ -134,7 +134,7 @@ renderResponse.setTitle((structure == null) ? LanguageUtil.get(request, "new-ele
 		/>
 
 		<div class="hide">
-			<%= request.getAttribute(DDMWebKeys.DYNAMIC_DATA_MAPPING_FORM_HTML) %>
+			<%= ddmFormAdminDisplayContext.serializeSettingsForm() %>
 		</div>
 
 		<aui:script use="aui-promise,liferay-ddm-form-portlet">
