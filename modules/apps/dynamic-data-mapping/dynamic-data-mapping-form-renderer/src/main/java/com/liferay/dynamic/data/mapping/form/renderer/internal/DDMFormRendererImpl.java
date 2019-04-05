@@ -150,22 +150,9 @@ public class DDMFormRendererImpl implements DDMFormRenderer {
 		return ddmFormTemplateContext;
 	}
 
-	protected String render(Template template, String namespace)
-		throws TemplateException {
-
-		Writer writer = new UnsyncStringWriter();
-
-		template.put(TemplateConstants.NAMESPACE, namespace);
-		template.put(TemplateConstants.RENDER_STRICT, Boolean.FALSE);
-
-		template.processTemplate(writer);
-
-		return writer.toString();
-	}
-
 	private static final String _MODULE_NAME =
 		"dynamic-data-mapping-form-builder/metal/js/components/Form" +
-			"/FormRenderer.es";
+			"/FormRendererWithProvider.es";
 
 	private static final String _TEMPLATE_NAMESPACE = "FormRenderer.render";
 
