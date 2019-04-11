@@ -30,6 +30,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
+import com.liferay.portal.kernel.exception.RequiredLayoutException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -64,6 +65,11 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 		_modelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(), dataLayoutId,
 			ActionKeys.DELETE);
+
+		if (dataLayoutId == null) {
+			throw new RequiredLayoutException(
+				RequiredLayoutException.AT_LEAST_ONE);
+		}
 
 		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(dataLayoutId);
 	}
