@@ -218,7 +218,7 @@ public class DataLayoutRenderer {
 				soyDataFactory);
 
 			if (fieldType != null) {
-				fieldTypeContexts.add(fieldType.createContext());
+				fieldTypeContexts.add(fieldType.includeContext());
 			}
 		}
 

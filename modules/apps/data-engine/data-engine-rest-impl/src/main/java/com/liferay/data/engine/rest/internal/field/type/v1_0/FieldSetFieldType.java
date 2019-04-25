@@ -17,6 +17,7 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertyUtil;
 import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
+import com.liferay.data.engine.spi.field.type.SPIDataDefinitionField;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.template.soy.data.SoyDataFactory;
@@ -48,7 +49,12 @@ public class FieldSetFieldType extends SPIBaseFieldType {
 	}
 
 	@Override
-	protected void addContext(Map<String, Object> context) {
+	protected void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
 		Map<String, List<Object>> map = CustomPropertyUtil.getMap(
 			dataDefinitionField.getCustomProperties(), "nestedFields");
 

@@ -26,13 +26,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface FieldType {
 
-	public Map<String, Object> createContext(
+	public SPIDataDefinitionField deserialize(JSONObject jsonObject)
+		throws Exception;
+
+	public Map<String, Object> includeContext(
 		SPIDataDefinitionField spiDataDefinitionField,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse);
-
-	public SPIDataDefinitionField deserialize(JSONObject jsonObject)
-		throws Exception;
 
 	public JSONObject toJSONObject(
 			SPIDataDefinitionField spiDataDefinitionField)

@@ -76,7 +76,12 @@ public class CheckboxFieldType extends SPIBaseFieldType {
 	}
 
 	@Override
-	protected void addContext(Map<String, Object> context) {
+	protected void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
 		context.put(
 			"predefinedValue",
 			LocalizedValueUtil.getLocalizedValue(

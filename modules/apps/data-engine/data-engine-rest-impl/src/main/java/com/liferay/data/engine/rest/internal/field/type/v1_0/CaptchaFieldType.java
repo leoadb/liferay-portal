@@ -48,7 +48,12 @@ public class CaptchaFieldType extends SPIBaseFieldType {
 	}
 
 	@Override
-	protected void addContext(Map<String, Object> context) {
+	protected void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
 		String html = StringPool.BLANK;
 
 		try {
