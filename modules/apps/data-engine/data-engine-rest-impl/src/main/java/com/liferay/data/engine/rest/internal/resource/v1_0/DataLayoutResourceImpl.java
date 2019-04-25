@@ -30,7 +30,6 @@ import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
-import com.liferay.portal.kernel.exception.RequiredLayoutException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -46,6 +45,10 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
+
+import javax.ws.rs.BadRequestException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -67,11 +70,29 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 			ActionKeys.DELETE);
 
 		if (dataLayoutId == null) {
-			throw new RequiredLayoutException(
-				RequiredLayoutException.AT_LEAST_ONE);
+			throw new BadRequestException("Missing data layout id");
 		}
 
 		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(dataLayoutId);
+	}
+
+	@Override
+	public Page<DataLayout> getDataDefinitionDataLayoutsPage(
+			@NotNull Long dataDefinitionId, Pagination pagination)
+		throws Exception {
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			dataDefinitionId);
+
+		return Page.of(
+			transform(
+				_ddmStructureLayoutLocalService.getStructureLayouts(
+					ddmStructure.getGroupId(), pagination.getStartPosition(),
+					pagination.getEndPosition()),
+				this::_toDataLayout),
+			pagination,
+			_ddmStructureLayoutLocalService.getStructureLayoutsCount(
+				ddmStructure.getGroupId()));
 	}
 
 	@Override
