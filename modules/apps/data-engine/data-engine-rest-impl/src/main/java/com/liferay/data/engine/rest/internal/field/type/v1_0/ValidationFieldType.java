@@ -16,6 +16,7 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertyUtil;
+import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -33,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Gabriel Albuquerque
  */
-public class ValidationFieldType extends BaseFieldType {
+public class ValidationFieldType extends SPIBaseFieldType {
 
 	public ValidationFieldType(
 		DataDefinitionField dataDefinitionField,

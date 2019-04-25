@@ -17,6 +17,7 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertyUtil;
+import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.template.soy.data.SoyDataFactory;
@@ -30,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Gabriel Albuquerque
  */
-public class KeyValueFieldType extends BaseFieldType {
+public class KeyValueFieldType extends SPIBaseFieldType {
 
 	public KeyValueFieldType(
 		DataDefinitionField dataDefinitionField,
