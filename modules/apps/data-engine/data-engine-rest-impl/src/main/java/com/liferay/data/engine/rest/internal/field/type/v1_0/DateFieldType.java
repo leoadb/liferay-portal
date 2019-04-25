@@ -16,6 +16,7 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.LocalizedValueUtil;
+import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.template.soy.data.SoyDataFactory;
 
@@ -27,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Marcela Cunha
  */
-public class DateFieldType extends BaseFieldType {
+public class DateFieldType extends SPIBaseFieldType {
 
 	public DateFieldType(
 		DataDefinitionField dataDefinitionField,

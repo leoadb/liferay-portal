@@ -18,6 +18,7 @@ import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertyUtil;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.DataFieldOptionUtil;
+import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -35,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Gabriel Albuquerque
  */
-public class RadioFieldType extends BaseFieldType {
+public class RadioFieldType extends SPIBaseFieldType {
 
 	public RadioFieldType(
 		DataDefinitionField dataDefinitionField,

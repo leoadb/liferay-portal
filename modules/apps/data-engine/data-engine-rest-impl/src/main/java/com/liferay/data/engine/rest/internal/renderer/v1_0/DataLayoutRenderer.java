@@ -28,7 +28,7 @@ import com.liferay.data.engine.rest.internal.field.type.v1_0.CheckboxFieldType;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.CheckboxMultipleFieldType;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.DateFieldType;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.EditorFieldType;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.FieldType;
+import com.liferay.data.engine.spi.field.type.SPIFieldType;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
@@ -213,7 +213,7 @@ public class DataLayoutRenderer {
 			DataDefinitionField dataDefinitionField = dataDefinitionFields.get(
 				fieldName);
 
-			FieldType fieldType = _getFieldType(
+			SPIFieldType fieldType = _getFieldType(
 				dataDefinitionField, httpServletRequest, httpServletResponse,
 				soyDataFactory);
 
@@ -237,7 +237,7 @@ public class DataLayoutRenderer {
 			Collectors.toMap(field -> field.getName(), Function.identity()));
 	}
 
-	private static FieldType _getFieldType(
+	private static SPIFieldType _getFieldType(
 		DataDefinitionField dataDefinitionField,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse, SoyDataFactory soyFactory) {
