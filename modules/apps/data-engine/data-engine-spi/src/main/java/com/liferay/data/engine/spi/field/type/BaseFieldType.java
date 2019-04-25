@@ -37,57 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class BaseFieldType implements FieldType {
 
 	@Override
-	public Map<String, Object> createContext(
-		SPIDataDefinitionField spiDataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) {
-
-		Map<String, Object> context = new HashMap<>();
-
-		context.put(
-			"dir",
-			LanguageUtil.get(httpServletRequest, LanguageConstants.KEY_DIR));
-		context.put("indexable", spiDataDefinitionField.getIndexable());
-		context.put(
-			"label",
-			MapUtil.getString(
-				spiDataDefinitionField.getLabel(),
-				LocaleUtil.toLanguageId(httpServletRequest.getLocale())));
-		context.put("localizable", spiDataDefinitionField.getLocalizable());
-		context.put("name", spiDataDefinitionField.getName());
-		context.put(
-			"readOnly",
-			MapUtil.getBoolean(
-				spiDataDefinitionField.getCustomProperties(), "readOnly",
-				false));
-		context.put("repeatable", spiDataDefinitionField.getRepeatable());
-		context.put(
-			"required",
-			MapUtil.getBoolean(
-				spiDataDefinitionField.getCustomProperties(), "required",
-				false));
-		context.put(
-			"showLabel",
-			MapUtil.getBoolean(
-				spiDataDefinitionField.getCustomProperties(), "showLabel",
-				true));
-		context.put(
-			"tip",
-			MapUtil.getString(
-				spiDataDefinitionField.getTip(),
-				LocaleUtil.toLanguageId(httpServletRequest.getLocale())));
-		context.put("type", spiDataDefinitionField.getFieldType());
-		context.put(
-			"visible",
-			MapUtil.getBoolean(
-				spiDataDefinitionField.getCustomProperties(), "visible", true));
-
-		addContext(context);
-
-		return context;
-	}
-
-	@Override
 	public SPIDataDefinitionField deserialize(JSONObject jsonObject)
 		throws Exception {
 
@@ -137,6 +86,59 @@ public abstract class BaseFieldType implements FieldType {
 	}
 
 	@Override
+	public Map<String, Object> includeContext(
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		Map<String, Object> context = new HashMap<>();
+
+		context.put(
+			"dir",
+			LanguageUtil.get(httpServletRequest, LanguageConstants.KEY_DIR));
+		context.put("indexable", spiDataDefinitionField.getIndexable());
+		context.put(
+			"label",
+			MapUtil.getString(
+				spiDataDefinitionField.getLabel(),
+				LocaleUtil.toLanguageId(httpServletRequest.getLocale())));
+		context.put("localizable", spiDataDefinitionField.getLocalizable());
+		context.put("name", spiDataDefinitionField.getName());
+		context.put(
+			"readOnly",
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(), "readOnly",
+				false));
+		context.put("repeatable", spiDataDefinitionField.getRepeatable());
+		context.put(
+			"required",
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(), "required",
+				false));
+		context.put(
+			"showLabel",
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(), "showLabel",
+				true));
+		context.put(
+			"tip",
+			MapUtil.getString(
+				spiDataDefinitionField.getTip(),
+				LocaleUtil.toLanguageId(httpServletRequest.getLocale())));
+		context.put("type", spiDataDefinitionField.getFieldType());
+		context.put(
+			"visible",
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(), "visible", true));
+
+		includeContext(
+			context, spiDataDefinitionField, httpServletRequest,
+			httpServletResponse);
+
+		return context;
+	}
+
+	@Override
 	public JSONObject toJSONObject(
 			SPIDataDefinitionField spiDataDefinitionField)
 		throws Exception {
@@ -176,6 +178,10 @@ public abstract class BaseFieldType implements FieldType {
 		);
 	}
 
-	protected abstract void addContext(Map<String, Object> context);
+	protected abstract void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse);
 
 }

@@ -17,6 +17,7 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertyUtil;
 import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
+import com.liferay.data.engine.spi.field.type.SPIDataDefinitionField;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -121,7 +122,12 @@ public class DocumentLibraryFieldType extends SPIBaseFieldType {
 	}
 
 	@Override
-	protected void addContext(Map<String, Object> context) {
+	protected void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
 		if (!StringUtils.isEmpty(
 				CustomPropertyUtil.getString(
 					dataDefinitionField.getCustomProperties(), "value"))) {

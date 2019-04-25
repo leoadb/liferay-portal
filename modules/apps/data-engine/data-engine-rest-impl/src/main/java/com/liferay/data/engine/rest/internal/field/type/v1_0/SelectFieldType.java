@@ -19,6 +19,7 @@ import com.liferay.data.engine.rest.internal.dto.v1_0.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertyUtil;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.DataFieldOptionUtil;
 import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
+import com.liferay.data.engine.spi.field.type.SPIDataDefinitionField;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.template.soy.data.SoyDataFactory;
@@ -96,7 +97,12 @@ public class SelectFieldType extends SPIBaseFieldType {
 	}
 
 	@Override
-	protected void addContext(Map<String, Object> context) {
+	protected void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
 		context.put(
 			"dataSourceType",
 			CustomPropertyUtil.getString(
