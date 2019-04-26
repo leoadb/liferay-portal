@@ -88,6 +88,22 @@ public class CustomPropertyUtil {
 		return Collections.emptyList();
 	}
 
+	public static List<DataFieldOption> getDataFieldOptions(
+		Map<String, Object> customProperties, String key) {
+
+		if (customProperties.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		for (Map.Entry<String, Object> entry : customProperties.entrySet()) {
+			if (StringUtils.equals(key, entry.getKey())) {
+				return (List<DataFieldOption>)entry.getValue();
+			}
+		}
+
+		return Collections.emptyList();
+	}
+
 	public static LocalizedValue[] getLocalizedValue(
 		CustomProperty[] customProperties, String key) {
 
@@ -134,6 +150,22 @@ public class CustomPropertyUtil {
 		return Collections.emptyMap();
 	}
 
+	public static <K, V> Map<K, V> getMap(
+		Map<String, Object> customProperties, String key) {
+
+		if (customProperties.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
+		for (Map.Entry<String, Object> entry : customProperties.entrySet()) {
+			if (StringUtils.equals(key, entry.getKey())) {
+				return (Map<K, V>)entry.getValue();
+			}
+		}
+
+		return Collections.emptyMap();
+	}
+
 	public static String getString(
 		CustomProperty[] customProperties, String key) {
 
@@ -156,8 +188,47 @@ public class CustomPropertyUtil {
 		return defaultValue;
 	}
 
+	public static String getString(
+		Map<String, Object> customProperties, String key) {
+
+		return getString(customProperties, key, StringPool.BLANK);
+	}
+
+	public static String getString(
+		Map<String, Object> customProperties, String key, String defaultValue) {
+
+		if (customProperties.isEmpty()) {
+			return defaultValue;
+		}
+
+		for (Map.Entry<String, Object> entry : customProperties.entrySet()) {
+			if (StringUtils.equals(key, entry.getKey())) {
+				return GetterUtil.getString(entry.getValue());
+			}
+		}
+
+		return defaultValue;
+	}
+
 	public static List<String> getValues(
 		CustomProperty[] customProperties, String key) {
+
+		String json = getString(customProperties, key, "[]");
+
+		JSONArray jsonArray = null;
+
+		try {
+			jsonArray = JSONFactoryUtil.createJSONArray(json);
+		}
+		catch (JSONException jsone) {
+			jsonArray = JSONFactoryUtil.createJSONArray();
+		}
+
+		return JSONUtil.toStringList(jsonArray);
+	}
+
+	public static List<String> getValues(
+		Map<String, Object> customProperties, String key) {
 
 		String json = getString(customProperties, key, "[]");
 
@@ -187,6 +258,20 @@ public class CustomPropertyUtil {
 		}
 
 		return jsonObject;
+	}
+
+	public static Map<String, Object> toMap(CustomProperty[] customProperties) {
+		if (ArrayUtil.isEmpty(customProperties)) {
+			return Collections.emptyMap();
+		}
+
+		Map<String, Object> map = new HashMap<>();
+
+		for (CustomProperty customProperty : customProperties) {
+			map.put(customProperty.getKey(), customProperty.getValue());
+		}
+
+		return map;
 	}
 
 	public static Map<String, String> toMap(JSONObject jsonObject) {
