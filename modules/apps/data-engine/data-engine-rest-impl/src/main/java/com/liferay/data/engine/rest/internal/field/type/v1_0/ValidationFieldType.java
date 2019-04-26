@@ -14,9 +14,9 @@
 
 package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
-import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertyUtil;
-import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
+import com.liferay.data.engine.spi.field.type.BaseFieldType;
+import com.liferay.data.engine.spi.field.type.FieldType;
 import com.liferay.data.engine.spi.field.type.SPIDataDefinitionField;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.template.soy.data.SoyDataFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,21 +31,22 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Gabriel Albuquerque
  */
-public class ValidationFieldType extends SPIBaseFieldType {
-
-	public ValidationFieldType(
-		DataDefinitionField dataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
-
-		super(
-			dataDefinitionField, httpServletRequest, httpServletResponse,
-			soyDataFactory);
-	}
+@Component(
+	immediate = true,
+	property = {
+		"data.engine.field.type.icon=icon-font",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Validation/Validation.es",
+		"data.engine.field.type.name=validation",
+		"data.engine.field.type.system=true"
+	},
+	service = FieldType.class
+)
+public class ValidationFieldType extends BaseFieldType {
 
 	@Override
 	protected void includeContext(
@@ -55,16 +55,18 @@ public class ValidationFieldType extends SPIBaseFieldType {
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		context.put("value", _getValue());
+		context.put("value", _getValue(spiDataDefinitionField));
 	}
 
-	private Map<String, String> _getValue() {
+	private Map<String, String> _getValue(
+		SPIDataDefinitionField spiDataDefinitionField) {
+
 		Map<String, String> value = new HashMap();
 
 		try {
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 				CustomPropertyUtil.getString(
-					dataDefinitionField.getCustomProperties(), "value"));
+					spiDataDefinitionField.getCustomProperties(), "value"));
 
 			value.put("errorMessage", jsonObject.getString("errorMessage"));
 			value.put("expression", jsonObject.getString("expression"));
