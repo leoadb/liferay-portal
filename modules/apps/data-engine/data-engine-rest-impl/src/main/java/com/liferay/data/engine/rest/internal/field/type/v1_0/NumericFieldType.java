@@ -14,17 +14,18 @@
 
 package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
-import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
-import com.liferay.data.engine.rest.internal.dto.v1_0.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertyUtil;
-import com.liferay.data.engine.spi.field.type.SPIBaseFieldType;
+import com.liferay.data.engine.spi.field.type.BaseFieldType;
+import com.liferay.data.engine.spi.field.type.FieldType;
 import com.liferay.data.engine.spi.field.type.SPIDataDefinitionField;
+import com.liferay.data.engine.spi.field.type.util.LocalizedValueUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.template.soy.data.SoyDataFactory;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -35,71 +36,82 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Gabriel Albuquerque
  */
-public class NumericFieldType extends SPIBaseFieldType {
-
-	public NumericFieldType(
-		DataDefinitionField dataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
-
-		super(
-			dataDefinitionField, httpServletRequest, httpServletResponse,
-			soyDataFactory);
-	}
+@Component(
+	immediate = true,
+	property = {
+		"data.engine.field.type.data.domain=number",
+		"data.engine.field.type.description=numeric-field-type-description",
+		"data.engine.field.type.display.order:Integer=8",
+		"data.engine.field.type.group=customized",
+		"data.engine.field.type.icon=caret-double",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Numeric/Numeric.es",
+		"data.engine.field.type.label=numeric-field-type-label",
+		"data.engine.field.type.name=numeric"
+	},
+	service = FieldType.class
+)
+public class NumericFieldType extends BaseFieldType {
 
 	@Override
-	public DataDefinitionField deserialize(JSONObject jsonObject)
+	public SPIDataDefinitionField deserialize(JSONObject jsonObject)
 		throws Exception {
 
-		DataDefinitionField dataDefinitionField = super.deserialize(jsonObject);
+		SPIDataDefinitionField spiDataDefinitionField = super.deserialize(
+			jsonObject);
 
-		dataDefinitionField.setCustomProperties(
-			CustomPropertyUtil.add(
-				dataDefinitionField.getCustomProperties(), "dataType",
-				jsonObject.getString("dataType")));
-		dataDefinitionField.setCustomProperties(
-			CustomPropertyUtil.add(
-				dataDefinitionField.getCustomProperties(), "placeholder",
-				LocalizedValueUtil.toLocalizedValues(
-					jsonObject.getJSONObject("placeholder"))));
-		dataDefinitionField.setCustomProperties(
-			CustomPropertyUtil.add(
-				dataDefinitionField.getCustomProperties(), "predefinedValue",
-				LocalizedValueUtil.toLocalizedValues(
-					jsonObject.getJSONObject("predefinedValue"))));
-		dataDefinitionField.setCustomProperties(
-			CustomPropertyUtil.add(
-				dataDefinitionField.getCustomProperties(), "tooltip",
-				LocalizedValueUtil.toLocalizedValues(
-					jsonObject.getJSONObject("tooltip"))));
+		Map<String, Object> customProperties =
+			spiDataDefinitionField.getCustomProperties();
 
-		return dataDefinitionField;
+		customProperties.put("dataType", jsonObject.getString("dataType"));
+		customProperties.put(
+			"placeholder",
+			LocalizedValueUtil.toLocalizationMap(
+				jsonObject.getJSONObject("placeholder")));
+		customProperties.put(
+			"predefinedValue",
+			LocalizedValueUtil.toLocalizationMap(
+				jsonObject.getJSONObject("predefinedValue")));
+		customProperties.put(
+			"tooltip",
+			LocalizedValueUtil.toLocalizationMap(
+				jsonObject.getJSONObject("tooltip")));
+
+		return spiDataDefinitionField;
 	}
 
 	@Override
-	public JSONObject toJSONObject() throws Exception {
-		JSONObject jsonObject = super.toJSONObject();
+	public JSONObject toJSONObject(
+			SPIDataDefinitionField spiDataDefinitionField)
+		throws Exception {
+
+		JSONObject jsonObject = super.toJSONObject(spiDataDefinitionField);
 
 		jsonObject.put(
 			"dataType",
-			CustomPropertyUtil.getString(
-				dataDefinitionField.getCustomProperties(), "dataType")
+			MapUtil.getString(
+				spiDataDefinitionField.getCustomProperties(), "dataType")
 		).put(
 			"placeholder",
-			CustomPropertyUtil.getLocalizedValue(
-				dataDefinitionField.getCustomProperties(), "placeholder")
+			LocalizedValueUtil.toJSONObject(
+				CustomPropertyUtil.getMap(
+					spiDataDefinitionField.getCustomProperties(),
+					"placeholder"))
 		).put(
 			"predefinedValue",
-			CustomPropertyUtil.getLocalizedValue(
-				dataDefinitionField.getCustomProperties(), "predefinedValue")
+			LocalizedValueUtil.toJSONObject(
+				CustomPropertyUtil.getMap(
+					spiDataDefinitionField.getCustomProperties(),
+					"predefinedValue"))
 		).put(
 			"tooltip",
-			CustomPropertyUtil.getLocalizedValue(
-				dataDefinitionField.getCustomProperties(), "tooltip")
+			LocalizedValueUtil.toJSONObject(
+				CustomPropertyUtil.getMap(
+					spiDataDefinitionField.getCustomProperties(), "tooltip"))
 		);
 
 		return jsonObject;
@@ -114,50 +126,58 @@ public class NumericFieldType extends SPIBaseFieldType {
 
 		context.put(
 			"dataType",
-			CustomPropertyUtil.getString(
-				dataDefinitionField.getCustomProperties(), "dataType",
+			MapUtil.getString(
+				spiDataDefinitionField.getCustomProperties(), "dataType",
 				"decimal"));
 		context.put(
 			"placeholder",
-			LocalizedValueUtil.getLocalizedValue(
-				httpServletRequest.getLocale(),
-				CustomPropertyUtil.getLocalizedValue(
-					dataDefinitionField.getCustomProperties(), "placeholder")));
+			MapUtil.getString(
+				CustomPropertyUtil.getMap(
+					spiDataDefinitionField.getCustomProperties(),
+					"placeholder"),
+				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"predefinedValue",
 			_format(
-				LocalizedValueUtil.getLocalizedValue(
-					httpServletRequest.getLocale(),
-					CustomPropertyUtil.getLocalizedValue(
-						dataDefinitionField.getCustomProperties(),
-						"predefinedValue"))));
-		context.put("symbols", _getSymbols());
+				MapUtil.getString(
+					CustomPropertyUtil.getMap(
+						spiDataDefinitionField.getCustomProperties(),
+						"predefinedValue"),
+					LanguageUtil.getLanguageId(httpServletRequest)),
+				httpServletRequest));
+		context.put("symbols", _getSymbols(httpServletRequest));
 		context.put(
 			"tooltip",
-			LocalizedValueUtil.getLocalizedValue(
-				httpServletRequest.getLocale(),
-				CustomPropertyUtil.getLocalizedValue(
-					dataDefinitionField.getCustomProperties(), "tooltip")));
+			MapUtil.getString(
+				CustomPropertyUtil.getMap(
+					spiDataDefinitionField.getCustomProperties(),
+					"placeholder"),
+				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"value",
 			_format(
-				CustomPropertyUtil.getString(
-					dataDefinitionField.getCustomProperties(), "value")));
+				MapUtil.getString(
+					spiDataDefinitionField.getCustomProperties(), "value"),
+				httpServletRequest));
 	}
 
-	private String _format(Object value) {
+	private String _format(
+		Object value, HttpServletRequest httpServletRequest) {
+
 		if (Validator.isNull(value) ||
 			StringUtil.equals((String)value, "NaN")) {
 
 			return StringPool.BLANK;
 		}
 
-		DecimalFormat decimalFormat = _getDecimalFormat();
+		DecimalFormat decimalFormat = _getDecimalFormat(httpServletRequest);
 
 		return decimalFormat.format(GetterUtil.getNumber(value));
 	}
 
-	private DecimalFormat _getDecimalFormat() {
+	private DecimalFormat _getDecimalFormat(
+		HttpServletRequest httpServletRequest) {
+
 		DecimalFormat decimalFormat = (DecimalFormat)DecimalFormat.getInstance(
 			httpServletRequest.getLocale());
 
@@ -168,8 +188,10 @@ public class NumericFieldType extends SPIBaseFieldType {
 		return decimalFormat;
 	}
 
-	private Map<String, String> _getSymbols() {
-		DecimalFormat decimalFormat = _getDecimalFormat();
+	private Map<String, String> _getSymbols(
+		HttpServletRequest httpServletRequest) {
+
+		DecimalFormat decimalFormat = _getDecimalFormat(httpServletRequest);
 
 		DecimalFormatSymbols decimalFormatSymbols =
 			decimalFormat.getDecimalFormatSymbols();
