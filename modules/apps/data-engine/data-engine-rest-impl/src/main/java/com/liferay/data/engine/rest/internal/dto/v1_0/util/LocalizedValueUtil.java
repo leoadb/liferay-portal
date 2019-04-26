@@ -135,4 +135,19 @@ public class LocalizedValueUtil {
 			new LocalizedValue[localizationMap.size()]);
 	}
 
+	public static <K, V> Map<K, V> toMap(LocalizedValue[] localizedValues) {
+		if (ArrayUtil.isEmpty(localizedValues)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, V> localizationMap = new HashMap<>();
+
+		for (LocalizedValue localizedValue : localizedValues) {
+			localizationMap.put(
+				(K)localizedValue.getKey(), (V)localizedValue.getValue());
+		}
+
+		return localizationMap;
+	}
+
 }
