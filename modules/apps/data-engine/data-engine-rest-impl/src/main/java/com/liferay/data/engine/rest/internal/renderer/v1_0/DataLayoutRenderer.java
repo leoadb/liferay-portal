@@ -20,15 +20,12 @@ import com.liferay.data.engine.rest.dto.v1_0.DataLayout;
 import com.liferay.data.engine.rest.dto.v1_0.DataLayoutColumn;
 import com.liferay.data.engine.rest.dto.v1_0.DataLayoutPage;
 import com.liferay.data.engine.rest.dto.v1_0.DataLayoutRow;
+import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataDefinitionFieldUtil;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataLayoutUtil;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.LocalizedValueUtil;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.CaptchaFieldType;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.CheckboxFieldType;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.CheckboxMultipleFieldType;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.DateFieldType;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.EditorFieldType;
-import com.liferay.data.engine.spi.field.type.SPIFieldType;
+import com.liferay.data.engine.spi.field.type.FieldType;
+import com.liferay.data.engine.spi.field.type.FieldTypeTracker;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
@@ -38,7 +35,6 @@ import com.liferay.portal.kernel.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.template.soy.data.SoyDataFactory;
 import com.liferay.portal.template.soy.renderer.ComponentDescriptor;
 import com.liferay.portal.template.soy.renderer.SoyComponentRenderer;
 
@@ -56,8 +52,6 @@ import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * @author Marcela Cunha
  */
@@ -67,10 +61,10 @@ public class DataLayoutRenderer {
 			Long dataLayoutId,
 			DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
 			DDMStructureVersionLocalService ddmStructureVersionLocalService,
+			FieldTypeTracker fieldTypeTracker,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, NPMResolver npmResolver,
-			SoyComponentRenderer soyComponentRenderer,
-			SoyDataFactory soyDataFactory)
+			SoyComponentRenderer soyComponentRenderer)
 		throws Exception {
 
 		Writer writer = new UnsyncStringWriter();
@@ -96,8 +90,8 @@ public class DataLayoutRenderer {
 				_getDataDefinitionFieldsMap(
 					DataDefinitionUtil.toDataDefinition(
 						ddmStructureVersion.getStructure())),
-				dataLayout.getDataLayoutPages(), httpServletRequest,
-				httpServletResponse, soyDataFactory));
+				dataLayout.getDataLayoutPages(), fieldTypeTracker,
+				httpServletRequest, httpServletResponse));
 
 		context.put("paginationMode", dataLayout.getPaginationMode());
 
@@ -120,7 +114,7 @@ public class DataLayoutRenderer {
 		DataLayoutColumn[] dataLayoutColumns,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
+		FieldTypeTracker fieldTypeTracker) {
 
 		List<Object> dataLayoutColumnContexts = new ArrayList<>();
 
@@ -131,7 +125,7 @@ public class DataLayoutRenderer {
 				"fields",
 				_createFieldTypeContexts(
 					dataDefinitionFields, dataLayoutColumn.getFieldNames(),
-					httpServletRequest, httpServletResponse, soyDataFactory));
+					fieldTypeTracker, httpServletRequest, httpServletResponse));
 			dataLayoutColumnsContext.put(
 				"size", dataLayoutColumn.getColumnSize());
 
@@ -143,9 +137,9 @@ public class DataLayoutRenderer {
 
 	private static List<Object> _createDataLayoutPageContexts(
 		Map<String, DataDefinitionField> dataDefinitionFields,
-		DataLayoutPage[] dataLayoutPages, HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
+		DataLayoutPage[] dataLayoutPages, FieldTypeTracker fieldTypeTracker,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
 
 		List<Object> dataLayoutPageContexts = new ArrayList<>();
 
@@ -163,7 +157,7 @@ public class DataLayoutRenderer {
 				"rows",
 				_createDataLayoutRowContexts(
 					dataDefinitionFields, dataLayoutPage.getDataLayoutRows(),
-					httpServletRequest, httpServletResponse, soyDataFactory));
+					fieldTypeTracker, httpServletRequest, httpServletResponse));
 
 			dataLayoutPageContext.put(
 				"title",
@@ -180,9 +174,9 @@ public class DataLayoutRenderer {
 
 	private static List<Object> _createDataLayoutRowContexts(
 		Map<String, DataDefinitionField> dataDefinitionFields,
-		DataLayoutRow[] dataLayoutRows, HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
+		DataLayoutRow[] dataLayoutRows, FieldTypeTracker fieldTypeTracker,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
 
 		List<Object> dataLayoutRowContexts = new ArrayList<>();
 
@@ -193,7 +187,7 @@ public class DataLayoutRenderer {
 				"columns",
 				_createDataLayoutColumnContexts(
 					dataDefinitionFields, dataLayoutRow.getDataLayoutColums(),
-					httpServletRequest, httpServletResponse, soyDataFactory));
+					httpServletRequest, httpServletResponse, fieldTypeTracker));
 
 			dataLayoutRowContexts.add(dataLayoutRowContext);
 		}
@@ -203,9 +197,9 @@ public class DataLayoutRenderer {
 
 	private static List<Object> _createFieldTypeContexts(
 		Map<String, DataDefinitionField> dataDefinitionFields,
-		String[] fieldNames, HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
+		String[] fieldNames, FieldTypeTracker fieldTypeTracker,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
 
 		List<Object> fieldTypeContexts = new ArrayList<>();
 
@@ -213,12 +207,15 @@ public class DataLayoutRenderer {
 			DataDefinitionField dataDefinitionField = dataDefinitionFields.get(
 				fieldName);
 
-			SPIFieldType fieldType = _getFieldType(
-				dataDefinitionField, httpServletRequest, httpServletResponse,
-				soyDataFactory);
+			FieldType fieldType = fieldTypeTracker.getFieldType(
+				dataDefinitionField.getName());
 
 			if (fieldType != null) {
-				fieldTypeContexts.add(fieldType.includeContext());
+				fieldTypeContexts.add(
+					fieldType.includeContext(
+						DataDefinitionFieldUtil.toSPIDataDefinitionField(
+							dataDefinitionField),
+						httpServletRequest, httpServletResponse));
 			}
 		}
 
@@ -235,42 +232,6 @@ public class DataLayoutRenderer {
 
 		return stream.collect(
 			Collectors.toMap(field -> field.getName(), Function.identity()));
-	}
-
-	private static SPIFieldType _getFieldType(
-		DataDefinitionField dataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse, SoyDataFactory soyFactory) {
-
-		String fieldTypeName = dataDefinitionField.getFieldType();
-
-		if (StringUtils.equals(fieldTypeName, "captcha")) {
-			return new CaptchaFieldType(
-				dataDefinitionField, httpServletRequest, httpServletResponse,
-				soyFactory);
-		}
-		else if (StringUtils.equals(fieldTypeName, "checkbox")) {
-			return new CheckboxFieldType(
-				dataDefinitionField, httpServletRequest, httpServletResponse,
-				soyFactory);
-		}
-		else if (StringUtils.equals(fieldTypeName, "checkbox_multiple")) {
-			return new CheckboxMultipleFieldType(
-				dataDefinitionField, httpServletRequest, httpServletResponse,
-				soyFactory);
-		}
-		else if (StringUtils.equals(fieldTypeName, "date")) {
-			return new DateFieldType(
-				dataDefinitionField, httpServletRequest, httpServletResponse,
-				soyFactory);
-		}
-		else if (StringUtils.equals(fieldTypeName, "editor")) {
-			return new EditorFieldType(
-				dataDefinitionField, httpServletRequest, httpServletResponse,
-				soyFactory);
-		}
-
-		return null;
 	}
 
 	private static final String _MODULE_NAME =
