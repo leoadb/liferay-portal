@@ -43,8 +43,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=select-from-list",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/CheckboxMultiple/CheckboxMultiple.es",
-		"data.engine.field.type.label=checkbox-multiple-field-type-label",
-		"data.engine.field.type.name=checkbox_multiple"
+		"data.engine.field.type.label=checkbox-multiple-field-type-label"
 	},
 	service = FieldType.class
 )
@@ -73,6 +72,11 @@ public class CheckboxMultipleFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("predefinedValue")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "checkbox_multiple";
 	}
 
 	@Override

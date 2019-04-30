@@ -40,13 +40,16 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"data.engine.field.type.icon=icon-font",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/FieldSet/FieldSet.es",
-		"data.engine.field.type.name=fieldset",
 		"data.engine.field.type.system=true"
 	},
 	service = FieldType.class
 )
 public class FieldSetFieldType extends BaseFieldType {
+
+	@Override
+	public String getName() {
+		return "fieldset";
+	}
 
 	@Override
 	protected void includeContext(

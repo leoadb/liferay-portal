@@ -44,8 +44,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=list",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Select/Select.es",
-		"data.engine.field.type.label=select-field-type-label",
-		"data.engine.field.type.name=select"
+		"data.engine.field.type.label=select-field-type-label"
 	},
 	service = FieldType.class
 )
@@ -74,6 +73,11 @@ public class SelectFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("predefinedValue")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "select";
 	}
 
 	@Override

@@ -63,8 +63,7 @@ import org.osgi.service.component.annotations.Reference;
 		"data.engine.field.type.group=customized",
 		"data.engine.field.type.icon=upload",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/DocumentLibrary/DocumentLibrary.es",
-		"data.engine.field.type.label=document-library-field-type-label",
-		"data.engine.field.type.name=document_library"
+		"data.engine.field.type.label=document-library-field-type-label"
 	},
 	service = FieldType.class
 )
@@ -91,6 +90,11 @@ public class DocumentLibraryFieldType extends BaseFieldType {
 			CustomPropertyUtil.toMap(jsonObject.getJSONObject("strings")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "document_library";
 	}
 
 	@Override

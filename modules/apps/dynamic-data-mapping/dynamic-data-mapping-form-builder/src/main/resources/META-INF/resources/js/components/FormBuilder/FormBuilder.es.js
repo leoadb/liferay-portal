@@ -88,14 +88,6 @@ class FormBuilder extends Component {
 		paginationMode: Config.string().required(),
 
 		/**
-		 * @instance
-		 * @memberof FormBuilder
-		 * @type {string}
-		 */
-
-		rules: Config.arrayOf(ruleStructure).required(),
-
-		/**
 		 * @default undefined
 		 * @instance
 		 * @memberof FormRenderer
@@ -197,7 +189,6 @@ class FormBuilder extends Component {
 			namespace,
 			pages,
 			paginationMode,
-			rules,
 			spritemap,
 			visible
 		} = props;
@@ -253,7 +244,6 @@ class FormBuilder extends Component {
 					focusedField={focusedField}
 					namespace={namespace}
 					ref="sidebar"
-					rules={rules}
 					spritemap={spritemap}
 					visible={visible}
 				/>
@@ -500,15 +490,18 @@ class FormBuilder extends Component {
 	}
 
 	_pageHasFields(pages, pageIndex) {
-		const visitor = new PagesVisitor([pages[pageIndex]]);
 
 		let hasFields = false;
 
-		visitor.mapFields(
-			() => {
-				hasFields = true;
-			}
-		);
+		if (pages.length > 0) {
+			const visitor = new PagesVisitor([pages[pageIndex]]);
+
+			visitor.mapFields(
+				() => {
+					hasFields = true;
+				}
+			);
+		}
 
 		return hasFields;
 	}

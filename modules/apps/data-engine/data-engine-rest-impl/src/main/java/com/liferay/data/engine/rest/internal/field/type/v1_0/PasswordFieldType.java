@@ -38,8 +38,6 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"data.engine.field.type.display.order:Integer=9",
 		"data.engine.field.type.icon=password-policies",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Password/Password.es",
-		"data.engine.field.type.name=password",
 		"data.engine.field.type.system=true"
 	},
 	service = FieldType.class
@@ -66,6 +64,11 @@ public class PasswordFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("tooltip")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "password";
 	}
 
 	@Override

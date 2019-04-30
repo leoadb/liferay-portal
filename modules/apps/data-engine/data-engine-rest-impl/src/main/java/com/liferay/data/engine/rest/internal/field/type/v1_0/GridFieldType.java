@@ -42,8 +42,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=table2",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Grid/Grid.es",
-		"data.engine.field.type.label=grid-field-type-label",
-		"data.engine.field.type.name=grid"
+		"data.engine.field.type.label=grid-field-type-label"
 	},
 	service = FieldType.class
 )
@@ -69,6 +68,11 @@ public class GridFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("rows")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "grid";
 	}
 
 	@Override

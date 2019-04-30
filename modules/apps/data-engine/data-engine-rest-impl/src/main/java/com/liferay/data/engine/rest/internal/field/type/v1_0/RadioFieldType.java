@@ -47,8 +47,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=radio-button",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Radio/Radio.es",
-		"data.engine.field.type.label=radio-field-type-label",
-		"data.engine.field.type.name=radio"
+		"data.engine.field.type.label=radio-field-type-label"
 	},
 	service = FieldType.class
 )
@@ -75,6 +74,11 @@ public class RadioFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("predefinedValue")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "radio";
 	}
 
 	@Override

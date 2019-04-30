@@ -29,6 +29,8 @@ public interface FieldType {
 	public SPIDataDefinitionField deserialize(JSONObject jsonObject)
 		throws Exception;
 
+	public String getName();
+
 	public Map<String, Object> includeContext(
 		SPIDataDefinitionField spiDataDefinitionField,
 		HttpServletRequest httpServletRequest,

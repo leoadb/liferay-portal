@@ -1,0 +1,3 @@
+com/liferay/data/engine/taglib/servlet/taglib/util/DataEngineTaglibUtil._getResourceBundle(Ljava/util/Locale;)Ljava/util/ResourceBundle;:UNKNOWN (com/liferay/portal/kernel/util/AggregateResourceBundle)
+com/liferay/data/engine/taglib/servlet/taglib/base/BaseLayoutBuilderTag.getEndPage()Ljava/lang/String;:SAFE
+com/liferay/data/engine/taglib/servlet/taglib/base/BaseLayoutBuilderTag.getStartPage()Ljava/lang/String;:SAFE

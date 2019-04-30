@@ -42,8 +42,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=calendar",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/DatePicker/DatePicker.es",
-		"data.engine.field.type.label=date-field-type-label",
-		"data.engine.field.type.name=date"
+		"data.engine.field.type.label=date-field-type-label"
 	},
 	service = FieldType.class
 )
@@ -61,6 +60,11 @@ public class DateFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("predefinedValue")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "date";
 	}
 
 	@Override

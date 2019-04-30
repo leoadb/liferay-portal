@@ -39,14 +39,15 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marcela Cunha
  */
 @Component(
-	immediate = true,
-	property = {
-		"data.engine.field.type.name=captcha",
-		"data.engine.field.type.system=true"
-	},
+	immediate = true, property = "data.engine.field.type.system=true",
 	service = FieldType.class
 )
 public class CaptchaFieldType extends BaseFieldType {
+
+	@Override
+	public String getName() {
+		return "captcha";
+	}
 
 	@Override
 	protected void includeContext(

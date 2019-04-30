@@ -39,7 +39,6 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"data.engine.field.type.icon=icon-font",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/KeyValue/KeyValue.es",
-		"data.engine.field.type.name=key_value",
 		"data.engine.field.type.system=true"
 	},
 	service = FieldType.class
@@ -67,6 +66,11 @@ public class KeyValueFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("tooltip")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "key_value";
 	}
 
 	@Override

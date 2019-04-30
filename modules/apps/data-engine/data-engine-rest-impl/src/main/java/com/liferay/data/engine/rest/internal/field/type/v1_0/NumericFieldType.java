@@ -50,8 +50,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.group=customized",
 		"data.engine.field.type.icon=caret-double",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Numeric/Numeric.es",
-		"data.engine.field.type.label=numeric-field-type-label",
-		"data.engine.field.type.name=numeric"
+		"data.engine.field.type.label=numeric-field-type-label"
 	},
 	service = FieldType.class
 )
@@ -82,6 +81,11 @@ public class NumericFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("tooltip")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "numeric";
 	}
 
 	@Override

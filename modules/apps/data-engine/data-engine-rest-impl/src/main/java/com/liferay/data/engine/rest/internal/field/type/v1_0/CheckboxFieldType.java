@@ -43,7 +43,6 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.icon=check-circle",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Checkbox/Checkbox.es",
 		"data.engine.field.type.label=checkbox-field-type-label",
-		"data.engine.field.type.name=checkbox",
 		"data.engine.field.type.system=true"
 	},
 	service = FieldType.class
@@ -68,6 +67,11 @@ public class CheckboxFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("predefinedValue")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "checkbox";
 	}
 
 	@Override

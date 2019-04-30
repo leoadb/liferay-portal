@@ -38,7 +38,6 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"data.engine.field.type.icon=icon-font",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Editor/Editor.es",
-		"data.engine.field.type.name=editor",
 		"data.engine.field.type.system=true"
 	},
 	service = FieldType.class
@@ -61,6 +60,11 @@ public class EditorFieldType extends BaseFieldType {
 				jsonObject.getJSONObject("placeholder")));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "editor";
 	}
 
 	@Override

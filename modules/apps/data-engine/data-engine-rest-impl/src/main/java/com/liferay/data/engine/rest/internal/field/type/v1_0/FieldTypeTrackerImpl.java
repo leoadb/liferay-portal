@@ -16,7 +16,6 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
 import com.liferay.data.engine.spi.field.type.FieldType;
 import com.liferay.data.engine.spi.field.type.FieldTypeTracker;
-import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -63,8 +62,7 @@ public class FieldTypeTrackerImpl implements FieldTypeTracker {
 	protected void addFieldType(
 		FieldType fieldType, Map<String, Object> properties) {
 
-		String name = MapUtil.getString(
-			properties, "data.engine.field.type.name");
+		String name = fieldType.getName();
 
 		_fieldTypes.put(name, fieldType);
 		_fieldTypesProperties.put(
@@ -80,8 +78,7 @@ public class FieldTypeTrackerImpl implements FieldTypeTracker {
 	protected void removeFieldType(
 		FieldType fieldType, Map<String, Object> properties) {
 
-		String name = MapUtil.getString(
-			properties, "data.engine.field.type.name");
+		String name = fieldType.getName();
 
 		_fieldTypes.remove(name);
 		_fieldTypesProperties.remove(name);

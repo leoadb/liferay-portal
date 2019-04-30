@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"data.engine.field.type.icon=icon-font",
 		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Options/Options.es",
-		"data.engine.field.type.name=options",
 		"data.engine.field.type.system=true"
 	},
 	service = FieldType.class
@@ -58,6 +57,11 @@ public class OptionsFieldType extends BaseFieldType {
 		customProperties.put("value", jsonObject.getString("value"));
 
 		return spiDataDefinitionField;
+	}
+
+	@Override
+	public String getName() {
+		return "options";
 	}
 
 	@Override
