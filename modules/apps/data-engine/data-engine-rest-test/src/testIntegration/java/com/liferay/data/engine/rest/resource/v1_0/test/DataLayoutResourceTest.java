@@ -21,9 +21,6 @@ import com.liferay.data.engine.rest.resource.v1_0.test.util.DataDefinitionTestUt
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
-import java.util.Objects;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
@@ -38,174 +35,6 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		super.setUp();
 
 		_ddmStructure = DataDefinitionTestUtil.addDDMStructure(testGroup);
-		_irrelevantDDMStructure = DataDefinitionTestUtil.addDDMStructure(
-			irrelevantGroup);
-	}
-
-	@Override
-	protected void assertValid(DataLayout dataLayout) {
-		boolean valid = true;
-
-		if (dataLayout.getId() == null) {
-			valid = false;
-		}
-
-		for (String additionalAssertFieldName :
-				getAdditionalAssertFieldNames()) {
-
-			if (Objects.equals("dataDefinitionId", additionalAssertFieldName)) {
-				if (dataLayout.getDataDefinitionId() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("dataLayoutPages", additionalAssertFieldName)) {
-				if (dataLayout.getDataLayoutPages() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"defaultLanguageId", additionalAssertFieldName)) {
-
-				if (dataLayout.getDefaultLanguageId() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("description", additionalAssertFieldName)) {
-				if (dataLayout.getDescription() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("name", additionalAssertFieldName)) {
-				if (dataLayout.getName() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("paginationMode", additionalAssertFieldName)) {
-				if (dataLayout.getPaginationMode() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("userId", additionalAssertFieldName)) {
-				if (dataLayout.getUserId() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			throw new IllegalArgumentException(
-				"Invalid additional assert field name " +
-					additionalAssertFieldName);
-		}
-
-		Assert.assertTrue(valid);
-	}
-
-	@Override
-	protected boolean equals(DataLayout dataLayout1, DataLayout dataLayout2) {
-		for (String additionalAssertFieldName :
-				getAdditionalAssertFieldNames()) {
-
-			if (Objects.equals("dataDefinitionId", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataLayout1.getDataDefinitionId(),
-						dataLayout2.getDataDefinitionId())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("dataLayoutPages", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataLayout1.getDataLayoutPages(),
-						dataLayout2.getDataLayoutPages())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"defaultLanguageId", additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						dataLayout1.getDefaultLanguageId(),
-						dataLayout2.getDefaultLanguageId())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("description", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataLayout1.getDescription(),
-						dataLayout2.getDescription())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("id", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataLayout1.getId(), dataLayout2.getId())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("name", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataLayout1.getName(), dataLayout2.getName())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("userId", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						dataLayout1.getUserId(), dataLayout2.getUserId())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			throw new IllegalArgumentException(
-				"Invalid additional assert field name " +
-					additionalAssertFieldName);
-		}
-
-		return true;
 	}
 
 	@Override
@@ -217,7 +46,10 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	protected DataLayout randomDataLayout() {
 		return new DataLayout() {
 			{
+				id = RandomTestUtil.randomLong();
 				dataDefinitionId = _ddmStructure.getStructureId();
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = "en_US";
 				name = new LocalizedValue[] {
 					new LocalizedValue() {
@@ -257,10 +89,6 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 
 		long dataDefinitionId = _ddmStructure.getStructureId();
 
-		if (siteId == _irrelevantDDMStructure.getGroupId()) {
-			dataDefinitionId = _irrelevantDDMStructure.getStructureId();
-		}
-
 		return invokePostDataDefinitionDataLayout(
 			dataDefinitionId, randomDataLayout());
 	}
@@ -287,6 +115,5 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	}
 
 	private DDMStructure _ddmStructure;
-	private DDMStructure _irrelevantDDMStructure;
 
 }

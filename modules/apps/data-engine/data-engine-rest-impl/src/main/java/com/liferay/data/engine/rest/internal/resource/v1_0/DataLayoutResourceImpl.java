@@ -48,8 +48,6 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import javax.ws.rs.BadRequestException;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -68,10 +66,6 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 		_modelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(), dataLayoutId,
 			ActionKeys.DELETE);
-
-		if (dataLayoutId == null) {
-			throw new BadRequestException("Missing data layout id");
-		}
 
 		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(dataLayoutId);
 	}
