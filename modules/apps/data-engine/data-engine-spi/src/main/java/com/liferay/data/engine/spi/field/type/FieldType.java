@@ -12,23 +12,32 @@
  * details.
  */
 
-package com.liferay.data.engine.rest.internal.field.type.v1_0;
+package com.liferay.data.engine.spi.field.type;
 
-import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.portal.kernel.json.JSONObject;
 
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Marcela Cunha
  */
 public interface FieldType {
 
-	public Map<String, Object> createContext();
-
-	public DataDefinitionField deserialize(JSONObject jsonObject)
+	public SPIDataDefinitionField deserialize(JSONObject jsonObject)
 		throws Exception;
 
-	public JSONObject toJSONObject() throws Exception;
+	public String getName();
+
+	public Map<String, Object> includeContext(
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse);
+
+	public JSONObject toJSONObject(
+			SPIDataDefinitionField spiDataDefinitionField)
+		throws Exception;
 
 }
