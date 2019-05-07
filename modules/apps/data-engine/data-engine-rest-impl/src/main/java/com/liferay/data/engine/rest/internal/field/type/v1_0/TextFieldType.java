@@ -14,153 +14,176 @@
 
 package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
-import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertiesUtil;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.DataFieldOptionUtil;
-import com.liferay.data.engine.rest.internal.util.LocalizedValueUtil;
+import com.liferay.data.engine.spi.field.type.BaseFieldType;
+import com.liferay.data.engine.spi.field.type.FieldType;
+import com.liferay.data.engine.spi.field.type.SPIDataDefinitionField;
+import com.liferay.data.engine.spi.field.type.util.LocalizedValueUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.template.soy.data.SoyDataFactory;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Marcelo Mello
  */
+@Component(
+	immediate = true,
+	property = {
+		"data.engine.field.type.description=text-field-type-description",
+		"data.engine.field.type.display.order:Integer=2",
+		"data.engine.field.type.group=basic",
+		"data.engine.field.type.icon=text",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Text/Text.es",
+		"data.engine.field.type.label=text-field-type-label"
+	},
+	service = FieldType.class
+)
 public class TextFieldType extends BaseFieldType {
 
-	public TextFieldType(
-		DataDefinitionField dataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
-
-		super(
-			dataDefinitionField, httpServletRequest, httpServletResponse,
-			soyDataFactory);
-	}
-
 	@Override
-	public DataDefinitionField deserialize(JSONObject jsonObject)
+	public SPIDataDefinitionField deserialize(JSONObject jsonObject)
 		throws Exception {
 
-		DataDefinitionField dataDefinitionField = super.deserialize(jsonObject);
+		SPIDataDefinitionField spiDataDefinitionField = super.deserialize(
+			jsonObject);
 
-		dataDefinitionField.setCustomProperties(
-			CustomPropertiesUtil.add(
-				dataDefinitionField.getCustomProperties(),
-				"autocompleteEnabled",
-				jsonObject.getBoolean("autocompleteEnabled")));
-		dataDefinitionField.setCustomProperties(
-			CustomPropertiesUtil.add(
-				dataDefinitionField.getCustomProperties(), "displayStyle",
-				jsonObject.getString("displayStyle")));
-		dataDefinitionField.setCustomProperties(
-			CustomPropertiesUtil.add(
-				dataDefinitionField.getCustomProperties(), "options",
-				DataFieldOptionUtil.toDataFieldOptions(
-					jsonObject.getJSONObject("options"))));
-		dataDefinitionField.setDefaultValue(
-			LocalizedValueUtil.toLocalizedValues(
+		Map<String, Object> customProperties =
+			spiDataDefinitionField.getCustomProperties();
+
+		customProperties.put(
+			"autocompleteEnabled",
+			jsonObject.getBoolean("autocompleteEnabled"));
+		customProperties.put(
+			"displayStyle", jsonObject.getString("displayStyle"));
+		customProperties.put(
+			"options",
+			DataFieldOptionUtil.toDataFieldOptions(
+				jsonObject.getJSONObject("options")));
+		customProperties.put(
+			"placeholder",
+			LocalizedValueUtil.toLocalizationMap(
 				jsonObject.getJSONObject("placeholder")));
-		dataDefinitionField.setDefaultValue(
-			LocalizedValueUtil.toLocalizedValues(
+		customProperties.put(
+			"predefinedValue",
+			LocalizedValueUtil.toLocalizationMap(
 				jsonObject.getJSONObject("predefinedValue")));
-		dataDefinitionField.setDefaultValue(
-			LocalizedValueUtil.toLocalizedValues(
+		customProperties.put(
+			"tooltip",
+			LocalizedValueUtil.toLocalizationMap(
 				jsonObject.getJSONObject("tooltip")));
 
-		return dataDefinitionField;
+		return spiDataDefinitionField;
 	}
 
 	@Override
-	public JSONObject toJSONObject() throws Exception {
-		JSONObject jsonObject = super.toJSONObject();
+	public String getName() {
+		return "text";
+	}
+
+	@Override
+	public JSONObject toJSONObject(
+			SPIDataDefinitionField spiDataDefinitionField)
+		throws Exception {
+
+		JSONObject jsonObject = super.toJSONObject(spiDataDefinitionField);
 
 		return jsonObject.put(
 			"autocompleteEnabled",
-			CustomPropertiesUtil.getBoolean(
-				dataDefinitionField.getCustomProperties(),
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(),
 				"autocompleteEnabled", false)
 		).put(
 			"displayStyle",
-			CustomPropertiesUtil.getString(
-				dataDefinitionField.getCustomProperties(), "displayStyle")
+			MapUtil.getString(
+				spiDataDefinitionField.getCustomProperties(), "displayStyle")
 		).put(
 			"inline",
-			CustomPropertiesUtil.getBoolean(
-				dataDefinitionField.getCustomProperties(), "inline", false)
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(), "inline", false)
 		).put(
 			"options",
 			DataFieldOptionUtil.toJSONObject(
 				CustomPropertiesUtil.getDataFieldOptions(
-					dataDefinitionField.getCustomProperties(), "options"))
+					spiDataDefinitionField.getCustomProperties(), "options"))
 		).put(
 			"showAsSwitcher",
-			CustomPropertiesUtil.getBoolean(
-				dataDefinitionField.getCustomProperties(), "showAsSwitcher",
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(), "showAsSwitcher",
 				true)
 		).put(
 			"placeholder",
 			CustomPropertiesUtil.getMap(
-				dataDefinitionField.getCustomProperties(), "placeholder")
+				spiDataDefinitionField.getCustomProperties(), "placeholder")
 		).put(
 			"predefinedValue",
-			LocalizedValueUtil.toJSONObject(
-				dataDefinitionField.getDefaultValue())
+			CustomPropertiesUtil.getMap(
+				spiDataDefinitionField.getCustomProperties(), "predefinedValue")
 		).put(
 			"tooltip",
 			CustomPropertiesUtil.getMap(
-				dataDefinitionField.getCustomProperties(), "tooltip")
+				spiDataDefinitionField.getCustomProperties(), "tooltip")
 		);
 	}
 
 	@Override
-	protected void addContext(Map<String, Object> context) {
+	protected void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
 		context.put(
 			"autocompleteEnabled",
-			CustomPropertiesUtil.getBoolean(
-				dataDefinitionField.getCustomProperties(),
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(),
 				"autocompleteEnabled", false));
 		context.put(
 			"inline",
-			CustomPropertiesUtil.getBoolean(
-				dataDefinitionField.getCustomProperties(), "inline", false));
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(), "inline", false));
 		context.put(
 			"options",
 			DataFieldOptionUtil.toDataFieldOptions(
 				CustomPropertiesUtil.getDataFieldOptions(
-					dataDefinitionField.getCustomProperties(), "options"),
+					spiDataDefinitionField.getCustomProperties(), "options"),
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"placeholder",
-			LocalizedValueUtil.getLocalizedValue(
-				httpServletRequest.getLocale(),
+			MapUtil.getString(
 				CustomPropertiesUtil.getMap(
-					dataDefinitionField.getCustomProperties(), "placeholder")));
+					spiDataDefinitionField.getCustomProperties(),
+					"placeholder"),
+				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"predefinedValue",
-			LocalizedValueUtil.getLocalizedValue(
-				httpServletRequest.getLocale(),
-				dataDefinitionField.getDefaultValue()));
+			MapUtil.getString(
+				CustomPropertiesUtil.getMap(
+					spiDataDefinitionField.getCustomProperties(),
+					"predefinedValue"),
+				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"showAsSwitcher",
-			CustomPropertiesUtil.getBoolean(
-				dataDefinitionField.getCustomProperties(), "showAsSwitcher",
+			MapUtil.getBoolean(
+				spiDataDefinitionField.getCustomProperties(), "showAsSwitcher",
 				false));
 		context.put(
 			"tooltip",
-			LocalizedValueUtil.getLocalizedValue(
-				httpServletRequest.getLocale(),
+			MapUtil.getString(
 				CustomPropertiesUtil.getMap(
-					dataDefinitionField.getCustomProperties(), "tooltip")));
+					spiDataDefinitionField.getCustomProperties(), "tooltip"),
+				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"value",
-			CustomPropertiesUtil.getBoolean(
-				dataDefinitionField.getCustomProperties(), "value", false));
+			MapUtil.getString(
+				spiDataDefinitionField.getCustomProperties(), "value"));
 	}
 
 }

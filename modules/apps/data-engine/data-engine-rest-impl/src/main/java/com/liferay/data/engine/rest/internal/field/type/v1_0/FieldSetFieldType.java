@@ -14,11 +14,12 @@
 
 package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
-import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertiesUtil;
+import com.liferay.data.engine.spi.field.type.BaseFieldType;
+import com.liferay.data.engine.spi.field.type.FieldType;
+import com.liferay.data.engine.spi.field.type.SPIDataDefinitionField;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.template.soy.data.SoyDataFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -30,33 +31,42 @@ import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Gabriel Albuquerque
  */
+@Component(
+	immediate = true,
+	property = {
+		"data.engine.field.type.icon=icon-font",
+		"data.engine.field.type.system=true"
+	},
+	service = FieldType.class
+)
 public class FieldSetFieldType extends BaseFieldType {
 
-	public FieldSetFieldType(
-		DataDefinitionField dataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
-
-		super(
-			dataDefinitionField, httpServletRequest, httpServletResponse,
-			soyDataFactory);
+	@Override
+	public String getName() {
+		return "fieldset";
 	}
 
 	@Override
-	protected void addContext(Map<String, Object> context) {
+	protected void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
 		Map<String, List<Object>> map = CustomPropertiesUtil.getMap(
-			dataDefinitionField.getCustomProperties(), "nestedFields");
+			spiDataDefinitionField.getCustomProperties(), "nestedFields");
 
 		if (!map.isEmpty()) {
 			List<Object> nestedFields = _getNestedFields(
 				map,
 				_getNestedFieldNames(
 					CustomPropertiesUtil.getString(
-						dataDefinitionField.getCustomProperties(),
+						spiDataDefinitionField.getCustomProperties(),
 						"nestedFieldNames"),
 					map.keySet()));
 
@@ -65,7 +75,7 @@ public class FieldSetFieldType extends BaseFieldType {
 				_getColumnSize(
 					nestedFields.size(),
 					CustomPropertiesUtil.getString(
-						dataDefinitionField.getCustomProperties(),
+						spiDataDefinitionField.getCustomProperties(),
 						"orientation", "horizontal")));
 			context.put("nestedFields", nestedFields);
 		}

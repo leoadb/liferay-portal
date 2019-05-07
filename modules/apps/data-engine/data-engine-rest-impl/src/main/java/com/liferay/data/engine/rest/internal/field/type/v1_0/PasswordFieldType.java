@@ -14,84 +14,104 @@
 
 package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
-import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertiesUtil;
-import com.liferay.data.engine.rest.internal.util.LocalizedValueUtil;
+import com.liferay.data.engine.spi.field.type.BaseFieldType;
+import com.liferay.data.engine.spi.field.type.FieldType;
+import com.liferay.data.engine.spi.field.type.SPIDataDefinitionField;
+import com.liferay.data.engine.spi.field.type.util.LocalizedValueUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.template.soy.data.SoyDataFactory;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Jeyvison Nascimento
  */
+@Component(
+	immediate = true,
+	property = {
+		"data.engine.field.type.display.order:Integer=9",
+		"data.engine.field.type.icon=password-policies",
+		"data.engine.field.type.system=true"
+	},
+	service = FieldType.class
+)
 public class PasswordFieldType extends BaseFieldType {
 
-	public PasswordFieldType(
-		DataDefinitionField dataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		SoyDataFactory soyDataFactory) {
-
-		super(
-			dataDefinitionField, httpServletRequest, httpServletResponse,
-			soyDataFactory);
-	}
-
 	@Override
-	public DataDefinitionField deserialize(JSONObject jsonObject)
+	public SPIDataDefinitionField deserialize(JSONObject jsonObject)
 		throws Exception {
 
-		DataDefinitionField dataDefinitionField = super.deserialize(jsonObject);
+		SPIDataDefinitionField spiDataDefinitionField = super.deserialize(
+			jsonObject);
 
-		dataDefinitionField.setCustomProperties(
-			CustomPropertiesUtil.add(
-				dataDefinitionField.getCustomProperties(), "placeholder",
-				LocalizedValueUtil.toLocalizedValues(
-					jsonObject.getJSONObject("placeholder"))));
-		dataDefinitionField.setCustomProperties(
-			CustomPropertiesUtil.add(
-				dataDefinitionField.getCustomProperties(), "tooltip",
-				LocalizedValueUtil.toLocalizedValues(
-					jsonObject.getJSONObject("tooltip"))));
+		Map<String, Object> customProperties =
+			spiDataDefinitionField.getCustomProperties();
 
-		return dataDefinitionField;
+		customProperties.put(
+			"placeholder",
+			LocalizedValueUtil.toLocalizationMap(
+				jsonObject.getJSONObject("placeholder")));
+		customProperties.put(
+			"tooltip",
+			LocalizedValueUtil.toLocalizationMap(
+				jsonObject.getJSONObject("tooltip")));
+
+		return spiDataDefinitionField;
 	}
 
 	@Override
-	public JSONObject toJSONObject() throws Exception {
-		JSONObject jsonObject = super.toJSONObject();
+	public String getName() {
+		return "password";
+	}
+
+	@Override
+	public JSONObject toJSONObject(
+			SPIDataDefinitionField spiDataDefinitionField)
+		throws Exception {
+
+		JSONObject jsonObject = super.toJSONObject(spiDataDefinitionField);
 
 		return jsonObject.put(
 			"placeholder",
 			LocalizedValueUtil.toJSONObject(
 				CustomPropertiesUtil.getMap(
-					dataDefinitionField.getCustomProperties(), "placeholder"))
+					spiDataDefinitionField.getCustomProperties(),
+					"placeholder"))
 		).put(
 			"tooltip",
 			LocalizedValueUtil.toJSONObject(
 				CustomPropertiesUtil.getMap(
-					dataDefinitionField.getCustomProperties(), "tooltip"))
+					spiDataDefinitionField.getCustomProperties(), "tooltip"))
 		);
 	}
 
 	@Override
-	protected void addContext(Map<String, Object> context) {
+	protected void includeContext(
+		Map<String, Object> context,
+		SPIDataDefinitionField spiDataDefinitionField,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
 		context.put(
 			"placeholder",
-			LocalizedValueUtil.getLocalizedValue(
-				httpServletRequest.getLocale(),
+			MapUtil.getString(
 				CustomPropertiesUtil.getMap(
-					dataDefinitionField.getCustomProperties(), "placeholder")));
+					spiDataDefinitionField.getCustomProperties(),
+					"placeholder"),
+				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"tooltip",
-			LocalizedValueUtil.getLocalizedValue(
-				httpServletRequest.getLocale(),
+			MapUtil.getString(
 				CustomPropertiesUtil.getMap(
-					dataDefinitionField.getCustomProperties(), "tooltip")));
+					spiDataDefinitionField.getCustomProperties(), "tooltip"),
+				LanguageUtil.getLanguageId(httpServletRequest)));
 	}
 
 }
