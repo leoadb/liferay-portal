@@ -33,7 +33,7 @@ import javax.annotation.Generated;
 public class DataLayoutResource {
 
 	public Page<DataLayout> getDataDefinitionDataLayoutsPage(
-			Long dataDefinitionId, Pagination pagination)
+			Long dataDefinitionId, String keywords, Pagination pagination)
 		throws Exception {
 
 		HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -219,7 +219,7 @@ public class DataLayoutResource {
 	}
 
 	public Page<DataLayout> getSiteDataLayoutPage(
-			Long siteId, Pagination pagination)
+			Long siteId, String keywords, Pagination pagination)
 		throws Exception {
 
 		HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
