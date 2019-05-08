@@ -497,7 +497,6 @@ class Form extends Component {
 							groupId={groupId}
 							namespace={this.props.namespace}
 							ref="builder"
-							rules={this.props.rules}
 							spritemap={spritemap}
 							view={view}
 							visible={!this.isShowRuleBuilder()}
