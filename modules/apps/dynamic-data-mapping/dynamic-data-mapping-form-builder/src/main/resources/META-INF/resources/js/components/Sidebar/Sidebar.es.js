@@ -650,13 +650,6 @@ class Sidebar extends Component {
 		);
 	}
 
-	_hasRuleExpression(fieldName) {
-		const {rules} = this.props;
-		const visitor = new RulesVisitor(rules);
-
-		return visitor.containsFieldExpression(fieldName);
-	}
-
 	_isCloseButton(node) {
 		const {closeButton} = this.refs;
 
