@@ -155,7 +155,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 			Page<DataLayout> page =
 				DataLayoutResource.getDataDefinitionDataLayoutsPage(
-					irrelevantDataDefinitionId, Pagination.of(1, 2));
+					irrelevantDataDefinitionId, null, Pagination.of(1, 2));
 
 			Assert.assertEquals(1, page.getTotalCount());
 
@@ -175,7 +175,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		Page<DataLayout> page =
 			DataLayoutResource.getDataDefinitionDataLayoutsPage(
-				dataDefinitionId, Pagination.of(1, 2));
+				dataDefinitionId, null, Pagination.of(1, 2));
 
 		Assert.assertEquals(2, page.getTotalCount());
 
@@ -206,7 +206,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		Page<DataLayout> page1 =
 			DataLayoutResource.getDataDefinitionDataLayoutsPage(
-				dataDefinitionId, Pagination.of(1, 2));
+				dataDefinitionId, null, Pagination.of(1, 2));
 
 		List<DataLayout> dataLayouts1 = (List<DataLayout>)page1.getItems();
 
@@ -214,7 +214,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		Page<DataLayout> page2 =
 			DataLayoutResource.getDataDefinitionDataLayoutsPage(
-				dataDefinitionId, Pagination.of(2, 2));
+				dataDefinitionId, null, Pagination.of(2, 2));
 
 		Assert.assertEquals(3, page2.getTotalCount());
 
@@ -352,7 +352,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 					irrelevantSiteId, randomIrrelevantDataLayout());
 
 			Page<DataLayout> page = DataLayoutResource.getSiteDataLayoutPage(
-				irrelevantSiteId, Pagination.of(1, 2));
+				irrelevantSiteId, null, Pagination.of(1, 2));
 
 			Assert.assertEquals(1, page.getTotalCount());
 
@@ -369,7 +369,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 			siteId, randomDataLayout());
 
 		Page<DataLayout> page = DataLayoutResource.getSiteDataLayoutPage(
-			siteId, Pagination.of(1, 2));
+			siteId, null, Pagination.of(1, 2));
 
 		Assert.assertEquals(2, page.getTotalCount());
 
@@ -393,14 +393,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 			siteId, randomDataLayout());
 
 		Page<DataLayout> page1 = DataLayoutResource.getSiteDataLayoutPage(
-			siteId, Pagination.of(1, 2));
+			siteId, null, Pagination.of(1, 2));
 
 		List<DataLayout> dataLayouts1 = (List<DataLayout>)page1.getItems();
 
 		Assert.assertEquals(dataLayouts1.toString(), 2, dataLayouts1.size());
 
 		Page<DataLayout> page2 = DataLayoutResource.getSiteDataLayoutPage(
-			siteId, Pagination.of(2, 2));
+			siteId, null, Pagination.of(2, 2));
 
 		Assert.assertEquals(3, page2.getTotalCount());
 
