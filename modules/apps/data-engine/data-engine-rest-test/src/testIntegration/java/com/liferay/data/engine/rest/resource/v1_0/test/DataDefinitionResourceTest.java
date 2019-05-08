@@ -16,6 +16,7 @@ package com.liferay.data.engine.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v1_0.DataDefinition;
+import com.liferay.data.engine.rest.client.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.client.dto.v1_0.DataDefinitionPermission;
 import com.liferay.data.engine.rest.resource.v1_0.test.util.DataDefinitionTestUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -24,9 +25,11 @@ import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -73,6 +76,46 @@ public class DataDefinitionResourceTest
 			});
 	}
 
+	@Test
+	public void testPostSiteDataDefinitionWithDataDefinitionField()
+		throws Exception {
+
+		DataDefinition expectedDataDefinition = randomDataDefinition();
+
+		assertValidDataDefinitionField(expectedDataDefinition);
+
+		DataDefinition postDataDefinition =
+			testPostSiteDataDefinition_addDataDefinition(
+				expectedDataDefinition);
+
+		assertEquals(expectedDataDefinition, postDataDefinition);
+		assertValid(postDataDefinition);
+	}
+
+	protected boolean assertValidDataDefinitionField(
+		DataDefinition dataDefinition) {
+
+		if ((dataDefinition != null) &&
+			(dataDefinition.getDataDefinitionFields() != null)) {
+
+			return false;
+		}
+
+		for (DataDefinitionField dataDefinitionField :
+				dataDefinition.getDataDefinitionFields()) {
+
+			if (Validator.isNull(dataDefinitionField.getFieldType()) ||
+				Validator.isNull(dataDefinitionField.getLabel()) ||
+				Validator.isNull(dataDefinitionField.getName()) ||
+				Validator.isNull(dataDefinitionField.getTip())) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"name", "userId"};
@@ -82,6 +125,24 @@ public class DataDefinitionResourceTest
 	protected DataDefinition randomDataDefinition() throws Exception {
 		return new DataDefinition() {
 			{
+				dataDefinitionFields = new DataDefinitionField[] {
+					new DataDefinitionField() {
+						{
+							fieldType = "fieldType";
+							label = new HashMap<String, Object>() {
+								{
+									put("label", RandomTestUtil.randomString());
+								}
+							};
+							name = RandomTestUtil.randomString();
+							tip = new HashMap<String, Object>() {
+								{
+									put("tip", RandomTestUtil.randomString());
+								}
+							};
+						}
+					}
+				};
 				name = new HashMap<String, Object>() {
 					{
 						put("en_US", RandomTestUtil.randomString());
