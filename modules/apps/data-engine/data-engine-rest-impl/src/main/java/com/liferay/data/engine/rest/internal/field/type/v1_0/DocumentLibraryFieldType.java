@@ -128,10 +128,9 @@ public class DocumentLibraryFieldType extends BaseFieldType {
 
 	@Override
 	protected void includeContext(
-		Map<String, Object> context,
-		SPIDataDefinitionField spiDataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) {
+		Map<String, Object> context, HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse,
+		SPIDataDefinitionField spiDataDefinitionField) {
 
 		if (!StringUtils.isEmpty(
 				MapUtil.getString(

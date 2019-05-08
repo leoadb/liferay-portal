@@ -87,9 +87,9 @@ public abstract class BaseFieldType implements FieldType {
 
 	@Override
 	public Map<String, Object> includeContext(
-		SPIDataDefinitionField spiDataDefinitionField,
 		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) {
+		HttpServletResponse httpServletResponse,
+		SPIDataDefinitionField spiDataDefinitionField) {
 
 		Map<String, Object> context = new HashMap<>();
 
@@ -132,8 +132,8 @@ public abstract class BaseFieldType implements FieldType {
 				spiDataDefinitionField.getCustomProperties(), "visible", true));
 
 		includeContext(
-			context, spiDataDefinitionField, httpServletRequest,
-			httpServletResponse);
+			context, httpServletRequest, httpServletResponse,
+			spiDataDefinitionField);
 
 		return context;
 	}
@@ -179,9 +179,8 @@ public abstract class BaseFieldType implements FieldType {
 	}
 
 	protected abstract void includeContext(
-		Map<String, Object> context,
-		SPIDataDefinitionField spiDataDefinitionField,
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse);
+		Map<String, Object> context, HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse,
+		SPIDataDefinitionField spiDataDefinitionField);
 
 }

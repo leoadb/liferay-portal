@@ -212,9 +212,9 @@ public class DataLayoutRenderer {
 			if (fieldType != null) {
 				fieldTypeContexts.add(
 					fieldType.includeContext(
+						httpServletRequest, httpServletResponse,
 						DataDefinitionFieldUtil.toSPIDataDefinitionField(
-							dataDefinitionField),
-						httpServletRequest, httpServletResponse));
+							dataDefinitionField)));
 			}
 		}
 

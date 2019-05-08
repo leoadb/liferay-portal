@@ -32,9 +32,9 @@ public interface FieldType {
 	public String getName();
 
 	public Map<String, Object> includeContext(
-		SPIDataDefinitionField spiDataDefinitionField,
 		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse);
+		HttpServletResponse httpServletResponse,
+		SPIDataDefinitionField spiDataDefinitionField);
 
 	public JSONObject toJSONObject(
 			SPIDataDefinitionField spiDataDefinitionField)
