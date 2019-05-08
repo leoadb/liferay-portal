@@ -116,6 +116,7 @@ public class Query {
 	@GraphQLInvokeDetached
 	public Collection<DataLayout> getDataDefinitionDataLayoutsPage(
 			@GraphQLName("dataDefinitionId") Long dataDefinitionId,
+			@GraphQLName("keywords") String keywords,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
 		throws Exception {
@@ -126,7 +127,8 @@ public class Query {
 			dataLayoutResource -> {
 				Page paginationPage =
 					dataLayoutResource.getDataDefinitionDataLayoutsPage(
-						dataDefinitionId, Pagination.of(pageSize, page));
+						dataDefinitionId, keywords,
+						Pagination.of(pageSize, page));
 
 				return paginationPage.getItems();
 			});
@@ -149,6 +151,7 @@ public class Query {
 	@GraphQLInvokeDetached
 	public Collection<DataLayout> getSiteDataLayoutPage(
 			@GraphQLName("siteId") Long siteId,
+			@GraphQLName("keywords") String keywords,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
 		throws Exception {
@@ -158,7 +161,7 @@ public class Query {
 			this::_populateResourceContext,
 			dataLayoutResource -> {
 				Page paginationPage = dataLayoutResource.getSiteDataLayoutPage(
-					siteId, Pagination.of(pageSize, page));
+					siteId, keywords, Pagination.of(pageSize, page));
 
 				return paginationPage.getItems();
 			});
