@@ -35,29 +35,6 @@ import java.util.Map;
  */
 public class CustomPropertiesUtil {
 
-	public static Map<String, Object> add(
-		Map<String, Object> customProperties, String key, Object value) {
-
-		if (customProperties == null) {
-			customProperties = new HashMap<>();
-		}
-
-		customProperties.put(key, value);
-
-		return customProperties;
-	}
-
-	public static Boolean getBoolean(
-		Map<String, Object> customProperties, String key,
-		boolean defaultValue) {
-
-		if (MapUtil.isEmpty(customProperties)) {
-			return defaultValue;
-		}
-
-		return GetterUtil.getBoolean(customProperties.get(key), defaultValue);
-	}
-
 	public static List<DataFieldOption> getDataFieldOptions(
 		Map<String, Object> customProperties, String key) {
 
@@ -67,16 +44,6 @@ public class CustomPropertiesUtil {
 
 		return (List<DataFieldOption>)GetterUtil.getObject(
 			customProperties.get(key), Collections.emptyList());
-	}
-
-	public static Long getLong(
-		Map<String, Object> customProperties, String key) {
-
-		if (MapUtil.isEmpty(customProperties)) {
-			return Long.valueOf(0);
-		}
-
-		return GetterUtil.getLong(customProperties.get(key), Long.valueOf(0));
 	}
 
 	public static <K, V> Map<K, V> getMap(
