@@ -148,6 +148,8 @@ class RuleEditor extends Component {
 			)
 		).internal().setter('_setConditions').value([]),
 
+		contextPages: Config.array(),
+
 		dataProvider: Config.arrayOf(
 			Config.shapeOf(
 				{
@@ -452,13 +454,25 @@ class RuleEditor extends Component {
 		let options = [];
 		const visitor = new PagesVisitor(this.pages);
 
-		visitor.mapFields(
-			field => {
-				if (field.fieldName === fieldName) {
-					options = field.options;
-				}
+		const field = visitor.findField(
+			function(field) { 
+				return field.fieldName === fieldName;
+			});
+		
+		options = field.options;
+		
+		if(field.dataSourceType === 'data-provider' && this.contextPages) {
+			const contextVisitor = new PagesVisitor(this.contextPages);
+			
+			const contextField = contextVisitor.findField(
+				function(field) { 
+					return field.fieldName === fieldName;
+				});
+				
+			if(contextField) {
+				options = contextField.options;
 			}
-		);
+		}
 
 		return options;
 	}
