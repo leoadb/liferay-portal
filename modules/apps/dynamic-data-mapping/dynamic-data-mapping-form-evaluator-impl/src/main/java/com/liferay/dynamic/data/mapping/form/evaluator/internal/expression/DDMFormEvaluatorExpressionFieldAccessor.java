@@ -111,10 +111,10 @@ public class DDMFormEvaluatorExpressionFieldAccessor
 
 		Value ddmFormFieldValueValue = ddmFormFieldValue.getValue();
 
-		Locale locale = ddmFormFieldValueValue.getDefaultLocale();
+		Locale locale = _locale;
 
-		if (ddmFormFieldValueValue.isLocalized()) {
-			locale = _locale;
+		if (locale == null) {
+			locale = ddmFormFieldValueValue.getDefaultLocale();
 		}
 
 		DDMFormFieldValueAccessor<?> ddmFormFieldValueAccessor =
