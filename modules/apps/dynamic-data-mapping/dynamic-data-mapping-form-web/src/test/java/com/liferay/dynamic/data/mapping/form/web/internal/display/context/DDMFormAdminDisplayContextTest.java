@@ -26,6 +26,7 @@ import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesSerializerTracker;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordWriterTracker;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceSettings;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalService;
@@ -183,17 +184,17 @@ public class DDMFormAdminDisplayContextTest extends PowerMockito {
 		return formInstance;
 	}
 
-	protected DDMFormInstanceService mockDDMFormInstanceService()
+	protected DDMFormInstanceLocalService mockDDMFormInstanceLocalService()
 		throws PortalException {
 
-		DDMFormInstanceService formInstanceService = mock(
-			DDMFormInstanceService.class);
+		DDMFormInstanceLocalService ddmFormInstanceLocalService = mock(
+			DDMFormInstanceLocalService.class);
 
 		DDMFormInstance sharedFormInstance = mockDDMFormInstance(
 			_SHARED_FORM_INSTANCE_ID, false);
 
 		when(
-			formInstanceService.fetchFormInstance(
+			ddmFormInstanceLocalService.fetchFormInstance(
 				Matchers.eq(_SHARED_FORM_INSTANCE_ID))
 		).thenReturn(
 			sharedFormInstance
@@ -203,13 +204,42 @@ public class DDMFormAdminDisplayContextTest extends PowerMockito {
 			_RESTRICTED_FORM_INSTANCE_ID, true);
 
 		when(
-			formInstanceService.fetchFormInstance(
+			ddmFormInstanceLocalService.fetchFormInstance(
 				Matchers.eq(_RESTRICTED_FORM_INSTANCE_ID))
 		).thenReturn(
 			restrictedFormInstance
 		);
 
-		return formInstanceService;
+		return ddmFormInstanceLocalService;
+	}
+
+	protected DDMFormInstanceService mockDDMFormInstanceService()
+		throws PortalException {
+
+		DDMFormInstanceService ddmFormInstanceService = mock(
+			DDMFormInstanceService.class);
+
+		DDMFormInstance sharedFormInstance = mockDDMFormInstance(
+			_SHARED_FORM_INSTANCE_ID, false);
+
+		when(
+			ddmFormInstanceService.fetchFormInstance(
+				Matchers.eq(_SHARED_FORM_INSTANCE_ID))
+		).thenReturn(
+			sharedFormInstance
+		);
+
+		DDMFormInstance restrictedFormInstance = mockDDMFormInstance(
+			_RESTRICTED_FORM_INSTANCE_ID, true);
+
+		when(
+			ddmFormInstanceService.fetchFormInstance(
+				Matchers.eq(_RESTRICTED_FORM_INSTANCE_ID))
+		).thenReturn(
+			restrictedFormInstance
+		);
+
+		return ddmFormInstanceService;
 	}
 
 	protected DDMFormInstanceSettings mockDDMFormInstanceSettings(
@@ -296,19 +326,20 @@ public class DDMFormAdminDisplayContextTest extends PowerMockito {
 			new AddDefaultSharedFormLayoutPortalInstanceLifecycleListener(),
 			mock(DDMFormBuilderContextFactory.class),
 			mock(DDMFormBuilderSettingsRetriever.class),
-			mock(DDMFormWebConfiguration.class),
+			mock(DDMFormFieldTypeServicesTracker.class),
+			mock(DDMFormFieldTypesSerializerTracker.class),
+			mockDDMFormInstanceLocalService(),
 			mock(DDMFormInstanceRecordLocalService.class),
 			mock(DDMFormInstanceRecordWriterTracker.class),
 			mockDDMFormInstanceService(),
 			mock(DDMFormInstanceVersionLocalService.class),
-			mock(DDMFormFieldTypeServicesTracker.class),
-			mock(DDMFormFieldTypesSerializerTracker.class),
 			mock(DDMFormRenderer.class),
 			mock(DDMFormTemplateContextFactory.class),
 			mock(DDMFormValuesFactory.class), mock(DDMFormValuesMerger.class),
+			mock(DDMFormWebConfiguration.class),
 			mock(DDMStructureLocalService.class),
 			mock(DDMStructureService.class), mock(JSONFactory.class),
-			mock(NPMResolver.class));
+			mock(NPMResolver.class), mock(Portal.class));
 	}
 
 	protected void setUpLanguageUtil() {
