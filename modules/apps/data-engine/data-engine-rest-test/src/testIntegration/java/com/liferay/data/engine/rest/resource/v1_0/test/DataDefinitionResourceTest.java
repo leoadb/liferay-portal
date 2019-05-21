@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 
@@ -93,36 +94,25 @@ public class DataDefinitionResourceTest
 	protected boolean assertValidDataDefinitionField(
 		DataDefinition dataDefinition) {
 
-		boolean valid = true;
+		if ((dataDefinition == null) ||
+			(dataDefinition.getDataDefinitionFields() == null)) {
 
-		if ((dataDefinition != null) &&
-			(dataDefinition.getDataDefinitionFields() != null)) {
+			return false;
+		}
 
-			for (DataDefinitionField dataDefinitionField :
-					dataDefinition.getDataDefinitionFields()) {
+		for (DataDefinitionField dataDefinitionField :
+				dataDefinition.getDataDefinitionFields()) {
 
-				if (dataDefinitionField.getFieldType() == null) {
-					valid = false;
-				}
+			if (Validator.isNull(dataDefinitionField.getFieldType()) ||
+				Validator.isNull(dataDefinitionField.getLabel()) ||
+				Validator.isNull(dataDefinitionField.getName()) ||
+				Validator.isNull(dataDefinitionField.getTip())) {
 
-				if (dataDefinitionField.getLabel() == null) {
-					valid = false;
-				}
-
-				if (dataDefinitionField.getName() == null) {
-					valid = false;
-				}
-
-				if (dataDefinitionField.getTip() == null) {
-					valid = false;
-				}
+				return false;
 			}
 		}
-		else {
-			valid = false;
-		}
 
-		return valid;
+		return true;
 	}
 
 	@Override
