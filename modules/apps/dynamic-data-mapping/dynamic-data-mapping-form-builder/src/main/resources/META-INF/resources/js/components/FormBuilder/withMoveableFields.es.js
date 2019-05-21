@@ -169,12 +169,13 @@ const withMoveableFields = ChildComponent => {
 					}
 				);
 			}
+
+			this._refreshDragAndDrop();
 		}
 
 		_handleDragStarted({source}) {
 			const {height} = source.getBoundingClientRect();
 			const {parentElement} = source;
-
 			parentElement.setAttribute('style', `height: ${height}px !important;`);
 			parentElement.classList.add('ddm-parent-dragging');
 		}
@@ -183,6 +184,11 @@ const withMoveableFields = ChildComponent => {
 			const {store} = this.context;
 
 			store.emit('fieldMoved', event);
+		}
+
+		_refreshDragAndDrop() {
+			this.disposeDragAndDrop();
+			this.attached();
 		}
 	}
 
