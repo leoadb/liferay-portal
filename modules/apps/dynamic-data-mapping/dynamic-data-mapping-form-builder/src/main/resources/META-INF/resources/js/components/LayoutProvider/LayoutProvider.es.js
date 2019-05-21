@@ -477,10 +477,14 @@ class LayoutProvider extends Component {
 			columnIndex
 		);
 
+		const pageTarget = pages[target.pageIndex];
+
+		const rowTarget = pageTarget.rows[target.rowIndex];
+
 		if (target.rowIndex > pages[pageIndex].rows.length - 1) {
 			pages = FormSupport.addRow(pages, target.rowIndex, target.pageIndex, newRow);
 		}
-		else if (addedToPlaceholder) {
+		else if (addedToPlaceholder && rowTarget.columns.length === 1) {
 			pages = FormSupport.addRow(pages, target.rowIndex, target.pageIndex, newRow);
 		}
 		else {
