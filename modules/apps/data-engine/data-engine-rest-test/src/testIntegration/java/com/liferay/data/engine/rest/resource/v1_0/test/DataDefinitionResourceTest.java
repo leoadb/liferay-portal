@@ -80,15 +80,16 @@ public class DataDefinitionResourceTest
 	public void testPostSiteDataDefinitionWithDataDefinitionField()
 		throws Exception {
 
-		DataDefinition randomDataDefinition = randomDataDefinitionWithField();
+		DataDefinition expectedDataDefinition = randomDataDefinitionWithField();
 
-		assertValidDataDefinitionField(randomDataDefinition);
+		assertValidDataDefinitionField(expectedDataDefinition);
 
-		DataDefinition postDataDefinition =
-			testPostSiteDataDefinition_addDataDefinition(randomDataDefinition);
+		DataDefinition dataDefinition =
+			testPostSiteDataDefinition_addDataDefinition(
+				expectedDataDefinition);
 
-		assertEquals(randomDataDefinition, postDataDefinition);
-		assertValid(postDataDefinition);
+		assertEquals(expectedDataDefinition, dataDefinition);
+		assertValid(dataDefinition);
 	}
 
 	protected boolean assertValidDataDefinitionField(
