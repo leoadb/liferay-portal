@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -82,38 +83,40 @@ public class DataDefinitionResourceTest
 
 		DataDefinition expectedDataDefinition = randomDataDefinition();
 
-		assertValidDataDefinitionField(expectedDataDefinition);
-
-		DataDefinition postDataDefinition =
+		DataDefinition dataDefinition =
 			testPostSiteDataDefinition_addDataDefinition(
 				expectedDataDefinition);
 
-		assertEquals(expectedDataDefinition, postDataDefinition);
-		assertValid(postDataDefinition);
+		assertEquals(expectedDataDefinition, dataDefinition);
+		assertValid(dataDefinition);
 	}
 
-	protected boolean assertValidDataDefinitionField(
-		DataDefinition dataDefinition) {
+	@Override
+	protected void assertValid(DataDefinition dataDefinition) {
+		super.assertValid(dataDefinition);
+
+		boolean valid = true;
 
 		if ((dataDefinition != null) &&
 			(dataDefinition.getDataDefinitionFields() != null)) {
 
-			return false;
-		}
+			for (DataDefinitionField dataDefinitionField :
+					dataDefinition.getDataDefinitionFields()) {
 
-		for (DataDefinitionField dataDefinitionField :
-				dataDefinition.getDataDefinitionFields()) {
+				if (Validator.isNull(dataDefinitionField.getFieldType()) ||
+					Validator.isNull(dataDefinitionField.getLabel()) ||
+					Validator.isNull(dataDefinitionField.getName()) ||
+					Validator.isNull(dataDefinitionField.getTip())) {
 
-			if (Validator.isNull(dataDefinitionField.getFieldType()) ||
-				Validator.isNull(dataDefinitionField.getLabel()) ||
-				Validator.isNull(dataDefinitionField.getName()) ||
-				Validator.isNull(dataDefinitionField.getTip())) {
-
-				return false;
+					valid = false;
+				}
 			}
 		}
+		else {
+			valid = false;
+		}
 
-		return true;
+		Assert.assertTrue(valid);
 	}
 
 	@Override
