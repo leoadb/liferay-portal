@@ -215,10 +215,10 @@ AUI.add(
 						var formNode = instance.getFormNode();
 
 						if (formNode) {
-							var formAppNode = formNode.one('.ddm-form-builder-app');
+							var ddmFormBuilderAppNode = formNode.one('.ddm-form-builder-app');
 
-							if (formAppNode) {
-								formAppNode.removeClass('form-app-not-ready');
+							if (ddmFormBuilderAppNode) {
+								ddmFormBuilderAppNode.removeClass('ddm-form-builder-app-not-ready');
 							}
 						}
 					},
