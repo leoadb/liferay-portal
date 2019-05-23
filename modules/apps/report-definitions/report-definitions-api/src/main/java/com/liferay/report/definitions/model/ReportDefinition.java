@@ -25,20 +25,23 @@ import com.liferay.portal.kernel.util.Accessor;
  *
  * @author Brian Wing Shun Chan
  * @see ReportDefinitionModel
- * @see com.liferay.report.definitions.model.impl.ReportDefinitionImpl
- * @see com.liferay.report.definitions.model.impl.ReportDefinitionModelImpl
  * @generated
  */
-@ImplementationClassName("com.liferay.report.definitions.model.impl.ReportDefinitionImpl")
+@ImplementationClassName(
+	"com.liferay.report.definitions.model.impl.ReportDefinitionImpl"
+)
 @ProviderType
-public interface ReportDefinition extends ReportDefinitionModel, PersistedModel {
+public interface ReportDefinition
+	extends PersistedModel, ReportDefinitionModel {
+
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify this interface directly. Add methods to {@link com.liferay.report.definitions.model.impl.ReportDefinitionImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add methods to <code>com.liferay.report.definitions.model.impl.ReportDefinitionImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public static final Accessor<ReportDefinition, Long> REPORT_DEFINITION_ID_ACCESSOR =
-		new Accessor<ReportDefinition, Long>() {
+	public static final Accessor<ReportDefinition, Long>
+		REPORT_DEFINITION_ID_ACCESSOR = new Accessor<ReportDefinition, Long>() {
+
 			@Override
 			public Long get(ReportDefinition reportDefinition) {
 				return reportDefinition.getReportDefinitionId();
@@ -53,5 +56,7 @@ public interface ReportDefinition extends ReportDefinitionModel, PersistedModel 
 			public Class<ReportDefinition> getTypeClass() {
 				return ReportDefinition.class;
 			}
+
 		};
+
 }

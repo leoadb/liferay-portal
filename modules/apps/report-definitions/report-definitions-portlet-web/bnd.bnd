@@ -1,5 +1,0 @@
-Bundle-Name: Liferay Report Definitions Portlet Web
-Bundle-SymbolicName: com.liferay.report.definitions.portlet.web
-Bundle-Version: 1.0.0
-Web-ContextPath: /report-definitions-web
--includeresource: package.json

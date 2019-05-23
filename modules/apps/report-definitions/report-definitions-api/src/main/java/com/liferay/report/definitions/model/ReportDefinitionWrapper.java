@@ -17,9 +17,7 @@ package com.liferay.report.definitions.model;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
-
 import com.liferay.exportimport.kernel.lar.StagedModelType;
-
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -40,8 +38,9 @@ import java.util.Objects;
  * @generated
  */
 @ProviderType
-public class ReportDefinitionWrapper implements ReportDefinition,
-	ModelWrapper<ReportDefinition> {
+public class ReportDefinitionWrapper
+	implements ReportDefinition, ModelWrapper<ReportDefinition> {
+
 	public ReportDefinitionWrapper(ReportDefinition reportDefinition) {
 		_reportDefinition = reportDefinition;
 	}
@@ -70,6 +69,7 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("columnsDDMContentId", getColumnsDDMContentId());
 		attributes.put("dataDefinitionId", getDataDefinitionId());
+		attributes.put("dataLayoutId", getDataLayoutId());
 		attributes.put("description", getDescription());
 		attributes.put("name", getName());
 
@@ -138,6 +138,12 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 			setDataDefinitionId(dataDefinitionId);
 		}
 
+		Long dataLayoutId = (Long)attributes.get("dataLayoutId");
+
+		if (dataLayoutId != null) {
+			setDataLayoutId(dataLayoutId);
+		}
+
 		String description = (String)attributes.get("description");
 
 		if (description != null) {
@@ -153,7 +159,8 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 
 	@Override
 	public Object clone() {
-		return new ReportDefinitionWrapper((ReportDefinition)_reportDefinition.clone());
+		return new ReportDefinitionWrapper(
+			(ReportDefinition)_reportDefinition.clone());
 	}
 
 	@Override
@@ -162,50 +169,60 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Returns the columns ddm content ID of this report definition.
-	*
-	* @return the columns ddm content ID of this report definition
-	*/
+	 * Returns the columns ddm content ID of this report definition.
+	 *
+	 * @return the columns ddm content ID of this report definition
+	 */
 	@Override
 	public long getColumnsDDMContentId() {
 		return _reportDefinition.getColumnsDDMContentId();
 	}
 
 	/**
-	* Returns the company ID of this report definition.
-	*
-	* @return the company ID of this report definition
-	*/
+	 * Returns the company ID of this report definition.
+	 *
+	 * @return the company ID of this report definition
+	 */
 	@Override
 	public long getCompanyId() {
 		return _reportDefinition.getCompanyId();
 	}
 
 	/**
-	* Returns the create date of this report definition.
-	*
-	* @return the create date of this report definition
-	*/
+	 * Returns the create date of this report definition.
+	 *
+	 * @return the create date of this report definition
+	 */
 	@Override
 	public Date getCreateDate() {
 		return _reportDefinition.getCreateDate();
 	}
 
 	/**
-	* Returns the data definition ID of this report definition.
-	*
-	* @return the data definition ID of this report definition
-	*/
+	 * Returns the data definition ID of this report definition.
+	 *
+	 * @return the data definition ID of this report definition
+	 */
 	@Override
 	public long getDataDefinitionId() {
 		return _reportDefinition.getDataDefinitionId();
 	}
 
 	/**
-	* Returns the description of this report definition.
-	*
-	* @return the description of this report definition
-	*/
+	 * Returns the data layout ID of this report definition.
+	 *
+	 * @return the data layout ID of this report definition
+	 */
+	@Override
+	public long getDataLayoutId() {
+		return _reportDefinition.getDataLayoutId();
+	}
+
+	/**
+	 * Returns the description of this report definition.
+	 *
+	 * @return the description of this report definition
+	 */
 	@Override
 	public String getDescription() {
 		return _reportDefinition.getDescription();
@@ -217,40 +234,40 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Returns the group ID of this report definition.
-	*
-	* @return the group ID of this report definition
-	*/
+	 * Returns the group ID of this report definition.
+	 *
+	 * @return the group ID of this report definition
+	 */
 	@Override
 	public long getGroupId() {
 		return _reportDefinition.getGroupId();
 	}
 
 	/**
-	* Returns the modified date of this report definition.
-	*
-	* @return the modified date of this report definition
-	*/
+	 * Returns the modified date of this report definition.
+	 *
+	 * @return the modified date of this report definition
+	 */
 	@Override
 	public Date getModifiedDate() {
 		return _reportDefinition.getModifiedDate();
 	}
 
 	/**
-	* Returns the name of this report definition.
-	*
-	* @return the name of this report definition
-	*/
+	 * Returns the name of this report definition.
+	 *
+	 * @return the name of this report definition
+	 */
 	@Override
 	public String getName() {
 		return _reportDefinition.getName();
 	}
 
 	/**
-	* Returns the primary key of this report definition.
-	*
-	* @return the primary key of this report definition
-	*/
+	 * Returns the primary key of this report definition.
+	 *
+	 * @return the primary key of this report definition
+	 */
 	@Override
 	public long getPrimaryKey() {
 		return _reportDefinition.getPrimaryKey();
@@ -262,50 +279,50 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Returns the report definition ID of this report definition.
-	*
-	* @return the report definition ID of this report definition
-	*/
+	 * Returns the report definition ID of this report definition.
+	 *
+	 * @return the report definition ID of this report definition
+	 */
 	@Override
 	public long getReportDefinitionId() {
 		return _reportDefinition.getReportDefinitionId();
 	}
 
 	/**
-	* Returns the user ID of this report definition.
-	*
-	* @return the user ID of this report definition
-	*/
+	 * Returns the user ID of this report definition.
+	 *
+	 * @return the user ID of this report definition
+	 */
 	@Override
 	public long getUserId() {
 		return _reportDefinition.getUserId();
 	}
 
 	/**
-	* Returns the user name of this report definition.
-	*
-	* @return the user name of this report definition
-	*/
+	 * Returns the user name of this report definition.
+	 *
+	 * @return the user name of this report definition
+	 */
 	@Override
 	public String getUserName() {
 		return _reportDefinition.getUserName();
 	}
 
 	/**
-	* Returns the user uuid of this report definition.
-	*
-	* @return the user uuid of this report definition
-	*/
+	 * Returns the user uuid of this report definition.
+	 *
+	 * @return the user uuid of this report definition
+	 */
 	@Override
 	public String getUserUuid() {
 		return _reportDefinition.getUserUuid();
 	}
 
 	/**
-	* Returns the uuid of this report definition.
-	*
-	* @return the uuid of this report definition
-	*/
+	 * Returns the uuid of this report definition.
+	 *
+	 * @return the uuid of this report definition
+	 */
 	@Override
 	public String getUuid() {
 		return _reportDefinition.getUuid();
@@ -342,50 +359,60 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Sets the columns ddm content ID of this report definition.
-	*
-	* @param columnsDDMContentId the columns ddm content ID of this report definition
-	*/
+	 * Sets the columns ddm content ID of this report definition.
+	 *
+	 * @param columnsDDMContentId the columns ddm content ID of this report definition
+	 */
 	@Override
 	public void setColumnsDDMContentId(long columnsDDMContentId) {
 		_reportDefinition.setColumnsDDMContentId(columnsDDMContentId);
 	}
 
 	/**
-	* Sets the company ID of this report definition.
-	*
-	* @param companyId the company ID of this report definition
-	*/
+	 * Sets the company ID of this report definition.
+	 *
+	 * @param companyId the company ID of this report definition
+	 */
 	@Override
 	public void setCompanyId(long companyId) {
 		_reportDefinition.setCompanyId(companyId);
 	}
 
 	/**
-	* Sets the create date of this report definition.
-	*
-	* @param createDate the create date of this report definition
-	*/
+	 * Sets the create date of this report definition.
+	 *
+	 * @param createDate the create date of this report definition
+	 */
 	@Override
 	public void setCreateDate(Date createDate) {
 		_reportDefinition.setCreateDate(createDate);
 	}
 
 	/**
-	* Sets the data definition ID of this report definition.
-	*
-	* @param dataDefinitionId the data definition ID of this report definition
-	*/
+	 * Sets the data definition ID of this report definition.
+	 *
+	 * @param dataDefinitionId the data definition ID of this report definition
+	 */
 	@Override
 	public void setDataDefinitionId(long dataDefinitionId) {
 		_reportDefinition.setDataDefinitionId(dataDefinitionId);
 	}
 
 	/**
-	* Sets the description of this report definition.
-	*
-	* @param description the description of this report definition
-	*/
+	 * Sets the data layout ID of this report definition.
+	 *
+	 * @param dataLayoutId the data layout ID of this report definition
+	 */
+	@Override
+	public void setDataLayoutId(long dataLayoutId) {
+		_reportDefinition.setDataLayoutId(dataLayoutId);
+	}
+
+	/**
+	 * Sets the description of this report definition.
+	 *
+	 * @param description the description of this report definition
+	 */
 	@Override
 	public void setDescription(String description) {
 		_reportDefinition.setDescription(description);
@@ -394,6 +421,7 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
+
 		_reportDefinition.setExpandoBridgeAttributes(baseModel);
 	}
 
@@ -408,30 +436,30 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Sets the group ID of this report definition.
-	*
-	* @param groupId the group ID of this report definition
-	*/
+	 * Sets the group ID of this report definition.
+	 *
+	 * @param groupId the group ID of this report definition
+	 */
 	@Override
 	public void setGroupId(long groupId) {
 		_reportDefinition.setGroupId(groupId);
 	}
 
 	/**
-	* Sets the modified date of this report definition.
-	*
-	* @param modifiedDate the modified date of this report definition
-	*/
+	 * Sets the modified date of this report definition.
+	 *
+	 * @param modifiedDate the modified date of this report definition
+	 */
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_reportDefinition.setModifiedDate(modifiedDate);
 	}
 
 	/**
-	* Sets the name of this report definition.
-	*
-	* @param name the name of this report definition
-	*/
+	 * Sets the name of this report definition.
+	 *
+	 * @param name the name of this report definition
+	 */
 	@Override
 	public void setName(String name) {
 		_reportDefinition.setName(name);
@@ -443,10 +471,10 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Sets the primary key of this report definition.
-	*
-	* @param primaryKey the primary key of this report definition
-	*/
+	 * Sets the primary key of this report definition.
+	 *
+	 * @param primaryKey the primary key of this report definition
+	 */
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		_reportDefinition.setPrimaryKey(primaryKey);
@@ -458,57 +486,59 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	/**
-	* Sets the report definition ID of this report definition.
-	*
-	* @param reportDefinitionId the report definition ID of this report definition
-	*/
+	 * Sets the report definition ID of this report definition.
+	 *
+	 * @param reportDefinitionId the report definition ID of this report definition
+	 */
 	@Override
 	public void setReportDefinitionId(long reportDefinitionId) {
 		_reportDefinition.setReportDefinitionId(reportDefinitionId);
 	}
 
 	/**
-	* Sets the user ID of this report definition.
-	*
-	* @param userId the user ID of this report definition
-	*/
+	 * Sets the user ID of this report definition.
+	 *
+	 * @param userId the user ID of this report definition
+	 */
 	@Override
 	public void setUserId(long userId) {
 		_reportDefinition.setUserId(userId);
 	}
 
 	/**
-	* Sets the user name of this report definition.
-	*
-	* @param userName the user name of this report definition
-	*/
+	 * Sets the user name of this report definition.
+	 *
+	 * @param userName the user name of this report definition
+	 */
 	@Override
 	public void setUserName(String userName) {
 		_reportDefinition.setUserName(userName);
 	}
 
 	/**
-	* Sets the user uuid of this report definition.
-	*
-	* @param userUuid the user uuid of this report definition
-	*/
+	 * Sets the user uuid of this report definition.
+	 *
+	 * @param userUuid the user uuid of this report definition
+	 */
 	@Override
 	public void setUserUuid(String userUuid) {
 		_reportDefinition.setUserUuid(userUuid);
 	}
 
 	/**
-	* Sets the uuid of this report definition.
-	*
-	* @param uuid the uuid of this report definition
-	*/
+	 * Sets the uuid of this report definition.
+	 *
+	 * @param uuid the uuid of this report definition
+	 */
 	@Override
 	public void setUuid(String uuid) {
 		_reportDefinition.setUuid(uuid);
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.CacheModel<ReportDefinition> toCacheModel() {
+	public com.liferay.portal.kernel.model.CacheModel<ReportDefinition>
+		toCacheModel() {
+
 		return _reportDefinition.toCacheModel();
 	}
 
@@ -524,7 +554,8 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 
 	@Override
 	public ReportDefinition toUnescapedModel() {
-		return new ReportDefinitionWrapper(_reportDefinition.toUnescapedModel());
+		return new ReportDefinitionWrapper(
+			_reportDefinition.toUnescapedModel());
 	}
 
 	@Override
@@ -542,10 +573,12 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 			return false;
 		}
 
-		ReportDefinitionWrapper reportDefinitionWrapper = (ReportDefinitionWrapper)obj;
+		ReportDefinitionWrapper reportDefinitionWrapper =
+			(ReportDefinitionWrapper)obj;
 
-		if (Objects.equals(_reportDefinition,
-					reportDefinitionWrapper._reportDefinition)) {
+		if (Objects.equals(
+				_reportDefinition, reportDefinitionWrapper._reportDefinition)) {
+
 			return true;
 		}
 
@@ -578,4 +611,5 @@ public class ReportDefinitionWrapper implements ReportDefinition,
 	}
 
 	private final ReportDefinition _reportDefinition;
+
 }

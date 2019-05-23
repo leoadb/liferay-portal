@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-
 import com.liferay.report.definitions.model.ReportDefinition;
 import com.liferay.report.definitions.service.persistence.ReportDefinitionPersistence;
 
@@ -32,19 +31,21 @@ import java.util.Set;
  * @author Brian Wing Shun Chan
  * @generated
  */
-public class ReportDefinitionFinderBaseImpl extends BasePersistenceImpl<ReportDefinition> {
+public class ReportDefinitionFinderBaseImpl
+	extends BasePersistenceImpl<ReportDefinition> {
+
 	public ReportDefinitionFinderBaseImpl() {
 		setModelClass(ReportDefinition.class);
 
+		Map<String, String> dbColumnNames = new HashMap<String, String>();
+
+		dbColumnNames.put("uuid", "uuid_");
+
 		try {
 			Field field = BasePersistenceImpl.class.getDeclaredField(
-					"_dbColumnNames");
+				"_dbColumnNames");
 
 			field.setAccessible(true);
-
-			Map<String, String> dbColumnNames = new HashMap<String, String>();
-
-			dbColumnNames.put("uuid", "uuid_");
 
 			field.set(this, dbColumnNames);
 		}
@@ -76,10 +77,14 @@ public class ReportDefinitionFinderBaseImpl extends BasePersistenceImpl<ReportDe
 	 */
 	public void setReportDefinitionPersistence(
 		ReportDefinitionPersistence reportDefinitionPersistence) {
+
 		this.reportDefinitionPersistence = reportDefinitionPersistence;
 	}
 
 	@BeanReference(type = ReportDefinitionPersistence.class)
 	protected ReportDefinitionPersistence reportDefinitionPersistence;
-	private static final Log _log = LogFactoryUtil.getLog(ReportDefinitionFinderBaseImpl.class);
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ReportDefinitionFinderBaseImpl.class);
+
 }

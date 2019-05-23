@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
-
 import com.liferay.report.definitions.exception.NoSuchReportDefinitionException;
 import com.liferay.report.definitions.model.ReportDefinition;
 import com.liferay.report.definitions.model.impl.ReportDefinitionImpl;
@@ -67,55 +66,33 @@ import java.util.Set;
  * </p>
  *
  * @author Brian Wing Shun Chan
- * @see ReportDefinitionPersistence
- * @see com.liferay.report.definitions.service.persistence.ReportDefinitionUtil
  * @generated
  */
 @ProviderType
-public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportDefinition>
+public class ReportDefinitionPersistenceImpl
+	extends BasePersistenceImpl<ReportDefinition>
 	implements ReportDefinitionPersistence {
+
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use {@link ReportDefinitionUtil} to access the report definition persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
+	 * Never modify or reference this class directly. Always use <code>ReportDefinitionUtil</code> to access the report definition persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static final String FINDER_CLASS_NAME_ENTITY = ReportDefinitionImpl.class.getName();
-	public static final String FINDER_CLASS_NAME_LIST_WITH_PAGINATION = FINDER_CLASS_NAME_ENTITY +
-		".List1";
-	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION = FINDER_CLASS_NAME_ENTITY +
-		".List2";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_ALL = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-			"findAll", new String[0]);
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll", new String[0]);
-	public static final FinderPath FINDER_PATH_COUNT_ALL = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll", new String[0]);
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-			"findByUuid",
-			new String[] {
-				String.class.getName(),
-				
-			Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
-			new String[] { String.class.getName() },
-			ReportDefinitionModelImpl.UUID_COLUMN_BITMASK |
-			ReportDefinitionModelImpl.NAME_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-			new String[] { String.class.getName() });
+	public static final String FINDER_CLASS_NAME_ENTITY =
+		ReportDefinitionImpl.class.getName();
+
+	public static final String FINDER_CLASS_NAME_LIST_WITH_PAGINATION =
+		FINDER_CLASS_NAME_ENTITY + ".List1";
+
+	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
+		FINDER_CLASS_NAME_ENTITY + ".List2";
+
+	private FinderPath _finderPathWithPaginationFindAll;
+	private FinderPath _finderPathWithoutPaginationFindAll;
+	private FinderPath _finderPathCountAll;
+	private FinderPath _finderPathWithPaginationFindByUuid;
+	private FinderPath _finderPathWithoutPaginationFindByUuid;
+	private FinderPath _finderPathCountByUuid;
 
 	/**
 	 * Returns all the report definitions where uuid = &#63;.
@@ -132,7 +109,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns a range of all the report definitions where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -149,7 +126,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns an ordered range of all the report definitions where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -159,8 +136,10 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the ordered range of matching report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findByUuid(String uuid, int start, int end,
+	public List<ReportDefinition> findByUuid(
+		String uuid, int start, int end,
 		OrderByComparator<ReportDefinition> orderByComparator) {
+
 		return findByUuid(uuid, start, end, orderByComparator, true);
 	}
 
@@ -168,7 +147,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns an ordered range of all the report definitions where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -179,9 +158,11 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the ordered range of matching report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findByUuid(String uuid, int start, int end,
+	public List<ReportDefinition> findByUuid(
+		String uuid, int start, int end,
 		OrderByComparator<ReportDefinition> orderByComparator,
 		boolean retrieveFromCache) {
+
 		uuid = Objects.toString(uuid, "");
 
 		boolean pagination = true;
@@ -189,21 +170,22 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
+			(orderByComparator == null)) {
+
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID;
-			finderArgs = new Object[] { uuid };
+			finderPath = _finderPathWithoutPaginationFindByUuid;
+			finderArgs = new Object[] {uuid};
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID;
-			finderArgs = new Object[] { uuid, start, end, orderByComparator };
+			finderPath = _finderPathWithPaginationFindByUuid;
+			finderArgs = new Object[] {uuid, start, end, orderByComparator};
 		}
 
 		List<ReportDefinition> list = null;
 
 		if (retrieveFromCache) {
-			list = (List<ReportDefinition>)finderCache.getResult(finderPath,
-					finderArgs, this);
+			list = (List<ReportDefinition>)finderCache.getResult(
+				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (ReportDefinition reportDefinition : list) {
@@ -220,8 +202,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(
+					3 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -241,11 +223,10 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
 			}
-			else
-			 if (pagination) {
+			else if (pagination) {
 				query.append(ReportDefinitionModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -265,16 +246,16 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				}
 
 				if (!pagination) {
-					list = (List<ReportDefinition>)QueryUtil.list(q,
-							getDialect(), start, end, false);
+					list = (List<ReportDefinition>)QueryUtil.list(
+						q, getDialect(), start, end, false);
 
 					Collections.sort(list);
 
 					list = Collections.unmodifiableList(list);
 				}
 				else {
-					list = (List<ReportDefinition>)QueryUtil.list(q,
-							getDialect(), start, end);
+					list = (List<ReportDefinition>)QueryUtil.list(
+						q, getDialect(), start, end);
 				}
 
 				cacheResult(list);
@@ -303,11 +284,12 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @throws NoSuchReportDefinitionException if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition findByUuid_First(String uuid,
-		OrderByComparator<ReportDefinition> orderByComparator)
+	public ReportDefinition findByUuid_First(
+			String uuid, OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
-		ReportDefinition reportDefinition = fetchByUuid_First(uuid,
-				orderByComparator);
+
+		ReportDefinition reportDefinition = fetchByUuid_First(
+			uuid, orderByComparator);
 
 		if (reportDefinition != null) {
 			return reportDefinition;
@@ -333,8 +315,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the first matching report definition, or <code>null</code> if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition fetchByUuid_First(String uuid,
-		OrderByComparator<ReportDefinition> orderByComparator) {
+	public ReportDefinition fetchByUuid_First(
+		String uuid, OrderByComparator<ReportDefinition> orderByComparator) {
+
 		List<ReportDefinition> list = findByUuid(uuid, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -353,11 +336,12 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @throws NoSuchReportDefinitionException if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition findByUuid_Last(String uuid,
-		OrderByComparator<ReportDefinition> orderByComparator)
+	public ReportDefinition findByUuid_Last(
+			String uuid, OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
-		ReportDefinition reportDefinition = fetchByUuid_Last(uuid,
-				orderByComparator);
+
+		ReportDefinition reportDefinition = fetchByUuid_Last(
+			uuid, orderByComparator);
 
 		if (reportDefinition != null) {
 			return reportDefinition;
@@ -383,16 +367,17 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the last matching report definition, or <code>null</code> if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition fetchByUuid_Last(String uuid,
-		OrderByComparator<ReportDefinition> orderByComparator) {
+	public ReportDefinition fetchByUuid_Last(
+		String uuid, OrderByComparator<ReportDefinition> orderByComparator) {
+
 		int count = countByUuid(uuid);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<ReportDefinition> list = findByUuid(uuid, count - 1, count,
-				orderByComparator);
+		List<ReportDefinition> list = findByUuid(
+			uuid, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -411,12 +396,15 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @throws NoSuchReportDefinitionException if a report definition with the primary key could not be found
 	 */
 	@Override
-	public ReportDefinition[] findByUuid_PrevAndNext(long reportDefinitionId,
-		String uuid, OrderByComparator<ReportDefinition> orderByComparator)
+	public ReportDefinition[] findByUuid_PrevAndNext(
+			long reportDefinitionId, String uuid,
+			OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
+
 		uuid = Objects.toString(uuid, "");
 
-		ReportDefinition reportDefinition = findByPrimaryKey(reportDefinitionId);
+		ReportDefinition reportDefinition = findByPrimaryKey(
+			reportDefinitionId);
 
 		Session session = null;
 
@@ -425,13 +413,13 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 
 			ReportDefinition[] array = new ReportDefinitionImpl[3];
 
-			array[0] = getByUuid_PrevAndNext(session, reportDefinition, uuid,
-					orderByComparator, true);
+			array[0] = getByUuid_PrevAndNext(
+				session, reportDefinition, uuid, orderByComparator, true);
 
 			array[1] = reportDefinition;
 
-			array[2] = getByUuid_PrevAndNext(session, reportDefinition, uuid,
-					orderByComparator, false);
+			array[2] = getByUuid_PrevAndNext(
+				session, reportDefinition, uuid, orderByComparator, false);
 
 			return array;
 		}
@@ -443,14 +431,16 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		}
 	}
 
-	protected ReportDefinition getByUuid_PrevAndNext(Session session,
-		ReportDefinition reportDefinition, String uuid,
-		OrderByComparator<ReportDefinition> orderByComparator, boolean previous) {
+	protected ReportDefinition getByUuid_PrevAndNext(
+		Session session, ReportDefinition reportDefinition, String uuid,
+		OrderByComparator<ReportDefinition> orderByComparator,
+		boolean previous) {
+
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(4 +
-					(orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(
+				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -471,7 +461,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -543,10 +534,11 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		}
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(reportDefinition);
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						reportDefinition)) {
 
-			for (Object value : values) {
-				qPos.add(value);
+				qPos.add(orderByConditionValue);
 			}
 		}
 
@@ -567,8 +559,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
-		for (ReportDefinition reportDefinition : findByUuid(uuid,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+		for (ReportDefinition reportDefinition :
+				findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
 			remove(reportDefinition);
 		}
 	}
@@ -583,9 +576,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	public int countByUuid(String uuid) {
 		uuid = Objects.toString(uuid, "");
 
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
+		FinderPath finderPath = _finderPathCountByUuid;
 
-		Object[] finderArgs = new Object[] { uuid };
+		Object[] finderArgs = new Object[] {uuid};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -637,23 +630,17 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UUID_UUID_1 = "reportDefinition.uuid IS NULL";
-	private static final String _FINDER_COLUMN_UUID_UUID_2 = "reportDefinition.uuid = ?";
-	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(reportDefinition.uuid IS NULL OR reportDefinition.uuid = '')";
-	public static final FinderPath FINDER_PATH_FETCH_BY_UUID_G = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class, FINDER_CLASS_NAME_ENTITY,
-			"fetchByUUID_G",
-			new String[] { String.class.getName(), Long.class.getName() },
-			ReportDefinitionModelImpl.UUID_COLUMN_BITMASK |
-			ReportDefinitionModelImpl.GROUPID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_G = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUUID_G",
-			new String[] { String.class.getName(), Long.class.getName() });
+	private static final String _FINDER_COLUMN_UUID_UUID_2 =
+		"reportDefinition.uuid = ?";
+
+	private static final String _FINDER_COLUMN_UUID_UUID_3 =
+		"(reportDefinition.uuid IS NULL OR reportDefinition.uuid = '')";
+
+	private FinderPath _finderPathFetchByUUID_G;
+	private FinderPath _finderPathCountByUUID_G;
 
 	/**
-	 * Returns the report definition where uuid = &#63; and groupId = &#63; or throws a {@link NoSuchReportDefinitionException} if it could not be found.
+	 * Returns the report definition where uuid = &#63; and groupId = &#63; or throws a <code>NoSuchReportDefinitionException</code> if it could not be found.
 	 *
 	 * @param uuid the uuid
 	 * @param groupId the group ID
@@ -663,6 +650,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	@Override
 	public ReportDefinition findByUUID_G(String uuid, long groupId)
 		throws NoSuchReportDefinitionException {
+
 		ReportDefinition reportDefinition = fetchByUUID_G(uuid, groupId);
 
 		if (reportDefinition == null) {
@@ -709,24 +697,26 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the matching report definition, or <code>null</code> if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition fetchByUUID_G(String uuid, long groupId,
-		boolean retrieveFromCache) {
+	public ReportDefinition fetchByUUID_G(
+		String uuid, long groupId, boolean retrieveFromCache) {
+
 		uuid = Objects.toString(uuid, "");
 
-		Object[] finderArgs = new Object[] { uuid, groupId };
+		Object[] finderArgs = new Object[] {uuid, groupId};
 
 		Object result = null;
 
 		if (retrieveFromCache) {
-			result = finderCache.getResult(FINDER_PATH_FETCH_BY_UUID_G,
-					finderArgs, this);
+			result = finderCache.getResult(
+				_finderPathFetchByUUID_G, finderArgs, this);
 		}
 
 		if (result instanceof ReportDefinition) {
 			ReportDefinition reportDefinition = (ReportDefinition)result;
 
 			if (!Objects.equals(uuid, reportDefinition.getUuid()) ||
-					(groupId != reportDefinition.getGroupId())) {
+				(groupId != reportDefinition.getGroupId())) {
+
 				result = null;
 			}
 		}
@@ -769,8 +759,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				List<ReportDefinition> list = q.list();
 
 				if (list.isEmpty()) {
-					finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-						finderArgs, list);
+					finderCache.putResult(
+						_finderPathFetchByUUID_G, finderArgs, list);
 				}
 				else {
 					ReportDefinition reportDefinition = list.get(0);
@@ -781,7 +771,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				}
 			}
 			catch (Exception e) {
-				finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, finderArgs);
+				finderCache.removeResult(_finderPathFetchByUUID_G, finderArgs);
 
 				throw processException(e);
 			}
@@ -808,6 +798,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	@Override
 	public ReportDefinition removeByUUID_G(String uuid, long groupId)
 		throws NoSuchReportDefinitionException {
+
 		ReportDefinition reportDefinition = findByUUID_G(uuid, groupId);
 
 		return remove(reportDefinition);
@@ -824,9 +815,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	public int countByUUID_G(String uuid, long groupId) {
 		uuid = Objects.toString(uuid, "");
 
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
+		FinderPath finderPath = _finderPathCountByUUID_G;
 
-		Object[] finderArgs = new Object[] { uuid, groupId };
+		Object[] finderArgs = new Object[] {uuid, groupId};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -882,33 +873,18 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UUID_G_UUID_1 = "reportDefinition.uuid IS NULL AND ";
-	private static final String _FINDER_COLUMN_UUID_G_UUID_2 = "reportDefinition.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_G_UUID_3 = "(reportDefinition.uuid IS NULL OR reportDefinition.uuid = '') AND ";
-	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 = "reportDefinition.groupId = ?";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-			"findByUuid_C",
-			new String[] {
-				String.class.getName(), Long.class.getName(),
-				
-			Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C =
-		new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
-			new String[] { String.class.getName(), Long.class.getName() },
-			ReportDefinitionModelImpl.UUID_COLUMN_BITMASK |
-			ReportDefinitionModelImpl.COMPANYID_COLUMN_BITMASK |
-			ReportDefinitionModelImpl.NAME_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_C = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-			new String[] { String.class.getName(), Long.class.getName() });
+	private static final String _FINDER_COLUMN_UUID_G_UUID_2 =
+		"reportDefinition.uuid = ? AND ";
+
+	private static final String _FINDER_COLUMN_UUID_G_UUID_3 =
+		"(reportDefinition.uuid IS NULL OR reportDefinition.uuid = '') AND ";
+
+	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 =
+		"reportDefinition.groupId = ?";
+
+	private FinderPath _finderPathWithPaginationFindByUuid_C;
+	private FinderPath _finderPathWithoutPaginationFindByUuid_C;
+	private FinderPath _finderPathCountByUuid_C;
 
 	/**
 	 * Returns all the report definitions where uuid = &#63; and companyId = &#63;.
@@ -919,15 +895,15 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public List<ReportDefinition> findByUuid_C(String uuid, long companyId) {
-		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
+		return findByUuid_C(
+			uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the report definitions where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -937,8 +913,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the range of matching report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findByUuid_C(String uuid, long companyId,
-		int start, int end) {
+	public List<ReportDefinition> findByUuid_C(
+		String uuid, long companyId, int start, int end) {
+
 		return findByUuid_C(uuid, companyId, start, end, null);
 	}
 
@@ -946,7 +923,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns an ordered range of all the report definitions where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -957,17 +934,19 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the ordered range of matching report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findByUuid_C(String uuid, long companyId,
-		int start, int end,
+	public List<ReportDefinition> findByUuid_C(
+		String uuid, long companyId, int start, int end,
 		OrderByComparator<ReportDefinition> orderByComparator) {
-		return findByUuid_C(uuid, companyId, start, end, orderByComparator, true);
+
+		return findByUuid_C(
+			uuid, companyId, start, end, orderByComparator, true);
 	}
 
 	/**
 	 * Returns an ordered range of all the report definitions where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -979,10 +958,11 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the ordered range of matching report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findByUuid_C(String uuid, long companyId,
-		int start, int end,
+	public List<ReportDefinition> findByUuid_C(
+		String uuid, long companyId, int start, int end,
 		OrderByComparator<ReportDefinition> orderByComparator,
 		boolean retrieveFromCache) {
+
 		uuid = Objects.toString(uuid, "");
 
 		boolean pagination = true;
@@ -990,30 +970,30 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
+			(orderByComparator == null)) {
+
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C;
-			finderArgs = new Object[] { uuid, companyId };
+			finderPath = _finderPathWithoutPaginationFindByUuid_C;
+			finderArgs = new Object[] {uuid, companyId};
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C;
+			finderPath = _finderPathWithPaginationFindByUuid_C;
 			finderArgs = new Object[] {
-					uuid, companyId,
-					
-					start, end, orderByComparator
-				};
+				uuid, companyId, start, end, orderByComparator
+			};
 		}
 
 		List<ReportDefinition> list = null;
 
 		if (retrieveFromCache) {
-			list = (List<ReportDefinition>)finderCache.getResult(finderPath,
-					finderArgs, this);
+			list = (List<ReportDefinition>)finderCache.getResult(
+				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (ReportDefinition reportDefinition : list) {
 					if (!uuid.equals(reportDefinition.getUuid()) ||
-							(companyId != reportDefinition.getCompanyId())) {
+						(companyId != reportDefinition.getCompanyId())) {
+
 						list = null;
 
 						break;
@@ -1026,8 +1006,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(4 +
-						(orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(
+					4 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -1049,11 +1029,10 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
 			}
-			else
-			 if (pagination) {
+			else if (pagination) {
 				query.append(ReportDefinitionModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -1075,16 +1054,16 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				qPos.add(companyId);
 
 				if (!pagination) {
-					list = (List<ReportDefinition>)QueryUtil.list(q,
-							getDialect(), start, end, false);
+					list = (List<ReportDefinition>)QueryUtil.list(
+						q, getDialect(), start, end, false);
 
 					Collections.sort(list);
 
 					list = Collections.unmodifiableList(list);
 				}
 				else {
-					list = (List<ReportDefinition>)QueryUtil.list(q,
-							getDialect(), start, end);
+					list = (List<ReportDefinition>)QueryUtil.list(
+						q, getDialect(), start, end);
 				}
 
 				cacheResult(list);
@@ -1114,11 +1093,13 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @throws NoSuchReportDefinitionException if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition findByUuid_C_First(String uuid, long companyId,
-		OrderByComparator<ReportDefinition> orderByComparator)
+	public ReportDefinition findByUuid_C_First(
+			String uuid, long companyId,
+			OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
-		ReportDefinition reportDefinition = fetchByUuid_C_First(uuid,
-				companyId, orderByComparator);
+
+		ReportDefinition reportDefinition = fetchByUuid_C_First(
+			uuid, companyId, orderByComparator);
 
 		if (reportDefinition != null) {
 			return reportDefinition;
@@ -1148,10 +1129,12 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the first matching report definition, or <code>null</code> if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition fetchByUuid_C_First(String uuid, long companyId,
+	public ReportDefinition fetchByUuid_C_First(
+		String uuid, long companyId,
 		OrderByComparator<ReportDefinition> orderByComparator) {
-		List<ReportDefinition> list = findByUuid_C(uuid, companyId, 0, 1,
-				orderByComparator);
+
+		List<ReportDefinition> list = findByUuid_C(
+			uuid, companyId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1170,11 +1153,13 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @throws NoSuchReportDefinitionException if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition findByUuid_C_Last(String uuid, long companyId,
-		OrderByComparator<ReportDefinition> orderByComparator)
+	public ReportDefinition findByUuid_C_Last(
+			String uuid, long companyId,
+			OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
-		ReportDefinition reportDefinition = fetchByUuid_C_Last(uuid, companyId,
-				orderByComparator);
+
+		ReportDefinition reportDefinition = fetchByUuid_C_Last(
+			uuid, companyId, orderByComparator);
 
 		if (reportDefinition != null) {
 			return reportDefinition;
@@ -1204,16 +1189,18 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the last matching report definition, or <code>null</code> if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition fetchByUuid_C_Last(String uuid, long companyId,
+	public ReportDefinition fetchByUuid_C_Last(
+		String uuid, long companyId,
 		OrderByComparator<ReportDefinition> orderByComparator) {
+
 		int count = countByUuid_C(uuid, companyId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<ReportDefinition> list = findByUuid_C(uuid, companyId, count - 1,
-				count, orderByComparator);
+		List<ReportDefinition> list = findByUuid_C(
+			uuid, companyId, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1234,12 +1221,14 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public ReportDefinition[] findByUuid_C_PrevAndNext(
-		long reportDefinitionId, String uuid, long companyId,
-		OrderByComparator<ReportDefinition> orderByComparator)
+			long reportDefinitionId, String uuid, long companyId,
+			OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
+
 		uuid = Objects.toString(uuid, "");
 
-		ReportDefinition reportDefinition = findByPrimaryKey(reportDefinitionId);
+		ReportDefinition reportDefinition = findByPrimaryKey(
+			reportDefinitionId);
 
 		Session session = null;
 
@@ -1248,13 +1237,15 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 
 			ReportDefinition[] array = new ReportDefinitionImpl[3];
 
-			array[0] = getByUuid_C_PrevAndNext(session, reportDefinition, uuid,
-					companyId, orderByComparator, true);
+			array[0] = getByUuid_C_PrevAndNext(
+				session, reportDefinition, uuid, companyId, orderByComparator,
+				true);
 
 			array[1] = reportDefinition;
 
-			array[2] = getByUuid_C_PrevAndNext(session, reportDefinition, uuid,
-					companyId, orderByComparator, false);
+			array[2] = getByUuid_C_PrevAndNext(
+				session, reportDefinition, uuid, companyId, orderByComparator,
+				false);
 
 			return array;
 		}
@@ -1266,14 +1257,16 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		}
 	}
 
-	protected ReportDefinition getByUuid_C_PrevAndNext(Session session,
-		ReportDefinition reportDefinition, String uuid, long companyId,
-		OrderByComparator<ReportDefinition> orderByComparator, boolean previous) {
+	protected ReportDefinition getByUuid_C_PrevAndNext(
+		Session session, ReportDefinition reportDefinition, String uuid,
+		long companyId, OrderByComparator<ReportDefinition> orderByComparator,
+		boolean previous) {
+
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(5 +
-					(orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -1296,7 +1289,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -1370,10 +1364,11 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		qPos.add(companyId);
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(reportDefinition);
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						reportDefinition)) {
 
-			for (Object value : values) {
-				qPos.add(value);
+				qPos.add(orderByConditionValue);
 			}
 		}
 
@@ -1395,8 +1390,11 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
-		for (ReportDefinition reportDefinition : findByUuid_C(uuid, companyId,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+		for (ReportDefinition reportDefinition :
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
 			remove(reportDefinition);
 		}
 	}
@@ -1412,9 +1410,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	public int countByUuid_C(String uuid, long companyId) {
 		uuid = Objects.toString(uuid, "");
 
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
+		FinderPath finderPath = _finderPathCountByUuid_C;
 
-		Object[] finderArgs = new Object[] { uuid, companyId };
+		Object[] finderArgs = new Object[] {uuid, companyId};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -1470,32 +1468,18 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UUID_C_UUID_1 = "reportDefinition.uuid IS NULL AND ";
-	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "reportDefinition.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(reportDefinition.uuid IS NULL OR reportDefinition.uuid = '') AND ";
-	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "reportDefinition.companyId = ?";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPID = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-			"findByGroupId",
-			new String[] {
-				Long.class.getName(),
-				
-			Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID =
-		new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
-			ReportDefinitionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-			new String[] { Long.class.getName() },
-			ReportDefinitionModelImpl.GROUPID_COLUMN_BITMASK |
-			ReportDefinitionModelImpl.NAME_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_GROUPID = new FinderPath(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-			new String[] { Long.class.getName() });
+	private static final String _FINDER_COLUMN_UUID_C_UUID_2 =
+		"reportDefinition.uuid = ? AND ";
+
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3 =
+		"(reportDefinition.uuid IS NULL OR reportDefinition.uuid = '') AND ";
+
+	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 =
+		"reportDefinition.companyId = ?";
+
+	private FinderPath _finderPathWithPaginationFindByGroupId;
+	private FinderPath _finderPathWithoutPaginationFindByGroupId;
+	private FinderPath _finderPathCountByGroupId;
 
 	/**
 	 * Returns all the report definitions where groupId = &#63;.
@@ -1505,14 +1489,15 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public List<ReportDefinition> findByGroupId(long groupId) {
-		return findByGroupId(groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return findByGroupId(
+			groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the report definitions where groupId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1521,7 +1506,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the range of matching report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findByGroupId(long groupId, int start, int end) {
+	public List<ReportDefinition> findByGroupId(
+		long groupId, int start, int end) {
+
 		return findByGroupId(groupId, start, end, null);
 	}
 
@@ -1529,7 +1516,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns an ordered range of all the report definitions where groupId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1539,8 +1526,10 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the ordered range of matching report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findByGroupId(long groupId, int start,
-		int end, OrderByComparator<ReportDefinition> orderByComparator) {
+	public List<ReportDefinition> findByGroupId(
+		long groupId, int start, int end,
+		OrderByComparator<ReportDefinition> orderByComparator) {
+
 		return findByGroupId(groupId, start, end, orderByComparator, true);
 	}
 
@@ -1548,7 +1537,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns an ordered range of all the report definitions where groupId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1559,29 +1548,32 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the ordered range of matching report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findByGroupId(long groupId, int start,
-		int end, OrderByComparator<ReportDefinition> orderByComparator,
+	public List<ReportDefinition> findByGroupId(
+		long groupId, int start, int end,
+		OrderByComparator<ReportDefinition> orderByComparator,
 		boolean retrieveFromCache) {
+
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
+			(orderByComparator == null)) {
+
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID;
-			finderArgs = new Object[] { groupId };
+			finderPath = _finderPathWithoutPaginationFindByGroupId;
+			finderArgs = new Object[] {groupId};
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPID;
-			finderArgs = new Object[] { groupId, start, end, orderByComparator };
+			finderPath = _finderPathWithPaginationFindByGroupId;
+			finderArgs = new Object[] {groupId, start, end, orderByComparator};
 		}
 
 		List<ReportDefinition> list = null;
 
 		if (retrieveFromCache) {
-			list = (List<ReportDefinition>)finderCache.getResult(finderPath,
-					finderArgs, this);
+			list = (List<ReportDefinition>)finderCache.getResult(
+				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (ReportDefinition reportDefinition : list) {
@@ -1598,8 +1590,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(
+					3 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -1610,11 +1602,10 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
 			}
-			else
-			 if (pagination) {
+			else if (pagination) {
 				query.append(ReportDefinitionModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -1632,16 +1623,16 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				qPos.add(groupId);
 
 				if (!pagination) {
-					list = (List<ReportDefinition>)QueryUtil.list(q,
-							getDialect(), start, end, false);
+					list = (List<ReportDefinition>)QueryUtil.list(
+						q, getDialect(), start, end, false);
 
 					Collections.sort(list);
 
 					list = Collections.unmodifiableList(list);
 				}
 				else {
-					list = (List<ReportDefinition>)QueryUtil.list(q,
-							getDialect(), start, end);
+					list = (List<ReportDefinition>)QueryUtil.list(
+						q, getDialect(), start, end);
 				}
 
 				cacheResult(list);
@@ -1670,11 +1661,12 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @throws NoSuchReportDefinitionException if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition findByGroupId_First(long groupId,
-		OrderByComparator<ReportDefinition> orderByComparator)
+	public ReportDefinition findByGroupId_First(
+			long groupId, OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
-		ReportDefinition reportDefinition = fetchByGroupId_First(groupId,
-				orderByComparator);
+
+		ReportDefinition reportDefinition = fetchByGroupId_First(
+			groupId, orderByComparator);
 
 		if (reportDefinition != null) {
 			return reportDefinition;
@@ -1700,10 +1692,11 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the first matching report definition, or <code>null</code> if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition fetchByGroupId_First(long groupId,
-		OrderByComparator<ReportDefinition> orderByComparator) {
-		List<ReportDefinition> list = findByGroupId(groupId, 0, 1,
-				orderByComparator);
+	public ReportDefinition fetchByGroupId_First(
+		long groupId, OrderByComparator<ReportDefinition> orderByComparator) {
+
+		List<ReportDefinition> list = findByGroupId(
+			groupId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1721,11 +1714,12 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @throws NoSuchReportDefinitionException if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition findByGroupId_Last(long groupId,
-		OrderByComparator<ReportDefinition> orderByComparator)
+	public ReportDefinition findByGroupId_Last(
+			long groupId, OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
-		ReportDefinition reportDefinition = fetchByGroupId_Last(groupId,
-				orderByComparator);
+
+		ReportDefinition reportDefinition = fetchByGroupId_Last(
+			groupId, orderByComparator);
 
 		if (reportDefinition != null) {
 			return reportDefinition;
@@ -1751,16 +1745,17 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the last matching report definition, or <code>null</code> if a matching report definition could not be found
 	 */
 	@Override
-	public ReportDefinition fetchByGroupId_Last(long groupId,
-		OrderByComparator<ReportDefinition> orderByComparator) {
+	public ReportDefinition fetchByGroupId_Last(
+		long groupId, OrderByComparator<ReportDefinition> orderByComparator) {
+
 		int count = countByGroupId(groupId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<ReportDefinition> list = findByGroupId(groupId, count - 1, count,
-				orderByComparator);
+		List<ReportDefinition> list = findByGroupId(
+			groupId, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1780,10 +1775,12 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public ReportDefinition[] findByGroupId_PrevAndNext(
-		long reportDefinitionId, long groupId,
-		OrderByComparator<ReportDefinition> orderByComparator)
+			long reportDefinitionId, long groupId,
+			OrderByComparator<ReportDefinition> orderByComparator)
 		throws NoSuchReportDefinitionException {
-		ReportDefinition reportDefinition = findByPrimaryKey(reportDefinitionId);
+
+		ReportDefinition reportDefinition = findByPrimaryKey(
+			reportDefinitionId);
 
 		Session session = null;
 
@@ -1792,13 +1789,13 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 
 			ReportDefinition[] array = new ReportDefinitionImpl[3];
 
-			array[0] = getByGroupId_PrevAndNext(session, reportDefinition,
-					groupId, orderByComparator, true);
+			array[0] = getByGroupId_PrevAndNext(
+				session, reportDefinition, groupId, orderByComparator, true);
 
 			array[1] = reportDefinition;
 
-			array[2] = getByGroupId_PrevAndNext(session, reportDefinition,
-					groupId, orderByComparator, false);
+			array[2] = getByGroupId_PrevAndNext(
+				session, reportDefinition, groupId, orderByComparator, false);
 
 			return array;
 		}
@@ -1810,14 +1807,16 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		}
 	}
 
-	protected ReportDefinition getByGroupId_PrevAndNext(Session session,
-		ReportDefinition reportDefinition, long groupId,
-		OrderByComparator<ReportDefinition> orderByComparator, boolean previous) {
+	protected ReportDefinition getByGroupId_PrevAndNext(
+		Session session, ReportDefinition reportDefinition, long groupId,
+		OrderByComparator<ReportDefinition> orderByComparator,
+		boolean previous) {
+
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(4 +
-					(orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(
+				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -1829,7 +1828,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -1899,10 +1899,11 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		qPos.add(groupId);
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(reportDefinition);
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						reportDefinition)) {
 
-			for (Object value : values) {
-				qPos.add(value);
+				qPos.add(orderByConditionValue);
 			}
 		}
 
@@ -1923,8 +1924,10 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
-		for (ReportDefinition reportDefinition : findByGroupId(groupId,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+		for (ReportDefinition reportDefinition :
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
 			remove(reportDefinition);
 		}
 	}
@@ -1937,9 +1940,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public int countByGroupId(long groupId) {
-		FinderPath finderPath = FINDER_PATH_COUNT_BY_GROUPID;
+		FinderPath finderPath = _finderPathCountByGroupId;
 
-		Object[] finderArgs = new Object[] { groupId };
+		Object[] finderArgs = new Object[] {groupId};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -1980,20 +1983,21 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_GROUPID_GROUPID_2 = "reportDefinition.groupId = ?";
+	private static final String _FINDER_COLUMN_GROUPID_GROUPID_2 =
+		"reportDefinition.groupId = ?";
 
 	public ReportDefinitionPersistenceImpl() {
 		setModelClass(ReportDefinition.class);
 
+		Map<String, String> dbColumnNames = new HashMap<String, String>();
+
+		dbColumnNames.put("uuid", "uuid_");
+
 		try {
 			Field field = BasePersistenceImpl.class.getDeclaredField(
-					"_dbColumnNames");
+				"_dbColumnNames");
 
 			field.setAccessible(true);
-
-			Map<String, String> dbColumnNames = new HashMap<String, String>();
-
-			dbColumnNames.put("uuid", "uuid_");
 
 			field.set(this, dbColumnNames);
 		}
@@ -2011,14 +2015,17 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public void cacheResult(ReportDefinition reportDefinition) {
-		entityCache.putResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
 			ReportDefinitionImpl.class, reportDefinition.getPrimaryKey(),
 			reportDefinition);
 
-		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
+		finderCache.putResult(
+			_finderPathFetchByUUID_G,
 			new Object[] {
 				reportDefinition.getUuid(), reportDefinition.getGroupId()
-			}, reportDefinition);
+			},
+			reportDefinition);
 
 		reportDefinition.resetOriginalValues();
 	}
@@ -2032,9 +2039,10 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	public void cacheResult(List<ReportDefinition> reportDefinitions) {
 		for (ReportDefinition reportDefinition : reportDefinitions) {
 			if (entityCache.getResult(
-						ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-						ReportDefinitionImpl.class,
-						reportDefinition.getPrimaryKey()) == null) {
+					ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+					ReportDefinitionImpl.class,
+					reportDefinition.getPrimaryKey()) == null) {
+
 				cacheResult(reportDefinition);
 			}
 			else {
@@ -2047,7 +2055,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Clears the cache for all report definitions.
 	 *
 	 * <p>
-	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
+	 * The <code>EntityCache</code> and <code>FinderCache</code> are both cleared by this method.
 	 * </p>
 	 */
 	@Override
@@ -2063,19 +2071,20 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Clears the cache for the report definition.
 	 *
 	 * <p>
-	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
+	 * The <code>EntityCache</code> and <code>FinderCache</code> are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache(ReportDefinition reportDefinition) {
-		entityCache.removeResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.removeResult(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
 			ReportDefinitionImpl.class, reportDefinition.getPrimaryKey());
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((ReportDefinitionModelImpl)reportDefinition,
-			true);
+		clearUniqueFindersCache(
+			(ReportDefinitionModelImpl)reportDefinition, true);
 	}
 
 	@Override
@@ -2084,49 +2093,53 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		for (ReportDefinition reportDefinition : reportDefinitions) {
-			entityCache.removeResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			entityCache.removeResult(
+				ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
 				ReportDefinitionImpl.class, reportDefinition.getPrimaryKey());
 
-			clearUniqueFindersCache((ReportDefinitionModelImpl)reportDefinition,
-				true);
+			clearUniqueFindersCache(
+				(ReportDefinitionModelImpl)reportDefinition, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
 		ReportDefinitionModelImpl reportDefinitionModelImpl) {
-		Object[] args = new Object[] {
-				reportDefinitionModelImpl.getUuid(),
-				reportDefinitionModelImpl.getGroupId()
-			};
 
-		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-			Long.valueOf(1), false);
-		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-			reportDefinitionModelImpl, false);
+		Object[] args = new Object[] {
+			reportDefinitionModelImpl.getUuid(),
+			reportDefinitionModelImpl.getGroupId()
+		};
+
+		finderCache.putResult(
+			_finderPathCountByUUID_G, args, Long.valueOf(1), false);
+		finderCache.putResult(
+			_finderPathFetchByUUID_G, args, reportDefinitionModelImpl, false);
 	}
 
 	protected void clearUniqueFindersCache(
 		ReportDefinitionModelImpl reportDefinitionModelImpl,
 		boolean clearCurrent) {
+
 		if (clearCurrent) {
 			Object[] args = new Object[] {
-					reportDefinitionModelImpl.getUuid(),
-					reportDefinitionModelImpl.getGroupId()
-				};
+				reportDefinitionModelImpl.getUuid(),
+				reportDefinitionModelImpl.getGroupId()
+			};
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+			finderCache.removeResult(_finderPathCountByUUID_G, args);
+			finderCache.removeResult(_finderPathFetchByUUID_G, args);
 		}
 
 		if ((reportDefinitionModelImpl.getColumnBitmask() &
-				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			Object[] args = new Object[] {
-					reportDefinitionModelImpl.getOriginalUuid(),
-					reportDefinitionModelImpl.getOriginalGroupId()
-				};
+			 _finderPathFetchByUUID_G.getColumnBitmask()) != 0) {
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+			Object[] args = new Object[] {
+				reportDefinitionModelImpl.getOriginalUuid(),
+				reportDefinitionModelImpl.getOriginalGroupId()
+			};
+
+			finderCache.removeResult(_finderPathCountByUUID_G, args);
+			finderCache.removeResult(_finderPathFetchByUUID_G, args);
 		}
 	}
 
@@ -2162,6 +2175,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	@Override
 	public ReportDefinition remove(long reportDefinitionId)
 		throws NoSuchReportDefinitionException {
+
 		return remove((Serializable)reportDefinitionId);
 	}
 
@@ -2175,21 +2189,22 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	@Override
 	public ReportDefinition remove(Serializable primaryKey)
 		throws NoSuchReportDefinitionException {
+
 		Session session = null;
 
 		try {
 			session = openSession();
 
-			ReportDefinition reportDefinition = (ReportDefinition)session.get(ReportDefinitionImpl.class,
-					primaryKey);
+			ReportDefinition reportDefinition = (ReportDefinition)session.get(
+				ReportDefinitionImpl.class, primaryKey);
 
 			if (reportDefinition == null) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
 
-				throw new NoSuchReportDefinitionException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-					primaryKey);
+				throw new NoSuchReportDefinitionException(
+					_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
 			return remove(reportDefinition);
@@ -2213,8 +2228,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			session = openSession();
 
 			if (!session.contains(reportDefinition)) {
-				reportDefinition = (ReportDefinition)session.get(ReportDefinitionImpl.class,
-						reportDefinition.getPrimaryKeyObj());
+				reportDefinition = (ReportDefinition)session.get(
+					ReportDefinitionImpl.class,
+					reportDefinition.getPrimaryKeyObj());
 			}
 
 			if (reportDefinition != null) {
@@ -2243,19 +2259,21 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			InvocationHandler invocationHandler = null;
 
 			if (ProxyUtil.isProxyClass(reportDefinition.getClass())) {
-				invocationHandler = ProxyUtil.getInvocationHandler(reportDefinition);
+				invocationHandler = ProxyUtil.getInvocationHandler(
+					reportDefinition);
 
 				throw new IllegalArgumentException(
 					"Implement ModelWrapper in reportDefinition proxy " +
-					invocationHandler.getClass());
+						invocationHandler.getClass());
 			}
 
 			throw new IllegalArgumentException(
 				"Implement ModelWrapper in custom ReportDefinition implementation " +
-				reportDefinition.getClass());
+					reportDefinition.getClass());
 		}
 
-		ReportDefinitionModelImpl reportDefinitionModelImpl = (ReportDefinitionModelImpl)reportDefinition;
+		ReportDefinitionModelImpl reportDefinitionModelImpl =
+			(ReportDefinitionModelImpl)reportDefinition;
 
 		if (Validator.isNull(reportDefinition.getUuid())) {
 			String uuid = PortalUUIDUtil.generate();
@@ -2263,7 +2281,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			reportDefinition.setUuid(uuid);
 		}
 
-		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
 
 		Date now = new Date();
 
@@ -2272,7 +2291,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				reportDefinition.setCreateDate(now);
 			}
 			else {
-				reportDefinition.setCreateDate(serviceContext.getCreateDate(now));
+				reportDefinition.setCreateDate(
+					serviceContext.getCreateDate(now));
 			}
 		}
 
@@ -2281,8 +2301,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				reportDefinition.setModifiedDate(now);
 			}
 			else {
-				reportDefinition.setModifiedDate(serviceContext.getModifiedDate(
-						now));
+				reportDefinition.setModifiedDate(
+					serviceContext.getModifiedDate(now));
 			}
 		}
 
@@ -2297,7 +2317,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				reportDefinition.setNew(false);
 			}
 			else {
-				reportDefinition = (ReportDefinition)session.merge(reportDefinition);
+				reportDefinition = (ReportDefinition)session.merge(
+					reportDefinition);
 			}
 		}
 		catch (Exception e) {
@@ -2312,92 +2333,97 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		if (!ReportDefinitionModelImpl.COLUMN_BITMASK_ENABLED) {
 			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 		}
-		else
-		 if (isNew) {
-			Object[] args = new Object[] { reportDefinitionModelImpl.getUuid() };
+		else if (isNew) {
+			Object[] args = new Object[] {reportDefinitionModelImpl.getUuid()};
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
-				args);
+			finderCache.removeResult(_finderPathCountByUuid, args);
+			finderCache.removeResult(
+				_finderPathWithoutPaginationFindByUuid, args);
 
 			args = new Object[] {
+				reportDefinitionModelImpl.getUuid(),
+				reportDefinitionModelImpl.getCompanyId()
+			};
+
+			finderCache.removeResult(_finderPathCountByUuid_C, args);
+			finderCache.removeResult(
+				_finderPathWithoutPaginationFindByUuid_C, args);
+
+			args = new Object[] {reportDefinitionModelImpl.getGroupId()};
+
+			finderCache.removeResult(_finderPathCountByGroupId, args);
+			finderCache.removeResult(
+				_finderPathWithoutPaginationFindByGroupId, args);
+
+			finderCache.removeResult(_finderPathCountAll, FINDER_ARGS_EMPTY);
+			finderCache.removeResult(
+				_finderPathWithoutPaginationFindAll, FINDER_ARGS_EMPTY);
+		}
+		else {
+			if ((reportDefinitionModelImpl.getColumnBitmask() &
+				 _finderPathWithoutPaginationFindByUuid.getColumnBitmask()) !=
+					 0) {
+
+				Object[] args = new Object[] {
+					reportDefinitionModelImpl.getOriginalUuid()
+				};
+
+				finderCache.removeResult(_finderPathCountByUuid, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByUuid, args);
+
+				args = new Object[] {reportDefinitionModelImpl.getUuid()};
+
+				finderCache.removeResult(_finderPathCountByUuid, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByUuid, args);
+			}
+
+			if ((reportDefinitionModelImpl.getColumnBitmask() &
+				 _finderPathWithoutPaginationFindByUuid_C.getColumnBitmask()) !=
+					 0) {
+
+				Object[] args = new Object[] {
+					reportDefinitionModelImpl.getOriginalUuid(),
+					reportDefinitionModelImpl.getOriginalCompanyId()
+				};
+
+				finderCache.removeResult(_finderPathCountByUuid_C, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByUuid_C, args);
+
+				args = new Object[] {
 					reportDefinitionModelImpl.getUuid(),
 					reportDefinitionModelImpl.getCompanyId()
 				};
 
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
-				args);
-
-			args = new Object[] { reportDefinitionModelImpl.getGroupId() };
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
-				args);
-
-			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
-			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
-				FINDER_ARGS_EMPTY);
-		}
-
-		else {
-			if ((reportDefinitionModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						reportDefinitionModelImpl.getOriginalUuid()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
-					args);
-
-				args = new Object[] { reportDefinitionModelImpl.getUuid() };
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
-					args);
+				finderCache.removeResult(_finderPathCountByUuid_C, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByUuid_C, args);
 			}
 
 			if ((reportDefinitionModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C.getColumnBitmask()) != 0) {
+				 _finderPathWithoutPaginationFindByGroupId.
+					 getColumnBitmask()) != 0) {
+
 				Object[] args = new Object[] {
-						reportDefinitionModelImpl.getOriginalUuid(),
-						reportDefinitionModelImpl.getOriginalCompanyId()
-					};
+					reportDefinitionModelImpl.getOriginalGroupId()
+				};
 
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
-					args);
+				finderCache.removeResult(_finderPathCountByGroupId, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByGroupId, args);
 
-				args = new Object[] {
-						reportDefinitionModelImpl.getUuid(),
-						reportDefinitionModelImpl.getCompanyId()
-					};
+				args = new Object[] {reportDefinitionModelImpl.getGroupId()};
 
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
-					args);
-			}
-
-			if ((reportDefinitionModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						reportDefinitionModelImpl.getOriginalGroupId()
-					};
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
-					args);
-
-				args = new Object[] { reportDefinitionModelImpl.getGroupId() };
-
-				finderCache.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
-				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
-					args);
+				finderCache.removeResult(_finderPathCountByGroupId, args);
+				finderCache.removeResult(
+					_finderPathWithoutPaginationFindByGroupId, args);
 			}
 		}
 
-		entityCache.putResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+		entityCache.putResult(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
 			ReportDefinitionImpl.class, reportDefinition.getPrimaryKey(),
 			reportDefinition, false);
 
@@ -2410,7 +2436,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	}
 
 	/**
-	 * Returns the report definition with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
+	 * Returns the report definition with the primary key or throws a <code>com.liferay.portal.kernel.exception.NoSuchModelException</code> if it could not be found.
 	 *
 	 * @param primaryKey the primary key of the report definition
 	 * @return the report definition
@@ -2419,6 +2445,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	@Override
 	public ReportDefinition findByPrimaryKey(Serializable primaryKey)
 		throws NoSuchReportDefinitionException {
+
 		ReportDefinition reportDefinition = fetchByPrimaryKey(primaryKey);
 
 		if (reportDefinition == null) {
@@ -2426,15 +2453,15 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
-			throw new NoSuchReportDefinitionException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				primaryKey);
+			throw new NoSuchReportDefinitionException(
+				_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 		}
 
 		return reportDefinition;
 	}
 
 	/**
-	 * Returns the report definition with the primary key or throws a {@link NoSuchReportDefinitionException} if it could not be found.
+	 * Returns the report definition with the primary key or throws a <code>NoSuchReportDefinitionException</code> if it could not be found.
 	 *
 	 * @param reportDefinitionId the primary key of the report definition
 	 * @return the report definition
@@ -2443,6 +2470,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	@Override
 	public ReportDefinition findByPrimaryKey(long reportDefinitionId)
 		throws NoSuchReportDefinitionException {
+
 		return findByPrimaryKey((Serializable)reportDefinitionId);
 	}
 
@@ -2454,8 +2482,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public ReportDefinition fetchByPrimaryKey(Serializable primaryKey) {
-		Serializable serializable = entityCache.getResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-				ReportDefinitionImpl.class, primaryKey);
+		Serializable serializable = entityCache.getResult(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionImpl.class, primaryKey);
 
 		if (serializable == nullModel) {
 			return null;
@@ -2469,19 +2498,21 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			try {
 				session = openSession();
 
-				reportDefinition = (ReportDefinition)session.get(ReportDefinitionImpl.class,
-						primaryKey);
+				reportDefinition = (ReportDefinition)session.get(
+					ReportDefinitionImpl.class, primaryKey);
 
 				if (reportDefinition != null) {
 					cacheResult(reportDefinition);
 				}
 				else {
-					entityCache.putResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+					entityCache.putResult(
+						ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
 						ReportDefinitionImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
-				entityCache.removeResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.removeResult(
+					ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
 					ReportDefinitionImpl.class, primaryKey);
 
 				throw processException(e);
@@ -2508,11 +2539,13 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	@Override
 	public Map<Serializable, ReportDefinition> fetchByPrimaryKeys(
 		Set<Serializable> primaryKeys) {
+
 		if (primaryKeys.isEmpty()) {
 			return Collections.emptyMap();
 		}
 
-		Map<Serializable, ReportDefinition> map = new HashMap<Serializable, ReportDefinition>();
+		Map<Serializable, ReportDefinition> map =
+			new HashMap<Serializable, ReportDefinition>();
 
 		if (primaryKeys.size() == 1) {
 			Iterator<Serializable> iterator = primaryKeys.iterator();
@@ -2531,8 +2564,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			Serializable serializable = entityCache.getResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
-					ReportDefinitionImpl.class, primaryKey);
+			Serializable serializable = entityCache.getResult(
+				ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+				ReportDefinitionImpl.class, primaryKey);
 
 			if (serializable != nullModel) {
 				if (serializable == null) {
@@ -2552,8 +2586,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			return map;
 		}
 
-		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
-				1);
+		StringBundler query = new StringBundler(
+			uncachedPrimaryKeys.size() * 2 + 1);
 
 		query.append(_SQL_SELECT_REPORTDEFINITION_WHERE_PKS_IN);
 
@@ -2576,7 +2610,9 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 
 			Query q = session.createQuery(sql);
 
-			for (ReportDefinition reportDefinition : (List<ReportDefinition>)q.list()) {
+			for (ReportDefinition reportDefinition :
+					(List<ReportDefinition>)q.list()) {
+
 				map.put(reportDefinition.getPrimaryKeyObj(), reportDefinition);
 
 				cacheResult(reportDefinition);
@@ -2585,7 +2621,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			}
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
-				entityCache.putResult(ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+				entityCache.putResult(
+					ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
 					ReportDefinitionImpl.class, primaryKey, nullModel);
 			}
 		}
@@ -2613,7 +2650,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns a range of all the report definitions.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of report definitions
@@ -2629,7 +2666,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns an ordered range of all the report definitions.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of report definitions
@@ -2638,8 +2675,10 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the ordered range of report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findAll(int start, int end,
+	public List<ReportDefinition> findAll(
+		int start, int end,
 		OrderByComparator<ReportDefinition> orderByComparator) {
+
 		return findAll(start, end, orderByComparator, true);
 	}
 
@@ -2647,7 +2686,7 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Returns an ordered range of all the report definitions.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link ReportDefinitionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not <code>QueryUtil#ALL_POS</code>), then the query will include the default ORDER BY logic from <code>ReportDefinitionModelImpl</code>. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of report definitions
@@ -2657,29 +2696,32 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * @return the ordered range of report definitions
 	 */
 	@Override
-	public List<ReportDefinition> findAll(int start, int end,
+	public List<ReportDefinition> findAll(
+		int start, int end,
 		OrderByComparator<ReportDefinition> orderByComparator,
 		boolean retrieveFromCache) {
+
 		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
+			(orderByComparator == null)) {
+
 			pagination = false;
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL;
+			finderPath = _finderPathWithoutPaginationFindAll;
 			finderArgs = FINDER_ARGS_EMPTY;
 		}
 		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_ALL;
-			finderArgs = new Object[] { start, end, orderByComparator };
+			finderPath = _finderPathWithPaginationFindAll;
+			finderArgs = new Object[] {start, end, orderByComparator};
 		}
 
 		List<ReportDefinition> list = null;
 
 		if (retrieveFromCache) {
-			list = (List<ReportDefinition>)finderCache.getResult(finderPath,
-					finderArgs, this);
+			list = (List<ReportDefinition>)finderCache.getResult(
+				finderPath, finderArgs, this);
 		}
 
 		if (list == null) {
@@ -2687,13 +2729,13 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 			String sql = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(2 +
-						(orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(
+					2 + (orderByComparator.getOrderByFields().length * 2));
 
 				query.append(_SQL_SELECT_REPORTDEFINITION);
 
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+				appendOrderByComparator(
+					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
 
 				sql = query.toString();
 			}
@@ -2713,16 +2755,16 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 				Query q = session.createQuery(sql);
 
 				if (!pagination) {
-					list = (List<ReportDefinition>)QueryUtil.list(q,
-							getDialect(), start, end, false);
+					list = (List<ReportDefinition>)QueryUtil.list(
+						q, getDialect(), start, end, false);
 
 					Collections.sort(list);
 
 					list = Collections.unmodifiableList(list);
 				}
 				else {
-					list = (List<ReportDefinition>)QueryUtil.list(q,
-							getDialect(), start, end);
+					list = (List<ReportDefinition>)QueryUtil.list(
+						q, getDialect(), start, end);
 				}
 
 				cacheResult(list);
@@ -2760,8 +2802,8 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 */
 	@Override
 	public int countAll() {
-		Long count = (Long)finderCache.getResult(FINDER_PATH_COUNT_ALL,
-				FINDER_ARGS_EMPTY, this);
+		Long count = (Long)finderCache.getResult(
+			_finderPathCountAll, FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
 			Session session = null;
@@ -2773,12 +2815,12 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 
 				count = (Long)q.uniqueResult();
 
-				finderCache.putResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY,
-					count);
+				finderCache.putResult(
+					_finderPathCountAll, FINDER_ARGS_EMPTY, count);
 			}
 			catch (Exception e) {
-				finderCache.removeResult(FINDER_PATH_COUNT_ALL,
-					FINDER_ARGS_EMPTY);
+				finderCache.removeResult(
+					_finderPathCountAll, FINDER_ARGS_EMPTY);
 
 				throw processException(e);
 			}
@@ -2804,6 +2846,116 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 	 * Initializes the report definition persistence.
 	 */
 	public void afterPropertiesSet() {
+		_finderPathWithPaginationFindAll = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findAll", new String[0]);
+
+		_finderPathWithoutPaginationFindAll = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll",
+			new String[0]);
+
+		_finderPathCountAll = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
+			new String[0]);
+
+		_finderPathWithPaginationFindByUuid = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByUuid",
+			new String[] {
+				String.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			});
+
+		_finderPathWithoutPaginationFindByUuid = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
+			new String[] {String.class.getName()},
+			ReportDefinitionModelImpl.UUID_COLUMN_BITMASK |
+			ReportDefinitionModelImpl.NAME_COLUMN_BITMASK);
+
+		_finderPathCountByUuid = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+			new String[] {String.class.getName()});
+
+		_finderPathFetchByUUID_G = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByUUID_G",
+			new String[] {String.class.getName(), Long.class.getName()},
+			ReportDefinitionModelImpl.UUID_COLUMN_BITMASK |
+			ReportDefinitionModelImpl.GROUPID_COLUMN_BITMASK);
+
+		_finderPathCountByUUID_G = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUUID_G",
+			new String[] {String.class.getName(), Long.class.getName()});
+
+		_finderPathWithPaginationFindByUuid_C = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByUuid_C",
+			new String[] {
+				String.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+
+		_finderPathWithoutPaginationFindByUuid_C = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
+			new String[] {String.class.getName(), Long.class.getName()},
+			ReportDefinitionModelImpl.UUID_COLUMN_BITMASK |
+			ReportDefinitionModelImpl.COMPANYID_COLUMN_BITMASK |
+			ReportDefinitionModelImpl.NAME_COLUMN_BITMASK);
+
+		_finderPathCountByUuid_C = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+			new String[] {String.class.getName(), Long.class.getName()});
+
+		_finderPathWithPaginationFindByGroupId = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByGroupId",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			});
+
+		_finderPathWithoutPaginationFindByGroupId = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED,
+			ReportDefinitionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
+			new String[] {Long.class.getName()},
+			ReportDefinitionModelImpl.GROUPID_COLUMN_BITMASK |
+			ReportDefinitionModelImpl.NAME_COLUMN_BITMASK);
+
+		_finderPathCountByGroupId = new FinderPath(
+			ReportDefinitionModelImpl.ENTITY_CACHE_ENABLED,
+			ReportDefinitionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+			new String[] {Long.class.getName()});
 	}
 
 	public void destroy() {
@@ -2815,20 +2967,40 @@ public class ReportDefinitionPersistenceImpl extends BasePersistenceImpl<ReportD
 
 	@ServiceReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
 	@ServiceReference(type = EntityCache.class)
 	protected EntityCache entityCache;
+
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
-	private static final String _SQL_SELECT_REPORTDEFINITION = "SELECT reportDefinition FROM ReportDefinition reportDefinition";
-	private static final String _SQL_SELECT_REPORTDEFINITION_WHERE_PKS_IN = "SELECT reportDefinition FROM ReportDefinition reportDefinition WHERE reportDefinitionId IN (";
-	private static final String _SQL_SELECT_REPORTDEFINITION_WHERE = "SELECT reportDefinition FROM ReportDefinition reportDefinition WHERE ";
-	private static final String _SQL_COUNT_REPORTDEFINITION = "SELECT COUNT(reportDefinition) FROM ReportDefinition reportDefinition";
-	private static final String _SQL_COUNT_REPORTDEFINITION_WHERE = "SELECT COUNT(reportDefinition) FROM ReportDefinition reportDefinition WHERE ";
+
+	private static final String _SQL_SELECT_REPORTDEFINITION =
+		"SELECT reportDefinition FROM ReportDefinition reportDefinition";
+
+	private static final String _SQL_SELECT_REPORTDEFINITION_WHERE_PKS_IN =
+		"SELECT reportDefinition FROM ReportDefinition reportDefinition WHERE reportDefinitionId IN (";
+
+	private static final String _SQL_SELECT_REPORTDEFINITION_WHERE =
+		"SELECT reportDefinition FROM ReportDefinition reportDefinition WHERE ";
+
+	private static final String _SQL_COUNT_REPORTDEFINITION =
+		"SELECT COUNT(reportDefinition) FROM ReportDefinition reportDefinition";
+
+	private static final String _SQL_COUNT_REPORTDEFINITION_WHERE =
+		"SELECT COUNT(reportDefinition) FROM ReportDefinition reportDefinition WHERE ";
+
 	private static final String _ORDER_BY_ENTITY_ALIAS = "reportDefinition.";
-	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ReportDefinition exists with the primary key ";
-	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ReportDefinition exists with the key {";
-	private static final Log _log = LogFactoryUtil.getLog(ReportDefinitionPersistenceImpl.class);
-	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
-				"uuid"
-			});
+
+	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
+		"No ReportDefinition exists with the primary key ";
+
+	private static final String _NO_SUCH_ENTITY_WITH_KEY =
+		"No ReportDefinition exists with the key {";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ReportDefinitionPersistenceImpl.class);
+
+	private static final Set<String> _badColumnNames = SetUtil.fromArray(
+		new String[] {"uuid"});
+
 }

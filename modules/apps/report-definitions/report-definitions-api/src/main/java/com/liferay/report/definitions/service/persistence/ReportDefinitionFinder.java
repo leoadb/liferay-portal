@@ -22,37 +22,53 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public interface ReportDefinitionFinder {
+
 	public int countByKeywords(long companyId, long groupId, String keywords);
 
-	public int countByC_G_N_D(long companyId, long groupId, String[] names,
-		String[] descriptions, boolean andOperator);
+	public int countByC_G_N_D(
+		long companyId, long groupId, String[] names, String[] descriptions,
+		boolean andOperator);
 
-	public int filterCountByKeywords(long companyId, long groupId,
-		String keywords);
+	public int filterCountByKeywords(
+		long companyId, long groupId, String keywords);
 
 	public int filterCountByC_G(long companyId, long groupId);
 
-	public int filterCountByC_G_N_D(long companyId, long groupId,
-		String[] names, String[] descriptions, boolean andOperator);
-
-	public java.util.List<com.liferay.report.definitions.model.ReportDefinition> filterFindByKeywords(
-		long companyId, long groupId, String keywords, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.report.definitions.model.ReportDefinition> orderByComparator);
-
-	public java.util.List<com.liferay.report.definitions.model.ReportDefinition> filterFindByC_G(
-		long companyId, long groupId, int start, int end);
-
-	public java.util.List<com.liferay.report.definitions.model.ReportDefinition> filterFindByC_G_N_D(
+	public int filterCountByC_G_N_D(
 		long companyId, long groupId, String[] names, String[] descriptions,
-		boolean andOperator, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.report.definitions.model.ReportDefinition> orderByComparator);
+		boolean andOperator);
 
-	public java.util.List<com.liferay.report.definitions.model.ReportDefinition> findByKeywords(
-		long companyId, long groupId, String keywords, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.report.definitions.model.ReportDefinition> orderByComparator);
+	public java.util.List<com.liferay.report.definitions.model.ReportDefinition>
+		filterFindByKeywords(
+			long companyId, long groupId, String keywords, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.report.definitions.model.ReportDefinition>
+					orderByComparator);
 
-	public java.util.List<com.liferay.report.definitions.model.ReportDefinition> findByC_G_N_D(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		boolean andOperator, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.report.definitions.model.ReportDefinition> orderByComparator);
+	public java.util.List<com.liferay.report.definitions.model.ReportDefinition>
+		filterFindByC_G(long companyId, long groupId, int start, int end);
+
+	public java.util.List<com.liferay.report.definitions.model.ReportDefinition>
+		filterFindByC_G_N_D(
+			long companyId, long groupId, String[] names, String[] descriptions,
+			boolean andOperator, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.report.definitions.model.ReportDefinition>
+					orderByComparator);
+
+	public java.util.List<com.liferay.report.definitions.model.ReportDefinition>
+		findByKeywords(
+			long companyId, long groupId, String keywords, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.report.definitions.model.ReportDefinition>
+					orderByComparator);
+
+	public java.util.List<com.liferay.report.definitions.model.ReportDefinition>
+		findByC_G_N_D(
+			long companyId, long groupId, String[] names, String[] descriptions,
+			boolean andOperator, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.report.definitions.model.ReportDefinition>
+					orderByComparator);
+
 }

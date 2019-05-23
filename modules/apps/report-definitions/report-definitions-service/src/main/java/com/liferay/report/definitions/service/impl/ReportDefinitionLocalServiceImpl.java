@@ -43,7 +43,7 @@ public class ReportDefinitionLocalServiceImpl
 	@Override
 	public ReportDefinition addReportDefinition(
 			long userId, long groupId, String name, String description,
-			long dataDefinitionId, long columnsDDMContentId,
+			long dataDefinitionId, long dataLayoutId, long columnsDDMContentId,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -67,6 +67,7 @@ public class ReportDefinitionLocalServiceImpl
 		// Data Definition
 
 		reportDefinition.setDataDefinitionId(dataDefinitionId);
+		reportDefinition.setDataLayoutId(dataLayoutId);
 
 		// Available and Sort Columns
 
@@ -116,8 +117,8 @@ public class ReportDefinitionLocalServiceImpl
 
 	public ReportDefinition updateReportDefinition(
 			long userId, long groupId, long reportDefinitionId, String name,
-			String description, long dataDefinitionId, long columnsDDMContentId,
-			ServiceContext serviceContext)
+			String description, long dataDefinitionId, long dataLayoutId,
+			long columnsDDMContentId, ServiceContext serviceContext)
 		throws PortalException {
 
 		// Report Definition
@@ -131,6 +132,7 @@ public class ReportDefinitionLocalServiceImpl
 		reportDefinition.setGroupId(groupId);
 		reportDefinition.setCompanyId(user.getCompanyId());
 		reportDefinition.setDataDefinitionId(dataDefinitionId);
+		reportDefinition.setDataLayoutId(dataLayoutId);
 		reportDefinition.setDescription(description);
 		reportDefinition.setName(name);
 

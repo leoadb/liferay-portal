@@ -12,6 +12,7 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="columnsDDMContentId" type="long" />
 		<field name="dataDefinitionId" type="long" />
+		<field name="dataLayoutId" type="long" />
 		<field name="description" type="String" />
 		<field name="name" type="String" />
 	</model>

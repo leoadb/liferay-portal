@@ -25,6 +25,7 @@
 
 		<column name="columnsDDMContentId" type="long" />
 		<column name="dataDefinitionId" type="long" />
+		<column name="dataLayoutId" type="long" />
 		<column name="description" type="String" />
 		<column name="name" type="String" />
 

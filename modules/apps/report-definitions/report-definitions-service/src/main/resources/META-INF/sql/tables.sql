@@ -9,6 +9,7 @@ create table ReportDefinition (
 	modifiedDate DATE null,
 	columnsDDMContentId LONG,
 	dataDefinitionId LONG,
+	dataLayoutId LONG,
 	description VARCHAR(75) null,
 	name VARCHAR(75) null
 );
