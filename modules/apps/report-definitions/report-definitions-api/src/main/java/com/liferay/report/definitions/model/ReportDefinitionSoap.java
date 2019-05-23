@@ -30,6 +30,7 @@ import java.util.List;
  */
 @ProviderType
 public class ReportDefinitionSoap implements Serializable {
+
 	public static ReportDefinitionSoap toSoapModel(ReportDefinition model) {
 		ReportDefinitionSoap soapModel = new ReportDefinitionSoap();
 
@@ -43,14 +44,18 @@ public class ReportDefinitionSoap implements Serializable {
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setColumnsDDMContentId(model.getColumnsDDMContentId());
 		soapModel.setDataDefinitionId(model.getDataDefinitionId());
+		soapModel.setDataLayoutId(model.getDataLayoutId());
 		soapModel.setDescription(model.getDescription());
 		soapModel.setName(model.getName());
 
 		return soapModel;
 	}
 
-	public static ReportDefinitionSoap[] toSoapModels(ReportDefinition[] models) {
-		ReportDefinitionSoap[] soapModels = new ReportDefinitionSoap[models.length];
+	public static ReportDefinitionSoap[] toSoapModels(
+		ReportDefinition[] models) {
+
+		ReportDefinitionSoap[] soapModels =
+			new ReportDefinitionSoap[models.length];
 
 		for (int i = 0; i < models.length; i++) {
 			soapModels[i] = toSoapModel(models[i]);
@@ -61,10 +66,12 @@ public class ReportDefinitionSoap implements Serializable {
 
 	public static ReportDefinitionSoap[][] toSoapModels(
 		ReportDefinition[][] models) {
+
 		ReportDefinitionSoap[][] soapModels = null;
 
 		if (models.length > 0) {
-			soapModels = new ReportDefinitionSoap[models.length][models[0].length];
+			soapModels =
+				new ReportDefinitionSoap[models.length][models[0].length];
 		}
 		else {
 			soapModels = new ReportDefinitionSoap[0][0];
@@ -79,7 +86,9 @@ public class ReportDefinitionSoap implements Serializable {
 
 	public static ReportDefinitionSoap[] toSoapModels(
 		List<ReportDefinition> models) {
-		List<ReportDefinitionSoap> soapModels = new ArrayList<ReportDefinitionSoap>(models.size());
+
+		List<ReportDefinitionSoap> soapModels =
+			new ArrayList<ReportDefinitionSoap>(models.size());
 
 		for (ReportDefinition model : models) {
 			soapModels.add(toSoapModel(model));
@@ -179,6 +188,14 @@ public class ReportDefinitionSoap implements Serializable {
 		_dataDefinitionId = dataDefinitionId;
 	}
 
+	public long getDataLayoutId() {
+		return _dataLayoutId;
+	}
+
+	public void setDataLayoutId(long dataLayoutId) {
+		_dataLayoutId = dataLayoutId;
+	}
+
 	public String getDescription() {
 		return _description;
 	}
@@ -205,6 +222,8 @@ public class ReportDefinitionSoap implements Serializable {
 	private Date _modifiedDate;
 	private long _columnsDDMContentId;
 	private long _dataDefinitionId;
+	private long _dataLayoutId;
 	private String _description;
 	private String _name;
+
 }

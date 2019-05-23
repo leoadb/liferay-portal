@@ -24,6 +24,7 @@ import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
 import com.liferay.data.engine.rest.internal.resource.v1_0.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.resource.v1_0.DataLayoutResource;
 import com.liferay.data.engine.spi.field.type.util.LocalizedValueUtil;
+import com.liferay.dynamic.data.mapping.exception.NoSuchStructureLayoutException;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
@@ -116,18 +117,23 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 	}
 
 	@Override
-	public DataLayout getSiteDataLayout(String dataLayoutKey, Long siteId)
+	public DataLayout getSiteDataLayout(Long siteId, String dataLayoutKey)
 		throws Exception {
 
-		DDMStructureLayout ddmStructureLayout =
-			_ddmStructureLayoutLocalService.getStructureLayout(
-				siteId, _getClassNameId(), dataLayoutKey);
+		try {
+			DDMStructureLayout ddmStructureLayout =
+				_ddmStructureLayoutLocalService.getStructureLayout(
+					siteId, _getClassNameId(), dataLayoutKey);
 
-		_modelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			ddmStructureLayout.getPrimaryKey(), ActionKeys.VIEW);
+			_modelResourcePermission.check(
+				PermissionThreadLocal.getPermissionChecker(),
+				ddmStructureLayout.getPrimaryKey(), ActionKeys.VIEW);
 
-		return _toDataLayout(ddmStructureLayout);
+			return _toDataLayout(ddmStructureLayout);
+		}
+		catch (NoSuchStructureLayoutException nssle) {
+			return new DataLayout();
+		}
 	}
 
 	@Override

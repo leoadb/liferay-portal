@@ -115,8 +115,8 @@ public class Query {
 	@GraphQLField
 	@GraphQLInvokeDetached
 	public DataDefinition getSiteDataDefinition(
-			@GraphQLName("dataDefinitionKey") String dataDefinitionKey,
-			@GraphQLName("siteId") Long siteId)
+			@GraphQLName("siteId") Long siteId,
+			@GraphQLName("dataDefinitionKey") String dataDefinitionKey)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
@@ -124,7 +124,7 @@ public class Query {
 			this::_populateResourceContext,
 			dataDefinitionResource ->
 				dataDefinitionResource.getSiteDataDefinition(
-					dataDefinitionKey, siteId));
+					siteId, dataDefinitionKey));
 	}
 
 	@GraphQLField
@@ -185,15 +185,15 @@ public class Query {
 	@GraphQLField
 	@GraphQLInvokeDetached
 	public DataLayout getSiteDataLayout(
-			@GraphQLName("dataLayoutKey") String dataLayoutKey,
-			@GraphQLName("siteId") Long siteId)
+			@GraphQLName("siteId") Long siteId,
+			@GraphQLName("dataLayoutKey") String dataLayoutKey)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
 			_dataLayoutResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			dataLayoutResource -> dataLayoutResource.getSiteDataLayout(
-				dataLayoutKey, siteId));
+				siteId, dataLayoutKey));
 	}
 
 	@GraphQLField

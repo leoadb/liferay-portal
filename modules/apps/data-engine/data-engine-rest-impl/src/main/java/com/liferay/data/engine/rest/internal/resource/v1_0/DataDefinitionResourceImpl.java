@@ -34,6 +34,7 @@ import com.liferay.data.engine.rest.resource.v1_0.DataDefinitionResource;
 import com.liferay.data.engine.spi.field.type.util.LocalizedValueUtil;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
+import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.exception.RequiredStructureException;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureConstants;
@@ -61,6 +62,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -121,18 +123,23 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 	@Override
 	public DataDefinition getSiteDataDefinition(
-			String dataDefinitionKey, Long siteId)
+			Long siteId, String dataDefinitionKey)
 		throws Exception {
 
-		DataDefinition dataDefinition = DataDefinitionUtil.toDataDefinition(
-			_ddmStructureService.getStructure(
-				siteId, _getClassNameId(), dataDefinitionKey));
+		try {
+			DataDefinition dataDefinition = DataDefinitionUtil.toDataDefinition(
+				_ddmStructureLocalService.getStructure(
+					siteId, _getClassNameId(), dataDefinitionKey));
 
-		_modelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			dataDefinition.getId(), ActionKeys.VIEW);
+			_modelResourcePermission.check(
+				PermissionThreadLocal.getPermissionChecker(),
+				dataDefinition.getId(), ActionKeys.VIEW);
 
-		return dataDefinition;
+			return dataDefinition;
+		}
+		catch (NoSuchStructureException nsse) {
+			return new DataDefinition();
+		}
 	}
 
 	@Override
@@ -316,6 +323,8 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		DataLayout dataLayout = new DataLayout();
 
 		dataLayout.setDataLayoutKey(dataDefinitionKey);
+		dataLayout.setDefaultLanguageId(
+			contextAcceptLanguage.getPreferredLanguageId());
 		dataLayout.setDescription(dataDefinition.getDescription());
 		dataLayout.setName(dataDefinition.getName());
 
@@ -340,6 +349,13 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 		DataLayoutPage dataLayoutPage = new DataLayoutPage();
 
+		dataLayoutPage.setTitle(
+			new HashMap() {
+				{
+					put(contextAcceptLanguage.getPreferredLanguageId(), "Page");
+				}
+			});
+
 		dataLayoutPage.setDataLayoutRows(
 			dataLayoutRows.toArray(new DataLayoutRow[0]));
 
@@ -351,7 +367,7 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			_ddmStructureLayoutLocalService.addStructureLayout(
 				PrincipalThreadLocal.getUserId(), dataDefinition.getSiteId(),
 				_getDDMStructureVersionId(dataDefinition.getId()),
-				_getClassNameId(),
+				_portal.getClassNameId(InternalDataLayout.class),
 				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
 				LocalizedValueUtil.toLocaleStringMap(
 					dataLayout.getDescription()),

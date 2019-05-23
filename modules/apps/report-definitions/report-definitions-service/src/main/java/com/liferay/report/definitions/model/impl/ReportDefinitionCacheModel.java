@@ -19,7 +19,6 @@ import aQute.bnd.annotation.ProviderType;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-
 import com.liferay.report.definitions.model.ReportDefinition;
 
 import java.io.Externalizable;
@@ -33,12 +32,12 @@ import java.util.Date;
  * The cache model class for representing ReportDefinition in entity cache.
  *
  * @author Brian Wing Shun Chan
- * @see ReportDefinition
  * @generated
  */
 @ProviderType
-public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
-	Externalizable {
+public class ReportDefinitionCacheModel
+	implements CacheModel<ReportDefinition>, Externalizable {
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -49,9 +48,12 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 			return false;
 		}
 
-		ReportDefinitionCacheModel reportDefinitionCacheModel = (ReportDefinitionCacheModel)obj;
+		ReportDefinitionCacheModel reportDefinitionCacheModel =
+			(ReportDefinitionCacheModel)obj;
 
-		if (reportDefinitionId == reportDefinitionCacheModel.reportDefinitionId) {
+		if (reportDefinitionId ==
+				reportDefinitionCacheModel.reportDefinitionId) {
+
 			return true;
 		}
 
@@ -65,7 +67,7 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -87,6 +89,8 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 		sb.append(columnsDDMContentId);
 		sb.append(", dataDefinitionId=");
 		sb.append(dataDefinitionId);
+		sb.append(", dataLayoutId=");
+		sb.append(dataLayoutId);
 		sb.append(", description=");
 		sb.append(description);
 		sb.append(", name=");
@@ -135,6 +139,7 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 
 		reportDefinitionImpl.setColumnsDDMContentId(columnsDDMContentId);
 		reportDefinitionImpl.setDataDefinitionId(dataDefinitionId);
+		reportDefinitionImpl.setDataLayoutId(dataLayoutId);
 
 		if (description == null) {
 			reportDefinitionImpl.setDescription("");
@@ -173,13 +178,14 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 		columnsDDMContentId = objectInput.readLong();
 
 		dataDefinitionId = objectInput.readLong();
+
+		dataLayoutId = objectInput.readLong();
 		description = objectInput.readUTF();
 		name = objectInput.readUTF();
 	}
 
 	@Override
-	public void writeExternal(ObjectOutput objectOutput)
-		throws IOException {
+	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
 			objectOutput.writeUTF("");
 		}
@@ -209,6 +215,8 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 
 		objectOutput.writeLong(dataDefinitionId);
 
+		objectOutput.writeLong(dataLayoutId);
+
 		if (description == null) {
 			objectOutput.writeUTF("");
 		}
@@ -234,6 +242,8 @@ public class ReportDefinitionCacheModel implements CacheModel<ReportDefinition>,
 	public long modifiedDate;
 	public long columnsDDMContentId;
 	public long dataDefinitionId;
+	public long dataLayoutId;
 	public String description;
 	public String name;
+
 }

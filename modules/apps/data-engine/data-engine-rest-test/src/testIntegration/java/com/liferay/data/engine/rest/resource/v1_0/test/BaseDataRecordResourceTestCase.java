@@ -31,7 +31,9 @@ import com.liferay.data.engine.rest.client.serdes.v1_0.DataRecordSerDes;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -47,7 +49,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.text.DateFormat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -94,6 +95,11 @@ public abstract class BaseDataRecordResourceTestCase {
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 		testLocale = LocaleUtil.getDefault();
+
+		testCompany = CompanyLocalServiceUtil.getCompany(
+			testGroup.getCompanyId());
+
+		_dataRecordResource.setContextCompany(testCompany);
 	}
 
 	@After
@@ -249,14 +255,13 @@ public abstract class BaseDataRecordResourceTestCase {
 
 		Assert.assertEquals(dataRecords2.toString(), 1, dataRecords2.size());
 
+		Page<DataRecord> page3 =
+			DataRecordResource.getDataDefinitionDataRecordsPage(
+				dataDefinitionId, Pagination.of(1, 3));
+
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataRecord1, dataRecord2, dataRecord3),
-			new ArrayList<DataRecord>() {
-				{
-					addAll(dataRecords1);
-					addAll(dataRecords2);
-				}
-			});
+			(List<DataRecord>)page3.getItems());
 	}
 
 	protected DataRecord testGetDataDefinitionDataRecordsPage_addDataRecord(
@@ -383,14 +388,13 @@ public abstract class BaseDataRecordResourceTestCase {
 
 		Assert.assertEquals(dataRecords2.toString(), 1, dataRecords2.size());
 
+		Page<DataRecord> page3 =
+			DataRecordResource.getDataRecordCollectionDataRecordsPage(
+				dataRecordCollectionId, Pagination.of(1, 3));
+
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataRecord1, dataRecord2, dataRecord3),
-			new ArrayList<DataRecord>() {
-				{
-					addAll(dataRecords1);
-					addAll(dataRecords2);
-				}
-			});
+			(List<DataRecord>)page3.getItems());
 	}
 
 	protected DataRecord
@@ -753,6 +757,7 @@ public abstract class BaseDataRecordResourceTestCase {
 	}
 
 	protected Group irrelevantGroup;
+	protected Company testCompany;
 	protected Group testGroup;
 	protected Locale testLocale;
 	protected String testUserNameAndPassword = "test@liferay.com:test";

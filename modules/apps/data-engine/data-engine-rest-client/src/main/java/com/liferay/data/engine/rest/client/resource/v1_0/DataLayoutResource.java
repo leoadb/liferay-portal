@@ -380,11 +380,11 @@ public class DataLayoutResource {
 	}
 
 	public static DataLayout getSiteDataLayout(
-			String dataLayoutKey, Long siteId)
+			Long siteId, String dataLayoutKey)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse = getSiteDataLayoutHttpResponse(
-			dataLayoutKey, siteId);
+			siteId, dataLayoutKey);
 
 		String content = httpResponse.getContent();
 
@@ -407,7 +407,7 @@ public class DataLayoutResource {
 	}
 
 	public static HttpInvoker.HttpResponse getSiteDataLayoutHttpResponse(
-			String dataLayoutKey, Long siteId)
+			Long siteId, String dataLayoutKey)
 		throws Exception {
 
 		HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -416,7 +416,7 @@ public class DataLayoutResource {
 
 		httpInvoker.path(
 			"http://localhost:8080/o/data-engine/v1.0/sites/{siteId}/data-layouts/{dataLayoutKey}",
-			dataLayoutKey, siteId);
+			siteId, dataLayoutKey);
 
 		httpInvoker.userNameAndPassword("test@liferay.com:test");
 

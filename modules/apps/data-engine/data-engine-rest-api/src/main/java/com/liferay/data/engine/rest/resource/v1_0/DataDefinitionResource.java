@@ -61,7 +61,7 @@ public interface DataDefinitionResource {
 		throws Exception;
 
 	public DataDefinition getSiteDataDefinition(
-			String dataDefinitionKey, Long siteId)
+			Long siteId, String dataDefinitionKey)
 		throws Exception;
 
 	public void setContextCompany(Company contextCompany);

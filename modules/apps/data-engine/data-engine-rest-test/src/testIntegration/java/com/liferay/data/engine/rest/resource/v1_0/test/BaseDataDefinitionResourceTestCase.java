@@ -31,7 +31,9 @@ import com.liferay.data.engine.rest.client.serdes.v1_0.DataDefinitionSerDes;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -47,7 +49,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.text.DateFormat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -95,6 +96,11 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 		testLocale = LocaleUtil.getDefault();
+
+		testCompany = CompanyLocalServiceUtil.getCompany(
+			testGroup.getCompanyId());
+
+		_dataDefinitionResource.setContextCompany(testCompany);
 	}
 
 	@After
@@ -350,14 +356,13 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		Assert.assertEquals(
 			dataDefinitions2.toString(), 1, dataDefinitions2.size());
 
+		Page<DataDefinition> page3 =
+			DataDefinitionResource.getSiteDataDefinitionsPage(
+				siteId, null, Pagination.of(1, 3));
+
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataDefinition1, dataDefinition2, dataDefinition3),
-			new ArrayList<DataDefinition>() {
-				{
-					addAll(dataDefinitions1);
-					addAll(dataDefinitions2);
-				}
-			});
+			(List<DataDefinition>)page3.getItems());
 	}
 
 	protected DataDefinition testGetSiteDataDefinitionsPage_addDataDefinition(
@@ -404,8 +409,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		DataDefinition getDataDefinition =
 			DataDefinitionResource.getSiteDataDefinition(
-				postDataDefinition.getDataDefinitionKey(),
-				postDataDefinition.getSiteId());
+				postDataDefinition.getSiteId(),
+				postDataDefinition.getDataDefinitionKey());
 
 		assertEquals(postDataDefinition, getDataDefinition);
 		assertValid(getDataDefinition);
@@ -925,6 +930,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	}
 
 	protected Group irrelevantGroup;
+	protected Company testCompany;
 	protected Group testGroup;
 	protected Locale testLocale;
 	protected String testUserNameAndPassword = "test@liferay.com:test";

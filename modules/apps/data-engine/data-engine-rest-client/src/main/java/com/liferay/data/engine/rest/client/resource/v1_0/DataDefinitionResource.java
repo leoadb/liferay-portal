@@ -339,11 +339,11 @@ public class DataDefinitionResource {
 	}
 
 	public static DataDefinition getSiteDataDefinition(
-			String dataDefinitionKey, Long siteId)
+			Long siteId, String dataDefinitionKey)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
-			getSiteDataDefinitionHttpResponse(dataDefinitionKey, siteId);
+			getSiteDataDefinitionHttpResponse(siteId, dataDefinitionKey);
 
 		String content = httpResponse.getContent();
 
@@ -366,7 +366,7 @@ public class DataDefinitionResource {
 	}
 
 	public static HttpInvoker.HttpResponse getSiteDataDefinitionHttpResponse(
-			String dataDefinitionKey, Long siteId)
+			Long siteId, String dataDefinitionKey)
 		throws Exception {
 
 		HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -375,7 +375,7 @@ public class DataDefinitionResource {
 
 		httpInvoker.path(
 			"http://localhost:8080/o/data-engine/v1.0/sites/{siteId}/data-definitions/{dataDefinitionKey}",
-			dataDefinitionKey, siteId);
+			siteId, dataDefinitionKey);
 
 		httpInvoker.userNameAndPassword("test@liferay.com:test");
 

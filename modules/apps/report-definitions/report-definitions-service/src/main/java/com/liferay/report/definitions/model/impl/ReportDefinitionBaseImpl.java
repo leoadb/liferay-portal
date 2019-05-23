@@ -32,12 +32,13 @@ import com.liferay.report.definitions.service.ReportDefinitionLocalServiceUtil;
  * @generated
  */
 @ProviderType
-public abstract class ReportDefinitionBaseImpl extends ReportDefinitionModelImpl
-	implements ReportDefinition {
+public abstract class ReportDefinitionBaseImpl
+	extends ReportDefinitionModelImpl implements ReportDefinition {
+
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. All methods that expect a report definition model instance should use the {@link ReportDefinition} interface instead.
+	 * Never modify or reference this class directly. All methods that expect a report definition model instance should use the <code>ReportDefinition</code> interface instead.
 	 */
 	@Override
 	public void persist() {
@@ -48,4 +49,5 @@ public abstract class ReportDefinitionBaseImpl extends ReportDefinitionModelImpl
 			ReportDefinitionLocalServiceUtil.updateReportDefinition(this);
 		}
 	}
+
 }

@@ -31,7 +31,9 @@ import com.liferay.data.engine.rest.client.serdes.v1_0.DataLayoutSerDes;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -47,7 +49,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.text.DateFormat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -95,6 +96,11 @@ public abstract class BaseDataLayoutResourceTestCase {
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 		testLocale = LocaleUtil.getDefault();
+
+		testCompany = CompanyLocalServiceUtil.getCompany(
+			testGroup.getCompanyId());
+
+		_dataLayoutResource.setContextCompany(testCompany);
 	}
 
 	@After
@@ -264,14 +270,13 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		Assert.assertEquals(dataLayouts2.toString(), 1, dataLayouts2.size());
 
+		Page<DataLayout> page3 =
+			DataLayoutResource.getDataDefinitionDataLayoutsPage(
+				dataDefinitionId, null, Pagination.of(1, 3));
+
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataLayout1, dataLayout2, dataLayout3),
-			new ArrayList<DataLayout>() {
-				{
-					addAll(dataLayouts1);
-					addAll(dataLayouts2);
-				}
-			});
+			(List<DataLayout>)page3.getItems());
 	}
 
 	protected DataLayout testGetDataDefinitionDataLayoutsPage_addDataLayout(
@@ -456,14 +461,12 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		Assert.assertEquals(dataLayouts2.toString(), 1, dataLayouts2.size());
 
+		Page<DataLayout> page3 = DataLayoutResource.getSiteDataLayoutPage(
+			siteId, null, Pagination.of(1, 3));
+
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataLayout1, dataLayout2, dataLayout3),
-			new ArrayList<DataLayout>() {
-				{
-					addAll(dataLayouts1);
-					addAll(dataLayouts2);
-				}
-			});
+			(List<DataLayout>)page3.getItems());
 	}
 
 	protected DataLayout testGetSiteDataLayoutPage_addDataLayout(
@@ -494,7 +497,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 		DataLayout postDataLayout = testGetSiteDataLayout_addDataLayout();
 
 		DataLayout getDataLayout = DataLayoutResource.getSiteDataLayout(
-			postDataLayout.getDataLayoutKey(), postDataLayout.getSiteId());
+			postDataLayout.getSiteId(), postDataLayout.getDataLayoutKey());
 
 		assertEquals(postDataLayout, getDataLayout);
 		assertValid(getDataLayout);
@@ -1021,6 +1024,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 	}
 
 	protected Group irrelevantGroup;
+	protected Company testCompany;
 	protected Group testGroup;
 	protected Locale testLocale;
 	protected String testUserNameAndPassword = "test@liferay.com:test";

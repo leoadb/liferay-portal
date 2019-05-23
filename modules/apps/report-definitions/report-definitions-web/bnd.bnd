@@ -1,0 +1,7 @@
+Bundle-Name: Liferay Report Definitions Web
+Bundle-SymbolicName: com.liferay.report.definitions.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /report-definitions-web
+-includeresource:\
+	com.liferay.data.engine.rest.client.jar=com.liferay.data.engine.rest.client-[0-9]*.jar;lib:=true,\
+	package.json
