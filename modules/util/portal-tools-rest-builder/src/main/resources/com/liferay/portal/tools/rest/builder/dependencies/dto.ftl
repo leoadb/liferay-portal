@@ -156,9 +156,18 @@ public class ${schemaName} <#if dtoParentClassName?has_content>extends ${dtoPare
 			<#assign capitalizedPropertyName = propertyType />
 		</#if>
 
-		public ${propertyType} get${capitalizedPropertyName}() {
-			return ${propertyName};
-		}
+		<#if stringUtil.equals(propertyType, "Boolean")>
+			public Boolean get${capitalizedPropertyName}() {
+				if (${propertyName} == null) {
+						return Boolean.FALSE;
+				}
+				return ${propertyName};
+			}
+		<#else>
+			public ${propertyType} get${capitalizedPropertyName}() {
+				return ${propertyName};
+			}
+		</#if>
 
 		<#if enumSchemas?keys?seq_contains(propertyType)>
 			@JsonIgnore
