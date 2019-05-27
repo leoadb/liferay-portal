@@ -51,6 +51,27 @@ public class DataLayout {
 
 	protected Long dataDefinitionId;
 
+	public String getDataLayoutKey() {
+		return dataLayoutKey;
+	}
+
+	public void setDataLayoutKey(String dataLayoutKey) {
+		this.dataLayoutKey = dataLayoutKey;
+	}
+
+	public void setDataLayoutKey(
+		UnsafeSupplier<String, Exception> dataLayoutKeyUnsafeSupplier) {
+
+		try {
+			dataLayoutKey = dataLayoutKeyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String dataLayoutKey;
+
 	public DataLayoutPage[] getDataLayoutPages() {
 		return dataLayoutPages;
 	}

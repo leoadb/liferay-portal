@@ -31,9 +31,7 @@ import com.liferay.data.engine.rest.client.serdes.v1_0.DataDefinitionSerDes;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -48,6 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.text.DateFormat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -95,11 +94,6 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 		testLocale = LocaleUtil.getDefault();
-
-		testCompany = CompanyLocalServiceUtil.getCompany(
-			testGroup.getCompanyId());
-
-		_dataDefinitionResource.setContextCompany(testCompany);
 	}
 
 	@After
@@ -167,6 +161,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		DataDefinition dataDefinition = randomDataDefinition();
 
+		dataDefinition.setDataDefinitionKey(regex);
 		dataDefinition.setStorageType(regex);
 
 		String json = DataDefinitionSerDes.toJSON(dataDefinition);
@@ -175,6 +170,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		dataDefinition = DataDefinitionSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, dataDefinition.getDataDefinitionKey());
 		Assert.assertEquals(regex, dataDefinition.getStorageType());
 	}
 
@@ -347,13 +343,14 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		Assert.assertEquals(
 			dataDefinitions2.toString(), 1, dataDefinitions2.size());
 
-		Page<DataDefinition> page3 =
-			DataDefinitionResource.getSiteDataDefinitionsPage(
-				siteId, null, Pagination.of(1, 3));
-
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataDefinition1, dataDefinition2, dataDefinition3),
-			(List<DataDefinition>)page3.getItems());
+			new ArrayList<DataDefinition>() {
+				{
+					addAll(dataDefinitions1);
+					addAll(dataDefinitions2);
+				}
+			});
 	}
 
 	protected DataDefinition testGetSiteDataDefinitionsPage_addDataDefinition(
@@ -391,6 +388,27 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		return DataDefinitionResource.postSiteDataDefinition(
 			testGetSiteDataDefinitionsPage_getSiteId(), dataDefinition);
+	}
+
+	@Test
+	public void testGetSiteDataDefinition() throws Exception {
+		DataDefinition postDataDefinition =
+			testGetSiteDataDefinition_addDataDefinition();
+
+		DataDefinition getDataDefinition =
+			DataDefinitionResource.getSiteDataDefinition(
+				postDataDefinition.getDataDefinitionKey(),
+				postDataDefinition.getSiteId());
+
+		assertEquals(postDataDefinition, getDataDefinition);
+		assertValid(getDataDefinition);
+	}
+
+	protected DataDefinition testGetSiteDataDefinition_addDataDefinition()
+		throws Exception {
+
+		return DataDefinitionResource.postSiteDataDefinition(
+			testGroup.getGroupId(), randomDataDefinition());
 	}
 
 	protected void assertHttpResponseStatusCode(
@@ -474,6 +492,16 @@ public abstract class BaseDataDefinitionResourceTestCase {
 					"dataDefinitionFields", additionalAssertFieldName)) {
 
 				if (dataDefinition.getDataDefinitionFields() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"dataDefinitionKey", additionalAssertFieldName)) {
+
+				if (dataDefinition.getDataDefinitionKey() == null) {
 					valid = false;
 				}
 
@@ -573,6 +601,19 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				if (!Objects.deepEquals(
 						dataDefinition1.getDataDefinitionFields(),
 						dataDefinition2.getDataDefinitionFields())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"dataDefinitionKey", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						dataDefinition1.getDataDefinitionKey(),
+						dataDefinition2.getDataDefinitionKey())) {
 
 					return false;
 				}
@@ -727,6 +768,14 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("dataDefinitionKey")) {
+			sb.append("'");
+			sb.append(String.valueOf(dataDefinition.getDataDefinitionKey()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("dataDefinitionRules")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -838,6 +887,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	protected DataDefinition randomDataDefinition() throws Exception {
 		return new DataDefinition() {
 			{
+				dataDefinitionKey = RandomTestUtil.randomString();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				id = RandomTestUtil.randomLong();
@@ -861,7 +911,6 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	}
 
 	protected Group irrelevantGroup;
-	protected Company testCompany;
 	protected Group testGroup;
 	protected Locale testLocale;
 	protected String testUserNameAndPassword = "test@liferay.com:test";

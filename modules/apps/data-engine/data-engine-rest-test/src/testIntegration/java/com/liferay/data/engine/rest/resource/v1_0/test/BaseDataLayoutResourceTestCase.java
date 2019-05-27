@@ -31,9 +31,7 @@ import com.liferay.data.engine.rest.client.serdes.v1_0.DataLayoutSerDes;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -48,6 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.text.DateFormat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -95,11 +94,6 @@ public abstract class BaseDataLayoutResourceTestCase {
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 		testLocale = LocaleUtil.getDefault();
-
-		testCompany = CompanyLocalServiceUtil.getCompany(
-			testGroup.getCompanyId());
-
-		_dataLayoutResource.setContextCompany(testCompany);
 	}
 
 	@After
@@ -167,6 +161,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		DataLayout dataLayout = randomDataLayout();
 
+		dataLayout.setDataLayoutKey(regex);
 		dataLayout.setDefaultLanguageId(regex);
 		dataLayout.setPaginationMode(regex);
 
@@ -176,6 +171,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		dataLayout = DataLayoutSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, dataLayout.getDataLayoutKey());
 		Assert.assertEquals(regex, dataLayout.getDefaultLanguageId());
 		Assert.assertEquals(regex, dataLayout.getPaginationMode());
 	}
@@ -261,13 +257,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		Assert.assertEquals(dataLayouts2.toString(), 1, dataLayouts2.size());
 
-		Page<DataLayout> page3 =
-			DataLayoutResource.getDataDefinitionDataLayoutsPage(
-				dataDefinitionId, null, Pagination.of(1, 3));
-
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataLayout1, dataLayout2, dataLayout3),
-			(List<DataLayout>)page3.getItems());
+			new ArrayList<DataLayout>() {
+				{
+					addAll(dataLayouts1);
+					addAll(dataLayouts2);
+				}
+			});
 	}
 
 	protected DataLayout testGetDataDefinitionDataLayoutsPage_addDataLayout(
@@ -446,12 +443,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		Assert.assertEquals(dataLayouts2.toString(), 1, dataLayouts2.size());
 
-		Page<DataLayout> page3 = DataLayoutResource.getSiteDataLayoutPage(
-			siteId, null, Pagination.of(1, 3));
-
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataLayout1, dataLayout2, dataLayout3),
-			(List<DataLayout>)page3.getItems());
+			new ArrayList<DataLayout>() {
+				{
+					addAll(dataLayouts1);
+					addAll(dataLayouts2);
+				}
+			});
 	}
 
 	protected DataLayout testGetSiteDataLayoutPage_addDataLayout(
@@ -475,6 +474,24 @@ public abstract class BaseDataLayoutResourceTestCase {
 	@Test
 	public void testPostSiteDataLayoutPermission() throws Exception {
 		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void testGetSiteDataLayout() throws Exception {
+		DataLayout postDataLayout = testGetSiteDataLayout_addDataLayout();
+
+		DataLayout getDataLayout = DataLayoutResource.getSiteDataLayout(
+			postDataLayout.getDataLayoutKey(), postDataLayout.getSiteId());
+
+		assertEquals(postDataLayout, getDataLayout);
+		assertValid(getDataLayout);
+	}
+
+	protected DataLayout testGetSiteDataLayout_addDataLayout()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected void assertHttpResponseStatusCode(
@@ -547,6 +564,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 			if (Objects.equals("dataDefinitionId", additionalAssertFieldName)) {
 				if (dataLayout.getDataDefinitionId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataLayoutKey", additionalAssertFieldName)) {
+				if (dataLayout.getDataLayoutKey() == null) {
 					valid = false;
 				}
 
@@ -644,6 +669,17 @@ public abstract class BaseDataLayoutResourceTestCase {
 				if (!Objects.deepEquals(
 						dataLayout1.getDataDefinitionId(),
 						dataLayout2.getDataDefinitionId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataLayoutKey", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout1.getDataLayoutKey(),
+						dataLayout2.getDataLayoutKey())) {
 
 					return false;
 				}
@@ -807,6 +843,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("dataLayoutKey")) {
+			sb.append("'");
+			sb.append(String.valueOf(dataLayout.getDataLayoutKey()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("dataLayoutPages")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -919,6 +963,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 		return new DataLayout() {
 			{
 				dataDefinitionId = RandomTestUtil.randomLong();
+				dataLayoutKey = RandomTestUtil.randomString();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = RandomTestUtil.randomString();
@@ -940,7 +985,6 @@ public abstract class BaseDataLayoutResourceTestCase {
 	}
 
 	protected Group irrelevantGroup;
-	protected Company testCompany;
 	protected Group testGroup;
 	protected Locale testLocale;
 	protected String testUserNameAndPassword = "test@liferay.com:test";
