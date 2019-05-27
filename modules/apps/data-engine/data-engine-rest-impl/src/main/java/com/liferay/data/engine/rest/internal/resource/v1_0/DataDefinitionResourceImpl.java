@@ -200,7 +200,7 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			_ddmStructureLocalService.addStructure(
 				PrincipalThreadLocal.getUserId(), siteId,
 				DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID,
-				_getClassNameId(), null,
+				_getClassNameId(), dataDefinition.getDataDefinitionKey(),
 				LocalizedValueUtil.toLocaleStringMap(dataDefinition.getName()),
 				LocalizedValueUtil.toLocaleStringMap(
 					dataDefinition.getDescription()),
