@@ -82,7 +82,7 @@ public class HttpInvoker {
 
 		httpResponse.setContent(_readResponse(httpURLConnection));
 		httpResponse.setMessage(httpURLConnection.getResponseMessage());
-		httpResponse.setStatusCode(httpURLConnection.getResponseCode());
+		httpResponse.setStatus(httpURLConnection.getResponseCode());
 
 		httpURLConnection.disconnect();
 
@@ -169,8 +169,8 @@ public class HttpInvoker {
 			return _message;
 		}
 
-		public int getStatusCode() {
-			return _statusCode;
+		public int getStatus() {
+			return _status;
 		}
 
 		public void setContent(String content) {
@@ -181,13 +181,13 @@ public class HttpInvoker {
 			_message = message;
 		}
 
-		public void setStatusCode(int statusCode) {
-			_statusCode = statusCode;
+		public void setStatus(int status) {
+			_status = status;
 		}
 
 		private String _content;
 		private String _message;
-		private int _statusCode;
+		private int _status;
 
 	}
 
@@ -198,18 +198,18 @@ public class HttpInvoker {
 
 			methodsField.setAccessible(true);
 
-			Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-			modifiersField.setAccessible(true);
-			modifiersField.setInt(
-				methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
-
 			Set<String> methodsFieldValue = new LinkedHashSet<>(
 				Arrays.asList((String[])methodsField.get(null)));
 
 			if (methodsFieldValue.contains("PATCH")) {
 				return;
 			}
+
+			Field modifiersField = Field.class.getDeclaredField("modifiers");
+
+			modifiersField.setAccessible(true);
+			modifiersField.setInt(
+				methodsField, methodsField.getModifiers() & ~Modifier.FINAL);
 
 			methodsFieldValue.add("PATCH");
 

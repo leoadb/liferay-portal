@@ -114,6 +114,21 @@ public class Query {
 
 	@GraphQLField
 	@GraphQLInvokeDetached
+	public DataDefinition getSiteDataDefinition(
+			@GraphQLName("dataDefinitionKey") String dataDefinitionKey,
+			@GraphQLName("siteId") Long siteId)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_dataDefinitionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataDefinitionResource ->
+				dataDefinitionResource.getSiteDataDefinition(
+					dataDefinitionKey, siteId));
+	}
+
+	@GraphQLField
+	@GraphQLInvokeDetached
 	public Collection<DataLayout> getDataDefinitionDataLayoutsPage(
 			@GraphQLName("dataDefinitionId") Long dataDefinitionId,
 			@GraphQLName("pageSize") int pageSize,
