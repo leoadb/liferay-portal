@@ -7,6 +7,8 @@ components:
                     items:
                         $ref: '#/components/schemas/DataDefinitionField'
                     type: array
+                dataDefinitionKey:
+                    type: string
                 dataDefinitionRules:
                     items:
                         $ref: '#/components/schemas/DataDefinitionRule'
@@ -107,6 +109,8 @@ components:
                 dataDefinitionId:
                     format: int64
                     type: integer
+                dataLayoutKey:
+                    type: string
                 dataLayoutPages:
                     items:
                         $ref: '#/components/schemas/DataLayoutPage'
@@ -208,6 +212,8 @@ components:
                 dataDefinitionId:
                     format: int64
                     type: integer
+                dataRecordCollectionKey:
+                    type: string
                 description:
                     additionalProperties:
                         type: object
