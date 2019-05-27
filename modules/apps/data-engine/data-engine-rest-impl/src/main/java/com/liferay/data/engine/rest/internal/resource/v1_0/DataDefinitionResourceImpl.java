@@ -105,6 +105,22 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 	}
 
 	@Override
+	public DataDefinition getSiteDataDefinition(
+			String dataDefinitionKey, Long siteId)
+		throws Exception {
+
+		DataDefinition dataDefinition = DataDefinitionUtil.toDataDefinition(
+			_ddmStructureService.getStructure(
+				siteId, _getClassNameId(), dataDefinitionKey));
+
+		_modelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			dataDefinition.getId(), ActionKeys.VIEW);
+
+		return dataDefinition;
+	}
+
+	@Override
 	public Page<DataDefinition> getSiteDataDefinitionsPage(
 			Long siteId, String keywords, Pagination pagination)
 		throws Exception {

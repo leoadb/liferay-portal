@@ -41,6 +41,7 @@ import com.liferay.dynamic.data.mapping.service.DDMContentLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -60,6 +61,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.validation.constraints.NotNull;
 
 import javax.ws.rs.BadRequestException;
 
@@ -100,6 +103,15 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 		dataStorage.delete(dataRecordId);
 
 		_ddlRecordLocalService.deleteDDLRecord(dataRecordId);
+	}
+
+	@Override
+	public Page<DataRecord> getDataDefinitionDataRecordsPage(
+			@NotNull Long dataDefinitionId, Pagination pagination)
+		throws Exception {
+
+		return getDataRecordCollectionDataRecordsPage(
+			_getDefaultDataRecordCollection(dataDefinitionId), pagination);
 	}
 
 	@Override
@@ -162,6 +174,15 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 			pagination,
 			_ddlRecordLocalService.getRecordsCount(
 				dataRecordCollectionId, PrincipalThreadLocal.getUserId()));
+	}
+
+	@Override
+	public DataRecord postDataDefinitionDataRecord(
+			@NotNull Long dataDefinitionId, DataRecord dataRecord)
+		throws Exception {
+
+		return postDataRecordCollectionDataRecord(
+			_getDefaultDataRecordCollection(dataDefinitionId), dataRecord);
 	}
 
 	@Override
@@ -264,6 +285,18 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 		}
 
 		return dataStorage;
+	}
+
+	private long _getDefaultDataRecordCollection(long dataDefinitionId)
+		throws PortalException {
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			dataDefinitionId);
+
+		DDLRecordSet ddlRecordSet = _ddlRecordSetLocalService.getRecordSet(
+			ddmStructure.getGroupId(), ddmStructure.getStructureKey());
+
+		return ddlRecordSet.getRecordSetId();
 	}
 
 	private DataRecord _toDataRecord(DDLRecord ddlRecord) throws Exception {
