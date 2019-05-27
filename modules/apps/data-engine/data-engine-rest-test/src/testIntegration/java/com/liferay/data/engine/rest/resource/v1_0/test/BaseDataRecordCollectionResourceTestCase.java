@@ -170,11 +170,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		DataRecordCollection dataRecordCollection =
 			randomDataRecordCollection();
 
+		dataRecordCollection.setDataRecordCollectionKey(regex);
+
 		String json = DataRecordCollectionSerDes.toJSON(dataRecordCollection);
 
 		Assert.assertFalse(json.contains(regex));
 
 		dataRecordCollection = DataRecordCollectionSerDes.toDTO(json);
+
+		Assert.assertEquals(
+			regex, dataRecordCollection.getDataRecordCollectionKey());
 	}
 
 	@Test
@@ -638,6 +643,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"dataRecordCollectionKey", additionalAssertFieldName)) {
+
+				if (dataRecordCollection.getDataRecordCollectionKey() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (dataRecordCollection.getDescription() == null) {
 					valid = false;
@@ -703,6 +718,19 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 				if (!Objects.deepEquals(
 						dataRecordCollection1.getDataDefinitionId(),
 						dataRecordCollection2.getDataDefinitionId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"dataRecordCollectionKey", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						dataRecordCollection1.getDataRecordCollectionKey(),
+						dataRecordCollection2.getDataRecordCollectionKey())) {
 
 					return false;
 				}
@@ -807,6 +835,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("dataRecordCollectionKey")) {
+			sb.append("'");
+			sb.append(
+				String.valueOf(
+					dataRecordCollection.getDataRecordCollectionKey()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("description")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -832,6 +870,7 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		return new DataRecordCollection() {
 			{
 				dataDefinitionId = RandomTestUtil.randomLong();
+				dataRecordCollectionKey = RandomTestUtil.randomString();
 				id = RandomTestUtil.randomLong();
 			}
 		};
