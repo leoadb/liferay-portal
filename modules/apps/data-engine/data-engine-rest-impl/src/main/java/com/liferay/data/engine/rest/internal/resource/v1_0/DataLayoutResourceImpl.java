@@ -116,6 +116,21 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 	}
 
 	@Override
+	public DataLayout getSiteDataLayout(String dataLayoutKey, Long siteId)
+		throws Exception {
+
+		DDMStructureLayout ddmStructureLayout =
+			_ddmStructureLayoutLocalService.getStructureLayout(
+				siteId, _getClassNameId(), dataLayoutKey);
+
+		_modelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			ddmStructureLayout.getPrimaryKey(), ActionKeys.VIEW);
+
+		return _toDataLayout(ddmStructureLayout);
+	}
+
+	@Override
 	public Page<DataLayout> getSiteDataLayoutPage(
 			Long siteId, String keywords, Pagination pagination)
 		throws Exception {
@@ -308,6 +323,7 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 
 		dataLayout.setDateCreated(ddmStructureLayout.getCreateDate());
 		dataLayout.setDataDefinitionId(_getDDMStructureId(ddmStructureLayout));
+		dataLayout.setDataLayoutKey(ddmStructureLayout.getStructureLayoutKey());
 		dataLayout.setId(ddmStructureLayout.getStructureLayoutId());
 		dataLayout.setDescription(
 			LocalizedValueUtil.toStringObjectMap(
