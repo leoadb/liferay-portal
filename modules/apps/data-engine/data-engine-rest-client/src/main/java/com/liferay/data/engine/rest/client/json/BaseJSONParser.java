@@ -270,12 +270,8 @@ public abstract class BaseJSONParser<T> {
 		}
 	}
 
-	private String _getCapturedJSONSubstring() {
-		return _json.substring(_captureStartStack.pop(), _index - 1);
-	}
-
 	private String _getCapturedSubstring() {
-		return _unescape(_getCapturedJSONSubstring());
+		return _unescape(_json.substring(_captureStartStack.pop(), _index - 1));
 	}
 
 	private boolean _ifLastCharMatchesThenRead(char ch) {
@@ -489,7 +485,7 @@ public abstract class BaseJSONParser<T> {
 		if (_isLastChar('}')) {
 			_readNextChar();
 
-			return _getCapturedJSONSubstring();
+			return _getCapturedSubstring();
 		}
 
 		_readWhileLastCharIsWhiteSpace();
@@ -497,7 +493,7 @@ public abstract class BaseJSONParser<T> {
 		if (_isLastChar('}')) {
 			_readNextChar();
 
-			return _getCapturedJSONSubstring();
+			return _getCapturedSubstring();
 		}
 
 		do {
@@ -526,7 +522,7 @@ public abstract class BaseJSONParser<T> {
 				"Expected either ',' or '}', but found '" + _lastChar + "'");
 		}
 
-		return _getCapturedJSONSubstring();
+		return _getCapturedSubstring();
 	}
 
 	private String _readValueAsStringNumber() {

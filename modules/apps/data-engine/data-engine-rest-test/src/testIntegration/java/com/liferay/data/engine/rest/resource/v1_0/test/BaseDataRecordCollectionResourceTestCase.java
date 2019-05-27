@@ -31,9 +31,7 @@ import com.liferay.data.engine.rest.client.serdes.v1_0.DataRecordCollectionSerDe
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -49,6 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.text.DateFormat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -95,11 +94,6 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 		testLocale = LocaleUtil.getDefault();
-
-		testCompany = CompanyLocalServiceUtil.getCompany(
-			testGroup.getCompanyId());
-
-		_dataRecordCollectionResource.setContextCompany(testCompany);
 	}
 
 	@After
@@ -171,11 +165,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		DataRecordCollection dataRecordCollection =
 			randomDataRecordCollection();
 
+		dataRecordCollection.setDataRecordCollectionKey(regex);
+
 		String json = DataRecordCollectionSerDes.toJSON(dataRecordCollection);
 
 		Assert.assertFalse(json.contains(regex));
 
 		dataRecordCollection = DataRecordCollectionSerDes.toDTO(json);
+
+		Assert.assertEquals(
+			regex, dataRecordCollection.getDataRecordCollectionKey());
 	}
 
 	@Test
@@ -280,16 +279,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 			dataRecordCollections2.toString(), 1,
 			dataRecordCollections2.size());
 
-		Page<DataRecordCollection> page3 =
-			DataRecordCollectionResource.
-				getDataDefinitionDataRecordCollectionsPage(
-					dataDefinitionId, null, Pagination.of(1, 3));
-
 		assertEqualsIgnoringOrder(
 			Arrays.asList(
 				dataRecordCollection1, dataRecordCollection2,
 				dataRecordCollection3),
-			(List<DataRecordCollection>)page3.getItems());
+			new ArrayList<DataRecordCollection>() {
+				{
+					addAll(dataRecordCollections1);
+					addAll(dataRecordCollections2);
+				}
+			});
 	}
 
 	protected DataRecordCollection
@@ -526,15 +525,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 			dataRecordCollections2.toString(), 1,
 			dataRecordCollections2.size());
 
-		Page<DataRecordCollection> page3 =
-			DataRecordCollectionResource.getSiteDataRecordCollectionsPage(
-				siteId, null, Pagination.of(1, 3));
-
 		assertEqualsIgnoringOrder(
 			Arrays.asList(
 				dataRecordCollection1, dataRecordCollection2,
 				dataRecordCollection3),
-			(List<DataRecordCollection>)page3.getItems());
+			new ArrayList<DataRecordCollection>() {
+				{
+					addAll(dataRecordCollections1);
+					addAll(dataRecordCollections2);
+				}
+			});
 	}
 
 	protected DataRecordCollection
@@ -639,6 +639,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"dataRecordCollectionKey", additionalAssertFieldName)) {
+
+				if (dataRecordCollection.getDataRecordCollectionKey() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (dataRecordCollection.getDescription() == null) {
 					valid = false;
@@ -704,6 +714,19 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 				if (!Objects.deepEquals(
 						dataRecordCollection1.getDataDefinitionId(),
 						dataRecordCollection2.getDataDefinitionId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"dataRecordCollectionKey", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						dataRecordCollection1.getDataRecordCollectionKey(),
+						dataRecordCollection2.getDataRecordCollectionKey())) {
 
 					return false;
 				}
@@ -806,6 +829,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("dataRecordCollectionKey")) {
+			sb.append("'");
+			sb.append(
+				String.valueOf(
+					dataRecordCollection.getDataRecordCollectionKey()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("description")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -831,6 +864,7 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		return new DataRecordCollection() {
 			{
 				dataDefinitionId = RandomTestUtil.randomLong();
+				dataRecordCollectionKey = RandomTestUtil.randomString();
 				id = RandomTestUtil.randomLong();
 			}
 		};
@@ -852,7 +886,6 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 	}
 
 	protected Group irrelevantGroup;
-	protected Company testCompany;
 	protected Group testGroup;
 	protected Locale testLocale;
 	protected String testUserNameAndPassword = "test@liferay.com:test";

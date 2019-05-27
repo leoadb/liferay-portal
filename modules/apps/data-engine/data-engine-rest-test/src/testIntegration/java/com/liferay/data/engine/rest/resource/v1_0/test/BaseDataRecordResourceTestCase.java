@@ -31,9 +31,7 @@ import com.liferay.data.engine.rest.client.serdes.v1_0.DataRecordSerDes;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -49,6 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.text.DateFormat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -95,11 +94,6 @@ public abstract class BaseDataRecordResourceTestCase {
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 		testLocale = LocaleUtil.getDefault();
-
-		testCompany = CompanyLocalServiceUtil.getCompany(
-			testGroup.getCompanyId());
-
-		_dataRecordResource.setContextCompany(testCompany);
 	}
 
 	@After
@@ -172,6 +166,139 @@ public abstract class BaseDataRecordResourceTestCase {
 		Assert.assertFalse(json.contains(regex));
 
 		dataRecord = DataRecordSerDes.toDTO(json);
+	}
+
+	@Test
+	public void testGetDataDefinitionDataRecordsPage() throws Exception {
+		Long dataDefinitionId =
+			testGetDataDefinitionDataRecordsPage_getDataDefinitionId();
+		Long irrelevantDataDefinitionId =
+			testGetDataDefinitionDataRecordsPage_getIrrelevantDataDefinitionId();
+
+		if ((irrelevantDataDefinitionId != null)) {
+			DataRecord irrelevantDataRecord =
+				testGetDataDefinitionDataRecordsPage_addDataRecord(
+					irrelevantDataDefinitionId, randomIrrelevantDataRecord());
+
+			Page<DataRecord> page =
+				DataRecordResource.getDataDefinitionDataRecordsPage(
+					irrelevantDataDefinitionId, Pagination.of(1, 2));
+
+			Assert.assertEquals(1, page.getTotalCount());
+
+			assertEquals(
+				Arrays.asList(irrelevantDataRecord),
+				(List<DataRecord>)page.getItems());
+			assertValid(page);
+		}
+
+		DataRecord dataRecord1 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		DataRecord dataRecord2 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		Page<DataRecord> page =
+			DataRecordResource.getDataDefinitionDataRecordsPage(
+				dataDefinitionId, Pagination.of(1, 2));
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(dataRecord1, dataRecord2),
+			(List<DataRecord>)page.getItems());
+		assertValid(page);
+	}
+
+	@Test
+	public void testGetDataDefinitionDataRecordsPageWithPagination()
+		throws Exception {
+
+		Long dataDefinitionId =
+			testGetDataDefinitionDataRecordsPage_getDataDefinitionId();
+
+		DataRecord dataRecord1 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		DataRecord dataRecord2 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		DataRecord dataRecord3 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		Page<DataRecord> page1 =
+			DataRecordResource.getDataDefinitionDataRecordsPage(
+				dataDefinitionId, Pagination.of(1, 2));
+
+		List<DataRecord> dataRecords1 = (List<DataRecord>)page1.getItems();
+
+		Assert.assertEquals(dataRecords1.toString(), 2, dataRecords1.size());
+
+		Page<DataRecord> page2 =
+			DataRecordResource.getDataDefinitionDataRecordsPage(
+				dataDefinitionId, Pagination.of(2, 2));
+
+		Assert.assertEquals(3, page2.getTotalCount());
+
+		List<DataRecord> dataRecords2 = (List<DataRecord>)page2.getItems();
+
+		Assert.assertEquals(dataRecords2.toString(), 1, dataRecords2.size());
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(dataRecord1, dataRecord2, dataRecord3),
+			new ArrayList<DataRecord>() {
+				{
+					addAll(dataRecords1);
+					addAll(dataRecords2);
+				}
+			});
+	}
+
+	protected DataRecord testGetDataDefinitionDataRecordsPage_addDataRecord(
+			Long dataDefinitionId, DataRecord dataRecord)
+		throws Exception {
+
+		return DataRecordResource.postDataDefinitionDataRecord(
+			dataDefinitionId, dataRecord);
+	}
+
+	protected Long testGetDataDefinitionDataRecordsPage_getDataDefinitionId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGetDataDefinitionDataRecordsPage_getIrrelevantDataDefinitionId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Test
+	public void testPostDataDefinitionDataRecord() throws Exception {
+		DataRecord randomDataRecord = randomDataRecord();
+
+		DataRecord postDataRecord =
+			testPostDataDefinitionDataRecord_addDataRecord(randomDataRecord);
+
+		assertEquals(randomDataRecord, postDataRecord);
+		assertValid(postDataRecord);
+	}
+
+	protected DataRecord testPostDataDefinitionDataRecord_addDataRecord(
+			DataRecord dataRecord)
+		throws Exception {
+
+		return DataRecordResource.postDataDefinitionDataRecord(
+			testGetDataDefinitionDataRecordsPage_getDataDefinitionId(),
+			dataRecord);
 	}
 
 	@Test
@@ -256,13 +383,14 @@ public abstract class BaseDataRecordResourceTestCase {
 
 		Assert.assertEquals(dataRecords2.toString(), 1, dataRecords2.size());
 
-		Page<DataRecord> page3 =
-			DataRecordResource.getDataRecordCollectionDataRecordsPage(
-				dataRecordCollectionId, Pagination.of(1, 3));
-
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataRecord1, dataRecord2, dataRecord3),
-			(List<DataRecord>)page3.getItems());
+			new ArrayList<DataRecord>() {
+				{
+					addAll(dataRecords1);
+					addAll(dataRecords2);
+				}
+			});
 	}
 
 	protected DataRecord
@@ -625,7 +753,6 @@ public abstract class BaseDataRecordResourceTestCase {
 	}
 
 	protected Group irrelevantGroup;
-	protected Company testCompany;
 	protected Group testGroup;
 	protected Locale testLocale;
 	protected String testUserNameAndPassword = "test@liferay.com:test";

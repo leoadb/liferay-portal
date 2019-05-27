@@ -62,6 +62,9 @@ public interface DataLayoutResource {
 			DataLayoutPermission dataLayoutPermission)
 		throws Exception;
 
+	public DataLayout getSiteDataLayout(String dataLayoutKey, Long siteId)
+		throws Exception;
+
 	public void setContextCompany(Company contextCompany);
 
 }
