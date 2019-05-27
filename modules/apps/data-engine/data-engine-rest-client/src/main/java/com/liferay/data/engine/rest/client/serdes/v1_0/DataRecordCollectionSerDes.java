@@ -65,6 +65,21 @@ public class DataRecordCollectionSerDes {
 			sb.append(dataRecordCollection.getDataDefinitionId());
 		}
 
+		if (dataRecordCollection.getDataRecordCollectionKey() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dataRecordCollectionKey\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(dataRecordCollection.getDataRecordCollectionKey()));
+
+			sb.append("\"");
+		}
+
 		if (dataRecordCollection.getDescription() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -125,6 +140,16 @@ public class DataRecordCollectionSerDes {
 				String.valueOf(dataRecordCollection.getDataDefinitionId()));
 		}
 
+		if (dataRecordCollection.getDataRecordCollectionKey() == null) {
+			map.put("dataRecordCollectionKey", null);
+		}
+		else {
+			map.put(
+				"dataRecordCollectionKey",
+				String.valueOf(
+					dataRecordCollection.getDataRecordCollectionKey()));
+		}
+
 		if (dataRecordCollection.getDescription() == null) {
 			map.put("description", null);
 		}
@@ -154,9 +179,7 @@ public class DataRecordCollectionSerDes {
 	private static String _escape(Object object) {
 		String string = String.valueOf(object);
 
-		string = string.replaceAll("\"", "\\\\\"");
-
-		return string.replace("\\", "\\\\");
+		return string.replaceAll("\"", "\\\\\"");
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -210,6 +233,14 @@ public class DataRecordCollectionSerDes {
 				if (jsonParserFieldValue != null) {
 					dataRecordCollection.setDataDefinitionId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "dataRecordCollectionKey")) {
+
+				if (jsonParserFieldValue != null) {
+					dataRecordCollection.setDataRecordCollectionKey(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "description")) {

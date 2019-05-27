@@ -71,6 +71,20 @@ public class DataLayoutSerDes {
 			sb.append(dataLayout.getDataDefinitionId());
 		}
 
+		if (dataLayout.getDataLayoutKey() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dataLayoutKey\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(dataLayout.getDataLayoutKey()));
+
+			sb.append("\"");
+		}
+
 		if (dataLayout.getDataLayoutPages() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -219,6 +233,14 @@ public class DataLayoutSerDes {
 				String.valueOf(dataLayout.getDataDefinitionId()));
 		}
 
+		if (dataLayout.getDataLayoutKey() == null) {
+			map.put("dataLayoutKey", null);
+		}
+		else {
+			map.put(
+				"dataLayoutKey", String.valueOf(dataLayout.getDataLayoutKey()));
+		}
+
 		if (dataLayout.getDataLayoutPages() == null) {
 			map.put("dataLayoutPages", null);
 		}
@@ -288,9 +310,7 @@ public class DataLayoutSerDes {
 	private static String _escape(Object object) {
 		String string = String.valueOf(object);
 
-		string = string.replaceAll("\"", "\\\\\"");
-
-		return string.replace("\\", "\\\\");
+		return string.replaceAll("\"", "\\\\\"");
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -344,6 +364,11 @@ public class DataLayoutSerDes {
 				if (jsonParserFieldValue != null) {
 					dataLayout.setDataDefinitionId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dataLayoutKey")) {
+				if (jsonParserFieldValue != null) {
+					dataLayout.setDataLayoutKey((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dataLayoutPages")) {

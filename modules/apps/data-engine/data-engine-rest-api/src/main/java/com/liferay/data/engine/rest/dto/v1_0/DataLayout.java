@@ -78,6 +78,34 @@ public class DataLayout {
 	protected Long dataDefinitionId;
 
 	@Schema
+	public String getDataLayoutKey() {
+		return dataLayoutKey;
+	}
+
+	public void setDataLayoutKey(String dataLayoutKey) {
+		this.dataLayoutKey = dataLayoutKey;
+	}
+
+	@JsonIgnore
+	public void setDataLayoutKey(
+		UnsafeSupplier<String, Exception> dataLayoutKeyUnsafeSupplier) {
+
+		try {
+			dataLayoutKey = dataLayoutKeyUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String dataLayoutKey;
+
+	@Schema
 	public DataLayoutPage[] getDataLayoutPages() {
 		return dataLayoutPages;
 	}
@@ -367,6 +395,20 @@ public class DataLayout {
 			sb.append("\"dataDefinitionId\": ");
 
 			sb.append(dataDefinitionId);
+		}
+
+		if (dataLayoutKey != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dataLayoutKey\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(dataLayoutKey));
+
+			sb.append("\"");
 		}
 
 		if (dataLayoutPages != null) {
