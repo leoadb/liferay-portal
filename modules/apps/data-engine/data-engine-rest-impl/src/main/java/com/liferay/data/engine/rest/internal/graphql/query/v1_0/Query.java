@@ -114,6 +114,21 @@ public class Query {
 
 	@GraphQLField
 	@GraphQLInvokeDetached
+	public DataDefinition getSiteDataDefinition(
+			@GraphQLName("dataDefinitionKey") String dataDefinitionKey,
+			@GraphQLName("siteId") Long siteId)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_dataDefinitionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataDefinitionResource ->
+				dataDefinitionResource.getSiteDataDefinition(
+					dataDefinitionKey, siteId));
+	}
+
+	@GraphQLField
+	@GraphQLInvokeDetached
 	public Collection<DataLayout> getDataDefinitionDataLayoutsPage(
 			@GraphQLName("dataDefinitionId") Long dataDefinitionId,
 			@GraphQLName("pageSize") int pageSize,
@@ -159,6 +174,26 @@ public class Query {
 			dataLayoutResource -> {
 				Page paginationPage = dataLayoutResource.getSiteDataLayoutPage(
 					siteId, Pagination.of(pageSize, page));
+
+				return paginationPage.getItems();
+			});
+	}
+
+	@GraphQLField
+	@GraphQLInvokeDetached
+	public Collection<DataRecord> getDataDefinitionDataRecordsPage(
+			@GraphQLName("dataDefinitionId") Long dataDefinitionId,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_dataRecordResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataRecordResource -> {
+				Page paginationPage =
+					dataRecordResource.getDataDefinitionDataRecordsPage(
+						dataDefinitionId, Pagination.of(pageSize, page));
 
 				return paginationPage.getItems();
 			});
