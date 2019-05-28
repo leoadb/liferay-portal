@@ -16,12 +16,14 @@ package com.liferay.data.engine.rest.internal.resource.v1_0;
 
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionPermission;
+import com.liferay.data.engine.rest.dto.v1_0.DataRecordCollection;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.constants.DataDefinitionConstants;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
 import com.liferay.data.engine.rest.internal.resource.v1_0.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.resource.v1_0.DataDefinitionResource;
+import com.liferay.data.engine.rest.resource.v1_0.DataRecordCollectionResource;
 import com.liferay.data.engine.spi.field.type.util.LocalizedValueUtil;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.exception.RequiredStructureException;
@@ -42,6 +44,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -49,6 +52,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -200,11 +204,17 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		String dataDefinitionKey = Optional.ofNullable(
+			dataDefinition.getDataDefinitionKey()
+		).orElse(
+			StringUtil.randomString()
+		);
+
 		dataDefinition = DataDefinitionUtil.toDataDefinition(
 			_ddmStructureLocalService.addStructure(
 				PrincipalThreadLocal.getUserId(), siteId,
 				DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID,
-				_getClassNameId(), dataDefinition.getDataDefinitionKey(),
+				_getClassNameId(), dataDefinitionKey,
 				LocalizedValueUtil.toLocaleStringMap(dataDefinition.getName()),
 				LocalizedValueUtil.toLocaleStringMap(
 					dataDefinition.getDescription()),
@@ -216,6 +226,15 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			PrincipalThreadLocal.getUserId(),
 			InternalDataDefinition.class.getName(), dataDefinition.getId(),
 			serviceContext.getModelPermissions());
+
+		DataRecordCollection dataRecordCollection = new DataRecordCollection();
+
+		dataRecordCollection.setDataRecordCollectionKey(dataDefinitionKey);
+		dataRecordCollection.setDescription(dataDefinition.getDescription());
+		dataRecordCollection.setName(dataDefinition.getName());
+
+		_dataRecordCollectionResource.postDataDefinitionDataRecordCollection(
+			dataDefinition.getId(), dataRecordCollection);
 
 		return dataDefinition;
 	}
@@ -287,6 +306,9 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 	private long _getClassNameId() {
 		return _portal.getClassNameId(InternalDataDefinition.class);
 	}
+
+	@Reference
+	private DataRecordCollectionResource _dataRecordCollectionResource;
 
 	@Reference
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;
