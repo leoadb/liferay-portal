@@ -29,6 +29,7 @@ public class DataRecordCollectionUtil {
 		return new DataRecordCollection() {
 			{
 				dataDefinitionId = ddlRecordSet.getDDMStructureId();
+				dataRecordCollectionKey = ddlRecordSet.getRecordSetKey();
 				description = LocalizedValueUtil.toStringObjectMap(
 					ddlRecordSet.getDescriptionMap());
 				id = ddlRecordSet.getRecordSetId();
