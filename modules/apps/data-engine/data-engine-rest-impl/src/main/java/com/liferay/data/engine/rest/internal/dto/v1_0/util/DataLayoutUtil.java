@@ -22,6 +22,7 @@ import com.liferay.data.engine.spi.field.type.util.LocalizedValueUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -37,6 +38,7 @@ public class DataLayoutUtil {
 
 		return new DataLayout() {
 			{
+				dataLayoutKey = jsonObject.getString("dataLayoutKey");
 				dataLayoutPages = JSONUtil.toArray(
 					jsonObject.getJSONArray("pages"),
 					pageJSONObject -> _toDataLayoutPage(pageJSONObject),
@@ -60,6 +62,8 @@ public class DataLayoutUtil {
 		}
 
 		return JSONUtil.put(
+			"dataLayoutKey", GetterUtil.getString(dataLayout.getDataLayoutKey())
+		).put(
 			"defaultLanguageId", dataLayout.getDefaultLanguageId()
 		).put(
 			"pages",
