@@ -28,7 +28,6 @@ import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.service.base.DDMStructureLayoutLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.petra.string.StringPool;
-import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -39,6 +38,8 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
@@ -83,8 +84,9 @@ public class DDMStructureLayoutLocalServiceImpl
 	@Override
 	public DDMStructureLayout addStructureLayout(
 			long userId, long groupId, long structureVersionId,
-			Map<Locale, String> name, Map<Locale, String> description,
-			String definition, ServiceContext serviceContext)
+			long classNameId, Map<Locale, String> name,
+			Map<Locale, String> description, String definition,
+			String structureLayoutKey, ServiceContext serviceContext)
 		throws PortalException {
 
 		User user = userLocalService.getUser(userId);
@@ -101,10 +103,22 @@ public class DDMStructureLayoutLocalServiceImpl
 		structureLayout.setUserName(user.getFullName());
 		structureLayout.setCreateDate(new Date());
 		structureLayout.setModifiedDate(new Date());
+		structureLayout.setClassNameId(classNameId);
 		structureLayout.setStructureVersionId(structureVersionId);
 		structureLayout.setNameMap(name);
 		structureLayout.setDescriptionMap(description);
 		structureLayout.setDefinition(definition);
+
+		if (Validator.isNull(structureLayoutKey)) {
+			structureLayoutKey = String.valueOf(
+				counterLocalService.increment());
+		}
+		else {
+			structureLayoutKey = StringUtil.toUpperCase(
+				structureLayoutKey.trim());
+		}
+
+		structureLayout.setStructureLayoutKey(structureLayoutKey);
 
 		return ddmStructureLayoutPersistence.update(structureLayout);
 	}
@@ -264,9 +278,7 @@ public class DDMStructureLayoutLocalServiceImpl
 
 	protected String getStructureLayoutKey(String structureLayoutKey) {
 		if (structureLayoutKey != null) {
-			structureLayoutKey = structureLayoutKey.trim();
-
-			return StringUtil.toUpperCase(structureLayoutKey);
+			return StringUtil.toUpperCase(structureLayoutKey.trim());
 		}
 
 		return StringPool.BLANK;
