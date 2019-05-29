@@ -16,6 +16,10 @@ package com.liferay.data.engine.rest.internal.resource.v1_0;
 
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionPermission;
+import com.liferay.data.engine.rest.dto.v1_0.DataLayout;
+import com.liferay.data.engine.rest.dto.v1_0.DataLayoutColumn;
+import com.liferay.data.engine.rest.dto.v1_0.DataLayoutPage;
+import com.liferay.data.engine.rest.dto.v1_0.DataLayoutRow;
 import com.liferay.data.engine.rest.dto.v1_0.DataRecordCollection;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.constants.DataDefinitionConstants;
@@ -23,6 +27,7 @@ import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
 import com.liferay.data.engine.rest.internal.resource.v1_0.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.resource.v1_0.DataDefinitionResource;
+import com.liferay.data.engine.rest.resource.v1_0.DataLayoutResource;
 import com.liferay.data.engine.rest.resource.v1_0.DataRecordCollectionResource;
 import com.liferay.data.engine.spi.field.type.util.LocalizedValueUtil;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
@@ -53,6 +58,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -227,14 +233,9 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			InternalDataDefinition.class.getName(), dataDefinition.getId(),
 			serviceContext.getModelPermissions());
 
-		DataRecordCollection dataRecordCollection = new DataRecordCollection();
+		_addDefaultDataLayout(dataDefinition, dataDefinitionKey);
 
-		dataRecordCollection.setDataRecordCollectionKey(dataDefinitionKey);
-		dataRecordCollection.setDescription(dataDefinition.getDescription());
-		dataRecordCollection.setName(dataDefinition.getName());
-
-		_dataRecordCollectionResource.postDataDefinitionDataRecordCollection(
-			dataDefinition.getId(), dataRecordCollection);
+		_addDefaultDataRecordCollection(dataDefinition, dataDefinitionKey);
 
 		return dataDefinition;
 	}
@@ -303,9 +304,66 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		_modelResourcePermission = modelResourcePermission;
 	}
 
+	private void _addDefaultDataLayout(
+			DataDefinition dataDefinition, String dataDefinitionKey)
+		throws Exception {
+
+		DataLayout dataLayout = new DataLayout();
+
+		dataLayout.setDataLayoutKey(dataDefinitionKey);
+		dataLayout.setDescription(dataDefinition.getDescription());
+		dataLayout.setName(dataDefinition.getName());
+
+		List<DataLayoutRow> dataLayoutRows = new ArrayList<>();
+
+		Stream.of(
+			dataDefinition.getDataDefinitionFields()
+		).forEach(
+			dataDefinitionField -> {
+				DataLayoutColumn dataLayoutColumn = new DataLayoutColumn();
+
+				dataLayoutColumn.setColumnSize(12);
+				dataLayoutColumn.setFieldNames(
+					new String[] {dataDefinitionField.getName()});
+
+				DataLayoutRow dataLayoutRow = new DataLayoutRow();
+
+				dataLayoutRow.setDataLayoutColums(
+					new DataLayoutColumn[] {dataLayoutColumn});
+			}
+		);
+
+		DataLayoutPage dataLayoutPage = new DataLayoutPage();
+
+		dataLayoutPage.setDataLayoutRows(
+			dataLayoutRows.toArray(new DataLayoutRow[0]));
+
+		dataLayout.setDataLayoutPages(new DataLayoutPage[] {dataLayoutPage});
+
+		_dataLayoutResource.postDataDefinitionDataLayout(
+			dataDefinition.getId(), dataLayout);
+	}
+
+	private void _addDefaultDataRecordCollection(
+			DataDefinition dataDefinition, String dataDefinitionKey)
+		throws Exception {
+
+		DataRecordCollection dataRecordCollection = new DataRecordCollection();
+
+		dataRecordCollection.setDataRecordCollectionKey(dataDefinitionKey);
+		dataRecordCollection.setDescription(dataDefinition.getDescription());
+		dataRecordCollection.setName(dataDefinition.getName());
+
+		_dataRecordCollectionResource.postDataDefinitionDataRecordCollection(
+			dataDefinition.getId(), dataRecordCollection);
+	}
+
 	private long _getClassNameId() {
 		return _portal.getClassNameId(InternalDataDefinition.class);
 	}
+
+	@Reference
+	private DataLayoutResource _dataLayoutResource;
 
 	@Reference
 	private DataRecordCollectionResource _dataRecordCollectionResource;
