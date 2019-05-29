@@ -28,6 +28,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.service.base.DDMStructureLayoutLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -125,11 +126,32 @@ public class DDMStructureLayoutLocalServiceImpl
 	}
 
 	@Override
+	public DDMStructureLayout fetchStructureLayout(
+		long groupId, long classNameId, String structureLayoutKey) {
+
+		structureLayoutKey = getStructureLayoutKey(structureLayoutKey);
+
+		return ddmStructureLayoutPersistence.fetchByG_C_S(
+			groupId, classNameId, structureLayoutKey);
+	}
+
+	@Override
 	public DDMStructureLayout getStructureLayout(long structureLayoutId)
 		throws PortalException {
 
 		return ddmStructureLayoutPersistence.findByPrimaryKey(
 			structureLayoutId);
+	}
+
+	@Override
+	public DDMStructureLayout getStructureLayout(
+			long groupId, long classNameId, String structureLayoutKey)
+		throws PortalException {
+
+		structureLayoutKey = getStructureLayoutKey(structureLayoutKey);
+
+		return ddmStructureLayoutPersistence.findByG_C_S(
+			groupId, classNameId, structureLayoutKey);
 	}
 
 	@Override
@@ -238,6 +260,16 @@ public class DDMStructureLayoutLocalServiceImpl
 		structureLayout.setDefinition(definition);
 
 		return ddmStructureLayoutPersistence.update(structureLayout);
+	}
+
+	protected String getStructureLayoutKey(String structureLayoutKey) {
+		if (structureLayoutKey != null) {
+			structureLayoutKey = structureLayoutKey.trim();
+
+			return StringUtil.toUpperCase(structureLayoutKey);
+		}
+
+		return StringPool.BLANK;
 	}
 
 	protected String serialize(DDMFormLayout ddmFormLayout) {
