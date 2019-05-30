@@ -60,9 +60,11 @@ class DataLayoutBuilder extends Component {
 			ref: 'layoutProvider'
 		};
 
+		const LayoutProviderTag = LayoutProvider;
+
 		return (
 			<div class={'ddm-form-builder'}>
-				<LayoutProvider {...layoutProviderProps}>
+				<LayoutProviderTag {...layoutProviderProps}>
 					<FormBuilder
 						defaultLanguageId={defaultLanguageId}
 						editingLanguageId={editingLanguageId}
@@ -72,7 +74,7 @@ class DataLayoutBuilder extends Component {
 						ref="builder"
 						spritemap={spritemap}
 					/>
-				</LayoutProvider>
+				</LayoutProviderTag>
 			</div>
 		);
 	}
