@@ -1,11 +1,12 @@
 {
 	"plugins": [
-		"transform-class-properties",
-		"transform-decorators-legacy",
-		"transform-object-rest-spread"
-	],
-	"presets": [
-		"env",
-		"metal-jsx"
+		[
+			"incremental-dom", {
+			"components": true,
+			"namespaceAttributes": true,
+			"prefix": "IncrementalDOM",
+			"runtime": "iDOMHelpers"
+		}
+		]
 	]
 }
