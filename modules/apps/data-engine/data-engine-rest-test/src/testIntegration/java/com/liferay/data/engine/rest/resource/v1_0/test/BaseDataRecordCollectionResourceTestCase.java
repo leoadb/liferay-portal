@@ -31,7 +31,9 @@ import com.liferay.data.engine.rest.client.serdes.v1_0.DataRecordCollectionSerDe
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -46,7 +48,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.text.DateFormat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -93,6 +94,11 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 		testLocale = LocaleUtil.getDefault();
+
+		testCompany = CompanyLocalServiceUtil.getCompany(
+			testGroup.getCompanyId());
+
+		_dataRecordCollectionResource.setContextCompany(testCompany);
 	}
 
 	@After
@@ -270,16 +276,16 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 			dataRecordCollections2.toString(), 1,
 			dataRecordCollections2.size());
 
+		Page<DataRecordCollection> page3 =
+			DataRecordCollectionResource.
+				getDataDefinitionDataRecordCollectionsPage(
+					dataDefinitionId, null, Pagination.of(1, 3));
+
 		assertEqualsIgnoringOrder(
 			Arrays.asList(
 				dataRecordCollection1, dataRecordCollection2,
 				dataRecordCollection3),
-			new ArrayList<DataRecordCollection>() {
-				{
-					addAll(dataRecordCollections1);
-					addAll(dataRecordCollections2);
-				}
-			});
+			(List<DataRecordCollection>)page3.getItems());
 	}
 
 	protected DataRecordCollection
@@ -510,16 +516,15 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 			dataRecordCollections2.toString(), 1,
 			dataRecordCollections2.size());
 
+		Page<DataRecordCollection> page3 =
+			DataRecordCollectionResource.getSiteDataRecordCollectionsPage(
+				siteId, null, Pagination.of(1, 3));
+
 		assertEqualsIgnoringOrder(
 			Arrays.asList(
 				dataRecordCollection1, dataRecordCollection2,
 				dataRecordCollection3),
-			new ArrayList<DataRecordCollection>() {
-				{
-					addAll(dataRecordCollections1);
-					addAll(dataRecordCollections2);
-				}
-			});
+			(List<DataRecordCollection>)page3.getItems());
 	}
 
 	protected DataRecordCollection
@@ -864,6 +869,7 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 	}
 
 	protected Group irrelevantGroup;
+	protected Company testCompany;
 	protected Group testGroup;
 	protected Locale testLocale;
 	protected String testUserNameAndPassword = "test@liferay.com:test";

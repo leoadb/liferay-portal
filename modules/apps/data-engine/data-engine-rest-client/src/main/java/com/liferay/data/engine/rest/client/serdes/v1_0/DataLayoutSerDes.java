@@ -193,6 +193,16 @@ public class DataLayoutSerDes {
 			sb.append("\"");
 		}
 
+		if (dataLayout.getSiteId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"siteId\": ");
+
+			sb.append(dataLayout.getSiteId());
+		}
+
 		if (dataLayout.getUserId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -295,6 +305,13 @@ public class DataLayoutSerDes {
 			map.put(
 				"paginationMode",
 				String.valueOf(dataLayout.getPaginationMode()));
+		}
+
+		if (dataLayout.getSiteId() == null) {
+			map.put("siteId", null);
+		}
+		else {
+			map.put("siteId", String.valueOf(dataLayout.getSiteId()));
 		}
 
 		if (dataLayout.getUserId() == null) {
@@ -426,6 +443,12 @@ public class DataLayoutSerDes {
 			else if (Objects.equals(jsonParserFieldName, "paginationMode")) {
 				if (jsonParserFieldValue != null) {
 					dataLayout.setPaginationMode((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "siteId")) {
+				if (jsonParserFieldValue != null) {
+					dataLayout.setSiteId(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "userId")) {
