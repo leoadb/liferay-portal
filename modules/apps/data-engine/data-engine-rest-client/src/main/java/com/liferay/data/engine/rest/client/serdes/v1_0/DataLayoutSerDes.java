@@ -327,9 +327,7 @@ public class DataLayoutSerDes {
 	private static String _escape(Object object) {
 		String string = String.valueOf(object);
 
-		string = string.replace("\\", "\\\\");
-
-		return string.replace("\"", "\\\"");
+		return string.replaceAll("\"", "\\\\\"");
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -423,8 +421,7 @@ public class DataLayoutSerDes {
 			else if (Objects.equals(jsonParserFieldName, "description")) {
 				if (jsonParserFieldValue != null) {
 					dataLayout.setDescription(
-						(Map)DataLayoutSerDes.toMap(
-							(String)jsonParserFieldValue));
+						DataLayoutSerDes.toMap((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -436,8 +433,7 @@ public class DataLayoutSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					dataLayout.setName(
-						(Map)DataLayoutSerDes.toMap(
-							(String)jsonParserFieldValue));
+						DataLayoutSerDes.toMap((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "paginationMode")) {
