@@ -51,6 +51,8 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		DataLayout randomDataLayout = randomDataLayout();
 
 		for (int i = 0; i < 3; i++) {
+			randomDataLayout.setDataLayoutKey(RandomTestUtil.randomString());
+
 			DataLayout postDataLayout =
 				testPostDataDefinitionDataLayout_addDataLayout(
 					randomDataLayout);
@@ -71,6 +73,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			{
 				dataDefinitionId = _ddmStructure.getStructureId();
 				dateCreated = RandomTestUtil.nextDate();
+				dataLayoutKey = RandomTestUtil.randomString();
 				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = "en_US";
 				id = RandomTestUtil.randomLong();
@@ -79,6 +82,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 						put("en_US", RandomTestUtil.randomString());
 					}
 				};
+				siteId = testGroup.getGroupId();
 			}
 		};
 	}
@@ -113,12 +117,27 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	}
 
 	@Override
+	protected DataLayout testGetSiteDataLayout_addDataLayout()
+		throws Exception {
+
+		return dataLayoutResource.postDataDefinitionDataLayout(
+			_ddmStructure.getStructureId(), randomDataLayout());
+	}
+
+	@Override
 	protected DataLayout testGetSiteDataLayoutPage_addDataLayout(
 			Long siteId, DataLayout dataLayout)
 		throws Exception {
 
 		return dataLayoutResource.postDataDefinitionDataLayout(
 			dataLayout.getDataDefinitionId(), dataLayout);
+	}
+
+	@Override
+	protected Long testGetSiteDataLayoutPage_getIrrelevantSiteId()
+		throws Exception {
+
+		return null;
 	}
 
 	@Override
