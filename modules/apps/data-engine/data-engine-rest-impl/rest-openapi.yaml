@@ -927,6 +927,10 @@ paths:
                       format: int64
                       type: integer
                 - in: query
+                  name: dataLayoutKey
+                  schema:
+                      type: string
+                - in: query
                   name: keywords
                   schema:
                       type: string
@@ -951,6 +955,10 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/DataLayout"
                                 type: array
+                    description: ""
+                204:
+                    content:
+                        application/json: {}
                     description: ""
             tags: ["DataLayout"]
     "/sites/{siteId}/data-layout-permissions":
