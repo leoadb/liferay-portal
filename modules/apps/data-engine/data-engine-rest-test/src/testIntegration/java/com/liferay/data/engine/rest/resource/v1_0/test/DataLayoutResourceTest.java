@@ -51,6 +51,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		return new DataLayout() {
 			{
 				dataDefinitionId = _ddmStructure.getStructureId();
+				dataLayoutKey = RandomTestUtil.randomString();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = "en_US";
@@ -60,6 +61,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 						put("en_US", RandomTestUtil.randomString());
 					}
 				};
+				siteId = testGroup.getGroupId();
 			}
 		};
 	}
