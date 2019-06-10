@@ -54,7 +54,8 @@ public interface DataLayoutResource {
 		throws Exception;
 
 	public Page<DataLayout> getSiteDataLayoutPage(
-			Long siteId, String keywords, Pagination pagination)
+			Long siteId, String dataLayoutKey, String keywords,
+			Pagination pagination)
 		throws Exception;
 
 	public void postSiteDataLayoutPermission(

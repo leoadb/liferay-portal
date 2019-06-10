@@ -149,6 +149,7 @@ public class Query {
 	@GraphQLInvokeDetached
 	public java.util.Collection<DataLayout> getSiteDataLayoutPage(
 			@GraphQLName("siteId") Long siteId,
+			@GraphQLName("dataLayoutKey") String dataLayoutKey,
 			@GraphQLName("keywords") String keywords,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
@@ -159,7 +160,8 @@ public class Query {
 			this::_populateResourceContext,
 			dataLayoutResource -> {
 				Page paginationPage = dataLayoutResource.getSiteDataLayoutPage(
-					siteId, keywords, Pagination.of(pageSize, page));
+					siteId, dataLayoutKey, keywords,
+					Pagination.of(pageSize, page));
 
 				return paginationPage.getItems();
 			});

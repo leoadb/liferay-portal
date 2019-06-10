@@ -290,11 +290,13 @@ public class DataLayoutResource {
 	}
 
 	public static Page<DataLayout> getSiteDataLayoutPage(
-			Long siteId, String keywords, Pagination pagination)
+			Long siteId, String dataLayoutKey, String keywords,
+			Pagination pagination)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
-			getSiteDataLayoutPageHttpResponse(siteId, keywords, pagination);
+			getSiteDataLayoutPageHttpResponse(
+				siteId, dataLayoutKey, keywords, pagination);
 
 		String content = httpResponse.getContent();
 
@@ -308,12 +310,18 @@ public class DataLayoutResource {
 	}
 
 	public static HttpInvoker.HttpResponse getSiteDataLayoutPageHttpResponse(
-			Long siteId, String keywords, Pagination pagination)
+			Long siteId, String dataLayoutKey, String keywords,
+			Pagination pagination)
 		throws Exception {
 
 		HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
 
 		httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+		if (dataLayoutKey != null) {
+			httpInvoker.parameter(
+				"dataLayoutKey", String.valueOf(dataLayoutKey));
+		}
 
 		if (keywords != null) {
 			httpInvoker.parameter("keywords", String.valueOf(keywords));
