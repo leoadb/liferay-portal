@@ -43,10 +43,12 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.BadRequestException;
@@ -117,11 +119,21 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 
 	@Override
 	public Page<DataLayout> getSiteDataLayoutPage(
-			Long siteId, String keywords, Pagination pagination)
+			Long siteId, String dataLayoutKey, String keywords,
+			Pagination pagination)
 		throws Exception {
 
 		if (pagination.getPageSize() > 250) {
 			throw new BadRequestException("Page size is out of limit");
+		}
+
+		if (Validator.isNotNull(dataLayoutKey)) {
+			return Page.of(
+				transform(
+					Arrays.asList(
+						_ddmStructureLayoutLocalService.getStructureLayout(
+							siteId, _getClassNameId(), dataLayoutKey)),
+					this::_toDataLayout));
 		}
 
 		return Page.of(
@@ -163,7 +175,8 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
 				LocalizedValueUtil.toLocaleStringMap(
 					dataLayout.getDescription()),
-				DataLayoutUtil.toJSON(dataLayout), null, serviceContext);
+				DataLayoutUtil.toJSON(dataLayout),
+				dataLayout.getDataLayoutKey(), serviceContext);
 
 		dataLayout.setId(ddmStructureLayout.getStructureLayoutId());
 
@@ -308,6 +321,7 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 
 		dataLayout.setDateCreated(ddmStructureLayout.getCreateDate());
 		dataLayout.setDataDefinitionId(_getDDMStructureId(ddmStructureLayout));
+		dataLayout.setDataLayoutKey(ddmStructureLayout.getStructureLayoutKey());
 		dataLayout.setId(ddmStructureLayout.getStructureLayoutId());
 		dataLayout.setDescription(
 			LocalizedValueUtil.toStringObjectMap(
@@ -316,6 +330,7 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 		dataLayout.setName(
 			LocalizedValueUtil.toStringObjectMap(
 				ddmStructureLayout.getNameMap()));
+		dataLayout.setSiteId(ddmStructureLayout.getGroupId());
 		dataLayout.setUserId(ddmStructureLayout.getUserId());
 
 		return dataLayout;
