@@ -68,6 +68,21 @@ public class DDMStructureLayoutLocalServiceUtil {
 
 	public static com.liferay.dynamic.data.mapping.model.DDMStructureLayout
 			addStructureLayout(
+				long userId, long groupId, long classNameId,
+				long structureVersionId,
+				java.util.Map<java.util.Locale, String> name,
+				java.util.Map<java.util.Locale, String> description,
+				String definition, String structureLayoutKey,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().addStructureLayout(
+			userId, groupId, classNameId, structureVersionId, name, description,
+			definition, structureLayoutKey, serviceContext);
+	}
+
+	public static com.liferay.dynamic.data.mapping.model.DDMStructureLayout
+			addStructureLayout(
 				long userId, long groupId, long structureVersionId,
 				java.util.Map<java.util.Locale, String> name,
 				java.util.Map<java.util.Locale, String> description,
@@ -249,6 +264,14 @@ public class DDMStructureLayoutLocalServiceUtil {
 			uuid, groupId);
 	}
 
+	public static com.liferay.dynamic.data.mapping.model.DDMStructureLayout
+		fetchStructureLayout(
+			long groupId, long classNameId, String structureLayoutKey) {
+
+		return getService().fetchStructureLayout(
+			groupId, classNameId, structureLayoutKey);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -386,6 +409,15 @@ public class DDMStructureLayoutLocalServiceUtil {
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().getStructureLayout(structureLayoutId);
+	}
+
+	public static com.liferay.dynamic.data.mapping.model.DDMStructureLayout
+			getStructureLayout(
+				long groupId, long classNameId, String structureLayoutKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().getStructureLayout(
+			groupId, classNameId, structureLayoutKey);
 	}
 
 	public static com.liferay.dynamic.data.mapping.model.DDMStructureLayout
