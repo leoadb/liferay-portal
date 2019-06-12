@@ -171,6 +171,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		DataLayout dataLayout = randomDataLayout();
 
+		dataLayout.setDataLayoutKey(regex);
 		dataLayout.setDefaultLanguageId(regex);
 		dataLayout.setPaginationMode(regex);
 
@@ -180,6 +181,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		dataLayout = DataLayoutSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, dataLayout.getDataLayoutKey());
 		Assert.assertEquals(regex, dataLayout.getDefaultLanguageId());
 		Assert.assertEquals(regex, dataLayout.getPaginationMode());
 	}
@@ -392,7 +394,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 	public void testGetSiteDataLayoutPage() throws Exception {
 		Page<DataLayout> page = dataLayoutResource.getSiteDataLayoutPage(
 			testGetSiteDataLayoutPage_getSiteId(),
-			RandomTestUtil.randomString(), Pagination.of(1, 2));
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			Pagination.of(1, 2));
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -405,7 +408,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 					irrelevantSiteId, randomIrrelevantDataLayout());
 
 			page = dataLayoutResource.getSiteDataLayoutPage(
-				irrelevantSiteId, null, Pagination.of(1, 2));
+				irrelevantSiteId, null, null, Pagination.of(1, 2));
 
 			Assert.assertEquals(1, page.getTotalCount());
 
@@ -422,7 +425,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 			siteId, randomDataLayout());
 
 		page = dataLayoutResource.getSiteDataLayoutPage(
-			siteId, null, Pagination.of(1, 2));
+			siteId, null, null, Pagination.of(1, 2));
 
 		Assert.assertEquals(2, page.getTotalCount());
 
@@ -446,14 +449,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 			siteId, randomDataLayout());
 
 		Page<DataLayout> page1 = dataLayoutResource.getSiteDataLayoutPage(
-			siteId, null, Pagination.of(1, 2));
+			siteId, null, null, Pagination.of(1, 2));
 
 		List<DataLayout> dataLayouts1 = (List<DataLayout>)page1.getItems();
 
 		Assert.assertEquals(dataLayouts1.toString(), 2, dataLayouts1.size());
 
 		Page<DataLayout> page2 = dataLayoutResource.getSiteDataLayoutPage(
-			siteId, null, Pagination.of(2, 2));
+			siteId, null, null, Pagination.of(2, 2));
 
 		Assert.assertEquals(3, page2.getTotalCount());
 
@@ -462,7 +465,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 		Assert.assertEquals(dataLayouts2.toString(), 1, dataLayouts2.size());
 
 		Page<DataLayout> page3 = dataLayoutResource.getSiteDataLayoutPage(
-			siteId, null, Pagination.of(1, 3));
+			siteId, null, null, Pagination.of(1, 3));
 
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataLayout1, dataLayout2, dataLayout3),
@@ -557,11 +560,23 @@ public abstract class BaseDataLayoutResourceTestCase {
 			valid = false;
 		}
 
+		if (!Objects.equals(dataLayout.getSiteId(), testGroup.getGroupId())) {
+			valid = false;
+		}
+
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals("dataDefinitionId", additionalAssertFieldName)) {
 				if (dataLayout.getDataDefinitionId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataLayoutKey", additionalAssertFieldName)) {
+				if (dataLayout.getDataLayoutKey() == null) {
 					valid = false;
 				}
 
@@ -656,6 +671,10 @@ public abstract class BaseDataLayoutResourceTestCase {
 			return true;
 		}
 
+		if (!Objects.equals(dataLayout1.getSiteId(), dataLayout2.getSiteId())) {
+			return false;
+		}
+
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
@@ -663,6 +682,17 @@ public abstract class BaseDataLayoutResourceTestCase {
 				if (!Objects.deepEquals(
 						dataLayout1.getDataDefinitionId(),
 						dataLayout2.getDataDefinitionId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataLayoutKey", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout1.getDataLayoutKey(),
+						dataLayout2.getDataLayoutKey())) {
 
 					return false;
 				}
@@ -831,6 +861,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("dataLayoutKey")) {
+			sb.append("'");
+			sb.append(String.valueOf(dataLayout.getDataLayoutKey()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("dataLayoutPages")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -930,6 +968,11 @@ public abstract class BaseDataLayoutResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("siteId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("userId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -943,11 +986,13 @@ public abstract class BaseDataLayoutResourceTestCase {
 		return new DataLayout() {
 			{
 				dataDefinitionId = RandomTestUtil.randomLong();
+				dataLayoutKey = RandomTestUtil.randomString();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = RandomTestUtil.randomString();
 				id = RandomTestUtil.randomLong();
 				paginationMode = RandomTestUtil.randomString();
+				siteId = testGroup.getGroupId();
 				userId = RandomTestUtil.randomLong();
 			}
 		};
@@ -955,6 +1000,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 	protected DataLayout randomIrrelevantDataLayout() throws Exception {
 		DataLayout randomIrrelevantDataLayout = randomDataLayout();
+
+		randomIrrelevantDataLayout.setSiteId(irrelevantGroup.getGroupId());
 
 		return randomIrrelevantDataLayout;
 	}
