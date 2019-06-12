@@ -114,8 +114,7 @@ public class DDMStructureLayoutLocalServiceImpl
 				String.valueOf(counterLocalService.increment()));
 		}
 		else {
-			structureLayout.setStructureLayoutKey(
-				StringUtil.toUpperCase(structureLayoutKey.trim()));
+			structureLayout.setStructureLayoutKey(structureLayoutKey.trim());
 		}
 
 		return ddmStructureLayoutPersistence.update(structureLayout);

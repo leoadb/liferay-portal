@@ -104,6 +104,13 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	}
 
 	@Override
+	protected Long testGetSiteDataLayoutPage_getIrrelevantSiteId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Override
 	protected DataLayout testPutDataLayout_addDataLayout() throws Exception {
 		return dataLayoutResource.postDataDefinitionDataLayout(
 			_ddmStructure.getStructureId(), randomDataLayout());
