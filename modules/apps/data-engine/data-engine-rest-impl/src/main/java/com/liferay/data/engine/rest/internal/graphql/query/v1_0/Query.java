@@ -93,6 +93,7 @@ public class Query {
 	@GraphQLInvokeDetached
 	public java.util.Collection<DataDefinition> getSiteDataDefinitionsPage(
 			@GraphQLName("siteId") Long siteId,
+			@GraphQLName("dataDefinitionKey") String dataDefinitionKey,
 			@GraphQLName("keywords") String keywords,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
@@ -104,7 +105,8 @@ public class Query {
 			dataDefinitionResource -> {
 				Page paginationPage =
 					dataDefinitionResource.getSiteDataDefinitionsPage(
-						siteId, keywords, Pagination.of(pageSize, page));
+						siteId, dataDefinitionKey, keywords,
+						Pagination.of(pageSize, page));
 
 				return paginationPage.getItems();
 			});

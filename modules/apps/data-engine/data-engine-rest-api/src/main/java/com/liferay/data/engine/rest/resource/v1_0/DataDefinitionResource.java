@@ -54,7 +54,8 @@ public interface DataDefinitionResource {
 		throws Exception;
 
 	public Page<DataDefinition> getSiteDataDefinitionsPage(
-			Long siteId, String keywords, Pagination pagination)
+			Long siteId, String dataDefinitionKey, String keywords,
+			Pagination pagination)
 		throws Exception;
 
 	public DataDefinition postSiteDataDefinition(
