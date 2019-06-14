@@ -7,6 +7,8 @@ components:
                     items:
                         $ref: '#/components/schemas/DataDefinitionField'
                     type: array
+                dataDefinitionKey:
+                    type: string
                 dataDefinitionRules:
                     items:
                         $ref: '#/components/schemas/DataDefinitionRule'
