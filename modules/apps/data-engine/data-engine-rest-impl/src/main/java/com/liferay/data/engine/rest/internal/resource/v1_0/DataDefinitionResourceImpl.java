@@ -48,6 +48,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -106,10 +107,20 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 	@Override
 	public Page<DataDefinition> getSiteDataDefinitionsPage(
-			Long siteId, String keywords, Pagination pagination)
+			Long siteId, String dataDefinitionKey, String keywords,
+			Pagination pagination)
 		throws Exception {
 
 		if (Validator.isNull(keywords)) {
+			if (Validator.isNotNull(dataDefinitionKey)) {
+				return Page.of(
+					transform(
+						Arrays.asList(
+							_ddmStructureLocalService.getStructure(
+								siteId, _getClassNameId(), dataDefinitionKey)),
+						DataDefinitionUtil::toDataDefinition));
+			}
+
 			return Page.of(
 				transform(
 					_ddmStructureService.getStructures(
