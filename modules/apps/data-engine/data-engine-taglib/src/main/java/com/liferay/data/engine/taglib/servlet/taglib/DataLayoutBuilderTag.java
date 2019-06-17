@@ -15,9 +15,45 @@
 package com.liferay.data.engine.taglib.servlet.taglib;
 
 import com.liferay.data.engine.taglib.servlet.taglib.base.BaseDataLayoutBuilderTag;
+import com.liferay.data.engine.taglib.servlet.taglib.util.DataLayoutTaglibUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
+
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Jeyvison Nascimento
+ * @author Leonardo Barros
  */
 public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
+
+	@Override
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		super.setAttributes(httpServletRequest);
+
+		setNamespacedAttribute(
+			httpServletRequest, "availableLocales",
+			new Locale[] {LocaleThreadLocal.getThemeDisplayLocale()});
+
+		setNamespacedAttribute(
+			httpServletRequest, "dataLayout",
+			JSONFactoryUtil.createJSONObject());
+
+		setNamespacedAttribute(
+			httpServletRequest, "dataLayoutBuilderModule",
+			DataLayoutTaglibUtil.resolveModule(
+				"data-engine-taglib/data_layout_builder/js" +
+					"/DataLayoutBuilder.es"));
+
+		setNamespacedAttribute(
+			httpServletRequest, "fieldTypes",
+			DataLayoutTaglibUtil.getFieldTypesJSONArray(httpServletRequest));
+
+		setNamespacedAttribute(
+			httpServletRequest, "fieldTypesModules",
+			DataLayoutTaglibUtil.resolveFieldTypesModules());
+	}
+
 }
