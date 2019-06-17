@@ -913,6 +913,32 @@ paths:
                                 $ref: "#/components/schemas/DataDefinition"
                     description: ""
             tags: ["DataDefinition"]
+    "/sites/{siteId}/data-definitions/{dataDefinitionKey}":
+        get:
+            operationId: getSiteDataDefinition
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: dataDefinitionKey
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinition"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinition"
+                    description: ""
+            tags: ["DataDefinition"]
     "/sites/{siteId}/data-layout":
         get:
             operationId: getSiteDataLayoutPage
