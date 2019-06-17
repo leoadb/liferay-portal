@@ -85,11 +85,13 @@ public interface DataDefinitionResource {
 		throws Exception;
 
 	public Page<DataDefinition> getSiteDataDefinitionsPage(
-			Long siteId, String keywords, Pagination pagination)
+			Long siteId, String dataDefinitionKey, String keywords,
+			Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getSiteDataDefinitionsPageHttpResponse(
-			Long siteId, String keywords, Pagination pagination)
+			Long siteId, String dataDefinitionKey, String keywords,
+			Pagination pagination)
 		throws Exception;
 
 	public DataDefinition postSiteDataDefinition(
@@ -396,12 +398,13 @@ public interface DataDefinitionResource {
 		}
 
 		public Page<DataDefinition> getSiteDataDefinitionsPage(
-				Long siteId, String keywords, Pagination pagination)
+				Long siteId, String dataDefinitionKey, String keywords,
+				Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSiteDataDefinitionsPageHttpResponse(
-					siteId, keywords, pagination);
+					siteId, dataDefinitionKey, keywords, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -415,7 +418,8 @@ public interface DataDefinitionResource {
 		}
 
 		public HttpInvoker.HttpResponse getSiteDataDefinitionsPageHttpResponse(
-				Long siteId, String keywords, Pagination pagination)
+				Long siteId, String dataDefinitionKey, String keywords,
+				Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -426,6 +430,11 @@ public interface DataDefinitionResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (dataDefinitionKey != null) {
+				httpInvoker.parameter(
+					"dataDefinitionKey", String.valueOf(dataDefinitionKey));
+			}
 
 			if (keywords != null) {
 				httpInvoker.parameter("keywords", String.valueOf(keywords));

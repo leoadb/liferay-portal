@@ -172,6 +172,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		DataDefinition dataDefinition = randomDataDefinition();
 
+		dataDefinition.setDataDefinitionKey(regex);
 		dataDefinition.setStorageType(regex);
 
 		String json = DataDefinitionSerDes.toJSON(dataDefinition);
@@ -180,6 +181,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		dataDefinition = DataDefinitionSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, dataDefinition.getDataDefinitionKey());
 		Assert.assertEquals(regex, dataDefinition.getStorageType());
 	}
 
@@ -274,7 +276,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		Page<DataDefinition> page =
 			dataDefinitionResource.getSiteDataDefinitionsPage(
 				testGetSiteDataDefinitionsPage_getSiteId(),
-				RandomTestUtil.randomString(), Pagination.of(1, 2));
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				Pagination.of(1, 2));
 
 		Assert.assertEquals(0, page.getTotalCount());
 
@@ -288,7 +291,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 					irrelevantSiteId, randomIrrelevantDataDefinition());
 
 			page = dataDefinitionResource.getSiteDataDefinitionsPage(
-				irrelevantSiteId, null, Pagination.of(1, 2));
+				irrelevantSiteId, null, null, Pagination.of(1, 2));
 
 			Assert.assertEquals(1, page.getTotalCount());
 
@@ -307,7 +310,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				siteId, randomDataDefinition());
 
 		page = dataDefinitionResource.getSiteDataDefinitionsPage(
-			siteId, null, Pagination.of(1, 2));
+			siteId, null, null, Pagination.of(1, 2));
 
 		Assert.assertEquals(2, page.getTotalCount());
 
@@ -337,7 +340,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		Page<DataDefinition> page1 =
 			dataDefinitionResource.getSiteDataDefinitionsPage(
-				siteId, null, Pagination.of(1, 2));
+				siteId, null, null, Pagination.of(1, 2));
 
 		List<DataDefinition> dataDefinitions1 =
 			(List<DataDefinition>)page1.getItems();
@@ -347,7 +350,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		Page<DataDefinition> page2 =
 			dataDefinitionResource.getSiteDataDefinitionsPage(
-				siteId, null, Pagination.of(2, 2));
+				siteId, null, null, Pagination.of(2, 2));
 
 		Assert.assertEquals(3, page2.getTotalCount());
 
@@ -359,7 +362,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		Page<DataDefinition> page3 =
 			dataDefinitionResource.getSiteDataDefinitionsPage(
-				siteId, null, Pagination.of(1, 3));
+				siteId, null, null, Pagination.of(1, 3));
 
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataDefinition1, dataDefinition2, dataDefinition3),
@@ -491,6 +494,16 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"dataDefinitionKey", additionalAssertFieldName)) {
+
+				if (dataDefinition.getDataDefinitionKey() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"dataDefinitionRules", additionalAssertFieldName)) {
 
 				if (dataDefinition.getDataDefinitionRules() == null) {
@@ -587,6 +600,19 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				if (!Objects.deepEquals(
 						dataDefinition1.getDataDefinitionFields(),
 						dataDefinition2.getDataDefinitionFields())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"dataDefinitionKey", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						dataDefinition1.getDataDefinitionKey(),
+						dataDefinition2.getDataDefinitionKey())) {
 
 					return false;
 				}
@@ -746,6 +772,14 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("dataDefinitionKey")) {
+			sb.append("'");
+			sb.append(String.valueOf(dataDefinition.getDataDefinitionKey()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("dataDefinitionRules")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -857,6 +891,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	protected DataDefinition randomDataDefinition() throws Exception {
 		return new DataDefinition() {
 			{
+				dataDefinitionKey = RandomTestUtil.randomString();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				id = RandomTestUtil.randomLong();
