@@ -15,3 +15,16 @@
 --%>
 
 <%@ include file="/data_layout_builder/init.jsp" %>
+
+<liferay-util:html-top>
+	<link href="<%= PortalUtil.getStaticResourceURL(request, "/o/dynamic-data-mapping-form-builder/css/main.css") %>" rel="stylesheet" type="text/css" />
+</liferay-util:html-top>
+
+<div class="container-fluid-1280 ddm-translation-manager">
+	<liferay-frontend:translation-manager
+		availableLocales="<%= availableLocales %>"
+		changeableDefaultLanguage="<%= false %>"
+		defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
+		id="translationManager"
+	/>
+</div>
