@@ -25,7 +25,7 @@ import javax.servlet.jsp.PageContext;
  * @author Leonardo Barros
  * @generated
  */
-public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -34,16 +34,32 @@ public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.
 		return super.doStartTag();
 	}
 
+	public java.lang.String getDataDefinitionInputId() {
+		return _dataDefinitionInputId;
+	}
+
 	public java.lang.Long getDataLayoutId() {
 		return _dataLayoutId;
+	}
+
+	public java.lang.String getDataLayoutInputId() {
+		return _dataLayoutInputId;
 	}
 
 	public java.lang.String getNamespace() {
 		return _namespace;
 	}
 
+	public void setDataDefinitionInputId(java.lang.String dataDefinitionInputId) {
+		_dataDefinitionInputId = dataDefinitionInputId;
+	}
+
 	public void setDataLayoutId(java.lang.Long dataLayoutId) {
 		_dataLayoutId = dataLayoutId;
+	}
+
+	public void setDataLayoutInputId(java.lang.String dataLayoutInputId) {
+		_dataLayoutInputId = dataLayoutInputId;
 	}
 
 	public void setNamespace(java.lang.String namespace) {
@@ -61,7 +77,9 @@ public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_dataDefinitionInputId = null;
 		_dataLayoutId = null;
+		_dataLayoutInputId = null;
 		_namespace = null;
 	}
 
@@ -77,19 +95,23 @@ public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.
 
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
+		setNamespacedAttribute(request, "dataDefinitionInputId", _dataDefinitionInputId);
 		setNamespacedAttribute(request, "dataLayoutId", _dataLayoutId);
+		setNamespacedAttribute(request, "dataLayoutInputId", _dataLayoutInputId);
 		setNamespacedAttribute(request, "namespace", _namespace);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "liferay-data-engine:data-layout-renderer:";
+	protected static final String _ATTRIBUTE_NAMESPACE = "liferay-data-engine:data-layout-builder:";
 
 	private static final String _END_PAGE =
-		"/data_layout_renderer/end.jsp";
+		"/data_layout_builder/end.jsp";
 
 	private static final String _START_PAGE =
-		"/data_layout_renderer/start.jsp";
+		"/data_layout_builder/start.jsp";
 
+	private java.lang.String _dataDefinitionInputId = null;
 	private java.lang.Long _dataLayoutId = null;
+	private java.lang.String _dataLayoutInputId = null;
 	private java.lang.String _namespace = null;
 
 }
