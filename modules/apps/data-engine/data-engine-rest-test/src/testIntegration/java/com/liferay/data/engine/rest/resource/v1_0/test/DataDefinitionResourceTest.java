@@ -129,6 +129,7 @@ public class DataDefinitionResourceTest
 						}
 					}
 				};
+				dataDefinitionKey = RandomTestUtil.randomString();
 				name = new HashMap<String, Object>() {
 					{
 						put("en_US", RandomTestUtil.randomString());
