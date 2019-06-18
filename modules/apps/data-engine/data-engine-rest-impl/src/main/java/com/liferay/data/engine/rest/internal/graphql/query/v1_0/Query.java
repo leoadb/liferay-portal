@@ -167,6 +167,20 @@ public class Query {
 
 	@GraphQLField
 	@GraphQLInvokeDetached
+	public DataLayout getSiteDataLayout(
+			@GraphQLName("siteId") Long siteId,
+			@GraphQLName("dataLayoutKey") String dataLayoutKey)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_dataLayoutResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataLayoutResource -> dataLayoutResource.getSiteDataLayout(
+				siteId, dataLayoutKey));
+	}
+
+	@GraphQLField
+	@GraphQLInvokeDetached
 	public java.util.Collection<DataRecord>
 			getDataRecordCollectionDataRecordsPage(
 				@GraphQLName("dataRecordCollectionId") Long
