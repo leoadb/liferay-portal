@@ -49,6 +49,8 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import javax.ws.rs.BadRequestException;
 
 import org.osgi.service.component.annotations.Component;
@@ -113,6 +115,16 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 		return _toDataLayout(
 			_ddmStructureLayoutLocalService.getDDMStructureLayout(
 				dataLayoutId));
+	}
+
+	@Override
+	public DataLayout getSiteDataLayout(
+			@NotNull Long siteId, @NotNull String dataLayoutKey)
+		throws Exception {
+
+		return _toDataLayout(
+			_ddmStructureLayoutLocalService.getStructureLayout(
+				siteId, _getClassNameId(), dataLayoutKey));
 	}
 
 	@Override
