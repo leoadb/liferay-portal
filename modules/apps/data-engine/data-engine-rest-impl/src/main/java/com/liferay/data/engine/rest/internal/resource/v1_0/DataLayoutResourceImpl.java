@@ -171,7 +171,7 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.addStructureLayout(
 				PrincipalThreadLocal.getUserId(), ddmStructure.getGroupId(),
-				_getClassNameId(), null,
+				_getClassNameId(), dataLayout.getDataLayoutKey(),
 				_getDDMStructureVersionId(dataDefinitionId),
 				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
 				LocalizedValueUtil.toLocaleStringMap(
@@ -321,11 +321,13 @@ public class DataLayoutResourceImpl extends BaseDataLayoutResourceImpl {
 
 		dataLayout.setDateCreated(ddmStructureLayout.getCreateDate());
 		dataLayout.setDataDefinitionId(_getDDMStructureId(ddmStructureLayout));
+		dataLayout.setDataLayoutKey(ddmStructureLayout.getStructureLayoutKey());
 		dataLayout.setId(ddmStructureLayout.getStructureLayoutId());
 		dataLayout.setDescription(
 			LocalizedValueUtil.toStringObjectMap(
 				ddmStructureLayout.getDescriptionMap()));
 		dataLayout.setDateModified(ddmStructureLayout.getModifiedDate());
+		dataLayout.setSiteId(ddmStructureLayout.getGroupId());
 		dataLayout.setName(
 			LocalizedValueUtil.toStringObjectMap(
 				ddmStructureLayout.getNameMap()));
