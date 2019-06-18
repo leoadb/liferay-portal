@@ -61,6 +61,10 @@ public interface DataDefinitionResource {
 			Long siteId, DataDefinition dataDefinition)
 		throws Exception;
 
+	public DataDefinition getSiteDataDefinition(
+			Long siteId, String dataDefinitionKey)
+		throws Exception;
+
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}
