@@ -982,6 +982,32 @@ paths:
                         application/json: {}
                     description: ""
             tags: ["DataLayout"]
+    "/sites/{siteId}/data-layouts/{dataLayoutKey}":
+        get:
+            operationId: getSiteDataLayout
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: dataLayoutKey
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DataLayout"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DataLayout"
+                    description: ""
+            tags: ["DataLayout"]
     "/sites/{siteId}/data-record-collection-permissions":
         post:
             operationId: postSiteDataRecordCollectionPermission
