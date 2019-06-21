@@ -211,6 +211,8 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			InternalDataDefinition.class.getName(), dataDefinition.getId(),
 			serviceContext.getModelPermissions());
 
+		_addDefaultDataRecordCollection(dataDefinition, serviceContext);
+
 		return dataDefinition;
 	}
 
@@ -276,6 +278,30 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			modelResourcePermission) {
 
 		_modelResourcePermission = modelResourcePermission;
+	}
+
+	private void _addDefaultDataRecordCollection(
+			DataDefinition dataDefinition, ServiceContext serviceContext)
+		throws Exception {
+
+		DataRecordCollection dataRecordCollection =
+			DataRecordCollectionUtil.toDataRecordCollection(
+				_ddlRecordSetLocalService.addRecordSet(
+					PrincipalThreadLocal.getUserId(),
+					dataDefinition.getSiteId(), dataDefinition.getId(),
+					dataDefinition.getDataDefinitionKey(),
+					LocalizedValueUtil.toLocaleStringMap(
+						dataDefinition.getName()),
+					LocalizedValueUtil.toLocaleStringMap(
+						dataDefinition.getDescription()),
+					0, DDLRecordSetConstants.SCOPE_DATA_ENGINE,
+					serviceContext));
+
+		_resourceLocalService.addModelResources(
+			contextCompany.getCompanyId(), dataDefinition.getSiteId(),
+			PrincipalThreadLocal.getUserId(),
+			InternalDataRecordCollection.class.getName(),
+			dataRecordCollection.getId(), serviceContext.getModelPermissions());
 	}
 
 	private long _getClassNameId() {
