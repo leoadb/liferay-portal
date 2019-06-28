@@ -14,6 +14,8 @@
 
 package com.liferay.data.engine.taglib.servlet.taglib.util;
 
+import com.liferay.data.engine.rest.client.dto.v1_0.DataRecord;
+import com.liferay.data.engine.rest.client.resource.v1_0.DataRecordResource;
 import com.liferay.data.engine.spi.field.type.FieldType;
 import com.liferay.data.engine.spi.field.type.FieldTypeTracker;
 import com.liferay.data.engine.spi.renderer.DataLayoutRenderer;
@@ -36,6 +38,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
@@ -46,6 +51,7 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -75,12 +81,15 @@ public class DataLayoutTaglibUtil {
 	}
 
 	public static String renderDataLayout(
-			Long dataLayoutId, HttpServletRequest httpServletRequest,
+			Long dataLayoutId, long dataRecordId,
+			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
 		return _instance._dataLayoutRenderer.render(
-			dataLayoutId, httpServletRequest, httpServletResponse);
+			dataLayoutId,
+			_instance._getDataRecordValues(dataRecordId, httpServletRequest),
+			httpServletRequest, httpServletResponse);
 	}
 
 	public static String resolveFieldTypesModules() {
@@ -143,6 +152,32 @@ public class DataLayoutTaglibUtil {
 		}
 
 		return null;
+	}
+
+	private Map<String, Object> _getDataRecordValues(
+			long dataRecordId, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		if (dataRecordId == 0) {
+			return Collections.emptyMap();
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		User user = permissionChecker.getUser();
+
+		DataRecordResource dataRecordResource = DataRecordResource.builder(
+		).authentication(
+			user.getEmailAddress(), user.getPassword()
+		).endpoint(
+			_portal.getHost(httpServletRequest),
+			httpServletRequest.getServerPort(), httpServletRequest.getScheme()
+		).build();
+
+		DataRecord dataRecord = dataRecordResource.getDataRecord(dataRecordId);
+
+		return dataRecord.getDataRecordValues();
 	}
 
 	private Class<?> _getDDMFormFieldTypeSettings(String type) {
