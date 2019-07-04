@@ -77,7 +77,8 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
 			ActionKeys.DELETE);
 
-		_ddlRecordSetLocalService.deleteByDDMStructureId(dataDefinitionId);
+		_ddlRecordSetLocalService.deleteDDMStructureRecordSets(
+			dataDefinitionId);
 
 		List<DDMStructureVersion> ddmStructureVersions =
 			_ddmStructureVersionLocalService.getStructureVersions(
