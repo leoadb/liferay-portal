@@ -115,23 +115,23 @@ public class DataRecordCollectionResourceImpl
 
 		_spiDataRecordCollectionResource.
 			postDataRecordCollectionDataRecordCollectionPermissions(
+				contextCompany, dataRecordCollectionId,
 				GetterUtil.getBoolean(
 					dataRecordCollectionPermission.getAddDataRecord()),
-				contextCompany, dataRecordCollectionId,
 				GetterUtil.getBoolean(
 					dataRecordCollectionPermission.getDelete()),
 				GetterUtil.getBoolean(
 					dataRecordCollectionPermission.getDeleteDataRecord()),
 				GetterUtil.getBoolean(
 					dataRecordCollectionPermission.getExportDataRecord()),
-				operation, dataRecordCollectionPermission.getRoleNames(),
 				GetterUtil.getBoolean(
 					dataRecordCollectionPermission.getUpdate()),
 				GetterUtil.getBoolean(
 					dataRecordCollectionPermission.getUpdateDataRecord()),
 				GetterUtil.getBoolean(dataRecordCollectionPermission.getView()),
 				GetterUtil.getBoolean(
-					dataRecordCollectionPermission.getViewDataRecord()));
+					dataRecordCollectionPermission.getViewDataRecord()),
+				operation, dataRecordCollectionPermission.getRoleNames());
 	}
 
 	@Override
@@ -142,10 +142,10 @@ public class DataRecordCollectionResourceImpl
 
 		_spiDataRecordCollectionResource.
 			postSiteDataRecordCollectionPermissions(
+				contextCompany,
 				GetterUtil.getBoolean(
 					dataRecordCollectionPermission.
 						getAddDataRecordCollection()),
-				contextCompany,
 				GetterUtil.getBoolean(
 					dataRecordCollectionPermission.getDefinePermissions()),
 				operation, dataRecordCollectionPermission.getRoleNames(),
