@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.TransformUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,19 +99,15 @@ public class SPIDataRecordCollectionResource<T> {
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
-		List<DDLRecordSet> ddlRecordSets = _ddlRecordSetLocalService.search(
-			ddmStructure.getCompanyId(), ddmStructure.getGroupId(), keywords,
-			DDLRecordSetConstants.SCOPE_DATA_ENGINE,
-			pagination.getStartPosition(), pagination.getEndPosition(), null);
-
-		List<T> list = new ArrayList<>(ddlRecordSets.size());
-
-		for (DDLRecordSet ddlRecordSet : ddlRecordSets) {
-			list.add(_transformUnsafeFunction.apply(ddlRecordSet));
-		}
-
 		return Page.of(
-			list, pagination,
+			TransformUtil.transform(
+				_ddlRecordSetLocalService.search(
+					ddmStructure.getCompanyId(), ddmStructure.getGroupId(),
+					keywords, DDLRecordSetConstants.SCOPE_DATA_ENGINE,
+					pagination.getStartPosition(), pagination.getEndPosition(),
+					null),
+				_transformUnsafeFunction),
+			pagination,
 			_ddlRecordSetLocalService.searchCount(
 				ddmStructure.getCompanyId(), ddmStructure.getGroupId(),
 				keywords, DDLRecordSetConstants.SCOPE_DATA_ENGINE));
@@ -150,19 +147,15 @@ public class SPIDataRecordCollectionResource<T> {
 
 		Group group = _groupLocalService.getGroup(siteId);
 
-		List<DDLRecordSet> ddlRecordSets = _ddlRecordSetLocalService.search(
-			group.getCompanyId(), siteId, keywords,
-			DDLRecordSetConstants.SCOPE_DATA_ENGINE,
-			pagination.getStartPosition(), pagination.getEndPosition(), null);
-
-		List<T> list = new ArrayList<>(ddlRecordSets.size());
-
-		for (DDLRecordSet ddlRecordSet : ddlRecordSets) {
-			list.add(_transformUnsafeFunction.apply(ddlRecordSet));
-		}
-
 		return Page.of(
-			list, pagination,
+			TransformUtil.transform(
+				_ddlRecordSetLocalService.search(
+					group.getCompanyId(), siteId, keywords,
+					DDLRecordSetConstants.SCOPE_DATA_ENGINE,
+					pagination.getStartPosition(), pagination.getEndPosition(),
+					null),
+				_transformUnsafeFunction),
+			pagination,
 			_ddlRecordSetLocalService.searchCount(
 				group.getCompanyId(), siteId, keywords,
 				DDLRecordSetConstants.SCOPE_DATA_ENGINE));
