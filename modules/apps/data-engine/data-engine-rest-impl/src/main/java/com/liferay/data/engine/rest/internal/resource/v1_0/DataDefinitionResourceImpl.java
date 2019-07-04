@@ -203,7 +203,10 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			InternalDataDefinition.class.getName(), dataDefinition.getId(),
 			serviceContext.getModelPermissions());
 
-		_addDefaultDataRecordCollection(dataDefinition);
+		_spiDataRecordCollectionResource.postDataDefinitionDataRecordCollection(
+			contextCompany, dataDefinition.getId(),
+			dataDefinition.getDataDefinitionKey(),
+			dataDefinition.getDescription(), dataDefinition.getName());
 
 		return dataDefinition;
 	}
@@ -287,15 +290,6 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			modelResourcePermission) {
 
 		_modelResourcePermission = modelResourcePermission;
-	}
-
-	private void _addDefaultDataRecordCollection(DataDefinition dataDefinition)
-		throws Exception {
-
-		_spiDataRecordCollectionResource.postDataDefinitionDataRecordCollection(
-			contextCompany, dataDefinition.getId(),
-			dataDefinition.getDataDefinitionKey(),
-			dataDefinition.getDescription(), dataDefinition.getName());
 	}
 
 	private long _getClassNameId() {
