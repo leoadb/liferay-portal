@@ -38,6 +38,7 @@ import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -101,6 +102,15 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 	}
 
 	@Override
+	public Page<DataRecord> getDataDefinitionDataRecordsPage(
+			Long dataDefinitionId, Pagination pagination)
+		throws Exception {
+
+		return getDataRecordCollectionDataRecordsPage(
+			_getDefaultDataRecordCollectionId(dataDefinitionId), pagination);
+	}
+
+	@Override
 	public DataRecord getDataRecord(Long dataRecordId) throws Exception {
 		DDLRecord ddlRecord = _ddlRecordLocalService.getDDLRecord(dataRecordId);
 
@@ -160,6 +170,15 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 			pagination,
 			_ddlRecordLocalService.getRecordsCount(
 				dataRecordCollectionId, PrincipalThreadLocal.getUserId()));
+	}
+
+	@Override
+	public DataRecord postDataDefinitionDataRecord(
+			Long dataDefinitionId, DataRecord dataRecord)
+		throws Exception {
+
+		return postDataRecordCollectionDataRecord(
+			_getDefaultDataRecordCollectionId(dataDefinitionId), dataRecord);
 	}
 
 	@Override
@@ -264,6 +283,18 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 		}
 
 		return dataStorage;
+	}
+
+	private long _getDefaultDataRecordCollectionId(Long dataDefinitionId)
+		throws Exception {
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			dataDefinitionId);
+
+		DDLRecordSet ddlRecordSet = _ddlRecordSetLocalService.getRecordSet(
+			ddmStructure.getGroupId(), ddmStructure.getStructureKey());
+
+		return ddlRecordSet.getRecordSetId();
 	}
 
 	private DataRecord _toDataRecord(DDLRecord ddlRecord) throws Exception {
@@ -396,6 +427,9 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 
 	@Reference
 	private DDMStorageLinkLocalService _ddmStorageLinkLocalService;
+
+	@Reference
+	private DDMStructureLocalService _ddmStructureLocalService;
 
 	private ModelResourcePermission<InternalDataRecordCollection>
 		_modelResourcePermission;
