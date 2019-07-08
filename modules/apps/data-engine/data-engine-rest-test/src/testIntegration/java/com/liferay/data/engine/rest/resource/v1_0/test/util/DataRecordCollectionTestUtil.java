@@ -61,9 +61,9 @@ public class DataRecordCollectionTestUtil {
 
 		DDLRecordSet ddlRecordSet = DDLRecordSetLocalServiceUtil.addRecordSet(
 			TestPropsValues.getUserId(), group.getGroupId(),
-			ddmStructure.getStructureId(), null, nameMap, null,
-			DDLRecordSetConstants.MIN_DISPLAY_ROWS_DEFAULT, scope,
-			serviceContext);
+			ddmStructure.getStructureId(), ddmStructure.getStructureKey(),
+			nameMap, null, DDLRecordSetConstants.MIN_DISPLAY_ROWS_DEFAULT,
+			scope, serviceContext);
 
 		resourceLocalService.addModelResources(
 			TestPropsValues.getCompanyId(), ddmStructure.getGroupId(),
