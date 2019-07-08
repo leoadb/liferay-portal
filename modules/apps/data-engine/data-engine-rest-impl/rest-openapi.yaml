@@ -490,6 +490,67 @@ paths:
                                 $ref: "#/components/schemas/DataRecordCollection"
                     description: ""
             tags: ["DataRecordCollection"]
+    "/data-definitions/{dataDefinitionId}/data-records":
+        get:
+            operationId: getDataDefinitionDataRecordsPage
+            parameters:
+                - in: path
+                  name: dataDefinitionId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/DataRecord"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/DataRecord"
+                                type: array
+                    description: ""
+            tags: ["DataRecord"]
+        post:
+            operationId: postDataDefinitionDataRecord
+            parameters:
+                - in: path
+                  name: dataDefinitionId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DataRecord"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DataRecord"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DataRecord"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DataRecord"
+                    description: ""
+            tags: ["DataRecord"]
     "/data-layout/{dataLayoutId}/data-layout-permissions":
         post:
             operationId: postDataLayoutDataLayoutPermission
