@@ -37,6 +37,14 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface DataRecordResource {
 
+	public Page<DataRecord> getDataDefinitionDataRecordsPage(
+			Long dataDefinitionId, Pagination pagination)
+		throws Exception;
+
+	public DataRecord postDataDefinitionDataRecord(
+			Long dataDefinitionId, DataRecord dataRecord)
+		throws Exception;
+
 	public Page<DataRecord> getDataRecordCollectionDataRecordsPage(
 			Long dataRecordCollectionId, Pagination pagination)
 		throws Exception;

@@ -181,6 +181,21 @@ public class Query {
 	}
 
 	@GraphQLField
+	public DataRecordPage getDataDefinitionDataRecordsPage(
+			@GraphQLName("dataDefinitionId") Long dataDefinitionId,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_dataRecordResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataRecordResource -> new DataRecordPage(
+				dataRecordResource.getDataDefinitionDataRecordsPage(
+					dataDefinitionId, Pagination.of(page, pageSize))));
+	}
+
+	@GraphQLField
 	public DataRecordPage getDataRecordCollectionDataRecordsPage(
 			@GraphQLName("dataRecordCollectionId") Long dataRecordCollectionId,
 			@GraphQLName("pageSize") int pageSize,

@@ -178,6 +178,143 @@ public abstract class BaseDataRecordResourceTestCase {
 	}
 
 	@Test
+	public void testGetDataDefinitionDataRecordsPage() throws Exception {
+		Page<DataRecord> page =
+			dataRecordResource.getDataDefinitionDataRecordsPage(
+				testGetDataDefinitionDataRecordsPage_getDataDefinitionId(),
+				Pagination.of(1, 2));
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		Long dataDefinitionId =
+			testGetDataDefinitionDataRecordsPage_getDataDefinitionId();
+		Long irrelevantDataDefinitionId =
+			testGetDataDefinitionDataRecordsPage_getIrrelevantDataDefinitionId();
+
+		if ((irrelevantDataDefinitionId != null)) {
+			DataRecord irrelevantDataRecord =
+				testGetDataDefinitionDataRecordsPage_addDataRecord(
+					irrelevantDataDefinitionId, randomIrrelevantDataRecord());
+
+			page = dataRecordResource.getDataDefinitionDataRecordsPage(
+				irrelevantDataDefinitionId, Pagination.of(1, 2));
+
+			Assert.assertEquals(1, page.getTotalCount());
+
+			assertEquals(
+				Arrays.asList(irrelevantDataRecord),
+				(List<DataRecord>)page.getItems());
+			assertValid(page);
+		}
+
+		DataRecord dataRecord1 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		DataRecord dataRecord2 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		page = dataRecordResource.getDataDefinitionDataRecordsPage(
+			dataDefinitionId, Pagination.of(1, 2));
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(dataRecord1, dataRecord2),
+			(List<DataRecord>)page.getItems());
+		assertValid(page);
+	}
+
+	@Test
+	public void testGetDataDefinitionDataRecordsPageWithPagination()
+		throws Exception {
+
+		Long dataDefinitionId =
+			testGetDataDefinitionDataRecordsPage_getDataDefinitionId();
+
+		DataRecord dataRecord1 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		DataRecord dataRecord2 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		DataRecord dataRecord3 =
+			testGetDataDefinitionDataRecordsPage_addDataRecord(
+				dataDefinitionId, randomDataRecord());
+
+		Page<DataRecord> page1 =
+			dataRecordResource.getDataDefinitionDataRecordsPage(
+				dataDefinitionId, Pagination.of(1, 2));
+
+		List<DataRecord> dataRecords1 = (List<DataRecord>)page1.getItems();
+
+		Assert.assertEquals(dataRecords1.toString(), 2, dataRecords1.size());
+
+		Page<DataRecord> page2 =
+			dataRecordResource.getDataDefinitionDataRecordsPage(
+				dataDefinitionId, Pagination.of(2, 2));
+
+		Assert.assertEquals(3, page2.getTotalCount());
+
+		List<DataRecord> dataRecords2 = (List<DataRecord>)page2.getItems();
+
+		Assert.assertEquals(dataRecords2.toString(), 1, dataRecords2.size());
+
+		Page<DataRecord> page3 =
+			dataRecordResource.getDataDefinitionDataRecordsPage(
+				dataDefinitionId, Pagination.of(1, 3));
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(dataRecord1, dataRecord2, dataRecord3),
+			(List<DataRecord>)page3.getItems());
+	}
+
+	protected DataRecord testGetDataDefinitionDataRecordsPage_addDataRecord(
+			Long dataDefinitionId, DataRecord dataRecord)
+		throws Exception {
+
+		return dataRecordResource.postDataDefinitionDataRecord(
+			dataDefinitionId, dataRecord);
+	}
+
+	protected Long testGetDataDefinitionDataRecordsPage_getDataDefinitionId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGetDataDefinitionDataRecordsPage_getIrrelevantDataDefinitionId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Test
+	public void testPostDataDefinitionDataRecord() throws Exception {
+		DataRecord randomDataRecord = randomDataRecord();
+
+		DataRecord postDataRecord =
+			testPostDataDefinitionDataRecord_addDataRecord(randomDataRecord);
+
+		assertEquals(randomDataRecord, postDataRecord);
+		assertValid(postDataRecord);
+	}
+
+	protected DataRecord testPostDataDefinitionDataRecord_addDataRecord(
+			DataRecord dataRecord)
+		throws Exception {
+
+		return dataRecordResource.postDataDefinitionDataRecord(
+			testGetDataDefinitionDataRecordsPage_getDataDefinitionId(),
+			dataRecord);
+	}
+
+	@Test
 	public void testGetDataRecordCollectionDataRecordsPage() throws Exception {
 		Page<DataRecord> page =
 			dataRecordResource.getDataRecordCollectionDataRecordsPage(
