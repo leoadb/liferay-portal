@@ -36,6 +36,19 @@ public class ReportDefinitionLocalServiceWrapper
 		_reportDefinitionLocalService = reportDefinitionLocalService;
 	}
 
+	@Override
+	public com.liferay.report.definitions.model.ReportDefinition
+			addReportDefinition(
+				long userId, long groupId, String name, String description,
+				long dataDefinitionId, long columnsDDMContentId,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _reportDefinitionLocalService.addReportDefinition(
+			userId, groupId, name, description, dataDefinitionId,
+			columnsDDMContentId, serviceContext);
+	}
+
 	/**
 	 * Adds the report definition to the database. Also notifies the appropriate model listeners.
 	 *
@@ -364,6 +377,61 @@ public class ReportDefinitionLocalServiceWrapper
 	@Override
 	public int getReportDefinitionsCount() {
 		return _reportDefinitionLocalService.getReportDefinitionsCount();
+	}
+
+	@Override
+	public java.util.List<com.liferay.report.definitions.model.ReportDefinition>
+		search(
+			long companyId, long groupId, String keywords, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.report.definitions.model.ReportDefinition>
+					orderByComparator) {
+
+		return _reportDefinitionLocalService.search(
+			companyId, groupId, keywords, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.report.definitions.model.ReportDefinition>
+		search(
+			long companyId, long groupId, String[] names, String[] descriptions,
+			boolean andOperator, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.report.definitions.model.ReportDefinition>
+					orderByComparator) {
+
+		return _reportDefinitionLocalService.search(
+			companyId, groupId, names, descriptions, andOperator, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public int searchCount(long companyId, long groupId, String keywords) {
+		return _reportDefinitionLocalService.searchCount(
+			companyId, groupId, keywords);
+	}
+
+	@Override
+	public int searchCount(
+		long companyId, long groupId, String[] names, String[] descriptions,
+		boolean andOperator) {
+
+		return _reportDefinitionLocalService.searchCount(
+			companyId, groupId, names, descriptions, andOperator);
+	}
+
+	@Override
+	public com.liferay.report.definitions.model.ReportDefinition
+			updateReportDefinition(
+				long userId, long groupId, long reportDefinitionId, String name,
+				String description, long dataDefinitionId,
+				long columnsDDMContentId,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _reportDefinitionLocalService.updateReportDefinition(
+			userId, groupId, reportDefinitionId, name, description,
+			dataDefinitionId, columnsDDMContentId, serviceContext);
 	}
 
 	/**

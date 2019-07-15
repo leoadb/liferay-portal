@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import com.liferay.report.definitions.model.ReportDefinition;
 import com.liferay.report.definitions.service.ReportDefinitionLocalService;
+import com.liferay.report.definitions.service.persistence.ReportDefinitionFinder;
 import com.liferay.report.definitions.service.persistence.ReportDefinitionPersistence;
 
 import java.io.Serializable;
@@ -514,6 +515,26 @@ public abstract class ReportDefinitionLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the report definition finder.
+	 *
+	 * @return the report definition finder
+	 */
+	public ReportDefinitionFinder getReportDefinitionFinder() {
+		return reportDefinitionFinder;
+	}
+
+	/**
+	 * Sets the report definition finder.
+	 *
+	 * @param reportDefinitionFinder the report definition finder
+	 */
+	public void setReportDefinitionFinder(
+		ReportDefinitionFinder reportDefinitionFinder) {
+
+		this.reportDefinitionFinder = reportDefinitionFinder;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -634,6 +655,9 @@ public abstract class ReportDefinitionLocalServiceBaseImpl
 
 	@BeanReference(type = ReportDefinitionPersistence.class)
 	protected ReportDefinitionPersistence reportDefinitionPersistence;
+
+	@BeanReference(type = ReportDefinitionFinder.class)
+	protected ReportDefinitionFinder reportDefinitionFinder;
 
 	@ServiceReference(
 		type = com.liferay.counter.kernel.service.CounterLocalService.class

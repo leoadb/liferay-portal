@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -62,6 +63,11 @@ public interface ReportDefinitionLocalService
 	 *
 	 * Never modify or reference this interface directly. Always use {@link ReportDefinitionLocalServiceUtil} to access the report definition local service. Add custom service methods to <code>com.liferay.report.definitions.service.impl.ReportDefinitionLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public ReportDefinition addReportDefinition(
+			long userId, long groupId, String name, String description,
+			long dataDefinitionId, long columnsDDMContentId,
+			ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	 * Adds the report definition to the database. Also notifies the appropriate model listeners.
@@ -283,6 +289,31 @@ public interface ReportDefinitionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getReportDefinitionsCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ReportDefinition> search(
+		long companyId, long groupId, String keywords, int start, int end,
+		OrderByComparator<ReportDefinition> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ReportDefinition> search(
+		long companyId, long groupId, String[] names, String[] descriptions,
+		boolean andOperator, int start, int end,
+		OrderByComparator<ReportDefinition> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchCount(long companyId, long groupId, String keywords);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchCount(
+		long companyId, long groupId, String[] names, String[] descriptions,
+		boolean andOperator);
+
+	public ReportDefinition updateReportDefinition(
+			long userId, long groupId, long reportDefinitionId, String name,
+			String description, long dataDefinitionId, long columnsDDMContentId,
+			ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	 * Updates the report definition in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

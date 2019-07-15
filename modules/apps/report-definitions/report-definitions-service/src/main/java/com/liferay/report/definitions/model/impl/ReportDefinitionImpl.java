@@ -28,7 +28,7 @@ import aQute.bnd.annotation.ProviderType;
 @ProviderType
 public class ReportDefinitionImpl extends ReportDefinitionBaseImpl {
 
-	/*
+	/**
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. All methods that expect a report definition model instance should use the {@link com.liferay.report.definitions.model.ReportDefinition} interface instead.

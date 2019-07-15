@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Bruno Basto
+ * @author Leonardo Barros
  */
 @Component(
 	configurationPid = "com.liferay.report.definitions.web.internal.configuration.ReportDefinitionConfiguration",

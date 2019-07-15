@@ -20,6 +20,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 
 /**
  * @author Bruno Basto
+ * @author Leonardo Barros
  */
 @ExtendedObjectClassDefinition(
 	category = "forms", scope = ExtendedObjectClassDefinition.Scope.GROUP

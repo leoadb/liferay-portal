@@ -40,6 +40,17 @@ public class ReportDefinitionLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.report.definitions.service.impl.ReportDefinitionLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static com.liferay.report.definitions.model.ReportDefinition
+			addReportDefinition(
+				long userId, long groupId, String name, String description,
+				long dataDefinitionId, long columnsDDMContentId,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().addReportDefinition(
+			userId, groupId, name, description, dataDefinitionId,
+			columnsDDMContentId, serviceContext);
+	}
 
 	/**
 	 * Adds the report definition to the database. Also notifies the appropriate model listeners.
@@ -340,6 +351,57 @@ public class ReportDefinitionLocalServiceUtil {
 	 */
 	public static int getReportDefinitionsCount() {
 		return getService().getReportDefinitionsCount();
+	}
+
+	public static java.util.List
+		<com.liferay.report.definitions.model.ReportDefinition> search(
+			long companyId, long groupId, String keywords, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.report.definitions.model.ReportDefinition>
+					orderByComparator) {
+
+		return getService().search(
+			companyId, groupId, keywords, start, end, orderByComparator);
+	}
+
+	public static java.util.List
+		<com.liferay.report.definitions.model.ReportDefinition> search(
+			long companyId, long groupId, String[] names, String[] descriptions,
+			boolean andOperator, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.report.definitions.model.ReportDefinition>
+					orderByComparator) {
+
+		return getService().search(
+			companyId, groupId, names, descriptions, andOperator, start, end,
+			orderByComparator);
+	}
+
+	public static int searchCount(
+		long companyId, long groupId, String keywords) {
+
+		return getService().searchCount(companyId, groupId, keywords);
+	}
+
+	public static int searchCount(
+		long companyId, long groupId, String[] names, String[] descriptions,
+		boolean andOperator) {
+
+		return getService().searchCount(
+			companyId, groupId, names, descriptions, andOperator);
+	}
+
+	public static com.liferay.report.definitions.model.ReportDefinition
+			updateReportDefinition(
+				long userId, long groupId, long reportDefinitionId, String name,
+				String description, long dataDefinitionId,
+				long columnsDDMContentId,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().updateReportDefinition(
+			userId, groupId, reportDefinitionId, name, description,
+			dataDefinitionId, columnsDDMContentId, serviceContext);
 	}
 
 	/**
