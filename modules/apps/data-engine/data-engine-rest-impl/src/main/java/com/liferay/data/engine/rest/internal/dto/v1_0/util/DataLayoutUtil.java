@@ -22,15 +22,34 @@ import com.liferay.data.engine.rest.dto.v1_0.DataLayoutRow;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Jeyvison Nascimento
  */
 public class DataLayoutUtil {
+
+	public static DataLayout toDataLayout(Class<?> clazz, Locale locale) {
+		if (!clazz.isAnnotationPresent(
+				com.liferay.data.engine.annotation.DataLayout.class)) {
+
+			throw new IllegalArgumentException(
+				"Unsupported class " + clazz.getName());
+		}
+
+		return _createDataLayout(
+			clazz.getAnnotation(
+				com.liferay.data.engine.annotation.DataLayout.class),
+			locale);
+	}
 
 	public static DataLayout toDataLayout(String json) throws Exception {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
@@ -69,6 +88,86 @@ public class DataLayoutUtil {
 		).put(
 			"paginationMode", dataLayout.getPaginationMode()
 		).toString();
+	}
+
+	private static DataLayout _createDataLayout(
+		com.liferay.data.engine.annotation.DataLayout dataLayout,
+		Locale locale) {
+
+		return new DataLayout() {
+			{
+				setDataLayoutPages(
+					Stream.of(
+						dataLayout.value()
+					).map(
+						dataLayoutPage -> _createDataLayoutPage(
+							dataLayoutPage, locale)
+					).collect(
+						Collectors.toList()
+					).toArray(
+						new DataLayoutPage[0]
+					));
+				setDefaultLanguageId(LanguageUtil.getLanguageId(locale));
+			}
+		};
+	}
+
+	private static DataLayoutColumn _createDataLayoutColumn(
+		com.liferay.data.engine.annotation.DataLayoutColumn dataLayoutColumn) {
+
+		return new DataLayoutColumn() {
+			{
+				setColumnSize(dataLayoutColumn.size());
+				setFieldNames(dataLayoutColumn.value());
+			}
+		};
+	}
+
+	private static DataLayoutPage _createDataLayoutPage(
+		com.liferay.data.engine.annotation.DataLayoutPage dataLayoutPage,
+		Locale locale) {
+
+		return new DataLayoutPage() {
+			{
+				setDataLayoutRows(
+					Stream.of(
+						dataLayoutPage.value()
+					).map(
+						DataLayoutUtil::_createDataLayoutRow
+					).collect(
+						Collectors.toList()
+					).toArray(
+						new DataLayoutRow[0]
+					));
+				setTitle(
+					new HashMap() {
+						{
+							put(
+								LanguageUtil.getLanguageId(locale),
+								dataLayoutPage.title());
+						}
+					});
+			}
+		};
+	}
+
+	private static DataLayoutRow _createDataLayoutRow(
+		com.liferay.data.engine.annotation.DataLayoutRow dataLayoutRow) {
+
+		return new DataLayoutRow() {
+			{
+				setDataLayoutColums(
+					Stream.of(
+						dataLayoutRow.value()
+					).map(
+						DataLayoutUtil::_createDataLayoutColumn
+					).collect(
+						Collectors.toList()
+					).toArray(
+						new DataLayoutColumn[0]
+					));
+			}
+		};
 	}
 
 	private static DataLayoutColumn _toDataLayoutColumn(JSONObject jsonObject) {

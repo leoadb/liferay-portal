@@ -24,10 +24,37 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.lang.reflect.Method;
+
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * @author Jeyvison Nascimento
  */
 public class DataDefinitionUtil {
+
+	public static DataDefinition toDataDefinition(
+		Class<?> clazz, Locale locale) {
+
+		if (!clazz.isAnnotationPresent(
+				com.liferay.data.engine.annotation.DataDefinition.class)) {
+
+			throw new IllegalArgumentException(
+				"Unsupported class " + clazz.getName());
+		}
+
+		return new DataDefinition() {
+			{
+				setDataDefinitionFields(
+					_createDataDefinitionFields(clazz, locale));
+			}
+		};
+	}
 
 	public static DataDefinition toDataDefinition(DDMStructure ddmStructure)
 		throws Exception {
@@ -74,6 +101,44 @@ public class DataDefinitionUtil {
 				dataDefinition.getDataDefinitionRules(),
 				dataDefinitionRule -> _toJSONObject(dataDefinitionRule))
 		).toString();
+	}
+
+	private static void _collectDataDefinitionFieldMethods(
+		Class<?> clazz, Map<String, Method> methods) {
+
+		for (Class<?> interfaceClass : clazz.getInterfaces()) {
+			_collectDataDefinitionFieldMethods(interfaceClass, methods);
+		}
+
+		for (Method method : clazz.getDeclaredMethods()) {
+			if (method.isAnnotationPresent(
+					com.liferay.data.engine.annotation.DataDefinitionField.
+						class)) {
+
+				methods.put(method.getName(), method);
+			}
+		}
+	}
+
+	private static DataDefinitionField[] _createDataDefinitionFields(
+		Class<?> clazz, Locale locale) {
+
+		Map<String, Method> methods = new TreeMap<>();
+
+		_collectDataDefinitionFieldMethods(clazz, methods);
+
+		Collection<Method> values = methods.values();
+
+		Stream<Method> stream = values.stream();
+
+		return stream.map(
+			method -> DataDefinitionFieldUtil.toDataDefinitionField(
+				locale, method)
+		).collect(
+			Collectors.toList()
+		).toArray(
+			new DataDefinitionField[0]
+		);
 	}
 
 	private static DataDefinitionField _toDataDefinitionField(
