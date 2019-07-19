@@ -64,17 +64,24 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 
 	@Override
 	public String render(
-			Long dataLayoutId, Map<String, Object> dataRecordValues,
+			Class<?> clazz, Map<String, Object> dataRecordValues,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		Writer writer = new UnsyncStringWriter();
+		return _render(
+			DataDefinitionUtil.toDataDefinition(
+				clazz, httpServletRequest.getLocale()),
+			DataLayoutUtil.toDataLayout(clazz, httpServletRequest.getLocale()),
+			dataRecordValues, httpServletRequest, httpServletResponse);
+	}
 
-		ComponentDescriptor componentDescriptor = new ComponentDescriptor(
-			_TEMPLATE_NAMESPACE, _npmResolver.resolveModuleName(_MODULE_NAME));
-
-		Map<String, Object> context = new HashMap<>();
+	@Override
+	public String render(
+			Long dataLayoutId, Map<String, Object> dataRecordValues,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws Exception {
 
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
@@ -83,33 +90,11 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 			_ddmStructureVersionLocalService.getDDMStructureVersion(
 				ddmStructureLayout.getStructureVersionId());
 
-		DataLayout dataLayout = DataLayoutUtil.toDataLayout(
-			ddmStructureLayout.getDefinition());
-
-		context.put(
-			"pages",
-			_createDataLayoutPageContexts(
-				_getDataDefinitionFieldsMap(
-					DataDefinitionUtil.toDataDefinition(
-						ddmStructureVersion.getStructure()),
-					dataRecordValues),
-				dataLayout.getDataLayoutPages(), _fieldTypeTracker,
-				httpServletRequest, httpServletResponse));
-
-		context.put("paginationMode", dataLayout.getPaginationMode());
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		String pathThemeImages = themeDisplay.getPathThemeImages();
-
-		context.put("spritemap", pathThemeImages.concat("/clay/icons.svg"));
-
-		_soyComponentRenderer.renderSoyComponent(
-			httpServletRequest, writer, componentDescriptor, context);
-
-		return writer.toString();
+		return _render(
+			DataDefinitionUtil.toDataDefinition(
+				ddmStructureVersion.getStructure()),
+			DataLayoutUtil.toDataLayout(ddmStructureLayout.getDefinition()),
+			dataRecordValues, httpServletRequest, httpServletResponse);
 	}
 
 	private List<Object> _createDataLayoutColumnContexts(
@@ -118,23 +103,23 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		List<Object> dataLayoutColumnContexts = new ArrayList<>();
-
-		for (DataLayoutColumn dataLayoutColumn : dataLayoutColumns) {
-			Map<String, Object> dataLayoutColumnsContext = new HashMap<>();
-
-			dataLayoutColumnsContext.put(
-				"fields",
-				_createFieldTypeContexts(
-					dataDefinitionFields, dataLayoutColumn.getFieldNames(),
-					fieldTypeTracker, httpServletRequest, httpServletResponse));
-			dataLayoutColumnsContext.put(
-				"size", dataLayoutColumn.getColumnSize());
-
-			dataLayoutColumnContexts.add(dataLayoutColumnsContext);
-		}
-
-		return dataLayoutColumnContexts;
+		return Stream.of(
+			dataLayoutColumns
+		).map(
+			dataLayoutColumn -> new HashMap() {
+				{
+					put(
+						"fields",
+						_createFieldTypeContexts(
+							dataDefinitionFields,
+							dataLayoutColumn.getFieldNames(), fieldTypeTracker,
+							httpServletRequest, httpServletResponse));
+					put("size", dataLayoutColumn.getColumnSize());
+				}
+			}
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	private List<Object> _createDataLayoutPageContexts(
@@ -143,35 +128,35 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		List<Object> dataLayoutPageContexts = new ArrayList<>();
-
-		for (DataLayoutPage dataLayoutPage : dataLayoutPages) {
-			Map<String, Object> dataLayoutPageContext = new HashMap<>();
-
-			dataLayoutPageContext.put(
-				"description",
-				GetterUtil.getString(
-					LocalizedValueUtil.getLocalizedValue(
-						httpServletRequest.getLocale(),
-						dataLayoutPage.getDescription())));
-
-			dataLayoutPageContext.put(
-				"rows",
-				_createDataLayoutRowContexts(
-					dataDefinitionFields, dataLayoutPage.getDataLayoutRows(),
-					fieldTypeTracker, httpServletRequest, httpServletResponse));
-
-			dataLayoutPageContext.put(
-				"title",
-				GetterUtil.getString(
-					LocalizedValueUtil.getLocalizedValue(
-						httpServletRequest.getLocale(),
-						dataLayoutPage.getTitle())));
-
-			dataLayoutPageContexts.add(dataLayoutPageContext);
-		}
-
-		return dataLayoutPageContexts;
+		return Stream.of(
+			dataLayoutPages
+		).map(
+			dataLayoutPage -> new HashMap() {
+				{
+					put(
+						"description",
+						GetterUtil.getString(
+							LocalizedValueUtil.getLocalizedValue(
+								httpServletRequest.getLocale(),
+								dataLayoutPage.getDescription())));
+					put(
+						"rows",
+						_createDataLayoutRowContexts(
+							dataDefinitionFields,
+							dataLayoutPage.getDataLayoutRows(),
+							fieldTypeTracker, httpServletRequest,
+							httpServletResponse));
+					put(
+						"title",
+						GetterUtil.getString(
+							LocalizedValueUtil.getLocalizedValue(
+								httpServletRequest.getLocale(),
+								dataLayoutPage.getTitle())));
+				}
+			}
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	private List<Object> _createDataLayoutRowContexts(
@@ -180,21 +165,23 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		List<Object> dataLayoutRowContexts = new ArrayList<>();
-
-		for (DataLayoutRow dataLayoutRow : dataLayoutRows) {
-			Map<String, Object> dataLayoutRowContext = new HashMap<>();
-
-			dataLayoutRowContext.put(
-				"columns",
-				_createDataLayoutColumnContexts(
-					dataDefinitionFields, dataLayoutRow.getDataLayoutColums(),
-					fieldTypeTracker, httpServletRequest, httpServletResponse));
-
-			dataLayoutRowContexts.add(dataLayoutRowContext);
-		}
-
-		return dataLayoutRowContexts;
+		return Stream.of(
+			dataLayoutRows
+		).map(
+			dataLayoutRow -> new HashMap() {
+				{
+					put(
+						"columns",
+						_createDataLayoutColumnContexts(
+							dataDefinitionFields,
+							dataLayoutRow.getDataLayoutColums(),
+							fieldTypeTracker, httpServletRequest,
+							httpServletResponse));
+				}
+			}
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	private List<Object> _createFieldTypeContexts(
@@ -205,21 +192,22 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 
 		List<Object> fieldTypeContexts = new ArrayList<>();
 
-		for (String fieldName : fieldNames) {
-			DataDefinitionField dataDefinitionField = dataDefinitionFields.get(
-				fieldName);
+		Stream.of(
+			fieldNames
+		).map(
+			dataDefinitionFields::get
+		).forEach(
+			dataDefinitionField -> {
+				FieldType fieldType = fieldTypeTracker.getFieldType(
+					dataDefinitionField.getFieldType());
 
-			FieldType fieldType = fieldTypeTracker.getFieldType(
-				dataDefinitionField.getFieldType());
-
-			if (fieldType != null) {
 				fieldTypeContexts.add(
 					fieldType.includeContext(
 						httpServletRequest, httpServletResponse,
 						DataDefinitionFieldUtil.toSPIDataDefinitionField(
 							dataDefinitionField)));
 			}
-		}
+		);
 
 		return fieldTypeContexts;
 	}
@@ -249,6 +237,47 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 
 					return definitionField;
 				}));
+	}
+
+	private String _getSpriteMap(HttpServletRequest httpServletRequest) {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		String pathThemeImages = themeDisplay.getPathThemeImages();
+
+		return pathThemeImages.concat("/clay/icons.svg");
+	}
+
+	private String _render(
+			DataDefinition dataDefinition, DataLayout dataLayout,
+			Map<String, Object> dataRecordValues,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws Exception {
+
+		Writer writer = new UnsyncStringWriter();
+
+		_soyComponentRenderer.renderSoyComponent(
+			httpServletRequest, writer,
+			new ComponentDescriptor(
+				_TEMPLATE_NAMESPACE,
+				_npmResolver.resolveModuleName(_MODULE_NAME)),
+			new HashMap() {
+				{
+					put(
+						"pages",
+						_createDataLayoutPageContexts(
+							_getDataDefinitionFieldsMap(
+								dataDefinition, dataRecordValues),
+							dataLayout.getDataLayoutPages(), _fieldTypeTracker,
+							httpServletRequest, httpServletResponse));
+					put("paginationMode", dataLayout.getPaginationMode());
+					put("spritemap", _getSpriteMap(httpServletRequest));
+				}
+			});
+
+		return writer.toString();
 	}
 
 	private static final String _MODULE_NAME =

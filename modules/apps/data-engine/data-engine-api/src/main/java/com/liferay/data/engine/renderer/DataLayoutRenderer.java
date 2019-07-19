@@ -25,6 +25,12 @@ import javax.servlet.http.HttpServletResponse;
 public interface DataLayoutRenderer {
 
 	public String render(
+			Class<?> clazz, Map<String, Object> dataRecordValues,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws Exception;
+
+	public String render(
 			Long dataLayoutId, Map<String, Object> dataRecordValues,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
