@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.display.order:Integer=4",
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=radio-button",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Radio/Radio.es",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/Radio/Radio.es",
 		"data.engine.field.type.label=radio-field-type-label"
 	},
 	service = FieldType.class

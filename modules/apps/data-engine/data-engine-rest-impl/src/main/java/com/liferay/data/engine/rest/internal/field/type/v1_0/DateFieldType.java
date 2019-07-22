@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.display.order:Integer=5",
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=calendar",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/DatePicker/DatePicker.es",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/DatePicker/DatePicker.es",
 		"data.engine.field.type.label=date-field-type-label"
 	},
 	service = FieldType.class

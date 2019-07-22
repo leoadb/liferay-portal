@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.display.order:Integer=6",
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=check-circle",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Checkbox/Checkbox.es",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/Checkbox/Checkbox.es",
 		"data.engine.field.type.label=checkbox-field-type-label",
 		"data.engine.field.type.system=true"
 	},

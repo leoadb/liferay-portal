@@ -62,7 +62,7 @@ import org.osgi.service.component.annotations.Reference;
 		"data.engine.field.type.display.order:Integer=9",
 		"data.engine.field.type.group=customized",
 		"data.engine.field.type.icon=upload",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/DocumentLibrary/DocumentLibrary.es",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/DocumentLibrary/DocumentLibrary.es",
 		"data.engine.field.type.label=document-library-field-type-label"
 	},
 	service = FieldType.class
