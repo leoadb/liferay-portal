@@ -58,7 +58,7 @@ public class FieldSetFieldType extends BaseFieldType {
 		HttpServletResponse httpServletResponse,
 		SPIDataDefinitionField spiDataDefinitionField) {
 
-		Map<String, List<Object>> map = CustomPropertiesUtil.getMap(
+		Map<String, Object> map = CustomPropertiesUtil.getMap(
 			spiDataDefinitionField.getCustomProperties(), "nestedFields");
 
 		if (!map.isEmpty()) {
@@ -86,13 +86,11 @@ public class FieldSetFieldType extends BaseFieldType {
 	}
 
 	private static List<Object> _getNestedFields(
-		Map<String, List<Object>> nestedFieldsMap,
-		Set<String> nestedFieldNames) {
+		Map<String, Object> nestedFieldsMap, Set<String> nestedFieldNames) {
 
-		Set<Map.Entry<String, List<Object>>> entrySet =
-			nestedFieldsMap.entrySet();
+		Set<Map.Entry<String, Object>> entrySet = nestedFieldsMap.entrySet();
 
-		Stream<Map.Entry<String, List<Object>>> stream = entrySet.stream();
+		Stream<Map.Entry<String, Object>> stream = entrySet.stream();
 
 		return stream.filter(
 			entry -> nestedFieldNames.contains(entry.getKey())
