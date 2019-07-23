@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.display.order:Integer=3",
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=list",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Select/Select.es",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/Select/Select.es",
 		"data.engine.field.type.label=select-field-type-label"
 	},
 	service = FieldType.class

@@ -38,6 +38,7 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"data.engine.field.type.display.order:Integer=9",
 		"data.engine.field.type.icon=password-policies",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/Password/Password.es",
 		"data.engine.field.type.system=true"
 	},
 	service = FieldType.class
