@@ -17,6 +17,7 @@ package com.liferay.data.engine.taglib.servlet.taglib.util;
 import com.liferay.data.engine.field.type.FieldType;
 import com.liferay.data.engine.field.type.FieldTypeTracker;
 import com.liferay.data.engine.renderer.DataLayoutRenderer;
+import com.liferay.data.engine.renderer.DataLayoutRendererContext;
 import com.liferay.data.engine.rest.client.dto.v1_0.DataRecord;
 import com.liferay.data.engine.rest.client.resource.v1_0.DataRecordResource;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
@@ -86,10 +87,16 @@ public class DataLayoutTaglibUtil {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
+		DataLayoutRendererContext dataLayoutRendererContext =
+			new DataLayoutRendererContext();
+
+		dataLayoutRendererContext.setDataRecordValues(
+			_instance._getDataRecordValues(dataRecordId, httpServletRequest));
+		dataLayoutRendererContext.setHttpServletRequest(httpServletRequest);
+		dataLayoutRendererContext.setHttpServletResponse(httpServletResponse);
+
 		return _instance._dataLayoutRenderer.render(
-			dataLayoutId,
-			_instance._getDataRecordValues(dataRecordId, httpServletRequest),
-			httpServletRequest, httpServletResponse);
+			dataLayoutId, dataLayoutRendererContext);
 	}
 
 	public static String resolveFieldTypesModules() {
