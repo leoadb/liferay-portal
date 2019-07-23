@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.display.order:Integer=7",
 		"data.engine.field.type.group=basic",
 		"data.engine.field.type.icon=select-from-list",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/CheckboxMultiple/CheckboxMultiple.es",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/CheckboxMultiple/CheckboxMultiple.es",
 		"data.engine.field.type.label=checkbox-multiple-field-type-label"
 	},
 	service = FieldType.class
