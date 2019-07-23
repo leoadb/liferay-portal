@@ -16,6 +16,7 @@ package com.liferay.data.engine.spi.dto;
 
 import com.liferay.petra.lang.HashUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -113,11 +114,15 @@ public class SPIDataDefinitionField {
 	}
 
 	public void setCustomProperties(Map<String, Object> customProperties) {
-		_customProperties = customProperties;
+		if (customProperties != null) {
+			_customProperties.putAll(customProperties);
+		}
 	}
 
 	public void setDefaultValue(Map<String, Object> defaultValue) {
-		_defaultValue = defaultValue;
+		if (defaultValue != null) {
+			_defaultValue.putAll(defaultValue);
+		}
 	}
 
 	public void setFieldType(String fieldType) {
@@ -133,7 +138,9 @@ public class SPIDataDefinitionField {
 	}
 
 	public void setLabel(Map<String, Object> label) {
-		_label = label;
+		if (label != null) {
+			_label.putAll(label);
+		}
 	}
 
 	public void setLocalizable(boolean localizable) {
@@ -149,18 +156,20 @@ public class SPIDataDefinitionField {
 	}
 
 	public void setTip(Map<String, Object> tip) {
-		_tip = tip;
+		if (tip != null) {
+			_tip.putAll(tip);
+		}
 	}
 
-	private Map<String, Object> _customProperties;
-	private Map<String, Object> _defaultValue;
+	private final Map<String, Object> _customProperties = new HashMap<>();
+	private final Map<String, Object> _defaultValue = new HashMap<>();
 	private String _fieldType;
 	private long _id;
 	private boolean _indexable;
-	private Map<String, Object> _label;
+	private final Map<String, Object> _label = new HashMap<>();
 	private boolean _localizable;
 	private String _name;
 	private boolean _repeatable;
-	private Map<String, Object> _tip;
+	private final Map<String, Object> _tip = new HashMap<>();
 
 }
