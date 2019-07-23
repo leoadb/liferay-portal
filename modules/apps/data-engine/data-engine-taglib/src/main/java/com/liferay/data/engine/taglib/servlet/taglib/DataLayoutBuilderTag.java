@@ -20,6 +20,9 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 
+import java.util.Locale;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -32,9 +35,13 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
 		super.setAttributes(httpServletRequest);
 
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
+			GroupThreadLocal.getGroupId());
+
 		setNamespacedAttribute(
 			httpServletRequest, "availableLocales",
-			LanguageUtil.getAvailableLocales(GroupThreadLocal.getGroupId()));
+			availableLocales.toArray(new Locale[0]));
+
 		setNamespacedAttribute(
 			httpServletRequest, "dataLayout",
 			JSONFactoryUtil.createJSONObject());
