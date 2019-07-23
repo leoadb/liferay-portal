@@ -39,7 +39,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marcela Cunha
  */
 @Component(
-	immediate = true, property = "data.engine.field.type.system=true",
+	immediate = true,
+	property = {
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/Captcha/Captcha.es",
+		"data.engine.field.type.system=true"
+	},
 	service = FieldType.class
 )
 public class CaptchaFieldType extends BaseFieldType {

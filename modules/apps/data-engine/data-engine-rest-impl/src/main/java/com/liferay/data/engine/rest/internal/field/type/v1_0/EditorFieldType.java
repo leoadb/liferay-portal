@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"data.engine.field.type.icon=icon-font",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Editor/Editor.es",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/Editor/Editor.es",
 		"data.engine.field.type.system=true"
 	},
 	service = FieldType.class

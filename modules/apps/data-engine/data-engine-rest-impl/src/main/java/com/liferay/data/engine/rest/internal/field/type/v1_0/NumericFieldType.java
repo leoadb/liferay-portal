@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Component;
 		"data.engine.field.type.display.order:Integer=8",
 		"data.engine.field.type.group=customized",
 		"data.engine.field.type.icon=caret-double",
-		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/metal/Numeric/Numeric.es",
+		"data.engine.field.type.js.module=dynamic-data-mapping-form-field-type/Numeric/Numeric.es",
 		"data.engine.field.type.label=numeric-field-type-label"
 	},
 	service = FieldType.class
