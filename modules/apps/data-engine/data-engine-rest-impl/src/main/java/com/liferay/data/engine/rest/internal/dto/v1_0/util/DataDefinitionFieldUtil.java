@@ -16,6 +16,7 @@ package com.liferay.data.engine.rest.internal.dto.v1_0.util;
 
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.spi.dto.SPIDataDefinitionField;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 /**
  * @author Leonardo Barros
@@ -33,14 +34,16 @@ public class DataDefinitionFieldUtil {
 		spiDataDefinitionField.setDefaultValue(
 			dataDefinitionField.getDefaultValue());
 		spiDataDefinitionField.setFieldType(dataDefinitionField.getFieldType());
-		spiDataDefinitionField.setId(dataDefinitionField.getId());
-		spiDataDefinitionField.setIndexable(dataDefinitionField.getIndexable());
+		spiDataDefinitionField.setId(
+			GetterUtil.getLong(dataDefinitionField.getId()));
+		spiDataDefinitionField.setIndexable(
+			GetterUtil.getBoolean(dataDefinitionField.getIndexable()));
 		spiDataDefinitionField.setLabel(dataDefinitionField.getLabel());
 		spiDataDefinitionField.setLocalizable(
-			dataDefinitionField.getLocalizable());
+			GetterUtil.getBoolean(dataDefinitionField.getLocalizable()));
 		spiDataDefinitionField.setName(dataDefinitionField.getName());
 		spiDataDefinitionField.setRepeatable(
-			dataDefinitionField.getRepeatable());
+			GetterUtil.getBoolean(dataDefinitionField.getRepeatable()));
 		spiDataDefinitionField.setTip(dataDefinitionField.getTip());
 
 		return spiDataDefinitionField;
