@@ -25,9 +25,29 @@ import javax.servlet.http.HttpServletResponse;
 public interface DataLayoutRenderer {
 
 	public String render(
+			Long dataLayoutId,
+			DataLayoutRendererContext dataLayoutRendererContext)
+		throws Exception;
+
+	/**
+	 * @deprecated As of Mueller (7.2.x), see
+	 * {@link DataLayoutRenderer#render(Long, DataLayoutRendererContext)}
+	 */
+	@Deprecated
+	public default String render(
 			Long dataLayoutId, Map<String, Object> dataRecordValues,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
-		throws Exception;
+		throws Exception {
+
+		DataLayoutRendererContext dataLayoutRendererContext =
+			new DataLayoutRendererContext();
+
+		dataLayoutRendererContext.setDataRecordValues(dataRecordValues);
+		dataLayoutRendererContext.setHttpServletRequest(httpServletRequest);
+		dataLayoutRendererContext.setHttpServletResponse(httpServletResponse);
+
+		return render(dataLayoutId, dataLayoutRendererContext);
+	}
 
 }
