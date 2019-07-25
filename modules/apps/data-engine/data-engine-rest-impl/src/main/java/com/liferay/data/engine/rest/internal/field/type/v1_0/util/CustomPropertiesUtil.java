@@ -73,6 +73,13 @@ public class CustomPropertiesUtil {
 		return GetterUtil.getString(customProperties.get(key), defaultValue);
 	}
 
+	public static <T> T getValue(
+		Map<String, Object> customProperties, String key) {
+
+		return (T)GetterUtil.getObject(
+			customProperties.get(key), Collections.emptyMap());
+	}
+
 	public static List<String> getValues(
 		Map<String, Object> customProperties, String key) {
 

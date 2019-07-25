@@ -61,7 +61,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -75,6 +74,13 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = DataLayoutTaglibUtil.class)
 public class DataLayoutTaglibUtil {
 
+	public static Map<String, Object> getDataRecordValues(
+			long dataRecordId, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		return _instance._getDataRecordValues(dataRecordId, httpServletRequest);
+	}
+
 	public static JSONArray getFieldTypesJSONArray(
 		HttpServletRequest httpServletRequest) {
 
@@ -82,18 +88,9 @@ public class DataLayoutTaglibUtil {
 	}
 
 	public static String renderDataLayout(
-			Long dataLayoutId, long dataRecordId,
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
+			long dataLayoutId,
+			DataLayoutRendererContext dataLayoutRendererContext)
 		throws Exception {
-
-		DataLayoutRendererContext dataLayoutRendererContext =
-			new DataLayoutRendererContext();
-
-		dataLayoutRendererContext.setDataRecordValues(
-			_instance._getDataRecordValues(dataRecordId, httpServletRequest));
-		dataLayoutRendererContext.setHttpServletRequest(httpServletRequest);
-		dataLayoutRendererContext.setHttpServletResponse(httpServletResponse);
 
 		return _instance._dataLayoutRenderer.render(
 			dataLayoutId, dataLayoutRendererContext);
