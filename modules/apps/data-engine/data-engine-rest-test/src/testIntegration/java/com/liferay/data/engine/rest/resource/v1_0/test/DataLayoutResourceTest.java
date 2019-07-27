@@ -126,7 +126,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"dataDefinitionId", "name"};
+		return new String[] {"dataDefinitionId", "name", "paginationMode"};
 	}
 
 	@Override
@@ -196,6 +196,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = "en_US";
 				id = RandomTestUtil.randomLong();
+				paginationMode = "wizard";
 				siteId = testGroup.getGroupId();
 			}
 		};
