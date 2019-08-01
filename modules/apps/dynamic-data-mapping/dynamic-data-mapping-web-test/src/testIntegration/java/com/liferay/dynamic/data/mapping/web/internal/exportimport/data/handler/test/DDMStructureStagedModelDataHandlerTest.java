@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.util.PropsValues;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 
@@ -93,6 +94,8 @@ public class DDMStructureStagedModelDataHandlerTest
 		_availableLocales = LanguageUtil.getAvailableLocales(
 			TestPropsValues.getCompanyId());
 		_defaultLocale = LocaleUtil.getDefault();
+
+		PropsValues.DDM_DATA_PROVIDER_ACCESS_LOCAL_NETWORK = true;
 
 		setUpDDMDataProvider();
 	}
