@@ -16,7 +16,7 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
 import com.liferay.data.engine.field.type.BaseFieldType;
 import com.liferay.data.engine.field.type.FieldType;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertiesUtil;
+import com.liferay.data.engine.rest.internal.field.type.v1_0.util.DataFieldOptionUtil;
 import com.liferay.data.engine.spi.dto.SPIDataDefinitionField;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -78,7 +78,7 @@ public class OptionsFieldType extends BaseFieldType {
 				"allowEmptyOptions", false)
 		).put(
 			"value",
-			CustomPropertiesUtil.getDataFieldOptions(
+			DataFieldOptionUtil.toJSONObject(
 				spiDataDefinitionField.getCustomProperties(), "value")
 		);
 	}
@@ -96,7 +96,7 @@ public class OptionsFieldType extends BaseFieldType {
 				"allowEmptyOptions", false));
 		context.put(
 			"value",
-			CustomPropertiesUtil.getDataFieldOptions(
+			DataFieldOptionUtil.toJSONObject(
 				spiDataDefinitionField.getCustomProperties(), "value"));
 	}
 

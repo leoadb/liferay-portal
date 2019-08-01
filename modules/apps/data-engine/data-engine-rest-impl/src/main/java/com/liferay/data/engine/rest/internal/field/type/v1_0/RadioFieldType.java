@@ -66,7 +66,7 @@ public class RadioFieldType extends BaseFieldType {
 		customProperties.put("inline", jsonObject.getBoolean("inline"));
 		customProperties.put(
 			"options",
-			DataFieldOptionUtil.toDataFieldOptions(
+			DataFieldOptionUtil.toLocalizedDataFieldOptions(
 				jsonObject.getJSONObject("options")));
 		customProperties.put(
 			"predefinedValue",
@@ -95,8 +95,7 @@ public class RadioFieldType extends BaseFieldType {
 		).put(
 			"options",
 			DataFieldOptionUtil.toJSONObject(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "options"))
+				spiDataDefinitionField.getCustomProperties(), "options")
 		).put(
 			"predefinedValue",
 			CustomPropertiesUtil.getMap(
@@ -116,9 +115,8 @@ public class RadioFieldType extends BaseFieldType {
 				spiDataDefinitionField.getCustomProperties(), "inline", false));
 		context.put(
 			"options",
-			DataFieldOptionUtil.toDataFieldOptions(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "options"),
+			DataFieldOptionUtil.getLocalizedDataFieldOptions(
+				spiDataDefinitionField.getCustomProperties(), "options",
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"predefinedValue",
