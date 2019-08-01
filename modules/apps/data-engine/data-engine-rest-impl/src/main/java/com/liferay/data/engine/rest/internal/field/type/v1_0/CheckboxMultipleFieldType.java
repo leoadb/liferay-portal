@@ -62,7 +62,7 @@ public class CheckboxMultipleFieldType extends BaseFieldType {
 		customProperties.put("inline", jsonObject.getBoolean("inline"));
 		customProperties.put(
 			"options",
-			DataFieldOptionUtil.toDataFieldOptions(
+			DataFieldOptionUtil.toLocalizedDataFieldOptions(
 				jsonObject.getJSONObject("options")));
 		customProperties.put(
 			"showAsSwitcher", jsonObject.getBoolean("showAsSwitcher"));
@@ -93,8 +93,7 @@ public class CheckboxMultipleFieldType extends BaseFieldType {
 		).put(
 			"options",
 			DataFieldOptionUtil.toJSONObject(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "options"))
+				spiDataDefinitionField.getCustomProperties(), "options")
 		).put(
 			"predefinedValue",
 			LocalizedValueUtil.toJSONObject(
@@ -119,9 +118,8 @@ public class CheckboxMultipleFieldType extends BaseFieldType {
 				spiDataDefinitionField.getCustomProperties(), "inline", false));
 		context.put(
 			"options",
-			DataFieldOptionUtil.toDataFieldOptions(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "options"),
+			DataFieldOptionUtil.getLocalizedDataFieldOptions(
+				spiDataDefinitionField.getCustomProperties(), "options",
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"predefinedValue",

@@ -65,7 +65,7 @@ public class TextFieldType extends BaseFieldType {
 			"displayStyle", jsonObject.getString("displayStyle"));
 		customProperties.put(
 			"options",
-			DataFieldOptionUtil.toDataFieldOptions(
+			DataFieldOptionUtil.toLocalizedDataFieldOptions(
 				jsonObject.getJSONObject("options")));
 		customProperties.put(
 			"placeholder",
@@ -111,8 +111,7 @@ public class TextFieldType extends BaseFieldType {
 		).put(
 			"options",
 			DataFieldOptionUtil.toJSONObject(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "options"))
+				spiDataDefinitionField.getCustomProperties(), "options")
 		).put(
 			"showAsSwitcher",
 			MapUtil.getBoolean(
@@ -150,9 +149,8 @@ public class TextFieldType extends BaseFieldType {
 				spiDataDefinitionField.getCustomProperties(), "inline", false));
 		context.put(
 			"options",
-			DataFieldOptionUtil.toDataFieldOptions(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "options"),
+			DataFieldOptionUtil.getLocalizedDataFieldOptions(
+				spiDataDefinitionField.getCustomProperties(), "options",
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"placeholder",

@@ -60,11 +60,11 @@ public class GridFieldType extends BaseFieldType {
 
 		customProperties.put(
 			"columns",
-			DataFieldOptionUtil.toDataFieldOptions(
+			DataFieldOptionUtil.toLocalizedDataFieldOptions(
 				jsonObject.getJSONObject("columns")));
 		customProperties.put(
 			"rows",
-			DataFieldOptionUtil.toDataFieldOptions(
+			DataFieldOptionUtil.toLocalizedDataFieldOptions(
 				jsonObject.getJSONObject("rows")));
 
 		return spiDataDefinitionField;
@@ -85,13 +85,11 @@ public class GridFieldType extends BaseFieldType {
 		return jsonObject.put(
 			"columns",
 			DataFieldOptionUtil.toJSONObject(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "columns"))
+				spiDataDefinitionField.getCustomProperties(), "columns")
 		).put(
 			"rows",
 			DataFieldOptionUtil.toJSONObject(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "rows"))
+				spiDataDefinitionField.getCustomProperties(), "rows")
 		);
 	}
 
@@ -103,15 +101,13 @@ public class GridFieldType extends BaseFieldType {
 
 		context.put(
 			"columns",
-			DataFieldOptionUtil.toDataFieldOptions(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "columns"),
+			DataFieldOptionUtil.getLocalizedDataFieldOptions(
+				spiDataDefinitionField.getCustomProperties(), "columns",
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"rows",
-			DataFieldOptionUtil.toDataFieldOptions(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "rows"),
+			DataFieldOptionUtil.getLocalizedDataFieldOptions(
+				spiDataDefinitionField.getCustomProperties(), "rows",
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"value",

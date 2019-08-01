@@ -65,7 +65,7 @@ public class SelectFieldType extends BaseFieldType {
 		customProperties.put("multiple", jsonObject.getBoolean("multiple"));
 		customProperties.put(
 			"options",
-			DataFieldOptionUtil.toDataFieldOptions(
+			DataFieldOptionUtil.toLocalizedDataFieldOptions(
 				jsonObject.getJSONObject("options")));
 		customProperties.put(
 			"predefinedValue",
@@ -98,8 +98,7 @@ public class SelectFieldType extends BaseFieldType {
 		).put(
 			"options",
 			DataFieldOptionUtil.toJSONObject(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "options"))
+				spiDataDefinitionField.getCustomProperties(), "options")
 		).put(
 			"predefinedValue",
 			CustomPropertiesUtil.getMap(
@@ -125,9 +124,8 @@ public class SelectFieldType extends BaseFieldType {
 				false));
 		context.put(
 			"options",
-			DataFieldOptionUtil.toDataFieldOptions(
-				CustomPropertiesUtil.getDataFieldOptions(
-					spiDataDefinitionField.getCustomProperties(), "options"),
+			DataFieldOptionUtil.getLocalizedDataFieldOptions(
+				spiDataDefinitionField.getCustomProperties(), "options",
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"predefinedValue",
