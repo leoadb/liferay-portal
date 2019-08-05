@@ -18,15 +18,22 @@ import com.liferay.data.engine.field.type.FieldType;
 import com.liferay.data.engine.field.type.FieldTypeTracker;
 import com.liferay.data.engine.renderer.DataLayoutRenderer;
 import com.liferay.data.engine.renderer.DataLayoutRendererContext;
+import com.liferay.data.engine.rest.client.dto.v1_0.DataLayout;
 import com.liferay.data.engine.rest.client.dto.v1_0.DataRecord;
+import com.liferay.data.engine.rest.client.resource.v1_0.DataLayoutResource;
 import com.liferay.data.engine.rest.client.resource.v1_0.DataRecordResource;
+import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderContextFactory;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerTracker;
+import com.liferay.dynamic.data.mapping.io.DDMFormLayoutDeserializerTracker;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
@@ -39,10 +46,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
+import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -57,10 +63,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -73,6 +81,16 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true, service = DataLayoutTaglibUtil.class)
 public class DataLayoutTaglibUtil {
+
+	public static JSONObject getDataLayoutJSONObject(
+		Set<Locale> availableLocales, Long dataLayoutId,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		return _instance._getDataLayoutJSONObject(
+			availableLocales, dataLayoutId, httpServletRequest,
+			httpServletResponse);
+	}
 
 	public static Map<String, Object> getDataRecordValues(
 			long dataRecordId, HttpServletRequest httpServletRequest)
@@ -156,6 +174,54 @@ public class DataLayoutTaglibUtil {
 		}
 
 		return null;
+	}
+
+	private DataLayout _getDataLayout(
+			long dataLayoutId, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		DataLayoutResource dataLayoutResource = DataLayoutResource.builder(
+		).header(
+			"Cookie",
+			"JSESSIONID=" +
+				CookieKeys.getCookie(httpServletRequest, CookieKeys.JSESSIONID)
+		).parameter(
+			"p_auth", AuthTokenUtil.getToken(httpServletRequest)
+		).endpoint(
+			_portal.getHost(httpServletRequest),
+			httpServletRequest.getServerPort(), httpServletRequest.getScheme()
+		).build();
+
+		return dataLayoutResource.getDataLayout(dataLayoutId);
+	}
+
+	private JSONObject _getDataLayoutJSONObject(
+		Set<Locale> availableLocales, Long dataLayoutId,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		if (dataLayoutId == null) {
+			return _jsonFactory.createJSONObject();
+		}
+
+		try {
+			DataLayout dataLayout = _getDataLayout(
+				dataLayoutId, httpServletRequest);
+
+			DataLayoutDDMFormAdapter dataLayoutDDMFormAdapter =
+				new DataLayoutDDMFormAdapter(
+					availableLocales, dataLayout, _ddmFormDeserializerTracker,
+					_ddmFormFieldTypeServicesTracker,
+					_ddmFormLayoutDeserializerTracker,
+					_ddmFormTemplateContextFactory,
+					_ddmStructureLayoutLocalService, _ddmStructureLocalService,
+					httpServletRequest, httpServletResponse, _jsonFactory);
+
+			return dataLayoutDDMFormAdapter.toJSONObject();
+		}
+		catch (Exception e) {
+			return _jsonFactory.createJSONObject();
+		}
 	}
 
 	private Map<String, Object> _getDataRecordValues(
@@ -326,13 +392,28 @@ public class DataLayoutTaglibUtil {
 	private DataLayoutRenderer _dataLayoutRenderer;
 
 	@Reference
+	private DDMFormBuilderContextFactory _ddmFormBuilderContextFactory;
+
+	@Reference
+	private DDMFormDeserializerTracker _ddmFormDeserializerTracker;
+
+	@Reference
 	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;
+
+	@Reference
+	private DDMFormLayoutDeserializerTracker _ddmFormLayoutDeserializerTracker;
 
 	@Reference
 	private DDMFormTemplateContextFactory _ddmFormTemplateContextFactory;
 
 	@Reference
 	private DDMFormValuesFactory _ddmFormValuesFactory;
+
+	@Reference
+	private DDMStructureLayoutLocalService _ddmStructureLayoutLocalService;
+
+	@Reference
+	private DDMStructureLocalService _ddmStructureLocalService;
 
 	@Reference
 	private FieldTypeTracker _fieldTypeTracker;
