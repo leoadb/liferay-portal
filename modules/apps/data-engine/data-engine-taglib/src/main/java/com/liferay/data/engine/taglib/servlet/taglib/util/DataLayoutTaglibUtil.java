@@ -166,14 +166,13 @@ public class DataLayoutTaglibUtil {
 			return Collections.emptyMap();
 		}
 
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		User user = permissionChecker.getUser();
-
 		DataRecordResource dataRecordResource = DataRecordResource.builder(
-		).authentication(
-			user.getEmailAddress(), user.getPassword()
+		).header(
+			"Cookie",
+			"JSESSIONID=" +
+				CookieKeys.getCookie(httpServletRequest, CookieKeys.JSESSIONID)
+		).parameter(
+			"p_auth", AuthTokenUtil.getToken(httpServletRequest)
 		).endpoint(
 			_portal.getHost(httpServletRequest),
 			httpServletRequest.getServerPort(), httpServletRequest.getScheme()
