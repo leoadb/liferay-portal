@@ -142,13 +142,12 @@ class FormBuilderBase extends Component {
 			pages,
 			paginationMode,
 			portletNamespace,
-			rules,
 			spritemap,
 			visible
 		} = props;
 
 		return (
-			<div>
+			<div class="ddm-form-builder-wrapper">
 				<div class="container ddm-form-builder">
 					<div class="sheet">
 						<FormRenderer
@@ -204,7 +203,6 @@ class FormBuilderBase extends Component {
 					focusedField={focusedField}
 					portletNamespace={portletNamespace}
 					ref="sidebar"
-					rules={rules}
 					spritemap={spritemap}
 					visible={visible}
 				/>
@@ -523,14 +521,6 @@ FormBuilderBase.PROPS = {
 	 */
 
 	portletNamespace: Config.string().required(),
-
-	/**
-	 * @instance
-	 * @memberof FormBuilder
-	 * @type {string}
-	 */
-
-	rules: Config.arrayOf(ruleStructure).required(),
 
 	/**
 	 * @default undefined
