@@ -48,10 +48,11 @@ class PagesVisitor {
 	mapFields(mapper) {
 		return this._map(identity, identity, identity, (fields, ...args) => {
 			return fields.map((field, fieldIndex) => {
-				const newField = {
-					...field,
-					...mapper(field, fieldIndex, ...args)
-				};
+				let newField = mapper(field, fieldIndex, ...args);
+
+				if (!newField) {
+					newField = field;
+				}
 
 				return newField;
 			});
