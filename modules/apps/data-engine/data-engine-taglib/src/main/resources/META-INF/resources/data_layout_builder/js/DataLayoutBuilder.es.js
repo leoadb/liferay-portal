@@ -116,6 +116,21 @@ class DataLayoutBuilder extends Component {
 		}
 	}
 
+	_isCustomProperty(name) {
+		const fields = [
+			'defaultValue',
+			'fieldType',
+			'indexable',
+			'label',
+			'localizable',
+			'name',
+			'repeatable',
+			'tip'
+		];
+
+		return fields.indexOf(name) === -1;
+	}
+
 	_serialize(pages) {
 		const {defaultLanguageId} = this.props;
 		const columnDefinitions = [];
@@ -123,21 +138,37 @@ class DataLayoutBuilder extends Component {
 
 		const newPages = pagesVisitor.mapFields(
 			({fieldName, settingsContext}) => {
-				const columnConfig = {};
+				const columnConfig = {
+					customProperties: {}
+				};
 				const settingsContextVisitor = new PagesVisitor(
 					settingsContext.pages
 				);
 
 				settingsContextVisitor.mapFields(
 					({fieldName, localizable, localizedValue, value}) => {
-						if (localizable) {
-							columnConfig[fieldName] = localizedValue;
-						} else {
-							if (fieldName === 'dataType') {
-								fieldName = 'type';
-							}
+						if (fieldName === 'predefinedValue') {
+							fieldName = 'defaultValue';
+						} else if (fieldName === 'type') {
+							fieldName = 'fieldType';
+						}
 
-							columnConfig[fieldName] = value;
+						if (localizable) {
+							if (this._isCustomProperty(fieldName)) {
+								columnConfig.customProperties[
+									fieldName
+								] = localizedValue;
+							} else {
+								columnConfig[fieldName] = localizedValue;
+							}
+						} else {
+							if (this._isCustomProperty(fieldName)) {
+								columnConfig.customProperties[
+									fieldName
+								] = value;
+							} else {
+								columnConfig[fieldName] = value;
+							}
 						}
 					}
 				);
@@ -150,11 +181,30 @@ class DataLayoutBuilder extends Component {
 
 		return {
 			definition: JSON.stringify({
-				fields: columnDefinitions
+				dataDefinitionFields: columnDefinitions
 			}),
 			layout: JSON.stringify({
 				defaultLanguageId,
-				pages: newPages,
+				dataLayoutPages: newPages.map(page => {
+					const rows = page.rows.map(row => {
+						const columns = row.columns.map(column => {
+							return {
+								columnSize: column.size,
+								fieldNames: column.fields
+							};
+						});
+
+						return {
+							dataLayoutColumns: columns
+						};
+					});
+
+					return {
+						dataLayoutRows: rows,
+						description: page.localizedDescription,
+						title: page.localizedTitle
+					};
+				}),
 				paginationMode: 'wizard'
 			})
 		};
@@ -226,7 +276,8 @@ class DataLayoutBuilder extends Component {
 					localizedTitle,
 					title
 				};
-			})
+			}),
+			rules: context.rules || []
 		};
 	}
 }
