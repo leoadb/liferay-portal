@@ -23,6 +23,7 @@ import com.liferay.data.engine.spi.dto.SPIDataDefinitionField;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.template.soy.util.SoyHTMLSanitizer;
 
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marcelo Mello
@@ -96,10 +98,14 @@ public class ParagraphFieldType extends BaseFieldType {
 
 		context.put(
 			"text",
-			MapUtil.getString(
-				CustomPropertiesUtil.getMap(
-					spiDataDefinitionField.getCustomProperties(), "text"),
-				LanguageUtil.getLanguageId(httpServletRequest)));
+			_soyHTMLSanitizer.sanitize(
+				MapUtil.getString(
+					CustomPropertiesUtil.getMap(
+						spiDataDefinitionField.getCustomProperties(), "text"),
+					LanguageUtil.getLanguageId(httpServletRequest))));
 	}
+
+	@Reference
+	private SoyHTMLSanitizer _soyHTMLSanitizer;
 
 }
