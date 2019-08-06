@@ -24,6 +24,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,6 +92,20 @@ public class DateFieldType extends BaseFieldType {
 		Map<String, Object> context, HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse,
 		SPIDataDefinitionField spiDataDefinitionField) {
+
+		List<Integer> years = new ArrayList<>();
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.add(Calendar.YEAR, -4);
+
+		for (int i = 0; i < 5; i++) {
+			years.add(calendar.get(Calendar.YEAR));
+
+			calendar.add(Calendar.YEAR, 1);
+		}
+
+		context.put("years", years);
 
 		context.put(
 			"predefinedValue",
