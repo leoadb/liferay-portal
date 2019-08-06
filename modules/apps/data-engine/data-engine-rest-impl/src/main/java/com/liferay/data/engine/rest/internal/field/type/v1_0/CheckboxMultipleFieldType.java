@@ -127,11 +127,9 @@ public class CheckboxMultipleFieldType extends BaseFieldType {
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"predefinedValue",
-			MapUtil.getString(
-				CustomPropertiesUtil.getMap(
-					spiDataDefinitionField.getCustomProperties(),
-					"predefinedValue"),
-				LanguageUtil.getLanguageId(httpServletRequest)));
+			CustomPropertiesUtil.getValues(
+				spiDataDefinitionField.getCustomProperties(),
+				"predefinedValue"));
 		context.put(
 			"showAsSwitcher",
 			MapUtil.getBoolean(
