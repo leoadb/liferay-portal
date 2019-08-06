@@ -128,8 +128,6 @@ components:
                 dateModified:
                     format: date-time
                     type: string
-                defaultLanguageId:
-                    type: string
                 description:
                     additionalProperties:
                         type: object
