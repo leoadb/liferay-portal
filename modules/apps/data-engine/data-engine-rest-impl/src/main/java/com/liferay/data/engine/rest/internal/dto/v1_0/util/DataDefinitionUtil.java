@@ -24,6 +24,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Jeyvison Nascimento
  */
@@ -37,6 +40,7 @@ public class DataDefinitionUtil {
 
 		return new DataDefinition() {
 			{
+				availableLanguageIds = _getAvailableLanguageIds(jsonObject);
 				dataDefinitionFields = JSONUtil.toArray(
 					jsonObject.getJSONArray("fields"),
 					fieldJSONObject -> _toDataDefinitionField(fieldJSONObject),
@@ -48,6 +52,7 @@ public class DataDefinitionUtil {
 					DataDefinitionRule.class);
 				dateCreated = ddmStructure.getCreateDate();
 				dateModified = ddmStructure.getModifiedDate();
+				defaultLanguageId = jsonObject.getString("defaultLanguageId");
 				description = LocalizedValueUtil.toStringObjectMap(
 					ddmStructure.getDescriptionMap());
 				id = ddmStructure.getStructureId();
@@ -64,6 +69,13 @@ public class DataDefinitionUtil {
 		throws Exception {
 
 		return JSONUtil.put(
+			"availableLanguageIds",
+			JSONUtil.toJSONArray(
+				dataDefinition.getAvailableLanguageIds(),
+				languageId -> languageId)
+		).put(
+			"defaultLanguageId", dataDefinition.getDefaultLanguageId()
+		).put(
 			"fields",
 			JSONUtil.toJSONArray(
 				dataDefinition.getDataDefinitionFields(),
@@ -74,6 +86,16 @@ public class DataDefinitionUtil {
 				dataDefinition.getDataDefinitionRules(),
 				dataDefinitionRule -> _toJSONObject(dataDefinitionRule))
 		).toString();
+	}
+
+	private static String[] _getAvailableLanguageIds(JSONObject jsonObject) {
+		Set<String> availableLanguageIds = new HashSet<>();
+
+		JSONUtil.addToStringCollection(
+			availableLanguageIds,
+			jsonObject.getJSONArray("availableLanguageIds"));
+
+		return availableLanguageIds.toArray(new String[0]);
 	}
 
 	private static DataDefinitionField _toDataDefinitionField(
