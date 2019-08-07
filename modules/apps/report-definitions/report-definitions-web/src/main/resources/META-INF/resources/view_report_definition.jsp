@@ -22,17 +22,17 @@ long dataLayoutId = displayContext.getDataLayoutId();
 %>
 
 <div class="container-fluid-1280 report-definitions-form">
-	<div class="lfr-form-content">
+	<div class="card-horizontal lfr-form-content main-content-card">
 		<liferay-data-engine:data-layout-renderer
 			containerId="reportId"
 			dataLayoutId="<%= dataLayoutId %>"
 			namespace="<%= renderResponse.getNamespace() %>"
 		/>
-
-		<aui:button-row>
-			<aui:button type="submit" />
-
-			<aui:button href="<%= redirect %>" type="cancel" />
-		</aui:button-row>
 	</div>
+
+	<aui:button-row>
+		<aui:button type="submit" />
+
+		<aui:button href="<%= redirect %>" type="cancel" />
+	</aui:button-row>
 </div>
