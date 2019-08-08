@@ -26,11 +26,7 @@ import withMultiplePages from './withMultiplePages.es';
 import withResizeableColumns from './withResizeableColumns.es';
 import {Config} from 'metal-state';
 import {EventHandler} from 'metal-events';
-import {
-	focusedFieldStructure,
-	pageStructure,
-	ruleStructure
-} from '../../util/config.es';
+import {focusedFieldStructure, pageStructure} from '../../util/config.es';
 import {generateFieldName} from '../LayoutProvider/util/fields.es';
 import {makeFetch} from 'dynamic-data-mapping-form-renderer/js/util/fetch.es';
 import {normalizeSettingsContextPages} from '../../util/fieldSupport.es';

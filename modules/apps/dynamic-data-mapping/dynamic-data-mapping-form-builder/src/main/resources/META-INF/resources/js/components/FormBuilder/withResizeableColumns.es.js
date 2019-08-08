@@ -16,11 +16,7 @@ import Component from 'metal-jsx';
 import Position from 'metal-position';
 import {Config} from 'metal-state';
 import {Drag} from 'metal-drag-drop';
-import {
-	focusedFieldStructure,
-	pageStructure,
-	ruleStructure
-} from '../../util/config.es';
+import {focusedFieldStructure, pageStructure} from '../../util/config.es';
 
 const withResizeableColumns = ChildComponent => {
 	class ResizeableColumns extends Component {

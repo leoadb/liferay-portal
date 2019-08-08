@@ -29,10 +29,7 @@ import {
 	getFieldProperties,
 	normalizeSettingsContextPages
 } from '../../util/fieldSupport.es';
-import {
-	PagesVisitor,
-	RulesVisitor
-} from 'dynamic-data-mapping-form-renderer/js/util/visitors.es';
+import {PagesVisitor} from 'dynamic-data-mapping-form-renderer/js/util/visitors.es';
 import {selectText} from '../../util/dom.es';
 
 /**
