@@ -170,13 +170,15 @@ class DataLayoutBuilder extends Component {
 								columnConfig[fieldName] = value;
 							}
 						}
-					}
+					},
+					false
 				);
 
 				columnDefinitions.push(columnConfig);
 
 				return fieldName;
-			}
+			},
+			false
 		);
 
 		return {
