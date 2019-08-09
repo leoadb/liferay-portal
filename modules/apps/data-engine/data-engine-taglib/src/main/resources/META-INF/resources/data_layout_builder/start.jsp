@@ -19,6 +19,11 @@
 <liferay-editor:resources
 	editorName="alloyeditor"
 />
+
+<liferay-util:html-top>
+	<link href="<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/dynamic-data-mapping-form-renderer/css/main.css") %>" rel="stylesheet" />
+</liferay-util:html-top>
+
 <liferay-util:dynamic-include key="com.liferay.data.engine.taglib#/data_layout_builder/start.jsp#pre" />
 
 <div class="container-fluid-1280 ddm-translation-manager">
