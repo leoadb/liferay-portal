@@ -29,6 +29,31 @@
 			<finder-column name="fieldName" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="DEDataLayout" persistence="false" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="deDataLayoutId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="deDataDefinitionId" type="long" />
+		<column name="dataLayoutKey" type="String" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+	</entity>
 	<entity local-service="true" name="DEDataListView" remote-service="false" uuid="true">
 
 		<!-- PK fields -->
