@@ -14,11 +14,11 @@
 
 package com.liferay.data.engine.rest.internal.resource.v1_0;
 
+import com.liferay.data.engine.constants.DataActionKeys;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionRule;
 import com.liferay.data.engine.rest.dto.v1_0.DataRecord;
-import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataDefinitionFieldUtil;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;

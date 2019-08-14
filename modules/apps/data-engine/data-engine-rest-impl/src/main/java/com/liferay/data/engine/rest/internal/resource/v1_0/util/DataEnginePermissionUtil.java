@@ -14,8 +14,8 @@
 
 package com.liferay.data.engine.rest.internal.resource.v1_0.util;
 
-import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
-import com.liferay.data.engine.rest.internal.constants.DataEngineConstants;
+import com.liferay.data.engine.constants.DataActionKeys;
+import com.liferay.data.engine.constants.DataEngineConstants;
 import com.liferay.portal.kernel.exception.NoSuchRoleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
