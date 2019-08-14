@@ -14,10 +14,22 @@
 
 package com.liferay.data.engine.rest.internal.resource.v1_0;
 
+import com.liferay.data.engine.constants.DataActionKeys;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
+import com.liferay.data.engine.model.DEDataLayout;
+import com.liferay.data.engine.model.DEDataLayoutColumn;
+import com.liferay.data.engine.model.DEDataLayoutPage;
+import com.liferay.data.engine.model.DEDataLayoutRow;
+import com.liferay.data.engine.model.builder.DEDataLayoutBuilder;
+import com.liferay.data.engine.model.builder.DEDataLayoutColumnBuilder;
+import com.liferay.data.engine.model.builder.DEDataLayoutPageBuilder;
+import com.liferay.data.engine.model.builder.DEDataLayoutRowBuilder;
+import com.liferay.data.engine.model.builder.DEModelBuilderFactory;
 import com.liferay.data.engine.rest.dto.v1_0.DataLayout;
+import com.liferay.data.engine.rest.dto.v1_0.DataLayoutColumn;
+import com.liferay.data.engine.rest.dto.v1_0.DataLayoutPage;
 import com.liferay.data.engine.rest.dto.v1_0.DataLayoutPermission;
-import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
+import com.liferay.data.engine.rest.dto.v1_0.DataLayoutRow;
 import com.liferay.data.engine.rest.internal.constants.DataLayoutConstants;
 import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataLayoutUtil;
 import com.liferay.data.engine.rest.internal.model.InternalDataLayout;
@@ -25,6 +37,7 @@ import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
 import com.liferay.data.engine.rest.internal.odata.entity.v1_0.DataLayoutEntityModel;
 import com.liferay.data.engine.rest.internal.resource.v1_0.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.resource.v1_0.DataLayoutResource;
+import com.liferay.data.engine.service.DEDataLayoutService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
@@ -45,6 +58,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -54,7 +68,13 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.ValidationException;
 
@@ -134,13 +154,7 @@ public class DataLayoutResourceImpl
 
 	@Override
 	public DataLayout getDataLayout(Long dataLayoutId) throws Exception {
-		_modelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), dataLayoutId,
-			ActionKeys.VIEW);
-
-		return _toDataLayout(
-			_ddmStructureLayoutLocalService.getDDMStructureLayout(
-				dataLayoutId));
+		return _toDataLayout(_deDataLayoutService.getDataLayout(dataLayoutId));
 	}
 
 	@Override
@@ -155,8 +169,7 @@ public class DataLayoutResourceImpl
 		throws Exception {
 
 		return _toDataLayout(
-			_ddmStructureLayoutLocalService.getStructureLayout(
-				siteId, _getClassNameId(), dataLayoutKey));
+			_deDataLayoutService.getDataLayout(siteId, dataLayoutKey));
 	}
 
 	@Override
@@ -205,36 +218,14 @@ public class DataLayoutResourceImpl
 			Long dataDefinitionId, DataLayout dataLayout)
 		throws Exception {
 
-		if (MapUtil.isEmpty(dataLayout.getName())) {
-			throw new Exception("Name is required");
-		}
+		DEDataLayout deDataLayout = _toDEDataLayout(dataLayout);
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			dataDefinitionId);
+		deDataLayout.setUserId(PrincipalThreadLocal.getUserId());
+		deDataLayout.setDeDataDefinitionId(dataDefinitionId);
 
-		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_LAYOUT, _groupLocalService,
-			ddmStructure.getGroupId());
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		dataLayout = _toDataLayout(
-			_ddmStructureLayoutLocalService.addStructureLayout(
-				PrincipalThreadLocal.getUserId(), ddmStructure.getGroupId(),
-				_getClassNameId(), dataLayout.getDataLayoutKey(),
-				_getDDMStructureVersionId(dataDefinitionId),
-				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
-				LocalizedValueUtil.toLocaleStringMap(
-					dataLayout.getDescription()),
-				DataLayoutUtil.toJSON(dataLayout), serviceContext));
-
-		_resourceLocalService.addModelResources(
-			contextCompany.getCompanyId(), ddmStructure.getGroupId(),
-			PrincipalThreadLocal.getUserId(),
-			InternalDataLayout.class.getName(), dataLayout.getId(),
-			serviceContext.getModelPermissions());
-
-		return dataLayout;
+		return _toDataLayout(
+			_deDataLayoutService.addDataLayout(
+				deDataLayout, new ServiceContext()));
 	}
 
 	public void postDataLayoutDataLayoutPermission(
@@ -308,22 +299,14 @@ public class DataLayoutResourceImpl
 	public DataLayout putDataLayout(Long dataLayoutId, DataLayout dataLayout)
 		throws Exception {
 
-		if (MapUtil.isEmpty(dataLayout.getName())) {
-			throw new Exception("Name is required");
-		}
+		DEDataLayout deDataLayout = _toDEDataLayout(dataLayout);
 
-		_modelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), dataLayoutId,
-			ActionKeys.UPDATE);
+		deDataLayout.setDeDataLayoutId(dataLayoutId);
+		deDataLayout.setUserId(PrincipalThreadLocal.getUserId());
 
 		return _toDataLayout(
-			_ddmStructureLayoutLocalService.updateStructureLayout(
-				dataLayoutId,
-				_getDDMStructureVersionId(dataLayout.getDataDefinitionId()),
-				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
-				LocalizedValueUtil.toLocaleStringMap(
-					dataLayout.getDescription()),
-				DataLayoutUtil.toJSON(dataLayout), new ServiceContext()));
+			_deDataLayoutService.updateDataLayout(
+				deDataLayout, new ServiceContext()));
 	}
 
 	@Reference(
@@ -335,10 +318,6 @@ public class DataLayoutResourceImpl
 			modelResourcePermission) {
 
 		_modelResourcePermission = modelResourcePermission;
-	}
-
-	private long _getClassNameId() {
-		return _portal.getClassNameId(InternalDataLayout.class);
 	}
 
 	private long _getDDMStructureId(DDMStructureLayout ddmStructureLayout)
@@ -386,6 +365,256 @@ public class DataLayoutResourceImpl
 		return dataLayout;
 	}
 
+	private DataLayout _toDataLayout(DEDataLayout deDataLayout) {
+		return new DataLayout() {
+			{
+				setDateCreated(deDataLayout.getCreateDate());
+				setDataDefinitionId(deDataLayout.getDeDataDefinitionId());
+				setDataLayoutPages(
+					_toDataLayoutPages(deDataLayout.getDEDataLayoutPages()));
+				setDataLayoutKey(deDataLayout.getDataLayoutKey());
+				setDateModified(deDataLayout.getModifiedDate());
+				setDescription(
+					_toLanguageIdMap(deDataLayout.getDescriptionMap()));
+				setId(deDataLayout.getDeDataLayoutId());
+				setName(_toLanguageIdMap(deDataLayout.getNameMap()));
+				setSiteId(deDataLayout.getGroupId());
+				setPaginationMode(deDataLayout.getPaginationMode());
+				setUserId(deDataLayout.getUserId());
+			}
+		};
+	}
+
+	private DataLayoutColumn _toDataLayoutColumn(
+		DEDataLayoutColumn deDataLayoutColumn) {
+
+		return new DataLayoutColumn() {
+			{
+				setColumnSize(deDataLayoutColumn.getColumnSize());
+				setFieldNames(deDataLayoutColumn.getFieldNames());
+			}
+		};
+	}
+
+	private DataLayoutColumn[] _toDataLayoutColumns(
+		List<DEDataLayoutColumn> deDataLayoutColumns) {
+
+		Stream<DEDataLayoutColumn> stream = deDataLayoutColumns.stream();
+
+		return stream.map(
+			this::_toDataLayoutColumn
+		).collect(
+			Collectors.toList()
+		).toArray(
+			new DataLayoutColumn[0]
+		);
+	}
+
+	private DataLayoutPage _toDataLayoutPage(
+		DEDataLayoutPage deDataLayoutPage) {
+
+		return new DataLayoutPage() {
+			{
+				setDataLayoutRows(
+					_toDataLayoutRows(deDataLayoutPage.getDEDataLayoutRows()));
+				setDescription(deDataLayoutPage.getDescription());
+				setTitle(deDataLayoutPage.getTitle());
+			}
+		};
+	}
+
+	private DataLayoutPage[] _toDataLayoutPages(
+		List<DEDataLayoutPage> deDataLayoutPages) {
+
+		Stream<DEDataLayoutPage> stream = deDataLayoutPages.stream();
+
+		return stream.map(
+			this::_toDataLayoutPage
+		).collect(
+			Collectors.toList()
+		).toArray(
+			new DataLayoutPage[0]
+		);
+	}
+
+	private DataLayoutRow _toDataLayoutRow(DEDataLayoutRow deDataLayoutRow) {
+		return new DataLayoutRow() {
+			{
+				setDataLayoutColumns(
+					_toDataLayoutColumns(
+						deDataLayoutRow.getDEDataLayoutColumns()));
+			}
+		};
+	}
+
+	private DataLayoutRow[] _toDataLayoutRows(
+		List<DEDataLayoutRow> deDataLayoutRows) {
+
+		Stream<DEDataLayoutRow> stream = deDataLayoutRows.stream();
+
+		return stream.map(
+			this::_toDataLayoutRow
+		).collect(
+			Collectors.toList()
+		).toArray(
+			new DataLayoutRow[0]
+		);
+	}
+
+	private DEDataLayout _toDEDataLayout(DataLayout dataLayout) {
+		DEDataLayoutBuilder deDataLayoutBuilder =
+			_deModelBuilderFactory.newDEDataLayoutBuilder();
+
+		deDataLayoutBuilder = deDataLayoutBuilder.companyId(
+			contextCompany.getCompanyId()
+		).createDate(
+			dataLayout.getDateCreated()
+		).dataDefinitionId(
+			GetterUtil.getLong(dataLayout.getDataDefinitionId())
+		).dataLayoutKey(
+			dataLayout.getDataLayoutKey()
+		).description(
+			_toLocaleMap(dataLayout.getDescription())
+		).groupId(
+			GetterUtil.getLong(dataLayout.getSiteId())
+		).id(
+			GetterUtil.getLong(dataLayout.getId())
+		).modifiedDate(
+			dataLayout.getDateModified()
+		).name(
+			_toLocaleMap(dataLayout.getName())
+		).pages(
+			_toDEDataLayoutPages(dataLayout.getDataLayoutPages())
+		).paginationMode(
+			dataLayout.getPaginationMode()
+		);
+
+		return deDataLayoutBuilder.build();
+	}
+
+	private DEDataLayoutColumn _toDEDataLayoutColumn(
+		DataLayoutColumn dataLayoutColumn) {
+
+		DEDataLayoutColumnBuilder deDataLayoutColumnBuilder =
+			_deModelBuilderFactory.newDEDataLayoutColumnBuilder();
+
+		deDataLayoutColumnBuilder = deDataLayoutColumnBuilder.columnSize(
+			dataLayoutColumn.getColumnSize()
+		).fieldNames(
+			dataLayoutColumn.getFieldNames()
+		);
+
+		return deDataLayoutColumnBuilder.build();
+	}
+
+	private List<DEDataLayoutColumn> _toDEDataLayoutColumns(
+		DataLayoutColumn[] dataLayoutColumns) {
+
+		if (dataLayoutColumns == null) {
+			return Collections.emptyList();
+		}
+
+		return Stream.of(
+			dataLayoutColumns
+		).map(
+			this::_toDEDataLayoutColumn
+		).collect(
+			Collectors.toList()
+		);
+	}
+
+	private DEDataLayoutPage _toDEDataLayoutPage(
+		DataLayoutPage dataLayoutPage) {
+
+		DEDataLayoutPageBuilder deDataLayoutPageBuilder =
+			_deModelBuilderFactory.newDEDataLayoutPageBuilder();
+
+		deDataLayoutPageBuilder = deDataLayoutPageBuilder.description(
+			dataLayoutPage.getDescription()
+		).rows(
+			_toDEDataLayoutRows(dataLayoutPage.getDataLayoutRows())
+		).title(
+			dataLayoutPage.getTitle()
+		);
+
+		return deDataLayoutPageBuilder.build();
+	}
+
+	private List<DEDataLayoutPage> _toDEDataLayoutPages(
+		DataLayoutPage[] dataLayoutPages) {
+
+		if (dataLayoutPages == null) {
+			return Collections.emptyList();
+		}
+
+		return Stream.of(
+			dataLayoutPages
+		).map(
+			this::_toDEDataLayoutPage
+		).collect(
+			Collectors.toList()
+		);
+	}
+
+	private DEDataLayoutRow _toDEDataLayoutRow(DataLayoutRow dataLayoutRow) {
+		DEDataLayoutRowBuilder deDataLayoutRowBuilder =
+			_deModelBuilderFactory.newDEDataLayoutRowBuilder();
+
+		deDataLayoutRowBuilder = deDataLayoutRowBuilder.columns(
+			_toDEDataLayoutColumns(dataLayoutRow.getDataLayoutColumns()));
+
+		return deDataLayoutRowBuilder.build();
+	}
+
+	private List<DEDataLayoutRow> _toDEDataLayoutRows(
+		DataLayoutRow[] dataLayoutRows) {
+
+		if (dataLayoutRows == null) {
+			return Collections.emptyList();
+		}
+
+		return Stream.of(
+			dataLayoutRows
+		).map(
+			this::_toDEDataLayoutRow
+		).collect(
+			Collectors.toList()
+		);
+	}
+
+	private Map<String, Object> _toLanguageIdMap(
+		Map<Locale, String> description) {
+
+		if (MapUtil.isEmpty(description)) {
+			return Collections.emptyMap();
+		}
+
+		Map<String, Object> localeMap = new HashMap<>();
+
+		for (Map.Entry<Locale, String> entry : description.entrySet()) {
+			localeMap.put(
+				LanguageUtil.getLanguageId(entry.getKey()), entry.getValue());
+		}
+
+		return localeMap;
+	}
+
+	private Map<Locale, String> _toLocaleMap(Map<String, Object> description) {
+		if (MapUtil.isEmpty(description)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Locale, String> localeMap = new HashMap<>();
+
+		for (Map.Entry<String, Object> entry : description.entrySet()) {
+			localeMap.put(
+				LocaleUtil.fromLanguageId(entry.getKey()),
+				GetterUtil.getString(entry.getValue()));
+		}
+
+		return localeMap;
+	}
+
 	private static final EntityModel _entityModel = new DataLayoutEntityModel();
 
 	@Reference
@@ -396,6 +625,12 @@ public class DataLayoutResourceImpl
 
 	@Reference
 	private DDMStructureVersionLocalService _ddmStructureVersionLocalService;
+
+	@Reference
+	private DEDataLayoutService _deDataLayoutService;
+
+	@Reference
+	private DEModelBuilderFactory _deModelBuilderFactory;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
