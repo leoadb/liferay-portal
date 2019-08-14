@@ -10,6 +10,20 @@
 		<field name="ddmStructureId" type="long" />
 		<field name="fieldName" type="long" />
 	</model>
+	<model name="com.liferay.data.engine.model.DEDataLayout">
+		<field name="uuid" type="String" />
+		<field name="deDataLayoutId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="deDataDefinitionId" type="long" />
+		<field name="dataLayoutKey" type="String" />
+		<field localized="true" name="name" type="String" />
+		<field localized="true" name="description" type="String" />
+	</model>
 	<model name="com.liferay.data.engine.model.DEDataListView">
 		<field name="uuid" type="String" />
 		<field name="deDataListViewId" type="long" />
