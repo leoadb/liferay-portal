@@ -38,9 +38,12 @@ public class DataDefinitionFieldUtil {
 				localizable = spiDataDefinitionField.getLocalizable();
 				name = spiDataDefinitionField.getName();
 				nestedDataDefinitionFields = TransformUtil.transform(
-					spiDataDefinitionField.getNestedSPIDataDefinitionFields(),
+					(SPIDataDefinitionField[])GetterUtil.getObject(
+						spiDataDefinitionField.
+							getNestedSPIDataDefinitionFields(),
+						new SPIDataDefinitionField[0]),
 					DataDefinitionFieldUtil::toDataDefinitionField,
-					SPIDataDefinitionField.class);
+					DataDefinitionField.class);
 				repeatable = spiDataDefinitionField.getRepeatable();
 				tip = spiDataDefinitionField.getTip();
 			}
@@ -68,9 +71,11 @@ public class DataDefinitionFieldUtil {
 		spiDataDefinitionField.setName(dataDefinitionField.getName());
 		spiDataDefinitionField.setNestedSPIDataDefinitionFields(
 			TransformUtil.transform(
-				dataDefinitionField.getNestedDataDefinitionFields(),
+				(DataDefinitionField[])GetterUtil.getObject(
+					dataDefinitionField.getNestedDataDefinitionFields(),
+					new DataDefinitionField[0]),
 				DataDefinitionFieldUtil::toSPIDataDefinitionField,
-				DataDefinitionField.class));
+				SPIDataDefinitionField.class));
 		spiDataDefinitionField.setRepeatable(
 			GetterUtil.getBoolean(dataDefinitionField.getRepeatable()));
 		spiDataDefinitionField.setTip(dataDefinitionField.getTip());
