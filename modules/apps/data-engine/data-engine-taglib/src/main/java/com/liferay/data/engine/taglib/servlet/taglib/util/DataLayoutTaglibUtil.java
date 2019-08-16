@@ -18,15 +18,24 @@ import com.liferay.data.engine.field.type.FieldType;
 import com.liferay.data.engine.field.type.FieldTypeTracker;
 import com.liferay.data.engine.renderer.DataLayoutRenderer;
 import com.liferay.data.engine.renderer.DataLayoutRendererContext;
+import com.liferay.data.engine.rest.client.dto.v1_0.DataDefinition;
+import com.liferay.data.engine.rest.client.dto.v1_0.DataLayout;
 import com.liferay.data.engine.rest.client.dto.v1_0.DataRecord;
+import com.liferay.data.engine.rest.client.resource.v1_0.DataDefinitionResource;
+import com.liferay.data.engine.rest.client.resource.v1_0.DataLayoutResource;
 import com.liferay.data.engine.rest.client.resource.v1_0.DataRecordResource;
+import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderContextFactory;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormTemplateContextFactory;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerTracker;
+import com.liferay.dynamic.data.mapping.io.DDMFormLayoutDeserializerTracker;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
@@ -39,12 +48,12 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
+import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -53,14 +62,17 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -73,6 +85,22 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(immediate = true, service = DataLayoutTaglibUtil.class)
 public class DataLayoutTaglibUtil {
+
+	public static Set<Locale> getAvailableLocales(
+		long dataLayoutId, HttpServletRequest httpServletRequest) {
+
+		return _instance._getAvailableLocales(dataLayoutId, httpServletRequest);
+	}
+
+	public static JSONObject getDataLayoutJSONObject(
+		Set<Locale> availableLocales, Long dataLayoutId,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		return _instance._getDataLayoutJSONObject(
+			availableLocales, dataLayoutId, httpServletRequest,
+			httpServletResponse);
+	}
 
 	public static Map<String, Object> getDataRecordValues(
 			long dataRecordId, HttpServletRequest httpServletRequest)
@@ -158,6 +186,115 @@ public class DataLayoutTaglibUtil {
 		return null;
 	}
 
+	private Set<Locale> _getAvailableLocales(
+		long dataLayoutId, HttpServletRequest httpServletRequest) {
+
+		if (dataLayoutId == 0) {
+			return new HashSet() {
+				{
+					add(LocaleThreadLocal.getDefaultLocale());
+				}
+			};
+		}
+
+		try {
+			DataLayout dataLayout = _getDataLayout(
+				dataLayoutId, httpServletRequest);
+
+			DataDefinition dataDefinition = _getDataDefinition(
+				dataLayout.getDataDefinitionId(), httpServletRequest);
+
+			return Stream.of(
+				dataDefinition.getAvailableLanguageIds()
+			).map(
+				LocaleUtil::fromLanguageId
+			).collect(
+				Collectors.toSet()
+			);
+		}
+		catch (Exception e) {
+			return new HashSet() {
+				{
+					add(LocaleThreadLocal.getDefaultLocale());
+				}
+			};
+		}
+	}
+
+	private DataDefinition _getDataDefinition(
+			long dataDefinitionId, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		String cookie = CookieKeys.getCookie(
+			httpServletRequest, CookieKeys.JSESSIONID);
+
+		DataDefinitionResource dataDefinitionResource =
+			DataDefinitionResource.builder(
+			).header(
+				"Cookie", "JSESSIONID=" + cookie
+			).parameter(
+				"p_auth", AuthTokenUtil.getToken(httpServletRequest)
+			).endpoint(
+				_portal.getHost(httpServletRequest),
+				httpServletRequest.getServerPort(),
+				httpServletRequest.getScheme()
+			).build();
+
+		return dataDefinitionResource.getDataDefinition(dataDefinitionId);
+	}
+
+	private DataLayout _getDataLayout(
+			long dataLayoutId, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		DataLayoutResource dataLayoutResource = DataLayoutResource.builder(
+		).header(
+			"Cookie",
+			"JSESSIONID=" +
+				CookieKeys.getCookie(httpServletRequest, CookieKeys.JSESSIONID)
+		).parameter(
+			"p_auth", AuthTokenUtil.getToken(httpServletRequest)
+		).endpoint(
+			_portal.getHost(httpServletRequest),
+			httpServletRequest.getServerPort(), httpServletRequest.getScheme()
+		).build();
+
+		return dataLayoutResource.getDataLayout(dataLayoutId);
+	}
+
+	private JSONObject _getDataLayoutJSONObject(
+		Set<Locale> availableLocales, Long dataLayoutId,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		if (dataLayoutId == null) {
+			return _jsonFactory.createJSONObject();
+		}
+
+		try {
+			DataLayout dataLayout = _getDataLayout(
+				dataLayoutId, httpServletRequest);
+
+			DataLayoutDDMFormAdapter dataLayoutDDMFormAdapter =
+				new DataLayoutDDMFormAdapter(
+					availableLocales, dataLayout, _ddmFormDeserializerTracker,
+					_ddmFormFieldTypeServicesTracker,
+					_ddmFormLayoutDeserializerTracker,
+					_ddmFormTemplateContextFactory,
+					_ddmStructureLayoutLocalService, _ddmStructureLocalService,
+					httpServletRequest, httpServletResponse, _jsonFactory);
+
+			return dataLayoutDDMFormAdapter.toJSONObject();
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e, e);
+			}
+
+			return _jsonFactory.createJSONObject();
+		}
+	}
+
 	private Map<String, Object> _getDataRecordValues(
 			long dataRecordId, HttpServletRequest httpServletRequest)
 		throws Exception {
@@ -166,14 +303,13 @@ public class DataLayoutTaglibUtil {
 			return Collections.emptyMap();
 		}
 
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		User user = permissionChecker.getUser();
-
 		DataRecordResource dataRecordResource = DataRecordResource.builder(
-		).authentication(
-			user.getEmailAddress(), user.getPassword()
+		).header(
+			"Cookie",
+			"JSESSIONID=" +
+				CookieKeys.getCookie(httpServletRequest, CookieKeys.JSESSIONID)
+		).parameter(
+			"p_auth", AuthTokenUtil.getToken(httpServletRequest)
 		).endpoint(
 			_portal.getHost(httpServletRequest),
 			httpServletRequest.getServerPort(), httpServletRequest.getScheme()
@@ -327,13 +463,28 @@ public class DataLayoutTaglibUtil {
 	private DataLayoutRenderer _dataLayoutRenderer;
 
 	@Reference
+	private DDMFormBuilderContextFactory _ddmFormBuilderContextFactory;
+
+	@Reference
+	private DDMFormDeserializerTracker _ddmFormDeserializerTracker;
+
+	@Reference
 	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;
+
+	@Reference
+	private DDMFormLayoutDeserializerTracker _ddmFormLayoutDeserializerTracker;
 
 	@Reference
 	private DDMFormTemplateContextFactory _ddmFormTemplateContextFactory;
 
 	@Reference
 	private DDMFormValuesFactory _ddmFormValuesFactory;
+
+	@Reference
+	private DDMStructureLayoutLocalService _ddmStructureLayoutLocalService;
+
+	@Reference
+	private DDMStructureLocalService _ddmStructureLocalService;
 
 	@Reference
 	private FieldTypeTracker _fieldTypeTracker;
