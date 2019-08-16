@@ -66,11 +66,17 @@ public class DataDefinitionFieldUtil {
 		spiDataDefinitionField.setLocalizable(
 			GetterUtil.getBoolean(dataDefinitionField.getLocalizable()));
 		spiDataDefinitionField.setName(dataDefinitionField.getName());
-		spiDataDefinitionField.setNestedSPIDataDefinitionFields(
-			TransformUtil.transform(
-				dataDefinitionField.getNestedDataDefinitionFields(),
-				DataDefinitionFieldUtil::toSPIDataDefinitionField,
-				DataDefinitionField.class));
+
+		if (!ArrayUtil.isEmpty(
+				dataDefinitionField.getNestedDataDefinitionFields())) {
+
+			spiDataDefinitionField.setNestedSPIDataDefinitionFields(
+				TransformUtil.transform(
+					dataDefinitionField.getNestedDataDefinitionFields(),
+					DataDefinitionFieldUtil::toSPIDataDefinitionField,
+					DataDefinitionField.class));
+		}
+
 		spiDataDefinitionField.setRepeatable(
 			GetterUtil.getBoolean(dataDefinitionField.getRepeatable()));
 		spiDataDefinitionField.setTip(dataDefinitionField.getTip());

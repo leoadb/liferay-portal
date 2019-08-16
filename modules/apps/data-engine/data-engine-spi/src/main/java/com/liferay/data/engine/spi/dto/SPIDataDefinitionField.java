@@ -15,6 +15,7 @@
 package com.liferay.data.engine.spi.dto;
 
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -162,7 +163,9 @@ public class SPIDataDefinitionField {
 	public void setNestedSPIDataDefinitionFields(
 		SPIDataDefinitionField[] nestedSPIDataDefinitionFields) {
 
-		_nestedSPIDataDefinitionFields = nestedSPIDataDefinitionFields;
+		if (!ArrayUtil.isEmpty(nestedSPIDataDefinitionFields)) {
+			_nestedSPIDataDefinitionFields = nestedSPIDataDefinitionFields;
+		}
 	}
 
 	public void setRepeatable(boolean repeatable) {
@@ -183,7 +186,8 @@ public class SPIDataDefinitionField {
 	private final Map<String, Object> _label = new HashMap<>();
 	private boolean _localizable;
 	private String _name;
-	private SPIDataDefinitionField[] _nestedSPIDataDefinitionFields;
+	private SPIDataDefinitionField[] _nestedSPIDataDefinitionFields =
+		new SPIDataDefinitionField[0];
 	private boolean _repeatable;
 	private final Map<String, Object> _tip = new HashMap<>();
 
