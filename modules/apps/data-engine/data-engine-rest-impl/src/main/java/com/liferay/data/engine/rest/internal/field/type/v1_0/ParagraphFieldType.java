@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.template.soy.data.SoyDataFactory;
+import com.liferay.portal.template.soy.util.SoyRawData;
 
 import java.util.Map;
 
@@ -96,13 +97,13 @@ public class ParagraphFieldType extends BaseFieldType {
 		HttpServletResponse httpServletResponse,
 		SPIDataDefinitionField spiDataDefinitionField) {
 
-		context.put(
-			"text",
-			_soyDataFactory.createSoyRawData(
-				MapUtil.getString(
-					CustomPropertiesUtil.getMap(
-						spiDataDefinitionField.getCustomProperties(), "text"),
-					LanguageUtil.getLanguageId(httpServletRequest))));
+		SoyRawData soyRawData = _soyDataFactory.createSoyRawData(
+			MapUtil.getString(
+				CustomPropertiesUtil.getMap(
+					spiDataDefinitionField.getCustomProperties(), "text"),
+				LanguageUtil.getLanguageId(httpServletRequest)));
+
+		context.put("text", soyRawData.getValue());
 	}
 
 	@Reference
