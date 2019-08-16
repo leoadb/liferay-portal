@@ -61,6 +61,9 @@ public abstract class BaseFieldType implements FieldType {
 					put("showLabel", jsonObject.getBoolean("showLabel"));
 				}
 			});
+		spiDataDefinitionField.setDefaultValue(
+			LocalizedValueUtil.toLocalizedValues(
+				jsonObject.getJSONObject("defaultValue")));
 		spiDataDefinitionField.setFieldType(jsonObject.getString("type"));
 		spiDataDefinitionField.setIndexable(
 			jsonObject.getBoolean("indexable", true));
@@ -134,6 +137,11 @@ public abstract class BaseFieldType implements FieldType {
 			"nestedDataDefinitionFields",
 			spiDataDefinitionField.getNestedSPIDataDefinitionFields());
 		context.put(
+			"predefinedValue",
+			LocalizedValueUtil.getLocalizedValue(
+				httpServletRequest.getLocale(),
+				spiDataDefinitionField.getDefaultValue()));
+		context.put(
 			"readOnly",
 			MapUtil.getBoolean(
 				spiDataDefinitionField.getCustomProperties(), "readOnly",
@@ -186,6 +194,10 @@ public abstract class BaseFieldType implements FieldType {
 		}
 
 		return JSONUtil.put(
+			"defaultValue",
+			LocalizedValueUtil.toJSONObject(
+				spiDataDefinitionField.getDefaultValue())
+		).put(
 			"indexable", spiDataDefinitionField.getIndexable()
 		).put(
 			"label",

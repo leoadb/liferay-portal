@@ -16,13 +16,37 @@ package com.liferay.data.engine.rest.internal.dto.v1_0.util;
 
 import com.liferay.data.engine.rest.dto.v1_0.DataDefinitionField;
 import com.liferay.data.engine.spi.dto.SPIDataDefinitionField;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.vulcan.util.TransformUtil;
+
+import java.util.Map;
 
 /**
  * @author Leonardo Barros
  */
 public class DataDefinitionFieldUtil {
+
+	public static Object getLocalizedDefaultValue(
+		Map<String, Object> defaultValue, String languageId) {
+
+		try {
+			return JSONFactoryUtil.createJSONArray(
+				MapUtil.getString(defaultValue, languageId));
+		}
+		catch (JSONException jsone) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsone, jsone);
+			}
+
+			return MapUtil.getString(defaultValue, languageId);
+		}
+	}
 
 	public static DataDefinitionField toDataDefinitionField(
 		SPIDataDefinitionField spiDataDefinitionField) {
@@ -83,5 +107,8 @@ public class DataDefinitionFieldUtil {
 
 		return spiDataDefinitionField;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DataDefinitionFieldUtil.class);
 
 }

@@ -18,10 +18,9 @@ import com.liferay.data.engine.field.type.BaseFieldType;
 import com.liferay.data.engine.field.type.FieldType;
 import com.liferay.data.engine.field.type.FieldTypeTracker;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertiesUtil;
 import com.liferay.data.engine.spi.dto.SPIDataDefinitionField;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Map;
@@ -64,10 +63,6 @@ public class CheckboxFieldType extends BaseFieldType {
 		customProperties.put(
 			"showAsSwitcher", jsonObject.getBoolean("showAsSwitcher"));
 
-		spiDataDefinitionField.setDefaultValue(
-			LocalizedValueUtil.toLocalizedValues(
-				jsonObject.getJSONObject("predefinedValue")));
-
 		return spiDataDefinitionField;
 	}
 
@@ -86,15 +81,10 @@ public class CheckboxFieldType extends BaseFieldType {
 			fieldTypeTracker, spiDataDefinitionField);
 
 		return jsonObject.put(
-			"predefinedValue",
-			LocalizedValueUtil.toJSONObject(
-				spiDataDefinitionField.getDefaultValue())
-		).put(
 			"showAsSwitcher",
 			MapUtil.getBoolean(
 				spiDataDefinitionField.getCustomProperties(), "showAsSwitcher",
-				true)
-		);
+				true));
 	}
 
 	@Override
@@ -105,11 +95,10 @@ public class CheckboxFieldType extends BaseFieldType {
 
 		context.put(
 			"predefinedValue",
-			MapUtil.getString(
-				CustomPropertiesUtil.getMap(
-					spiDataDefinitionField.getCustomProperties(),
-					"predefinedValue"),
-				LanguageUtil.getLanguageId(httpServletRequest)));
+			GetterUtil.getBoolean(
+				LocalizedValueUtil.getLocalizedValue(
+					httpServletRequest.getLocale(),
+					spiDataDefinitionField.getDefaultValue())));
 		context.put(
 			"showAsSwitcher",
 			MapUtil.getBoolean(context, "showAsSwitcher", false));

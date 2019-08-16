@@ -18,7 +18,6 @@ import com.liferay.data.engine.field.type.BaseFieldType;
 import com.liferay.data.engine.field.type.FieldType;
 import com.liferay.data.engine.field.type.FieldTypeTracker;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertiesUtil;
 import com.liferay.data.engine.rest.internal.field.type.v1_0.util.DataFieldOptionUtil;
 import com.liferay.data.engine.spi.dto.SPIDataDefinitionField;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -28,6 +27,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.Map;
@@ -70,10 +70,6 @@ public class RadioFieldType extends BaseFieldType {
 			"options",
 			DataFieldOptionUtil.toLocalizedDataFieldOptions(
 				jsonObject.getJSONObject("options")));
-		customProperties.put(
-			"predefinedValue",
-			LocalizedValueUtil.toLocalizedValues(
-				jsonObject.getJSONObject("predefinedValue")));
 
 		return spiDataDefinitionField;
 	}
@@ -100,10 +96,6 @@ public class RadioFieldType extends BaseFieldType {
 			"options",
 			DataFieldOptionUtil.toJSONObject(
 				spiDataDefinitionField.getCustomProperties(), "options")
-		).put(
-			"predefinedValue",
-			CustomPropertiesUtil.getMap(
-				spiDataDefinitionField.getCustomProperties(), "predefinedValue")
 		);
 	}
 
@@ -118,16 +110,16 @@ public class RadioFieldType extends BaseFieldType {
 			MapUtil.getBoolean(
 				spiDataDefinitionField.getCustomProperties(), "inline", false));
 		context.put(
+			"predefinedValue",
+			_getValue(
+				GetterUtil.getString(
+					LocalizedValueUtil.getLocalizedValue(
+						httpServletRequest.getLocale(),
+						spiDataDefinitionField.getDefaultValue()))));
+		context.put(
 			"options",
 			DataFieldOptionUtil.getLocalizedDataFieldOptions(
 				spiDataDefinitionField.getCustomProperties(), "options",
-				LanguageUtil.getLanguageId(httpServletRequest)));
-		context.put(
-			"predefinedValue",
-			MapUtil.getString(
-				CustomPropertiesUtil.getMap(
-					spiDataDefinitionField.getCustomProperties(),
-					"predefinedValue"),
 				LanguageUtil.getLanguageId(httpServletRequest)));
 		context.put(
 			"value",

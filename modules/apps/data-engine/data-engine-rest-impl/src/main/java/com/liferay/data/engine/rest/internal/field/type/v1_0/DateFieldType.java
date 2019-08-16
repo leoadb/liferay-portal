@@ -16,13 +16,7 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0;
 
 import com.liferay.data.engine.field.type.BaseFieldType;
 import com.liferay.data.engine.field.type.FieldType;
-import com.liferay.data.engine.field.type.FieldTypeTracker;
-import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
-import com.liferay.data.engine.rest.internal.field.type.v1_0.util.CustomPropertiesUtil;
 import com.liferay.data.engine.spi.dto.SPIDataDefinitionField;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,38 +47,8 @@ import org.osgi.service.component.annotations.Component;
 public class DateFieldType extends BaseFieldType {
 
 	@Override
-	public SPIDataDefinitionField deserialize(
-			FieldTypeTracker fieldTypeTracker, JSONObject jsonObject)
-		throws Exception {
-
-		SPIDataDefinitionField spiDataDefinitionField = super.deserialize(
-			fieldTypeTracker, jsonObject);
-
-		spiDataDefinitionField.setDefaultValue(
-			LocalizedValueUtil.toLocalizedValues(
-				jsonObject.getJSONObject("predefinedValue")));
-
-		return spiDataDefinitionField;
-	}
-
-	@Override
 	public String getName() {
 		return "date";
-	}
-
-	@Override
-	public JSONObject toJSONObject(
-			FieldTypeTracker fieldTypeTracker,
-			SPIDataDefinitionField spiDataDefinitionField)
-		throws Exception {
-
-		JSONObject jsonObject = super.toJSONObject(
-			fieldTypeTracker, spiDataDefinitionField);
-
-		return jsonObject.put(
-			"predefinedValue",
-			LocalizedValueUtil.toJSONObject(
-				spiDataDefinitionField.getDefaultValue()));
 	}
 
 	@Override
@@ -92,14 +56,6 @@ public class DateFieldType extends BaseFieldType {
 		Map<String, Object> context, HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse,
 		SPIDataDefinitionField spiDataDefinitionField) {
-
-		context.put(
-			"predefinedValue",
-			MapUtil.getString(
-				CustomPropertiesUtil.getMap(
-					spiDataDefinitionField.getCustomProperties(),
-					"predefinedValue"),
-				LanguageUtil.getLanguageId(httpServletRequest)));
 
 		List<Integer> years = new ArrayList<>();
 
