@@ -16,11 +16,8 @@ package com.liferay.data.engine.rest.internal.field.type.v1_0.util;
 
 import com.liferay.data.engine.rest.internal.field.type.v1_0.DataFieldOption;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
@@ -39,16 +36,17 @@ public class DataFieldOptionUtil {
 	public static List<DataFieldOption> getLocalizedDataFieldOptions(
 		Map<String, Object> customProperties, String key, String languageId) {
 
-		if (MapUtil.isEmpty(customProperties)) {
+		if (MapUtil.isEmpty(customProperties) ||
+			!customProperties.containsKey(key)) {
+
 			return Collections.emptyList();
 		}
 
 		Map<String, List<DataFieldOption>> localizedDataFieldOptions =
-			(Map<String, List<DataFieldOption>>)GetterUtil.getObject(
-				customProperties.get(key), Collections.emptyMap());
+			(Map<String, List<DataFieldOption>>)customProperties.get(key);
 
 		return (List<DataFieldOption>)GetterUtil.getObject(
-			localizedDataFieldOptions.get(languageId), Collections.emptyMap());
+			localizedDataFieldOptions.get(languageId), Collections.emptyList());
 	}
 
 	public static JSONObject toJSONObject(
@@ -56,32 +54,33 @@ public class DataFieldOptionUtil {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		if (MapUtil.isEmpty(customProperties)) {
+		if (MapUtil.isEmpty(customProperties) ||
+			!customProperties.containsKey(key)) {
+
 			return jsonObject;
 		}
 
-		Map<String, List<String>> customPropertyOptions =
-			(Map<String, List<String>>)GetterUtil.getObject(
-				customProperties.get(key), Collections.emptyMap());
+		Map<String, List<Map<String, String>>> customPropertyOptions =
+			(Map<String, List<Map<String, String>>>)customProperties.get(key);
 
-		for (Map.Entry<String, List<String>> entry :
+		for (Map.Entry<String, List<Map<String, String>>> entry :
 				customPropertyOptions.entrySet()) {
 
-			List<String> value = entry.getValue();
+			List<Map<String, String>> options = entry.getValue();
 
 			JSONArray dataFieldOptionsJSONArray =
 				JSONFactoryUtil.createJSONArray();
 
-			for (String valueString : value) {
-				try {
-					dataFieldOptionsJSONArray.put(
-						JSONFactoryUtil.createJSONObject(valueString));
-				}
-				catch (JSONException jsone) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(jsone, jsone);
-					}
-				}
+			for (Map<String, String> option : options) {
+				JSONObject optionJSONObject =
+					JSONFactoryUtil.createJSONObject();
+
+				dataFieldOptionsJSONArray.put(
+					optionJSONObject.put(
+						"label", MapUtil.getString(option, "label")
+					).put(
+						"value", MapUtil.getString(option, "value")
+					));
 			}
 
 			jsonObject.put(entry.getKey(), dataFieldOptionsJSONArray);
@@ -120,8 +119,5 @@ public class DataFieldOptionUtil {
 		return new DataFieldOption(
 			jsonObject.getString("label"), jsonObject.getString("value"));
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DataFieldOptionUtil.class);
 
 }
