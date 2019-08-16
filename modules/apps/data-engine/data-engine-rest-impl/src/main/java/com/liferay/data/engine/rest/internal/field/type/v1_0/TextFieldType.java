@@ -74,10 +74,6 @@ public class TextFieldType extends BaseFieldType {
 			LocalizedValueUtil.toLocalizedValues(
 				jsonObject.getJSONObject("placeholder")));
 		customProperties.put(
-			"predefinedValue",
-			LocalizedValueUtil.toLocalizedValues(
-				jsonObject.getJSONObject("predefinedValue")));
-		customProperties.put(
 			"tooltip",
 			LocalizedValueUtil.toLocalizedValues(
 				jsonObject.getJSONObject("tooltip")));
@@ -125,10 +121,6 @@ public class TextFieldType extends BaseFieldType {
 			"placeholder",
 			CustomPropertiesUtil.getMap(
 				spiDataDefinitionField.getCustomProperties(), "placeholder")
-		).put(
-			"predefinedValue",
-			CustomPropertiesUtil.getMap(
-				spiDataDefinitionField.getCustomProperties(), "predefinedValue")
 		).put(
 			"tooltip",
 			CustomPropertiesUtil.getMap(

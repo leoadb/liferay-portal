@@ -74,10 +74,6 @@ public class NumericFieldType extends BaseFieldType {
 			LocalizedValueUtil.toLocalizedValues(
 				jsonObject.getJSONObject("placeholder")));
 		customProperties.put(
-			"predefinedValue",
-			LocalizedValueUtil.toLocalizedValues(
-				jsonObject.getJSONObject("predefinedValue")));
-		customProperties.put(
 			"tooltip",
 			LocalizedValueUtil.toLocalizedValues(
 				jsonObject.getJSONObject("tooltip")));
@@ -110,12 +106,6 @@ public class NumericFieldType extends BaseFieldType {
 					spiDataDefinitionField.getCustomProperties(),
 					"placeholder"))
 		).put(
-			"predefinedValue",
-			LocalizedValueUtil.toJSONObject(
-				CustomPropertiesUtil.getMap(
-					spiDataDefinitionField.getCustomProperties(),
-					"predefinedValue"))
-		).put(
 			"tooltip",
 			LocalizedValueUtil.toJSONObject(
 				CustomPropertiesUtil.getMap(
@@ -143,15 +133,6 @@ public class NumericFieldType extends BaseFieldType {
 					spiDataDefinitionField.getCustomProperties(),
 					"placeholder"),
 				LanguageUtil.getLanguageId(httpServletRequest)));
-		context.put(
-			"predefinedValue",
-			_format(
-				MapUtil.getString(
-					CustomPropertiesUtil.getMap(
-						spiDataDefinitionField.getCustomProperties(),
-						"predefinedValue"),
-					LanguageUtil.getLanguageId(httpServletRequest)),
-				httpServletRequest));
 		context.put("symbols", _getSymbols(httpServletRequest));
 		context.put(
 			"tooltip",
