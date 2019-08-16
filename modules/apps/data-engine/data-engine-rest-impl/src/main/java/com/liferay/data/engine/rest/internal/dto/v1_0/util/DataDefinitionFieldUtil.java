@@ -40,7 +40,7 @@ public class DataDefinitionFieldUtil {
 				nestedDataDefinitionFields = TransformUtil.transform(
 					spiDataDefinitionField.getNestedSPIDataDefinitionFields(),
 					DataDefinitionFieldUtil::toDataDefinitionField,
-					SPIDataDefinitionField.class);
+					DataDefinitionField.class);
 				repeatable = spiDataDefinitionField.getRepeatable();
 				tip = spiDataDefinitionField.getTip();
 			}
