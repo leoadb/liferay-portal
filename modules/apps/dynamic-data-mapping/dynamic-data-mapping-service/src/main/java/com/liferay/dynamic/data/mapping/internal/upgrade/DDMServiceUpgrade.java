@@ -89,14 +89,15 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 
 	@Activate
 	public void activate(BundleContext bundleContext) {
-		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, DDMDataProviderSettingsProvider.class,
-			"ddm.data.provider.type");
+		_ddmDataProviderSettingsProviderServiceTracker =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, DDMDataProviderSettingsProvider.class,
+				"ddm.data.provider.type");
 	}
 
 	@Deactivate
 	public void deactivate() {
-		_serviceTrackerMap.close();
+		_ddmDataProviderSettingsProviderServiceTracker.close();
 	}
 
 	@Override
@@ -166,8 +167,8 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 				ddmFormJSONDeserializer, ddmFormSerializer),
 			new com.liferay.dynamic.data.mapping.internal.upgrade.v1_1_1.
 				UpgradeDataProviderInstance(
-					_serviceTrackerMap, ddmFormValuesDeserializer,
-					ddmFormValuesSerializer));
+					_ddmDataProviderSettingsProviderServiceTracker,
+					ddmFormValuesDeserializer, ddmFormValuesSerializer));
 
 		registry.register(
 			"1.1.1", "1.1.2",
@@ -328,6 +329,9 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 	@Reference
 	private DDM _ddm;
 
+	private ServiceTrackerMap<String, DDMDataProviderSettingsProvider>
+		_ddmDataProviderSettingsProviderServiceTracker;
+
 	@Reference
 	private DDMDataProviderTracker _ddmDataProviderTracker;
 
@@ -381,9 +385,6 @@ public class DDMServiceUpgrade implements UpgradeStepRegistrator {
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	private ServiceTrackerMap<String, DDMDataProviderSettingsProvider>
-		_serviceTrackerMap;
 
 	@Reference(target = "(dl.store.upgrade=true)")
 	private Store _store;

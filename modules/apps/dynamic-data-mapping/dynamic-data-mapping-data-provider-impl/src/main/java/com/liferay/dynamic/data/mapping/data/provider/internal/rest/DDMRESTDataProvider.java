@@ -112,7 +112,7 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 
 	@Override
 	public Class<?> getSettings() {
-		return ddmRESTDataProviderSettingsProvider.getSettings();
+		return ddmDataProviderSettingsProvider.getSettings();
 	}
 
 	protected String buildURL(
@@ -509,8 +509,7 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 	protected DDMDataProviderInstanceSettings ddmDataProviderInstanceSettings;
 
 	@Reference(target = "(ddm.data.provider.type=rest)")
-	protected DDMDataProviderSettingsProvider
-		ddmRESTDataProviderSettingsProvider;
+	protected DDMDataProviderSettingsProvider ddmDataProviderSettingsProvider;
 
 	@Reference
 	protected Portal portal;
