@@ -14,56 +14,20 @@
 
 package com.liferay.dynamic.data.mapping.data.provider;
 
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-
 import java.util.Set;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * @author Marcellus Tavares
  */
-@Component(immediate = true, service = DDMDataProviderTracker.class)
-public class DDMDataProviderTracker {
+@ProviderType
+public interface DDMDataProviderTracker {
 
-	public DDMDataProvider getDDMDataProvider(String type) {
-		return _ddmDataProviderTypeTrackerMap.getService(type);
-	}
+	public DDMDataProvider getDDMDataProvider(String type);
 
-	public DDMDataProvider getDDMDataProviderByInstanceId(String instanceId) {
-		return _ddmDataProviderInstanceIdTrackerMap.getService(instanceId);
-	}
+	public DDMDataProvider getDDMDataProviderByInstanceId(String instanceId);
 
-	public Set<String> getDDMDataProviderTypes() {
-		return _ddmDataProviderTypeTrackerMap.keySet();
-	}
-
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		_ddmDataProviderInstanceIdTrackerMap =
-			ServiceTrackerMapFactory.openSingleValueMap(
-				bundleContext, DDMDataProvider.class,
-				"ddm.data.provider.instance.id");
-
-		_ddmDataProviderTypeTrackerMap =
-			ServiceTrackerMapFactory.openSingleValueMap(
-				bundleContext, DDMDataProvider.class, "ddm.data.provider.type");
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_ddmDataProviderInstanceIdTrackerMap.close();
-
-		_ddmDataProviderTypeTrackerMap.close();
-	}
-
-	private ServiceTrackerMap<String, DDMDataProvider>
-		_ddmDataProviderInstanceIdTrackerMap;
-	private ServiceTrackerMap<String, DDMDataProvider>
-		_ddmDataProviderTypeTrackerMap;
+	public Set<String> getDDMDataProviderTypes();
 
 }
