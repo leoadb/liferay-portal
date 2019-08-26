@@ -135,6 +135,10 @@ public interface DDMStructureLayoutLocalService
 	public DDMStructureLayout deleteDDMStructureLayout(long structureLayoutId)
 		throws PortalException;
 
+	public void deleteDDMStructureVersionStructureLayouts(
+			long ddmStructureVersionId)
+		throws PortalException;
+
 	/**
 	 * @throws PortalException
 	 */
@@ -142,6 +146,11 @@ public interface DDMStructureLayoutLocalService
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #deleteDDMStructureLayout(DDMStructureLayout)}
+	 */
+	@Deprecated
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public void deleteStructureLayout(DDMStructureLayout structureLayout);
 
@@ -311,6 +320,10 @@ public interface DDMStructureLayoutLocalService
 	public int getDDMStructureLayoutsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getDDMStructureVersionStructureLayoutsCount(
+		long structureVersionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -339,7 +352,7 @@ public interface DDMStructureLayoutLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMStructureLayout getStructureLayoutByStructureVersionId(
+	public List<DDMStructureLayout> getStructureLayoutByStructureVersionId(
 			long structureVersionId)
 		throws PortalException;
 
@@ -354,23 +367,19 @@ public interface DDMStructureLayoutLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructureLayout> getStructureLayouts(
-		long groupId, long classNameId, int start, int end,
+		long structureVersionId, int start, int end,
 		OrderByComparator<DDMStructureLayout> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructureLayout> getStructureLayouts(
-		long groupId, long classNameId, long structureVersionId, int start,
-		int end, OrderByComparator<DDMStructureLayout> orderByComparator);
+		long groupId, long classNameId, int start, int end,
+		OrderByComparator<DDMStructureLayout> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getStructureLayoutsCount(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getStructureLayoutsCount(long groupId, long classNameId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getStructureLayoutsCount(
-		long groupId, long classNameId, long structureVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructureLayout> search(

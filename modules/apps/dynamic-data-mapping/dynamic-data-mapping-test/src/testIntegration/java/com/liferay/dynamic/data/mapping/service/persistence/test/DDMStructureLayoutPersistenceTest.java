@@ -278,15 +278,6 @@ public class DDMStructureLayoutPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_C_SV() throws Exception {
-		_persistence.countByG_C_SV(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
-
-		_persistence.countByG_C_SV(0L, 0L, 0L);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		DDMStructureLayout newDDMStructureLayout = addDDMStructureLayout();
 
@@ -559,12 +550,6 @@ public class DDMStructureLayoutPersistenceTest {
 			Long.valueOf(existingDDMStructureLayout.getGroupId()),
 			ReflectionTestUtil.<Long>invoke(
 				existingDDMStructureLayout, "getOriginalGroupId",
-				new Class<?>[0]));
-
-		Assert.assertEquals(
-			Long.valueOf(existingDDMStructureLayout.getStructureVersionId()),
-			ReflectionTestUtil.<Long>invoke(
-				existingDDMStructureLayout, "getOriginalStructureVersionId",
 				new Class<?>[0]));
 
 		Assert.assertEquals(

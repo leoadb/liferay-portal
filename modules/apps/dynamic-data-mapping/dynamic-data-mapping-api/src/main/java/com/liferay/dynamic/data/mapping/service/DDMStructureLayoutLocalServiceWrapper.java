@@ -148,6 +148,15 @@ public class DDMStructureLayoutLocalServiceWrapper
 			structureLayoutId);
 	}
 
+	@Override
+	public void deleteDDMStructureVersionStructureLayouts(
+			long ddmStructureVersionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_ddmStructureLayoutLocalService.
+			deleteDDMStructureVersionStructureLayouts(ddmStructureVersionId);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -160,6 +169,11 @@ public class DDMStructureLayoutLocalServiceWrapper
 			persistedModel);
 	}
 
+	/**
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 #deleteDDMStructureLayout(DDMStructureLayout)}
+	 */
+	@Deprecated
 	@Override
 	public void deleteStructureLayout(
 		com.liferay.dynamic.data.mapping.model.DDMStructureLayout
@@ -419,6 +433,14 @@ public class DDMStructureLayoutLocalServiceWrapper
 	}
 
 	@Override
+	public int getDDMStructureVersionStructureLayoutsCount(
+		long structureVersionId) {
+
+		return _ddmStructureLayoutLocalService.
+			getDDMStructureVersionStructureLayoutsCount(structureVersionId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -474,9 +496,10 @@ public class DDMStructureLayoutLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.dynamic.data.mapping.model.DDMStructureLayout
-			getStructureLayoutByStructureVersionId(long structureVersionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
+	public java.util.List
+		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
+				getStructureLayoutByStructureVersionId(long structureVersionId)
+			throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ddmStructureLayoutLocalService.
 			getStructureLayoutByStructureVersionId(structureVersionId);
@@ -506,6 +529,19 @@ public class DDMStructureLayoutLocalServiceWrapper
 	public java.util.List
 		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
 			getStructureLayouts(
+				long structureVersionId, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
+						orderByComparator) {
+
+		return _ddmStructureLayoutLocalService.getStructureLayouts(
+			structureVersionId, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
+			getStructureLayouts(
 				long groupId, long classNameId, int start, int end,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
@@ -513,21 +549,6 @@ public class DDMStructureLayoutLocalServiceWrapper
 
 		return _ddmStructureLayoutLocalService.getStructureLayouts(
 			groupId, classNameId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
-			getStructureLayouts(
-				long groupId, long classNameId, long structureVersionId,
-				int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
-						orderByComparator) {
-
-		return _ddmStructureLayoutLocalService.getStructureLayouts(
-			groupId, classNameId, structureVersionId, start, end,
-			orderByComparator);
 	}
 
 	@Override
@@ -540,14 +561,6 @@ public class DDMStructureLayoutLocalServiceWrapper
 	public int getStructureLayoutsCount(long groupId, long classNameId) {
 		return _ddmStructureLayoutLocalService.getStructureLayoutsCount(
 			groupId, classNameId);
-	}
-
-	@Override
-	public int getStructureLayoutsCount(
-		long groupId, long classNameId, long structureVersionId) {
-
-		return _ddmStructureLayoutLocalService.getStructureLayoutsCount(
-			groupId, classNameId, structureVersionId);
 	}
 
 	@Override
