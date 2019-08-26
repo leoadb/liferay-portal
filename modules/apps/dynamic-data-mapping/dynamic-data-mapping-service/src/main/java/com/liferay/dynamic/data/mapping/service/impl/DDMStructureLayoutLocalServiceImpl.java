@@ -140,10 +140,15 @@ public class DDMStructureLayoutLocalServiceImpl
 		return ddmStructureLayoutPersistence.update(structureLayout);
 	}
 
+	/**
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 *             #deleteDDMStructureLayout(DDMStructureLayout)}
+	 */
+	@Deprecated
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public void deleteStructureLayout(DDMStructureLayout structureLayout) {
-		ddmStructureLayoutPersistence.remove(structureLayout);
+		super.deleteDDMStructureLayout(structureLayout);
 	}
 
 	@Override
