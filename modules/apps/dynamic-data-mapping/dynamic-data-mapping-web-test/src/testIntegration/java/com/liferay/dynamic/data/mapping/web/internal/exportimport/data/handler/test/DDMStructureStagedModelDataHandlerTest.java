@@ -16,6 +16,7 @@ package com.liferay.dynamic.data.mapping.web.internal.exportimport.data.handler.
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProvider;
+import com.liferay.dynamic.data.mapping.data.provider.configuration.DDMDataProviderConfiguration;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerDeserializeRequest;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerDeserializeResponse;
@@ -36,6 +37,7 @@ import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.test.util.lar.BaseStagedModelDataHandlerTestCase;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -51,6 +53,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -66,12 +69,17 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Daniel Kocsis
@@ -84,6 +92,29 @@ public class DDMStructureStagedModelDataHandlerTest
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_configuration = _configurationAdmin.getConfiguration(
+			DDMDataProviderConfiguration.class.getName(), StringPool.QUESTION);
+
+		_configuration.update(
+			new HashMapDictionary() {
+				{
+					put("accessLocalNetwork", true);
+				}
+			});
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		_configuration.update(
+			new HashMapDictionary() {
+				{
+					put("accessLocalNetwork", false);
+				}
+			});
+	}
 
 	@Before
 	@Override
@@ -559,6 +590,11 @@ public class DDMStructureStagedModelDataHandlerTest
 		"com.liferay.dynamic.data.lists.model.DDLRecordSet";
 
 	private static Set<Locale> _availableLocales;
+	private static Configuration _configuration;
+
+	@Inject
+	private static ConfigurationAdmin _configurationAdmin;
+
 	private static Locale _defaultLocale;
 
 	private DDMDataProvider _ddmDataProvider;
