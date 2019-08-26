@@ -140,6 +140,20 @@ public class DDMStructureLayoutLocalServiceImpl
 		return ddmStructureLayoutPersistence.update(structureLayout);
 	}
 
+	@Override
+	public void deleteDDMStructureVersionStructureLayouts(
+			long ddmStructureVersionId)
+		throws PortalException {
+
+		List<DDMStructureLayout> ddmStructureLayouts =
+			ddmStructureLayoutPersistence.findByStructureVersionId(
+				ddmStructureVersionId);
+
+		for (DDMStructureLayout ddmStructureLayout : ddmStructureLayouts) {
+			deleteDDMStructureLayout(ddmStructureLayout);
+		}
+	}
+
 	/**
 	 * @deprecated As of Mueller (7.2.x), replaced by {@link
 	 *             #deleteDDMStructureLayout(DDMStructureLayout)}
@@ -173,6 +187,14 @@ public class DDMStructureLayoutLocalServiceImpl
 
 		return ddmStructureLayoutPersistence.fetchByG_C_S(
 			groupId, classNameId, GetterUtil.getString(structureLayoutKey));
+	}
+
+	@Override
+	public int getDDMStructureVersionStructureLayoutsCount(
+		long structureVersionId) {
+
+		return ddmStructureLayoutPersistence.countByStructureVersionId(
+			structureVersionId);
 	}
 
 	@Override
