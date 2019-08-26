@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -479,19 +480,23 @@ public class DDMStructureStagedModelDataHandler
 
 		DDMStructureVersion structureVersion = structure.getStructureVersion();
 
-		DDMStructureLayout structureLayout =
-			_ddmStructureLayoutLocalService.
-				getStructureLayoutByStructureVersionId(
-					structureVersion.getStructureVersionId());
-
 		String ddmFormLayoutPath = ExportImportPathUtil.getModelPath(
 			structure, "ddm-form-layout.json");
 
 		structureElement.addAttribute(
 			"ddm-form-layout-path", ddmFormLayoutPath);
 
-		portletDataContext.addZipEntry(
-			ddmFormLayoutPath, structureLayout.getDefinition());
+		List<DDMStructureLayout> ddmStructureLayouts =
+			_ddmStructureLayoutLocalService.
+				getStructureLayoutByStructureVersionId(
+					structureVersion.getStructureVersionId());
+
+		if (ListUtil.isNotEmpty(ddmStructureLayouts)) {
+			DDMStructureLayout ddmStructureLayout = ddmStructureLayouts.get(0);
+
+			portletDataContext.addZipEntry(
+				ddmFormLayoutPath, ddmStructureLayout.getDefinition());
+		}
 	}
 
 	protected DDMStructure fetchExistingStructure(
