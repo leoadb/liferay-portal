@@ -117,8 +117,6 @@ public class DataLayoutResourceImpl
 			return Page.of(
 				transform(
 					_ddmStructureLayoutLocalService.getStructureLayouts(
-						ddmStructure.getGroupId(),
-						_portal.getClassNameId(InternalDataLayout.class),
 						_getDDMStructureVersionId(dataDefinitionId),
 						pagination.getStartPosition(),
 						pagination.getEndPosition(),
@@ -127,8 +125,6 @@ public class DataLayoutResourceImpl
 					this::_toDataLayout),
 				pagination,
 				_ddmStructureLayoutLocalService.getStructureLayoutsCount(
-					ddmStructure.getGroupId(),
-					_portal.getClassNameId(InternalDataLayout.class),
 					_getDDMStructureVersionId(dataDefinitionId)));
 		}
 
@@ -217,7 +213,6 @@ public class DataLayoutResourceImpl
 					this::_toDataLayout),
 				pagination,
 				_ddmStructureLayoutLocalService.getStructureLayoutsCount(
-					siteId, _portal.getClassNameId(InternalDataLayout.class),
 					_portal.getClassNameId(InternalDataLayout.class)));
 		}
 
