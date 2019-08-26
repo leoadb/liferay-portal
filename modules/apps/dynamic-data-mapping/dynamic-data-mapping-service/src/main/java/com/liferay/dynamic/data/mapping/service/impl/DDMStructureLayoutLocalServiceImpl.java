@@ -30,13 +30,11 @@ import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -141,12 +139,6 @@ public class DDMStructureLayoutLocalServiceImpl
 	}
 
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public void deleteStructureLayout(DDMStructureLayout structureLayout) {
-		ddmStructureLayoutPersistence.remove(structureLayout);
-	}
-
-	@Override
 	public void deleteStructureLayout(long structureLayoutId)
 		throws PortalException {
 
@@ -185,15 +177,6 @@ public class DDMStructureLayoutLocalServiceImpl
 
 		return ddmStructureLayoutPersistence.findByG_C_S(
 			groupId, classNameId, GetterUtil.getString(structureLayoutKey));
-	}
-
-	@Override
-	public DDMStructureLayout getStructureLayoutByStructureVersionId(
-			long structureVersionId)
-		throws PortalException {
-
-		return ddmStructureLayoutPersistence.findByStructureVersionId(
-			structureVersionId);
 	}
 
 	@Override
@@ -253,13 +236,6 @@ public class DDMStructureLayoutLocalServiceImpl
 	}
 
 	@Override
-	public int getStructureLayoutsCount(
-		long groupId, long classNameId, long structureVersionId) {
-
-		return ddmStructureLayoutPersistence.countByG_C_SV(
-			groupId, classNameId, structureVersionId);
-	}
-
 	public List<DDMStructureLayout> search(
 			long companyId, long[] groupIds, long classNameId, String keywords,
 			int start, int end,
