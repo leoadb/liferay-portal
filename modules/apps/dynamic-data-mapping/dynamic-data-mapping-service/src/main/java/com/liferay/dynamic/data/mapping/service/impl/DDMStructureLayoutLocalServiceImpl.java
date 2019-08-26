@@ -193,7 +193,7 @@ public class DDMStructureLayoutLocalServiceImpl
 	}
 
 	@Override
-	public DDMStructureLayout getStructureLayoutByStructureVersionId(
+	public List<DDMStructureLayout> getStructureLayoutByStructureVersionId(
 			long structureVersionId)
 		throws PortalException {
 
@@ -230,21 +230,20 @@ public class DDMStructureLayoutLocalServiceImpl
 
 	@Override
 	public List<DDMStructureLayout> getStructureLayouts(
+		long structureVersionId, int start, int end,
+		OrderByComparator<DDMStructureLayout> orderByComparator) {
+
+		return ddmStructureLayoutPersistence.findByStructureVersionId(
+			structureVersionId, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<DDMStructureLayout> getStructureLayouts(
 		long groupId, long classNameId, int start, int end,
 		OrderByComparator<DDMStructureLayout> orderByComparator) {
 
 		return ddmStructureLayoutPersistence.findByG_C(
 			groupId, classNameId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DDMStructureLayout> getStructureLayouts(
-		long groupId, long classNameId, long structureVersionId, int start,
-		int end, OrderByComparator<DDMStructureLayout> orderByComparator) {
-
-		return ddmStructureLayoutPersistence.findByG_C_SV(
-			groupId, classNameId, structureVersionId, start, end,
-			orderByComparator);
 	}
 
 	@Override
@@ -255,14 +254,6 @@ public class DDMStructureLayoutLocalServiceImpl
 	@Override
 	public int getStructureLayoutsCount(long groupId, long classNameId) {
 		return ddmStructureLayoutPersistence.countByG_C(groupId, classNameId);
-	}
-
-	@Override
-	public int getStructureLayoutsCount(
-		long groupId, long classNameId, long structureVersionId) {
-
-		return ddmStructureLayoutPersistence.countByG_C_SV(
-			groupId, classNameId, structureVersionId);
 	}
 
 	public List<DDMStructureLayout> search(
