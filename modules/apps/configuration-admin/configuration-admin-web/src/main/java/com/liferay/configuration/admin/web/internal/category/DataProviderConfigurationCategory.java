@@ -18,6 +18,9 @@ import com.liferay.configuration.admin.category.ConfigurationCategory;
 
 import org.osgi.service.component.annotations.Component;
 
+/**
+ * @author Yuxing Wu
+ */
 @Component(service = ConfigurationCategory.class)
 public class DataProviderConfigurationCategory
 	implements ConfigurationCategory {
