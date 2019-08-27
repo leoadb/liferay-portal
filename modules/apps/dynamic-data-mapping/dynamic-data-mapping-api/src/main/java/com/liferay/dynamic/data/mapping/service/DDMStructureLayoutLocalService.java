@@ -25,13 +25,11 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -142,11 +140,10 @@ public interface DDMStructureLayoutLocalService
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
 
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public void deleteStructureLayout(DDMStructureLayout structureLayout);
-
 	public void deleteStructureLayout(long structureLayoutId)
 		throws PortalException;
+
+	public void deleteStructureLayouts(long structureVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();
@@ -339,18 +336,21 @@ public interface DDMStructureLayoutLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMStructureLayout getStructureLayoutByStructureVersionId(
-			long structureVersionId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMFormLayout getStructureLayoutDDMFormLayout(
 		DDMStructureLayout structureLayout);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructureLayout> getStructureLayouts(
-			long groupId, int start, int end)
-		throws PortalException;
+		long structureVersionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DDMStructureLayout> getStructureLayouts(
+		long groupId, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DDMStructureLayout> getStructureLayouts(
+		long structureVersionId, int start, int end,
+		OrderByComparator<DDMStructureLayout> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructureLayout> getStructureLayouts(
@@ -358,31 +358,20 @@ public interface DDMStructureLayoutLocalService
 		OrderByComparator<DDMStructureLayout> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMStructureLayout> getStructureLayouts(
-		long groupId, long classNameId, long structureVersionId, int start,
-		int end, OrderByComparator<DDMStructureLayout> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getStructureLayoutsCount(long groupId);
+	public int getStructureLayoutsCount(long structureVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getStructureLayoutsCount(long groupId, long classNameId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getStructureLayoutsCount(
-		long groupId, long classNameId, long structureVersionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructureLayout> search(
-			long companyId, long[] groupIds, long classNameId, String keywords,
-			int start, int end,
-			OrderByComparator<DDMStructureLayout> orderByComparator)
-		throws PortalException;
+		long companyId, long[] groupIds, long classNameId, String keywords,
+		int start, int end,
+		OrderByComparator<DDMStructureLayout> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int searchCount(
-			long companyId, long[] groupIds, long classNameId, String keywords)
-		throws PortalException;
+		long companyId, long[] groupIds, long classNameId, String keywords);
 
 	/**
 	 * Updates the ddm structure layout in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

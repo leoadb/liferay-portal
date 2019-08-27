@@ -152,17 +152,14 @@ public class DDMStructureLayoutLocalServiceUtil {
 		return getService().deletePersistedModel(persistedModel);
 	}
 
-	public static void deleteStructureLayout(
-		com.liferay.dynamic.data.mapping.model.DDMStructureLayout
-			structureLayout) {
-
-		getService().deleteStructureLayout(structureLayout);
-	}
-
 	public static void deleteStructureLayout(long structureLayoutId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		getService().deleteStructureLayout(structureLayoutId);
+	}
+
+	public static void deleteStructureLayouts(long structureVersionId) {
+		getService().deleteStructureLayouts(structureVersionId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.DynamicQuery
@@ -432,14 +429,6 @@ public class DDMStructureLayoutLocalServiceUtil {
 			groupId, classNameId, structureLayoutKey);
 	}
 
-	public static com.liferay.dynamic.data.mapping.model.DDMStructureLayout
-			getStructureLayoutByStructureVersionId(long structureVersionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return getService().getStructureLayoutByStructureVersionId(
-			structureVersionId);
-	}
-
 	public static com.liferay.dynamic.data.mapping.model.DDMFormLayout
 		getStructureLayoutDDMFormLayout(
 			com.liferay.dynamic.data.mapping.model.DDMStructureLayout
@@ -450,10 +439,28 @@ public class DDMStructureLayoutLocalServiceUtil {
 
 	public static java.util.List
 		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
-				getStructureLayouts(long groupId, int start, int end)
-			throws com.liferay.portal.kernel.exception.PortalException {
+			getStructureLayouts(long structureVersionId) {
+
+		return getService().getStructureLayouts(structureVersionId);
+	}
+
+	public static java.util.List
+		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
+			getStructureLayouts(long groupId, int start, int end) {
 
 		return getService().getStructureLayouts(groupId, start, end);
+	}
+
+	public static java.util.List
+		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
+			getStructureLayouts(
+				long structureVersionId, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
+						orderByComparator) {
+
+		return getService().getStructureLayouts(
+			structureVersionId, start, end, orderByComparator);
 	}
 
 	public static java.util.List
@@ -468,43 +475,21 @@ public class DDMStructureLayoutLocalServiceUtil {
 			groupId, classNameId, start, end, orderByComparator);
 	}
 
-	public static java.util.List
-		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
-			getStructureLayouts(
-				long groupId, long classNameId, long structureVersionId,
-				int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
-						orderByComparator) {
-
-		return getService().getStructureLayouts(
-			groupId, classNameId, structureVersionId, start, end,
-			orderByComparator);
-	}
-
-	public static int getStructureLayoutsCount(long groupId) {
-		return getService().getStructureLayoutsCount(groupId);
+	public static int getStructureLayoutsCount(long structureVersionId) {
+		return getService().getStructureLayoutsCount(structureVersionId);
 	}
 
 	public static int getStructureLayoutsCount(long groupId, long classNameId) {
 		return getService().getStructureLayoutsCount(groupId, classNameId);
 	}
 
-	public static int getStructureLayoutsCount(
-		long groupId, long classNameId, long structureVersionId) {
-
-		return getService().getStructureLayoutsCount(
-			groupId, classNameId, structureVersionId);
-	}
-
 	public static java.util.List
 		<com.liferay.dynamic.data.mapping.model.DDMStructureLayout> search(
-				long companyId, long[] groupIds, long classNameId,
-				String keywords, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
-						orderByComparator)
-			throws com.liferay.portal.kernel.exception.PortalException {
+			long companyId, long[] groupIds, long classNameId, String keywords,
+			int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.dynamic.data.mapping.model.DDMStructureLayout>
+					orderByComparator) {
 
 		return getService().search(
 			companyId, groupIds, classNameId, keywords, start, end,
@@ -512,8 +497,7 @@ public class DDMStructureLayoutLocalServiceUtil {
 	}
 
 	public static int searchCount(
-			long companyId, long[] groupIds, long classNameId, String keywords)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long companyId, long[] groupIds, long classNameId, String keywords) {
 
 		return getService().searchCount(
 			companyId, groupIds, classNameId, keywords);

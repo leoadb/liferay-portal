@@ -216,9 +216,7 @@ public class DDMStructureVersionWrapper
 	}
 
 	@Override
-	public DDMFormLayout getDDMFormLayout()
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public DDMFormLayout getDDMFormLayout() {
 		return model.getDDMFormLayout();
 	}
 
