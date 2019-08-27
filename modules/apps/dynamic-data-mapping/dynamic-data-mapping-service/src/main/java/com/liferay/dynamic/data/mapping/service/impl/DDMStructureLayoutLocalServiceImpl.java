@@ -142,10 +142,19 @@ public class DDMStructureLayoutLocalServiceImpl
 	public void deleteStructureLayout(long structureLayoutId)
 		throws PortalException {
 
-		DDMStructureLayout structureLayout =
-			ddmStructureLayoutPersistence.findByPrimaryKey(structureLayoutId);
+		ddmStructureLayoutLocalService.deleteDDMStructureLayout(
+			ddmStructureLayoutPersistence.findByPrimaryKey(structureLayoutId));
+	}
 
-		ddmStructureLayoutLocalService.deleteStructureLayout(structureLayout);
+	@Override
+	public void deleteStructureLayouts(long structureVersionId) {
+		List<DDMStructureLayout> ddmStructureLayouts =
+			ddmStructureLayoutPersistence.findByStructureVersionId(
+				structureVersionId);
+
+		for (DDMStructureLayout ddmStructureLayout : ddmStructureLayouts) {
+			deleteDDMStructureLayout(ddmStructureLayout);
+		}
 	}
 
 	@Override
@@ -200,10 +209,26 @@ public class DDMStructureLayoutLocalServiceImpl
 
 	@Override
 	public List<DDMStructureLayout> getStructureLayouts(
-			long groupId, int start, int end)
-		throws PortalException {
+		long structureVersionId) {
+
+		return ddmStructureLayoutPersistence.findByStructureVersionId(
+			structureVersionId);
+	}
+
+	@Override
+	public List<DDMStructureLayout> getStructureLayouts(
+		long groupId, int start, int end) {
 
 		return ddmStructureLayoutPersistence.findByGroupId(groupId, start, end);
+	}
+
+	@Override
+	public List<DDMStructureLayout> getStructureLayouts(
+		long structureVersionId, int start, int end,
+		OrderByComparator<DDMStructureLayout> orderByComparator) {
+
+		return ddmStructureLayoutPersistence.findByStructureVersionId(
+			structureVersionId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -216,18 +241,9 @@ public class DDMStructureLayoutLocalServiceImpl
 	}
 
 	@Override
-	public List<DDMStructureLayout> getStructureLayouts(
-		long groupId, long classNameId, long structureVersionId, int start,
-		int end, OrderByComparator<DDMStructureLayout> orderByComparator) {
-
-		return ddmStructureLayoutPersistence.findByG_C_SV(
-			groupId, classNameId, structureVersionId, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int getStructureLayoutsCount(long groupId) {
-		return ddmStructureLayoutPersistence.countByGroupId(groupId);
+	public int getStructureLayoutsCount(long structureVersionId) {
+		return ddmStructureLayoutPersistence.countByStructureVersionId(
+			structureVersionId);
 	}
 
 	@Override
@@ -237,10 +253,9 @@ public class DDMStructureLayoutLocalServiceImpl
 
 	@Override
 	public List<DDMStructureLayout> search(
-			long companyId, long[] groupIds, long classNameId, String keywords,
-			int start, int end,
-			OrderByComparator<DDMStructureLayout> orderByComparator)
-		throws PortalException {
+		long companyId, long[] groupIds, long classNameId, String keywords,
+		int start, int end,
+		OrderByComparator<DDMStructureLayout> orderByComparator) {
 
 		SearchContext searchContext =
 			ddmSearchHelper.buildStructureLayoutSearchContext(
@@ -253,9 +268,9 @@ public class DDMStructureLayoutLocalServiceImpl
 			ddmStructureLayoutPersistence::findByPrimaryKey);
 	}
 
+	@Override
 	public int searchCount(
-			long companyId, long[] groupIds, long classNameId, String keywords)
-		throws PortalException {
+		long companyId, long[] groupIds, long classNameId, String keywords) {
 
 		SearchContext searchContext =
 			ddmSearchHelper.buildStructureLayoutSearchContext(
