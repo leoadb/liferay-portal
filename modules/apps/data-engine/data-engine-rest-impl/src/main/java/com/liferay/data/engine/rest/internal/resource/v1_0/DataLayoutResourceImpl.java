@@ -110,15 +110,10 @@ public class DataLayoutResourceImpl
 			};
 		}
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			dataDefinitionId);
-
 		if (Validator.isNull(keywords)) {
 			return Page.of(
 				transform(
 					_ddmStructureLayoutLocalService.getStructureLayouts(
-						ddmStructure.getGroupId(),
-						_portal.getClassNameId(InternalDataLayout.class),
 						_getDDMStructureVersionId(dataDefinitionId),
 						pagination.getStartPosition(),
 						pagination.getEndPosition(),
@@ -127,8 +122,6 @@ public class DataLayoutResourceImpl
 					this::_toDataLayout),
 				pagination,
 				_ddmStructureLayoutLocalService.getStructureLayoutsCount(
-					ddmStructure.getGroupId(),
-					_portal.getClassNameId(InternalDataLayout.class),
 					_getDDMStructureVersionId(dataDefinitionId)));
 		}
 
@@ -139,17 +132,11 @@ public class DataLayoutResourceImpl
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {
-				searchContext.setAttribute(
-					Field.CLASS_NAME_ID,
-					_portal.getClassNameId(InternalDataLayout.class));
 				searchContext.setAttribute(Field.DESCRIPTION, keywords);
 				searchContext.setAttribute(Field.NAME, keywords);
 				searchContext.setAttribute(
 					"structureVersionId",
 					_getDDMStructureVersionId(dataDefinitionId));
-				searchContext.setCompanyId(contextCompany.getCompanyId());
-				searchContext.setGroupIds(
-					new long[] {ddmStructure.getGroupId()});
 			},
 			document -> _toDataLayout(
 				_ddmStructureLayoutLocalService.getStructureLayout(
@@ -217,8 +204,7 @@ public class DataLayoutResourceImpl
 					this::_toDataLayout),
 				pagination,
 				_ddmStructureLayoutLocalService.getStructureLayoutsCount(
-					siteId, _portal.getClassNameId(InternalDataLayout.class),
-					_portal.getClassNameId(InternalDataLayout.class)));
+					siteId, _portal.getClassNameId(InternalDataLayout.class)));
 		}
 
 		return SearchUtil.search(
