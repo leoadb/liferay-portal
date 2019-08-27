@@ -25,6 +25,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.cache.CacheField;
+import com.liferay.portal.kernel.util.ListUtil;
+
+import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -54,12 +57,18 @@ public class DDMStructureVersionImpl extends DDMStructureVersionBaseImpl {
 	}
 
 	@Override
-	public DDMFormLayout getDDMFormLayout() throws PortalException {
-		DDMStructureLayout ddmStructureLayout =
-			DDMStructureLayoutLocalServiceUtil.
-				getStructureLayoutByStructureVersionId(getStructureVersionId());
+	public DDMFormLayout getDDMFormLayout() {
+		List<DDMStructureLayout> ddmStructureLayouts =
+			DDMStructureLayoutLocalServiceUtil.getStructureLayouts(
+				getStructureVersionId());
 
-		return ddmStructureLayout.getDDMFormLayout();
+		if (ListUtil.isNotEmpty(ddmStructureLayouts)) {
+			DDMStructureLayout ddmStructureLayout = ddmStructureLayouts.get(0);
+
+			return ddmStructureLayout.getDDMFormLayout();
+		}
+
+		return null;
 	}
 
 	@Override

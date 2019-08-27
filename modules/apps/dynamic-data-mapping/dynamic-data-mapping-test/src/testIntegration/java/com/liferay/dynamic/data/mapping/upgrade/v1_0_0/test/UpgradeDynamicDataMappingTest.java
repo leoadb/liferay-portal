@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -70,6 +71,7 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -1563,15 +1565,20 @@ public class UpgradeDynamicDataMappingTest {
 	protected DDMFormLayout getDDMFormLayout(long structureId, String version)
 		throws Exception {
 
-		DDMStructureVersion structureVersion = getStructureVersion(
+		DDMStructureVersion ddmStructureVersion = getStructureVersion(
 			structureId, version);
 
-		DDMStructureLayout ddmStructureLayout =
-			DDMStructureLayoutLocalServiceUtil.
-				getStructureLayoutByStructureVersionId(
-					structureVersion.getStructureVersionId());
+		List<DDMStructureLayout> ddmStructureLayouts =
+			DDMStructureLayoutLocalServiceUtil.getStructureLayouts(
+				ddmStructureVersion.getStructureVersionId());
 
-		return ddmStructureLayout.getDDMFormLayout();
+		if (ListUtil.isNotEmpty(ddmStructureLayouts)) {
+			DDMStructureLayout ddmStructureLayout = ddmStructureLayouts.get(0);
+
+			return ddmStructureLayout.getDDMFormLayout();
+		}
+
+		return null;
 	}
 
 	protected String getStructureDefinition(long structureId) throws Exception {

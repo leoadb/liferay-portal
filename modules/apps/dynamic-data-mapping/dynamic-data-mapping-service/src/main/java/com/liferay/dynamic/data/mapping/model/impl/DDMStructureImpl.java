@@ -139,14 +139,19 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 
 	@Override
 	public DDMFormLayout getDDMFormLayout() throws PortalException {
-		DDMStructureVersion structureVersion = getStructureVersion();
+		DDMStructureVersion ddmStructureVersion = getStructureVersion();
 
-		DDMStructureLayout ddmStructureLayout =
-			DDMStructureLayoutLocalServiceUtil.
-				getStructureLayoutByStructureVersionId(
-					structureVersion.getStructureVersionId());
+		List<DDMStructureLayout> ddmStructureLayouts =
+			DDMStructureLayoutLocalServiceUtil.getStructureLayouts(
+				ddmStructureVersion.getStructureVersionId());
 
-		return ddmStructureLayout.getDDMFormLayout();
+		if (ListUtil.isNotEmpty(ddmStructureLayouts)) {
+			DDMStructureLayout ddmStructureLayout = ddmStructureLayouts.get(0);
+
+			return ddmStructureLayout.getDDMFormLayout();
+		}
+
+		return null;
 	}
 
 	@Override
