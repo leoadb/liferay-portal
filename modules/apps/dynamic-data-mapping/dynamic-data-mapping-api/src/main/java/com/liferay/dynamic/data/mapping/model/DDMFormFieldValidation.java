@@ -74,6 +74,11 @@ public class DDMFormFieldValidation implements Serializable {
 		return _errorMessageLocalizedValue;
 	}
 
+	/**
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 * 	 #getDDMFormFieldValidationExpression()}
+	 */
+	@Deprecated
 	public String getExpression() {
 		return _expression;
 	}
@@ -105,6 +110,11 @@ public class DDMFormFieldValidation implements Serializable {
 		_errorMessageLocalizedValue = errorMessageLocalizedValue;
 	}
 
+	/**
+	 * @deprecated As of Mueller (7.2.x), replaced by {@link
+	 * 	 #setDDMFormFieldValidationExpression(DDMFormFieldValidationExpression)}
+	 */
+	@Deprecated
 	public void setExpression(String expression) {
 		_expression = expression;
 	}
