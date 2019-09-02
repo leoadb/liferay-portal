@@ -285,7 +285,7 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 
 		Map<String, Object> proxySettings = getProxySettings();
 
-		if (_isNonproxyHost(proxySettings, httpRequest.host())) {
+		if (_isNonproxyHost(httpRequest.host(), proxySettings)) {
 			httpResponse = httpRequest.send();
 		}
 		else {
@@ -391,6 +391,12 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 		Map<String, Object> proxySettings = new HashMap<>(2);
 
 		try {
+			String nonProxyHosts = SystemProperties.get("http.nonProxyHosts");
+
+			if (Validator.isNotNull(nonProxyHosts)) {
+				proxySettings.put("nonProxyHosts", nonProxyHosts);
+			}
+
 			String proxyAddress = SystemProperties.get("http.proxyHost");
 			String proxyPort = SystemProperties.get("http.proxyPort");
 
@@ -399,12 +405,6 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 
 				proxySettings.put("proxyAddress", proxyAddress);
 				proxySettings.put("proxyPort", Integer.valueOf(proxyPort));
-			}
-
-			String nonProxyHosts = SystemProperties.get("http.nonProxyHosts");
-
-			if (Validator.isNotNull(nonProxyHosts)) {
-				proxySettings.put("nonProxyHosts", nonProxyHosts);
 			}
 		}
 		catch (Exception e) {
@@ -520,16 +520,14 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 	protected UserLocalService userLocalService;
 
 	private boolean _isNonproxyHost(
-		Map<String, Object> proxySettings, String host) {
+		String host, Map<String, Object> proxySettings) {
 
 		if (proxySettings.isEmpty()) {
 			return true;
 		}
 
-		String nonProxyHosts = GetterUtil.getString(
-			proxySettings.get("nonProxyHosts"));
-
-		Pattern pattern = Pattern.compile(nonProxyHosts);
+		Pattern pattern = Pattern.compile(
+			GetterUtil.getString(proxySettings.get("nonProxyHosts")));
 
 		Matcher matcher = pattern.matcher(host);
 
