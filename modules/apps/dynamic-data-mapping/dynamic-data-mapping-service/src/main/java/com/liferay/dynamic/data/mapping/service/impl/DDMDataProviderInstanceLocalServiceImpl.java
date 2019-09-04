@@ -45,7 +45,6 @@ import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.net.URL;
 
@@ -55,6 +54,8 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Leonardo Barros
@@ -361,7 +362,7 @@ public class DDMDataProviderInstanceLocalServiceImpl
 		}
 
 		DDMDataProviderConfiguration ddmDataProviderConfiguration =
-			ddmDataProviderConfigurationActivator.
+			_ddmDataProviderConfigurationActivator.
 				getDDMDataProviderConfiguration();
 
 		if (!ddmDataProviderConfiguration.accessLocalNetwork()) {
@@ -370,16 +371,6 @@ public class DDMDataProviderInstanceLocalServiceImpl
 
 		_ddmFormValuesValidator.validate(ddmFormValues);
 	}
-
-	@ServiceReference(type = DDMDataProviderConfigurationActivator.class)
-	protected DDMDataProviderConfigurationActivator
-		ddmDataProviderConfigurationActivator;
-
-	@Reference
-	private DDMFormValuesValidator _ddmFormValuesValidator;
-
-	@Reference(target = "(ddm.form.values.serializer.type=json)")
-	private DDMFormValuesSerializer _jsonDDMFormValuesSerializer;
 
 	private boolean _isLocalNetworkURL(String value) {
 		try {
@@ -430,5 +421,18 @@ public class DDMDataProviderInstanceLocalServiceImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMDataProviderInstanceLocalServiceImpl.class);
+
+	@Reference(
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile DDMDataProviderConfigurationActivator
+		_ddmDataProviderConfigurationActivator;
+
+	@Reference
+	private DDMFormValuesValidator _ddmFormValuesValidator;
+
+	@Reference(target = "(ddm.form.values.serializer.type=json)")
+	private DDMFormValuesSerializer _jsonDDMFormValuesSerializer;
 
 }
