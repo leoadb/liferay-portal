@@ -3668,7 +3668,11 @@ AUI.add(
 					var instance = this;
 
 					if (Lang.isString(value)) {
-						value = JSON.parse(value);
+						if (value !== '') {
+							value = JSON.parse(value);
+						} else {
+							value = [""];
+						}
 					}
 
 					instance
