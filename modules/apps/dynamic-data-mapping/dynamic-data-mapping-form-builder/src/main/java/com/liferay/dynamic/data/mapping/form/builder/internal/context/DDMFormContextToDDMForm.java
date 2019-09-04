@@ -251,7 +251,6 @@ public class DDMFormContextToDDMForm
 
 		LocalizedValue errorMessageLocalizedValue = null;
 
-
 		JSONObject errorMessageJSONObject = jsonObject.getJSONObject(
 			"errorMessage");
 
@@ -269,6 +268,23 @@ public class DDMFormContextToDDMForm
 		ddmFormFieldValidation.setErrorMessageLocalizedValue(
 			errorMessageLocalizedValue);
 
+		LocalizedValue parameterLocalizedValue = null;
+
+		JSONObject parameterJSONObject = jsonObject.getJSONObject("parameter");
+
+		if (parameterJSONObject == null) {
+			parameterLocalizedValue = new LocalizedValue();
+
+			parameterLocalizedValue.addString(
+				defaultLocale, jsonObject.getString("parameter"));
+		}
+		else {
+			parameterLocalizedValue = getLocalizedValue(
+				parameterJSONObject, availableLocales);
+		}
+
+		ddmFormFieldValidation.setParameterLocalizedValue(
+			parameterLocalizedValue);
 
 		return ddmFormFieldValidation;
 	}

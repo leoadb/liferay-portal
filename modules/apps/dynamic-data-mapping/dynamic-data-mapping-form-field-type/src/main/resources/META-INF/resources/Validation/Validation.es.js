@@ -111,14 +111,12 @@ class Validation extends Component {
 			);
 
 			if (selectedValidation) {
-				parameterMessage = this._parseParameterMessageFromExpression(
-					expression,
-					selectedValidation
-				);
+				parameterMessage = selectedValidation.parameterMessage;
 			} else {
 				selectedValidation = {
+					name: this.validations[0].name,
 					parameterMessage: this.validations[0].parameterMessage,
-					value: this.validations[0].name
+					value: this.validations[0].template
 				};
 			}
 		}
@@ -129,10 +127,15 @@ class Validation extends Component {
 			this.value.errorMessage[editingLanguageId] ||
 			this.value.errorMessage[defaultLanguageId];
 
+		const parameter =
+			this.value.parameter[editingLanguageId] ||
+			this.value.parameter[defaultLanguageId];
+
 		return {
 			enableValidation,
 			errorMessage,
 			expression,
+			parameter,
 			parameterMessage,
 			selectedValidation
 		};
@@ -144,10 +147,10 @@ class Validation extends Component {
 			editingLanguageId,
 			validation: {fieldName: name}
 		} = this;
-		let parameterMessage = '';
+		let parameter = '';
 
-		if (this.refs.parameterMessage) {
-			parameterMessage = this.refs.parameterMessage.value;
+		if (this.refs.parameter) {
+			parameter = this.refs.parameter.value;
 		}
 
 		const enableValidation = this.refs.enableValidation.value;
@@ -162,7 +165,7 @@ class Validation extends Component {
 				validation =>
 					validation.name === this.context.validation.expression.name
 			);
-			parameterMessage = this.context.validation.parameterMessage;
+			parameter = this.context.validation.parameterMessage;
 		}
 
 		if (enableValidation) {
@@ -180,7 +183,11 @@ class Validation extends Component {
 				...this.value.errorMessage,
 				[editingLanguageId]: this.refs.errorMessage.value
 			},
-			expression
+			expression,
+			parameter: {
+				...this.value.parameter,
+				[editingLanguageId]: parameter
+			}
 		};
 	}
 
@@ -192,12 +199,6 @@ class Validation extends Component {
 				value: validation.name
 			};
 		});
-	}
-
-	_parseParameterMessageFromExpression(expression, validation) {
-		const matches = validation.regex.exec(expression);
-
-		return matches && matches[2];
 	}
 
 	_parseValidationFromExpression(expression) {
@@ -387,6 +388,7 @@ Validation.STATE = {
 	value: Config.shapeOf({
 		errorMessage: Config.object(),
 		expression: Config.object(),
+		parameter: Config.object()
 	}).value({})
 };
 

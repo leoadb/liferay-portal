@@ -301,6 +301,13 @@ public class DDMFormJSONSerializer implements DDMFormSerializer {
 			"expression",
 			toJSONObject(
 				ddmFormFieldValidation.getDDMFormFieldValidationExpression())
+		).put(
+			"parameter",
+			toJSONObject(ddmFormFieldValidation.getParameterLocalizedValue())
+		);
+
+		return jsonObject;
+	}
 
 	protected JSONObject toJSONObject(
 		DDMFormFieldValidationExpression ddmFormFieldValidationExpression) {

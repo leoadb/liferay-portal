@@ -142,6 +142,8 @@ public class JSONObjectToDDMFormFieldTransformer {
 
 		ddmFormFieldValidation.setErrorMessageLocalizedValue(
 			deserializeLocalizedValue(jsonObject.getString("errorMessage")));
+		ddmFormFieldValidation.setParameterLocalizedValue(
+			deserializeLocalizedValue(jsonObject.getString("parameter")));
 
 		return ddmFormFieldValidation;
 	}

@@ -375,7 +375,17 @@ public class DDMFormTemplateContextProcessor {
 					}
 				});
 		}
+		else {
+			ddmFormFieldValidation.setDDMFormFieldValidationExpression(
+				new DDMFormFieldValidationExpression() {
+					{
+						setValue(jsonObject.getString("expression"));
+					}
+				});
+		}
 
+		ddmFormFieldValidation.setParameterLocalizedValue(
+			getLocalizedValue(jsonObject.getString("parameter")));
 
 		ddmFormField.setDDMFormFieldValidation(ddmFormFieldValidation);
 	}

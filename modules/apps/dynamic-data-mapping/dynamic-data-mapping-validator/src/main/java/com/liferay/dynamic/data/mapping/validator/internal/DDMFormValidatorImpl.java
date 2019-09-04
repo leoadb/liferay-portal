@@ -238,7 +238,8 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 				ddmFormField, "tip", ddmFormAvailableLocales,
 				ddmFormDefaultLocale);
 
-			validateDDMFormFieldValidationExpression(ddmFormField);
+			validateDDMFormFieldValidationExpression(
+				ddmFormField, ddmFormAvailableLocales);
 			validateDDMFormFieldVisibilityExpression(ddmFormField);
 
 			validateDDMFormFields(
@@ -264,7 +265,7 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 	}
 
 	protected void validateDDMFormFieldValidationExpression(
-			DDMFormField ddmFormField)
+			DDMFormField ddmFormField, Set<Locale> locales)
 		throws DDMFormValidationException {
 
 		DDMFormFieldValidation ddmFormFieldValidation =
@@ -278,8 +279,23 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 			ddmFormFieldValidation.getDDMFormFieldValidationExpression();
 
 		try {
-			_ddmExpressionFactory.createBooleanDDMExpression(
-				validationExpression);
+			if (ddmFormFieldValidation.getParameterLocalizedValue() == null) {
+				_ddmExpressionFactory.createBooleanDDMExpression(
+					ddmFormFieldValidationExpression.getValue());
+			}
+			else {
+				String value = ddmFormFieldValidationExpression.getValue();
+
+				LocalizedValue parameterLocalizedValue =
+					ddmFormFieldValidation.getParameterLocalizedValue();
+
+				for (Locale locale : locales) {
+					_ddmExpressionFactory.createBooleanDDMExpression(
+						value.replace(
+							"{parameter}",
+							parameterLocalizedValue.getString(locale)));
+				}
+			}
 		}
 		catch (DDMExpressionException ddmee) {
 			throw new MustSetValidValidationExpression(

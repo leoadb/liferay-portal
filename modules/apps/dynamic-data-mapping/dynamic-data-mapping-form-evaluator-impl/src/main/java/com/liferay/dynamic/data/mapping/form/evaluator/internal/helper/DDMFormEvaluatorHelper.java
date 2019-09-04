@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collection;
@@ -454,17 +455,34 @@ public class DDMFormEvaluatorHelper {
 			return;
 		}
 
+		DDMFormFieldValidation ddmFormFieldValidation = entry.getValue();
+
+		if (ddmFormFieldValidation == null) {
+			return;
+		}
+
 		String fieldName = ddmFormEvaluatorFieldContextKey.getName();
 		String fieldInstanceId =
 			ddmFormEvaluatorFieldContextKey.getInstanceId();
 
-		DDMFormFieldValidation ddmFormFieldValidation = entry.getValue();
-
 		boolean valid = false;
 
 		try {
-			DDMExpression<Boolean> ddmExpression = createExpression(
-				ddmFormFieldValidation.getExpression());
+			String localizedValueString = null;
+
+			LocalizedValue parameterLocalizedValue =
+				ddmFormFieldValidation.getParameterLocalizedValue();
+
+			if (parameterLocalizedValue != null) {
+				localizedValueString = parameterLocalizedValue.getString(
+					_resourceBundle.getLocale());
+
+				if (Validator.isNull(localizedValueString)) {
+					localizedValueString = parameterLocalizedValue.getString(
+						parameterLocalizedValue.getDefaultLocale());
+				}
+			}
+
 			DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
 				ddmFormFieldValidation.getDDMFormFieldValidationExpression();
 

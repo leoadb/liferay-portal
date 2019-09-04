@@ -188,7 +188,17 @@ public class DDMFormJSONDeserializer implements DDMFormDeserializer {
 					}
 				});
 		}
+		else {
+			ddmFormFieldValidation.setDDMFormFieldValidationExpression(
+				new DDMFormFieldValidationExpression() {
+					{
+						setValue(jsonObject.getString("expression"));
+					}
+				});
+		}
 
+		ddmFormFieldValidation.setParameterLocalizedValue(
+			deserializeLocalizedValue(jsonObject.getString("parameter")));
 
 		return ddmFormFieldValidation;
 	}

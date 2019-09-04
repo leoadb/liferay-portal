@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
@@ -295,7 +296,12 @@ public class DDMFormBuilderContextFactoryHelper {
 		Set<Locale> availableLocales,
 		DDMFormFieldValidation ddmFormFieldValidation) {
 
+		if (ddmFormFieldValidation == null) {
+			return null;
+		}
+
 		JSONObject errorMessageJSONObject = _jsonFactory.createJSONObject();
+		JSONObject parameterJSONObject = _jsonFactory.createJSONObject();
 
 		for (Locale availableLocale : availableLocales) {
 			LocalizedValue errorMessageLocalizedValue =
@@ -304,6 +310,13 @@ public class DDMFormBuilderContextFactoryHelper {
 			errorMessageJSONObject.put(
 				LocaleUtil.toLanguageId(availableLocale),
 				errorMessageLocalizedValue.getString(availableLocale));
+
+			LocalizedValue parameterLocalizedValue =
+				ddmFormFieldValidation.getParameterLocalizedValue();
+
+			parameterJSONObject.put(
+				LocaleUtil.toLanguageId(availableLocale),
+				parameterLocalizedValue.getString(availableLocale));
 		}
 
 		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
@@ -324,6 +337,8 @@ public class DDMFormBuilderContextFactoryHelper {
 				"errorMessage", errorMessageJSONObject
 			).put(
 				"expression", expressionJSONObject
+			).put(
+				"parameter", parameterJSONObject
 			).toString());
 	}
 
