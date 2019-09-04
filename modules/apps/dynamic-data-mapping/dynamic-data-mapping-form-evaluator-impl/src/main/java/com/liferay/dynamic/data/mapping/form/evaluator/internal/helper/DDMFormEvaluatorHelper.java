@@ -34,6 +34,7 @@ import com.liferay.dynamic.data.mapping.form.field.type.DefaultDDMFormFieldValue
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
 import com.liferay.dynamic.data.mapping.model.DDMFormRule;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
@@ -267,7 +268,8 @@ public class DDMFormEvaluatorHelper {
 			return false;
 		}
 
-		return Validator.isNotNull(ddmFormFieldValidation.getExpression());
+		return Validator.isNotNull(
+			ddmFormFieldValidation.getDDMFormFieldValidationExpression());
 	}
 
 	protected boolean filterVisibleFieldsMarkedAsRequired(
@@ -463,6 +465,21 @@ public class DDMFormEvaluatorHelper {
 		try {
 			DDMExpression<Boolean> ddmExpression = createExpression(
 				ddmFormFieldValidation.getExpression());
+			DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
+				ddmFormFieldValidation.getDDMFormFieldValidationExpression();
+
+			DDMExpression<Boolean> ddmExpression = null;
+
+			if (Validator.isNull(localizedValueString)) {
+				ddmExpression = createExpression(
+					ddmFormFieldValidationExpression.getValue());
+			}
+			else {
+				ddmExpression = createExpression(
+					StringUtil.replace(
+						ddmFormFieldValidationExpression.getValue(),
+						"{parameter}", localizedValueString));
+			}
 
 			GetFieldPropertyRequest.Builder builder =
 				GetFieldPropertyRequest.Builder.newBuilder(fieldName, "value");

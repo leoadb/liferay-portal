@@ -27,6 +27,7 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
 import com.liferay.dynamic.data.mapping.model.DDMFormSuccessPageSettings;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
@@ -222,16 +223,34 @@ public class DDMFormContextToDDMForm
 			String serializedValue)
 		throws PortalException {
 
+		if (Validator.isNull(serializedValue)) {
+			return null;
+		}
+
+		JSONObject jsonObject = jsonFactory.createJSONObject(serializedValue);
+
+		JSONObject expressionJSONObject = jsonObject.getJSONObject(
+			"expression");
+
+		if (Validator.isNull(expressionJSONObject.getString("value"))) {
+			return null;
+		}
+
 		DDMFormFieldValidation ddmFormFieldValidation =
 			new DDMFormFieldValidation();
 
-		if (Validator.isNull(serializedValue)) {
-			return ddmFormFieldValidation;
+		if (expressionJSONObject != null) {
+			ddmFormFieldValidation.setDDMFormFieldValidationExpression(
+				new DDMFormFieldValidationExpression() {
+					{
+						setName(expressionJSONObject.getString("name"));
+						setValue(expressionJSONObject.getString("value"));
+					}
+				});
 		}
 
 		LocalizedValue errorMessageLocalizedValue = null;
 
-		JSONObject jsonObject = jsonFactory.createJSONObject(serializedValue);
 
 		JSONObject errorMessageJSONObject = jsonObject.getJSONObject(
 			"errorMessage");
@@ -250,8 +269,6 @@ public class DDMFormContextToDDMForm
 		ddmFormFieldValidation.setErrorMessageLocalizedValue(
 			errorMessageLocalizedValue);
 
-		ddmFormFieldValidation.setExpression(
-			jsonObject.getString("expression"));
 
 		return ddmFormFieldValidation;
 	}

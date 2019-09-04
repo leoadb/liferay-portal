@@ -21,6 +21,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
 import com.liferay.dynamic.data.mapping.model.DDMFormRule;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException;
@@ -273,11 +274,8 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 			return;
 		}
 
-		String validationExpression = ddmFormFieldValidation.getExpression();
-
-		if (Validator.isNull(validationExpression)) {
-			return;
-		}
+		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
+			ddmFormFieldValidation.getDDMFormFieldValidationExpression();
 
 		try {
 			_ddmExpressionFactory.createBooleanDDMExpression(
@@ -285,7 +283,8 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		}
 		catch (DDMExpressionException ddmee) {
 			throw new MustSetValidValidationExpression(
-				ddmFormField.getName(), validationExpression);
+				ddmFormField.getName(),
+				ddmFormFieldValidationExpression.getValue());
 		}
 	}
 

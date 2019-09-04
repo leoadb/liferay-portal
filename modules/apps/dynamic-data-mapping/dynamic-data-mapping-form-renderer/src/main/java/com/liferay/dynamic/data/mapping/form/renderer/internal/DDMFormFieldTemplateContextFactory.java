@@ -24,6 +24,7 @@ import com.liferay.dynamic.data.mapping.form.renderer.internal.util.DDMFormTempl
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
@@ -580,9 +581,25 @@ public class DDMFormFieldTemplateContextFactory {
 				changedProperties.get("validationDataType"),
 				MapUtil.getString(changedProperties, "dataType")));
 		validation.put("errorMessage", errorMessage);
+
+		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
+			ddmFormFieldValidation.getDDMFormFieldValidationExpression();
+
 		validation.put(
 			"expression",
-			GetterUtil.getString(ddmFormFieldValidation.getExpression()));
+			new HashMap() {
+				{
+					put(
+						"name",
+						GetterUtil.getString(
+							ddmFormFieldValidationExpression.getName()));
+					put(
+						"value",
+						GetterUtil.getString(
+							ddmFormFieldValidationExpression.getValue()));
+				}
+			});
+
 		validation.put(
 			"fieldName",
 			GetterUtil.getString(changedProperties.get("validationFieldName")));

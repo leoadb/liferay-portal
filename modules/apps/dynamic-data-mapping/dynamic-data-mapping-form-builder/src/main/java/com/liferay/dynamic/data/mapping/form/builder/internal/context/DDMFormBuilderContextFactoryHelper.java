@@ -22,6 +22,7 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
+import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMFormSuccessPageSettings;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -305,11 +306,24 @@ public class DDMFormBuilderContextFactoryHelper {
 				errorMessageLocalizedValue.getString(availableLocale));
 		}
 
+		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
+			ddmFormFieldValidation.getDDMFormFieldValidationExpression();
+
+		JSONObject expressionJSONObject = _jsonFactory.createJSONObject();
+
+		expressionJSONObject.put(
+			"name",
+			GetterUtil.getString(ddmFormFieldValidationExpression.getName())
+		).put(
+			"value",
+			GetterUtil.getString(ddmFormFieldValidationExpression.getValue())
+		);
+
 		return new UnlocalizedValue(
 			JSONUtil.put(
 				"errorMessage", errorMessageJSONObject
 			).put(
-				"expression", ddmFormFieldValidation.getExpression()
+				"expression", expressionJSONObject
 			).toString());
 	}
 
