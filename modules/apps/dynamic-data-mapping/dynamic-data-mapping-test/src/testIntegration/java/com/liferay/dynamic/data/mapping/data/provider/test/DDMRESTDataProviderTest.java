@@ -89,6 +89,8 @@ public class DDMRESTDataProviderTest {
 					put("accessLocalNetwork", true);
 				}
 			});
+
+		Thread.sleep(1000);
 	}
 
 	@AfterClass

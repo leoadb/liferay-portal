@@ -103,6 +103,8 @@ public class DDMStructureStagedModelDataHandlerTest
 					put("accessLocalNetwork", true);
 				}
 			});
+
+		Thread.sleep(1000);
 	}
 
 	@AfterClass
