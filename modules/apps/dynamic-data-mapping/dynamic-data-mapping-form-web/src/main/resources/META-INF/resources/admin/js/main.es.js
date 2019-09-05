@@ -500,7 +500,12 @@ class Form extends Component {
 	}
 
 	syncRuleBuilderVisible(visible) {
-		const {published, saved} = this.props;
+		const {
+			defaultLanguageId,
+			editingLanguageId,
+			published,
+			saved
+		} = this.props;
 		const formBasicInfo = document.querySelector('.ddm-form-basic-info');
 		const formBuilderButtons = document.querySelector(
 			'.ddm-form-builder-buttons'
@@ -539,6 +544,12 @@ class Form extends Component {
 
 			if (saved || published) {
 				shareURLButton.classList.remove('hide');
+			}
+
+			if (defaultLanguageId === editingLanguageId) {
+				this.showAddButton();
+			} else {
+				this.hideAddButton();
 			}
 		}
 	}
