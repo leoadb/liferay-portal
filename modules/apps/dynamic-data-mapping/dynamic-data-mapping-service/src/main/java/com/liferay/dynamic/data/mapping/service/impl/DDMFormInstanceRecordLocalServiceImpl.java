@@ -788,7 +788,7 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		DDMFormInstance formInstance = formInstanceRecord.getFormInstance();
 
 		String title = LanguageUtil.format(
-			getResourceBundle(locale), "new-entry-for-form-x",
+			getResourceBundle(locale), "form-record-for-form-x",
 			formInstance.getName(locale), false);
 
 		if (addDraftAssetEntry) {
