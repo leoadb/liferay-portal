@@ -21,11 +21,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.CSVUtil;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -47,16 +46,17 @@ public class DDMFormInstanceRecordCSVWriter
 
 		StringBundler sb = new StringBundler(3);
 
+		List<String> labels = new ArrayList<>();
+
 		Map<String, String> ddmFormFieldsLabel =
 			ddmFormInstanceRecordWriterRequest.getDDMFormFieldsLabel();
 
-		sb.append(writeValues(ddmFormFieldsLabel.values()));
+		_writeLabels(ddmFormFieldsLabel, labels, sb);
 
-		sb.append(StringPool.NEW_LINE);
-
-		sb.append(
-			writeRecords(
-				ddmFormInstanceRecordWriterRequest.getDDMFormFieldValues()));
+		_writeRecords(
+			ddmFormFieldsLabel,
+			ddmFormInstanceRecordWriterRequest.getDDMFormFieldValues(), labels,
+			sb);
 
 		String csv = sb.toString();
 
@@ -67,28 +67,57 @@ public class DDMFormInstanceRecordCSVWriter
 		return builder.build();
 	}
 
-	protected String writeRecords(
-		List<Map<String, String>> ddmFormFieldValues) {
+	private void _writeLabels(
+		Map<String, String> ddmFormFieldsLabel, List<String> labels,
+		StringBundler sb) {
 
-		Stream<Map<String, String>> stream = ddmFormFieldValues.stream();
+		for (String label : ddmFormFieldsLabel.values()) {
+			if (labels.contains(label)) {
+				continue;
+			}
 
-		return stream.map(
-			Map::values
-		).map(
-			this::writeValues
-		).collect(
-			Collectors.joining(StringPool.NEW_LINE)
-		);
+			sb.append(CSVUtil.encode(label));
+
+			sb.append(StringPool.COMMA);
+
+			labels.add(label);
+		}
+
+		sb.append(StringPool.NEW_LINE);
 	}
 
-	protected String writeValues(Collection<String> values) {
-		Stream<String> stream = values.stream();
+	private void _writeRecord(
+		Map<String, String> ddmFormFieldsLabel,
+		Map<String, String> ddmFormFieldValue, List<String> labels,
+		StringBundler sb) {
 
-		return stream.map(
-			CSVUtil::encode
-		).collect(
-			Collectors.joining(StringPool.COMMA)
-		);
+		for (String label : labels) {
+			for (Map.Entry<String, String> ddmFormFieldLabel :
+					ddmFormFieldsLabel.entrySet()) {
+
+				if (Objects.equals(ddmFormFieldLabel.getValue(), label) &&
+					ddmFormFieldValue.containsKey(ddmFormFieldLabel.getKey())) {
+
+					sb.append(
+						CSVUtil.encode(
+							ddmFormFieldValue.get(ddmFormFieldLabel.getKey())));
+				}
+			}
+
+			sb.append(StringPool.COMMA);
+		}
+	}
+
+	private void _writeRecords(
+		Map<String, String> ddmFormFieldsLabel,
+		List<Map<String, String>> ddmFormFieldValues, List<String> labels,
+		StringBundler sb) {
+
+		for (Map<String, String> ddmFormFieldValue : ddmFormFieldValues) {
+			_writeRecord(ddmFormFieldsLabel, ddmFormFieldValue, labels, sb);
+
+			sb.append(StringPool.NEW_LINE);
+		}
 	}
 
 }
