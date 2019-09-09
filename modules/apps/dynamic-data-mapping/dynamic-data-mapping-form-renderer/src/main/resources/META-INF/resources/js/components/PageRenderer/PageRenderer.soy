@@ -2,7 +2,6 @@
 
 {template .render}
 	{@param pages: ?}
-	{@param paginationMode: string}
 	{@param showSubmitButton: bool}
 	{@param spritemap: string}
 	{@param submitLabel: string}
@@ -16,12 +15,25 @@
 	{@param? empty: bool}
 	{@param? page: ?}
 	{@param? pageIndex: number}
+	{@param? paginationMode: string}
 	{@param? readOnly: bool}
 	{@param? strings: map<string, string>}
 
-	{let $paginationModeVariant: $paginationMode == 'single-page' ? 'single_page' : $paginationMode /}
-
-	{let $contentRenderer: $page.contentRenderer ?: $paginationModeVariant /}
+	{let $contentRenderer kind="text"}
+		{if $page.contentRenderer != null and $page.contentRenderer != ''}
+			{$page.contentRenderer}
+		{elseif $paginationMode == null or $paginationMode == ''}
+			{if length($pages) > 1}
+				wizard
+			{else}
+				single_page
+			{/if}
+		{elseif $paginationMode != null and $paginationMode == 'single-page'}
+			single_page
+		{else}
+			{$paginationMode}
+		{/if}
+	{/let}
 
 	{delcall PageRenderer.container variant="$contentRenderer"}
 		{param _handleFieldBlurred: $_handleFieldBlurred /}
@@ -190,9 +202,9 @@
 
 					{delcall PageRenderer.RegisterFieldType variant="$fieldType" data="$field" allowemptydefault="true"}
 						{param events: [
-							'fieldBlurred': $_handleFieldBlurred,
-							'fieldEdited': $_handleFieldEdited,
-							'fieldFocused': $_handleFieldFocused
+						'fieldBlurred': $_handleFieldBlurred,
+						'fieldEdited': $_handleFieldEdited,
+						'fieldFocused': $_handleFieldFocused
 						] /}
 						{param ref: $field.type + $field.fieldName + $field.name + $field.label + $rowIndex + $columnIndex + $pageIndex /}
 						{param spritemap: $spritemap /}
