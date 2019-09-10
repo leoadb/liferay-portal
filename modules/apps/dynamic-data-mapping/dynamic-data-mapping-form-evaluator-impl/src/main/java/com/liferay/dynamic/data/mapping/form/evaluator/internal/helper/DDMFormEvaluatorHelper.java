@@ -461,6 +461,13 @@ public class DDMFormEvaluatorHelper {
 			return;
 		}
 
+		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
+			ddmFormFieldValidation.getDDMFormFieldValidationExpression();
+
+		if (Validator.isNull(ddmFormFieldValidationExpression.getValue())) {
+			return;
+		}
+
 		String fieldName = ddmFormEvaluatorFieldContextKey.getName();
 		String fieldInstanceId =
 			ddmFormEvaluatorFieldContextKey.getInstanceId();
@@ -482,9 +489,6 @@ public class DDMFormEvaluatorHelper {
 						parameterLocalizedValue.getDefaultLocale());
 				}
 			}
-
-			DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
-				ddmFormFieldValidation.getDDMFormFieldValidationExpression();
 
 			DDMExpression<Boolean> ddmExpression = null;
 
