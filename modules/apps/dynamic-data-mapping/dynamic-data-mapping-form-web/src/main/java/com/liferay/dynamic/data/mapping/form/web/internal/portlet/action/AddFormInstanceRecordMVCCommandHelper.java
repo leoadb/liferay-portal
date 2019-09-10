@@ -85,7 +85,7 @@ public class AddFormInstanceRecordMVCCommandHelper {
 		}
 
 		removeDDMValidationExpression(
-			invisibleFields, ddmForm.getDDMFormFields());
+			ddmForm.getDDMFormFields(), invisibleFields);
 
 		removeRequiredProperty(invisibleFields, requiredFields);
 	}
@@ -217,7 +217,7 @@ public class AddFormInstanceRecordMVCCommandHelper {
 	}
 
 	protected void removeDDMValidationExpression(
-		Set<String> invisibleFields, List<DDMFormField> ddmFormFields) {
+		List<DDMFormField> ddmFormFields, Set<String> invisibleFields) {
 
 		Stream<DDMFormField> stream = ddmFormFields.stream();
 
