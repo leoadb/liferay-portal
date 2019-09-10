@@ -85,8 +85,66 @@ public class DDMFormInstanceRecordCSVWriterTest {
 		StringBundler sb = new StringBundler(3);
 
 		sb.append("Field 1,Field 2,Field 3,Field 4\n");
-		sb.append("2,false,esta é uma 'string',11.7\n");
-		sb.append("1,,esta é uma 'string',10");
+		sb.append("2,esta é uma 'string',false,11.7\n");
+		sb.append("1,esta é uma 'string',,10");
+
+		String expected = sb.toString();
+
+		Assert.assertArrayEquals(
+			expected.getBytes(),
+			ddmFormInstanceRecordWriterResponse.getContent());
+	}
+
+	@Test
+	public void testWriteAfterChangeFieldName() throws Exception {
+		Map<String, String> ddmFormFieldsLabel =
+			new LinkedHashMap<String, String>() {
+				{
+					put("field1", "Field 1");
+					put("field1AfterChangeName", "Field 1");
+					put("field2", "Field 2");
+				}
+			};
+
+		List<Map<String, String>> ddmFormFieldValues =
+			new ArrayList<Map<String, String>>() {
+				{
+					Map<String, String> map1 = new HashMap<String, String>() {
+						{
+							put("field1", "2");
+							put("field2", "esta é uma 'string'");
+						}
+					};
+
+					add(map1);
+
+					Map<String, String> map2 = new HashMap<String, String>() {
+						{
+							put("field1AfterChangeName", "1");
+							put("field2", "esta é uma 'string'");
+						}
+					};
+
+					add(map2);
+				}
+			};
+
+		DDMFormInstanceRecordWriterRequest.Builder builder =
+			DDMFormInstanceRecordWriterRequest.Builder.newBuilder(
+				ddmFormFieldsLabel, ddmFormFieldValues);
+
+		DDMFormInstanceRecordCSVWriter ddmFormInstanceRecordCSVWriter =
+			new DDMFormInstanceRecordCSVWriter();
+
+		DDMFormInstanceRecordWriterResponse
+			ddmFormInstanceRecordWriterResponse =
+				ddmFormInstanceRecordCSVWriter.write(builder.build());
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("Field 1,Field 2\n");
+		sb.append("2,esta é uma 'string'\n");
+		sb.append("1,esta é uma 'string'");
 
 		String expected = sb.toString();
 
@@ -99,6 +157,24 @@ public class DDMFormInstanceRecordCSVWriterTest {
 	public void testWriteRecords() {
 		DDMFormInstanceRecordCSVWriter ddmFormInstanceRecordCSVWriter =
 			new DDMFormInstanceRecordCSVWriter();
+
+		Map<String, String> ddmFormFieldsLabel =
+			new LinkedHashMap<String, String>() {
+				{
+					put("field1", "Field 1");
+					put("field2", "Field 2");
+					put("field3", "Field 3");
+					put("field4", "Field 4");
+				}
+			};
+
+		List<String> labels = new ArrayList<String>() {
+			{
+				add("Field 1");
+				add("Field 2");
+				add("Field 3");
+			}
+		};
 
 		List<Map<String, String>> ddmFormFieldValues =
 			new ArrayList<Map<String, String>>() {
@@ -127,13 +203,13 @@ public class DDMFormInstanceRecordCSVWriterTest {
 
 		StringBundler sb = new StringBundler(2);
 
-		sb.append("value1,134.5,false\n");
-		sb.append(",45,true");
+		sb.append("value1,false,134.5\n");
+		sb.append(",true,45");
 
-		String actual = ddmFormInstanceRecordCSVWriter.writeRecords(
-			ddmFormFieldValues);
+		StringBundler actualSB = ddmFormInstanceRecordCSVWriter.writeRecords(
+			ddmFormFieldsLabel, ddmFormFieldValues, labels);
 
-		Assert.assertEquals(sb.toString(), actual);
+		Assert.assertEquals(sb.toString(), actualSB.toString());
 	}
 
 	@Test
