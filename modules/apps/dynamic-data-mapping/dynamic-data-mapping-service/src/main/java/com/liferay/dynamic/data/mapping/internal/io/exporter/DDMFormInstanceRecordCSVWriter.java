@@ -23,10 +23,9 @@ import com.liferay.portal.kernel.util.CSVUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,54 +73,36 @@ public class DDMFormInstanceRecordCSVWriter
 		return builder.build();
 	}
 
-	protected StringBundler writeRecord(
+	protected String writeRecord(
 		Map<String, String> ddmFormFieldsLabel,
 		Map<String, String> ddmFormFieldValue, List<String> labels) {
 
-		StringBundler sb = new StringBundler();
+		Set<Map.Entry<String, String>> entrySet = ddmFormFieldsLabel.entrySet();
 
-		Iterator<String> iterator = labels.iterator();
+		Stream<Map.Entry<String, String>> stream = entrySet.stream();
 
-		while (iterator.hasNext()) {
-			String label = iterator.next();
-
-			for (Map.Entry<String, String> ddmFormFieldLabel :
-					ddmFormFieldsLabel.entrySet()) {
-
-				if (Objects.equals(ddmFormFieldLabel.getValue(), label) &&
-					ddmFormFieldValue.containsKey(ddmFormFieldLabel.getKey())) {
-
-					sb.append(
-						CSVUtil.encode(
-							ddmFormFieldValue.get(ddmFormFieldLabel.getKey())));
-				}
-			}
-
-			if (iterator.hasNext()) {
-				sb.append(StringPool.COMMA);
-			}
-		}
-
-		return sb;
+		return stream.filter(
+			entry ->
+				labels.contains(entry.getValue()) &&
+				ddmFormFieldValue.containsKey(entry.getKey())
+		).map(
+			entry -> CSVUtil.encode(ddmFormFieldValue.get(entry.getKey()))
+		).collect(
+			Collectors.joining(StringPool.COMMA)
+		);
 	}
 
-	protected StringBundler writeRecords(
+	protected String writeRecords(
 		Map<String, String> ddmFormFieldsLabel,
 		List<Map<String, String>> ddmFormFieldsValue, List<String> labels) {
 
-		StringBundler sb = new StringBundler();
+		Stream<Map<String, String>> stream = ddmFormFieldsValue.stream();
 
-		Iterator<Map<String, String>> iterator = ddmFormFieldsValue.iterator();
-
-		while (iterator.hasNext()) {
-			sb.append(writeRecord(ddmFormFieldsLabel, iterator.next(), labels));
-
-			if (iterator.hasNext()) {
-				sb.append(StringPool.NEW_LINE);
-			}
-		}
-
-		return sb;
+		return stream.map(
+			values -> writeRecord(ddmFormFieldsLabel, values, labels)
+		).collect(
+			Collectors.joining(StringPool.NEW_LINE)
+		);
 	}
 
 	protected String writeValues(Collection<String> values) {

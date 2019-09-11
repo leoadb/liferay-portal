@@ -179,25 +179,23 @@ public class DDMFormInstanceRecordCSVWriterTest {
 		List<Map<String, String>> ddmFormFieldValues =
 			new ArrayList<Map<String, String>>() {
 				{
-					Map<String, String> map1 = new HashMap<String, String>() {
-						{
-							put("field1", "value1");
-							put("field2", "false");
-							put("field3", "134.5");
-						}
-					};
+					add(
+						new HashMap<String, String>() {
+							{
+								put("field1", "value1");
+								put("field2", "false");
+								put("field3", "134.5");
+							}
+						});
 
-					add(map1);
-
-					Map<String, String> map2 = new HashMap<String, String>() {
-						{
-							put("field1", "");
-							put("field2", "true");
-							put("field3", "45");
-						}
-					};
-
-					add(map2);
+					add(
+						new HashMap<String, String>() {
+							{
+								put("field1", "");
+								put("field2", "true");
+								put("field3", "45");
+							}
+						});
 				}
 			};
 
@@ -206,10 +204,10 @@ public class DDMFormInstanceRecordCSVWriterTest {
 		sb.append("value1,false,134.5\n");
 		sb.append(",true,45");
 
-		StringBundler actualSB = ddmFormInstanceRecordCSVWriter.writeRecords(
-			ddmFormFieldsLabel, ddmFormFieldValues, labels);
-
-		Assert.assertEquals(sb.toString(), actualSB.toString());
+		Assert.assertEquals(
+			sb.toString(),
+			ddmFormInstanceRecordCSVWriter.writeRecords(
+				ddmFormFieldsLabel, ddmFormFieldValues, labels));
 	}
 
 	@Test
