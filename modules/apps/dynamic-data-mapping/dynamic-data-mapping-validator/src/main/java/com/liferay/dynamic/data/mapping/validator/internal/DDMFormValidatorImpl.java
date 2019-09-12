@@ -278,6 +278,12 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
 			ddmFormFieldValidation.getDDMFormFieldValidationExpression();
 
+		if ((ddmFormFieldValidationExpression == null) ||
+			Validator.isNull(ddmFormFieldValidationExpression.getValue())) {
+
+			return;
+		}
+
 		try {
 			if (ddmFormFieldValidation.getParameterLocalizedValue() == null) {
 				_ddmExpressionFactory.createBooleanDDMExpression(
