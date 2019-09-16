@@ -161,19 +161,17 @@ AUI.add(
 
 						instance.get('formBuilder').eachFormBuilderField(
 							function(field) {
-								if (field.get('dataType')) {
-									fields.push(
-										{
-											dataType: field.get('dataType'),
-											label: field.get('label') || field.get('fieldName'),
-											options: field.get('options'),
-											pageIndex: instance.getPageIndex(field),
-											repeatable: field.get('repeatable'),
-											type: field.get('type'),
-											value: field.get('fieldName')
-										}
-									);
-								}
+								fields.push(
+									{
+										dataType: field.get('dataType'),
+										label: field.get('label') || field.get('fieldName'),
+										options: field.get('options'),
+										pageIndex: instance.getPageIndex(field),
+										repeatable: field.get('repeatable'),
+										type: field.get('type'),
+										value: field.get('fieldName')
+									}
+								);
 							}
 						);
 

@@ -659,7 +659,11 @@ AUI.add(
 					value = [condition.operands[0].value];
 				}
 
-				var fields = instance.get('fields').slice();
+				var fields = instance.get('fields').filter(
+					function(field) {
+						return field.dataType;
+					}
+				);
 
 				fixedFields.push(currentUser);
 
