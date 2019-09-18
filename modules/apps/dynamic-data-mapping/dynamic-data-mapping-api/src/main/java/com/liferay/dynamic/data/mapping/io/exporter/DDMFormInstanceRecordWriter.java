@@ -14,10 +14,28 @@
 
 package com.liferay.dynamic.data.mapping.io.exporter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Leonardo Barros
  */
 public interface DDMFormInstanceRecordWriter {
+
+	public default List<String> getDistinctLabels(
+		Map<String, String> ddmFormFieldsLabel) {
+
+		List<String> labels = new ArrayList<>();
+
+		for (String label : ddmFormFieldsLabel.values()) {
+			if (!labels.contains(label)) {
+				labels.add(label);
+			}
+		}
+
+		return labels;
+	}
 
 	public DDMFormInstanceRecordWriterResponse write(
 			DDMFormInstanceRecordWriterRequest
