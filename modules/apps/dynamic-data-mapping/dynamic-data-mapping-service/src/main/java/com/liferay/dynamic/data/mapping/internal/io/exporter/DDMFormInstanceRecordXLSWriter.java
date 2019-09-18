@@ -17,12 +17,16 @@ package com.liferay.dynamic.data.mapping.internal.io.exporter;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordWriter;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordWriterRequest;
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordWriterResponse;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.ByteArrayOutputStream;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -54,6 +58,8 @@ public class DDMFormInstanceRecordXLSWriter
 		Map<String, String> ddmFormFieldsLabel =
 			ddmFormInstanceRecordWriterRequest.getDDMFormFieldsLabel();
 
+		List<String> labels = getDistinctLabels(ddmFormFieldsLabel);
+
 		int rowIndex = 0;
 
 		try (ByteArrayOutputStream byteArrayOutputStream =
@@ -65,9 +71,7 @@ public class DDMFormInstanceRecordXLSWriter
 			CellStyle headerCellStyle = createCellStyle(
 				workbook, true, "Courier New", (short)14);
 
-			createRow(
-				rowIndex++, headerCellStyle, ddmFormFieldsLabel.values(),
-				sheet);
+			createRow(rowIndex++, headerCellStyle, labels, sheet);
 
 			CellStyle rowCellStyle = createCellStyle(
 				workbook, false, "Courier New", (short)12);
@@ -78,9 +82,36 @@ public class DDMFormInstanceRecordXLSWriter
 			for (Map<String, String> ddmFormFieldsValue :
 					ddmFormFieldsValueList) {
 
-				createRow(
-					rowIndex++, rowCellStyle, ddmFormFieldsValue.values(),
-					sheet);
+				List<String> recordValues = new ArrayList<>();
+
+				for (String label : labels) {
+					boolean emptyValue = true;
+
+					for (Map.Entry<String, String> ddmFormFieldLabel :
+							ddmFormFieldsLabel.entrySet()) {
+
+						if (Objects.equals(
+								ddmFormFieldLabel.getValue(), label) &&
+							ddmFormFieldsValue.containsKey(
+								ddmFormFieldLabel.getKey())) {
+
+							String value = ddmFormFieldsValue.get(
+								ddmFormFieldLabel.getKey());
+
+							if (Validator.isNotNull(value)) {
+								recordValues.add(value);
+
+								emptyValue = false;
+							}
+						}
+					}
+
+					if (emptyValue) {
+						recordValues.add(StringPool.BLANK);
+					}
+				}
+
+				createRow(rowIndex++, rowCellStyle, recordValues, sheet);
 			}
 
 			workbook.write(byteArrayOutputStream);
