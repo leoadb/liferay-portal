@@ -17,8 +17,8 @@ package com.liferay.dynamic.data.mapping.internal.search.spi.model.query.contrib
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.search.localization.SearchLocalizationHelper;
 import com.liferay.portal.search.query.QueryHelper;
 import com.liferay.portal.search.spi.model.query.contributor.KeywordQueryContributor;
 import com.liferay.portal.search.spi.model.query.contributor.helper.KeywordQueryContributorHelper;
@@ -61,18 +61,30 @@ public class DDMStructureKeywordQueryContributor
 			return;
 		}
 
-		String fieldNameLocalizedName = LocalizationUtil.getLocalizedName(
-			fieldName, searchContext.getLanguageId());
-
-		searchContext.setAttribute(
-			fieldNameLocalizedName, searchContext.getAttribute(fieldName));
-
-		queryHelper.addSearchLocalizedTerm(
-			booleanQuery, keywordQueryContributorHelper.getSearchContext(),
-			fieldName, false);
+		_addLocalizedTerm(booleanQuery, searchContext, fieldName);
 	}
 
 	@Reference
 	protected QueryHelper queryHelper;
+
+	private void _addLocalizedTerm(
+		BooleanQuery booleanQuery, SearchContext searchContext,
+		String fieldName) {
+
+		String[] localizedFieldNames =
+			_searchLocalizationHelper.getLocalizedFieldNames(
+				new String[] {fieldName}, searchContext);
+
+		for (String localizedFieldName : localizedFieldNames) {
+			searchContext.setAttribute(
+				localizedFieldName, searchContext.getAttribute(fieldName));
+
+			queryHelper.addSearchTerm(
+				booleanQuery, searchContext, localizedFieldName, false);
+		}
+	}
+
+	@Reference
+	private SearchLocalizationHelper _searchLocalizationHelper;
 
 }
