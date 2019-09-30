@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.time.LocalDateTime;
@@ -50,6 +51,7 @@ import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -128,6 +130,8 @@ public class DDMFormInstanceRecordExporterImpl
 
 		Map<String, String> ddmFormFieldsLabel = new LinkedHashMap<>();
 
+		Map<String, String> labelsFieldName = new HashMap<>();
+
 		Collection<DDMFormField> ddmFormFields = ddmFormFieldMap.values();
 
 		Stream<DDMFormField> stream = ddmFormFields.stream();
@@ -136,8 +140,24 @@ public class DDMFormInstanceRecordExporterImpl
 			field -> {
 				LocalizedValue localizedValue = field.getLabel();
 
-				ddmFormFieldsLabel.put(
-					field.getName(), localizedValue.getString(locale));
+				String label = localizedValue.getString(locale);
+
+				if (!labelsFieldName.containsKey(label)) {
+					ddmFormFieldsLabel.put(field.getName(), label);
+				}
+				else {
+					String previousFieldName = labelsFieldName.get(label);
+
+					ddmFormFieldsLabel.put(
+						previousFieldName,
+						_formatLabelString(previousFieldName, label));
+
+					ddmFormFieldsLabel.put(
+						field.getName(),
+						_formatLabelString(field.getName(), label));
+				}
+
+				labelsFieldName.put(label, field.getName());
 			});
 
 		ddmFormFieldsLabel.put(_STATUS, LanguageUtil.get(locale, _STATUS));
@@ -313,6 +333,18 @@ public class DDMFormInstanceRecordExporterImpl
 	@Reference
 	protected DDMFormInstanceVersionLocalService
 		ddmFormInstanceVersionLocalService;
+
+	private String _formatLabelString(String fieldName, String label) {
+		StringBundler sb = new StringBundler(5);
+
+		sb.append(label);
+		sb.append(StringPool.SPACE);
+		sb.append(StringPool.OPEN_PARENTHESIS);
+		sb.append(fieldName);
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return sb.toString();
+	}
 
 	private static final String _AUTHOR = "author";
 
