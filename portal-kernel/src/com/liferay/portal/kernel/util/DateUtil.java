@@ -66,7 +66,8 @@ public class DateUtil {
 
 		Date dateValue = parseDate(fromPattern, dateString, locale);
 
-		Format dateFormat = FastDateFormatFactoryUtil.getDate(locale);
+		Format dateFormat = FastDateFormatFactoryUtil.getSimpleDateFormat(
+			"M/dd/yyyy", locale);
 
 		return dateFormat.format(dateValue);
 	}
