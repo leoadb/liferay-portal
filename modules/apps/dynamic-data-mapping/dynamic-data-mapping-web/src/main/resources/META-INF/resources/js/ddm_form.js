@@ -3148,7 +3148,43 @@ AUI.add(
 								'PreviewContainer a',
 							preloadAllImages: false,
 							zIndex: Liferay.zIndex.OVERLAY
-						}).render();
+						});
+
+						instance.viewer.TPL_CLOSE = instance.viewer.TPL_CLOSE.replace(
+							/<\s*span[^>]*>(.*?)<\s*\/\s*span>/,
+							Liferay.Util.getLexiconIconTpl(
+								'times',
+								'icon-monospaced'
+							)
+						);
+
+						var TPL_PLAYER_PAUSE =
+							'<span>' +
+							Liferay.Util.getLexiconIconTpl(
+								'pause',
+								'glyphicon'
+							) +
+							'</span>';
+
+						var TPL_PLAYER_PLAY =
+							'<span>' +
+							Liferay.Util.getLexiconIconTpl(
+								'play',
+								'glyphicon'
+							) +
+							'</span>';
+
+						instance.viewer.TPL_PLAYER = TPL_PLAYER_PLAY;
+
+						instance.viewer._syncPlaying = function() {
+							if (this.get('playing')) {
+								this._player.setHTML(TPL_PLAYER_PAUSE);
+							} else {
+								this._player.setHTML(TPL_PLAYER_PLAY);
+							}
+						};
+
+						instance.viewer.render();
 					}
 
 					var imagePreviewURL = instance._getImagePreviewURL();
