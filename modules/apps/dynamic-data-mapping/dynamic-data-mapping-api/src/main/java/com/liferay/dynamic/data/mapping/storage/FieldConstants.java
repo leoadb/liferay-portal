@@ -135,6 +135,10 @@ public class FieldConstants {
 			return StringPool.BLANK;
 		}
 
+		if (isNumericType(type)) {
+			value = value.replace(',','.');
+		}
+
 		if (type.equals(BOOLEAN)) {
 			return GetterUtil.getBoolean(value);
 		}
