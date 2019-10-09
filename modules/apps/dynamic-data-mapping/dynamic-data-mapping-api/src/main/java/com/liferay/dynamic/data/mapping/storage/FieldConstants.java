@@ -136,7 +136,7 @@ public class FieldConstants {
 		}
 
 		if (isNumericType(type)) {
-			value = value.replace(',','.');
+			value = value.replace(',', '.');
 		}
 
 		if (type.equals(BOOLEAN)) {
