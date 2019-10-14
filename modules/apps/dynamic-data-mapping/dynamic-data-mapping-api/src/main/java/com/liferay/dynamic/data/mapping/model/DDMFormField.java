@@ -15,6 +15,8 @@
 package com.liferay.dynamic.data.mapping.model;
 
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -141,7 +143,7 @@ public class DDMFormField implements Serializable {
 		DDMFormFieldOptions ddmFormFieldOptions =
 			(DDMFormFieldOptions)_properties.get("options");
 
-		String dataSourceType = (String)_properties.get("dataSourceType");
+		String dataSourceType = _getDataSourceType();
 
 		if ((ddmFormFieldOptions != null) &&
 			Validator.isNotNull(dataSourceType) &&
@@ -392,6 +394,23 @@ public class DDMFormField implements Serializable {
 
 	public void setVisibilityExpression(String visibilityExpression) {
 		_properties.put("visibilityExpression", visibilityExpression);
+	}
+
+	private String _getDataSourceType() {
+		Object object = _properties.get("dataSourceType");
+
+		if (object instanceof JSONArray) {
+			JSONArray dataSourceTypeJSONArray = (JSONArray)object;
+
+			if (dataSourceTypeJSONArray.length() > 0) {
+				return dataSourceTypeJSONArray.getString(0);
+			}
+		}
+		else if (object instanceof String) {
+			return (String)object;
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private DDMForm _ddmForm;
