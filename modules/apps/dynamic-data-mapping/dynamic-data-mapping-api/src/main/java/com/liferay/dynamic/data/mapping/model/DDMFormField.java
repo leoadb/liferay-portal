@@ -143,7 +143,7 @@ public class DDMFormField implements Serializable {
 		DDMFormFieldOptions ddmFormFieldOptions =
 			(DDMFormFieldOptions)_properties.get("options");
 
-		String dataSourceType = _getDataSourceType();
+		String dataSourceType = getDataSourceType();
 
 		if ((ddmFormFieldOptions != null) &&
 			Validator.isNotNull(dataSourceType) &&
@@ -396,18 +396,16 @@ public class DDMFormField implements Serializable {
 		_properties.put("visibilityExpression", visibilityExpression);
 	}
 
-	private String _getDataSourceType() {
-		Object object = _properties.get("dataSourceType");
+	protected String getDataSourceType() {
+		Object dataSourceType = _properties.get("dataSourceType");
 
-		if (object instanceof JSONArray) {
-			JSONArray dataSourceTypeJSONArray = (JSONArray)object;
+		if (dataSourceType instanceof JSONArray) {
+			JSONArray jsonArray = (JSONArray)dataSourceType;
 
-			if (dataSourceTypeJSONArray.length() > 0) {
-				return dataSourceTypeJSONArray.getString(0);
-			}
+			return jsonArray.getString(0);
 		}
-		else if (object instanceof String) {
-			return (String)object;
+		else if (dataSourceType instanceof String) {
+			return (String)dataSourceType;
 		}
 
 		return StringPool.BLANK;
