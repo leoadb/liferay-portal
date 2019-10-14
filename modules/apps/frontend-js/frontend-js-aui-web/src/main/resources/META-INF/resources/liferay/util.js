@@ -1363,7 +1363,7 @@
 					config.doAsGroupId || themeDisplay.getScopeGroupId(),
 				eventName: config.eventName,
 				groupId: config.groupId,
-				mode: config.mode,
+				mode: config.mode || '',
 				mvcPath: config.mvcPath || '/view.jsp',
 				p_p_state: 'pop_up',
 				portletResourceNamespace: config.portletResourceNamespace,
