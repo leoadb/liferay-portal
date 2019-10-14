@@ -14,10 +14,12 @@
 
 package com.liferay.dynamic.data.mapping.storage;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
@@ -131,37 +133,38 @@ public class FieldConstants {
 			return value;
 		}
 
-		if (isNumericType(type) && Validator.isNull(value)) {
-			return StringPool.BLANK;
-		}
-
-		if (isNumericType(type)) {
-			value = value.replace(',', '.');
-		}
-
 		if (type.equals(BOOLEAN)) {
 			return GetterUtil.getBoolean(value);
 		}
 		else if (type.equals(DATE) && Validator.isNotNull(value)) {
 			return value;
 		}
+		else if (isNumericType(type) && Validator.isNull(value)) {
+			return StringPool.BLANK;
+		}
 		else if (type.equals(DOUBLE)) {
-			return GetterUtil.getDouble(value);
+			return GetterUtil.getDouble(
+				StringUtil.replace(value, CharPool.COMMA, CharPool.PERIOD));
 		}
 		else if (type.equals(FLOAT)) {
-			return GetterUtil.getFloat(value);
+			return GetterUtil.getFloat(
+				StringUtil.replace(value, CharPool.COMMA, CharPool.PERIOD));
 		}
 		else if (type.equals(INTEGER)) {
-			return GetterUtil.getInteger(value);
+			return GetterUtil.getInteger(
+				StringUtil.replace(value, CharPool.COMMA, CharPool.PERIOD));
 		}
 		else if (type.equals(LONG)) {
-			return GetterUtil.getLong(value);
+			return GetterUtil.getLong(
+				StringUtil.replace(value, CharPool.COMMA, CharPool.PERIOD));
 		}
 		else if (type.equals(NUMBER)) {
-			return GetterUtil.getNumber(value);
+			return GetterUtil.getNumber(
+				StringUtil.replace(value, CharPool.COMMA, CharPool.PERIOD));
 		}
 		else if (type.equals(SHORT)) {
-			return GetterUtil.getShort(value);
+			return GetterUtil.getShort(
+				StringUtil.replace(value, CharPool.COMMA, CharPool.PERIOD));
 		}
 
 		return value;
