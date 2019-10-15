@@ -1211,6 +1211,11 @@ paths:
                   schema:
                       format: int64
                       type: integer
+                - in: query
+                  name: createDataRecordCollectionPermission
+                  required: false
+                  schema:
+                      type: boolean
             requestBody:
                 content:
                     application/json:
