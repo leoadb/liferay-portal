@@ -113,6 +113,15 @@ public class DataRecordCollectionResourceTest
 	@Ignore
 	@Override
 	@Test
+	public void testPostDataDefinitionDataRecordCollectionPermission()
+		throws Exception {
+
+		super.testPostDataDefinitionDataRecordCollectionPermission();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testPostDataRecordCollectionDataRecordCollectionPermission()
 		throws Exception {
 
