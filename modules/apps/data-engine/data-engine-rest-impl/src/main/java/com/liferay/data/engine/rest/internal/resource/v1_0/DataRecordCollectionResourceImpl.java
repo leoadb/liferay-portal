@@ -20,7 +20,9 @@ import com.liferay.data.engine.rest.internal.dto.v1_0.util.DataRecordCollectionU
 import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
 import com.liferay.data.engine.rest.internal.resource.common.CommonDataRecordCollectionResource;
 import com.liferay.data.engine.rest.resource.v1_0.DataRecordCollectionResource;
+import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -132,6 +134,17 @@ public class DataRecordCollectionResourceImpl
 	}
 
 	@Override
+	public void postDataDefinitionDataRecordCollectionPermission(
+			Long dataDefinitionId, String operation,
+			DataRecordCollectionPermission dataRecordCollectionPermission)
+		throws Exception {
+
+		postDataRecordCollectionDataRecordCollectionPermission(
+			_getDefaultDataRecordCollectionId(dataDefinitionId), operation,
+			dataRecordCollectionPermission);
+	}
+
+	@Override
 	public void postDataRecordCollectionDataRecordCollectionPermission(
 			Long dataRecordCollectionId, String operation,
 			DataRecordCollectionPermission dataRecordCollectionPermission)
@@ -218,6 +231,18 @@ public class DataRecordCollectionResourceImpl
 			_groupLocalService, _modelResourcePermission, _resourceLocalService,
 			_resourcePermissionLocalService, _roleLocalService,
 			DataRecordCollectionUtil::toDataRecordCollection);
+	}
+
+	private long _getDefaultDataRecordCollectionId(Long dataDefinitionId)
+		throws Exception {
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			dataDefinitionId);
+
+		DDLRecordSet ddlRecordSet = _ddlRecordSetLocalService.getRecordSet(
+			ddmStructure.getGroupId(), ddmStructure.getStructureKey());
+
+		return ddlRecordSet.getRecordSetId();
 	}
 
 	@Reference
