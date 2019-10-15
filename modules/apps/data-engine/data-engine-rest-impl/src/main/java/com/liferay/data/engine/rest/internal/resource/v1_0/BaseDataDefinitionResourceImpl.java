@@ -230,12 +230,23 @@ public abstract class BaseDataDefinitionResourceImpl
 	@Override
 	@Consumes({"application/json", "application/xml"})
 	@POST
-	@Parameters(value = {@Parameter(in = ParameterIn.PATH, name = "siteId")})
+	@Parameters(
+		value = {
+			@Parameter(in = ParameterIn.PATH, name = "siteId"),
+			@Parameter(
+				in = ParameterIn.QUERY,
+				name = "createDataRecordCollectionPermission"
+			)
+		}
+	)
 	@Path("/sites/{siteId}/data-definitions")
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "DataDefinition")})
 	public DataDefinition postSiteDataDefinition(
 			@NotNull @Parameter(hidden = true) @PathParam("siteId") Long siteId,
+			@Parameter(hidden = true)
+			@QueryParam("createDataRecordCollectionPermission") Boolean
+				createDataRecordCollectionPermission,
 			DataDefinition dataDefinition)
 		throws Exception {
 

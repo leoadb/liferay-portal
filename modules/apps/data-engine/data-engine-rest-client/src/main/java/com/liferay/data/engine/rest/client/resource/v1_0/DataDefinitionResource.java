@@ -104,11 +104,13 @@ public interface DataDefinitionResource {
 		throws Exception;
 
 	public DataDefinition postSiteDataDefinition(
-			Long siteId, DataDefinition dataDefinition)
+			Long siteId, Boolean createDataRecordCollectionPermission,
+			DataDefinition dataDefinition)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSiteDataDefinitionHttpResponse(
-			Long siteId, DataDefinition dataDefinition)
+			Long siteId, Boolean createDataRecordCollectionPermission,
+			DataDefinition dataDefinition)
 		throws Exception;
 
 	public DataDefinition getSiteDataDefinition(
@@ -615,11 +617,14 @@ public interface DataDefinitionResource {
 		}
 
 		public DataDefinition postSiteDataDefinition(
-				Long siteId, DataDefinition dataDefinition)
+				Long siteId, Boolean createDataRecordCollectionPermission,
+				DataDefinition dataDefinition)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postSiteDataDefinitionHttpResponse(siteId, dataDefinition);
+				postSiteDataDefinitionHttpResponse(
+					siteId, createDataRecordCollectionPermission,
+					dataDefinition);
 
 			String content = httpResponse.getContent();
 
@@ -642,7 +647,8 @@ public interface DataDefinitionResource {
 		}
 
 		public HttpInvoker.HttpResponse postSiteDataDefinitionHttpResponse(
-				Long siteId, DataDefinition dataDefinition)
+				Long siteId, Boolean createDataRecordCollectionPermission,
+				DataDefinition dataDefinition)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -667,6 +673,12 @@ public interface DataDefinitionResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (createDataRecordCollectionPermission != null) {
+				httpInvoker.parameter(
+					"createDataRecordCollectionPermission",
+					String.valueOf(createDataRecordCollectionPermission));
+			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +

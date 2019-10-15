@@ -232,8 +232,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	protected DataDefinition testDeleteDataDefinition_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinition(
-			testGroup.getGroupId(), randomDataDefinition());
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -299,8 +299,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	protected DataDefinition testGetDataDefinition_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinition(
-			testGroup.getGroupId(), randomDataDefinition());
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -356,8 +356,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	protected DataDefinition testPutDataDefinition_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinition(
-			testGroup.getGroupId(), randomDataDefinition());
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -385,8 +385,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testPostDataDefinitionDataDefinitionPermission_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinition(
-			testGroup.getGroupId(), randomDataDefinition());
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -410,8 +410,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testPostSiteDataDefinitionPermission_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinition(
-			testGroup.getGroupId(), randomDataDefinition());
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -628,8 +628,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			Long siteId, DataDefinition dataDefinition)
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinition(
-			siteId, dataDefinition);
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Long testGetSiteDataDefinitionsPage_getSiteId() throws Exception {
@@ -713,8 +713,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			DataDefinition dataDefinition)
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinition(
-			testGetSiteDataDefinitionsPage_getSiteId(), dataDefinition);
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -748,8 +748,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	protected DataDefinition testGetSiteDataDefinition_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinition(
-			testGroup.getGroupId(), randomDataDefinition());
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test

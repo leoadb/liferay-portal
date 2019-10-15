@@ -43,6 +43,11 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface DataRecordCollectionResource {
 
+	public void postDataDefinitionDataRecordCollectionPermission(
+			Long dataDefinitionId, String operation,
+			DataRecordCollectionPermission dataRecordCollectionPermission)
+		throws Exception;
+
 	public Page<DataRecordCollection>
 			getDataDefinitionDataRecordCollectionsPage(
 				Long dataDefinitionId, String keywords, Pagination pagination)

@@ -39,6 +39,20 @@ public interface DataRecordCollectionResource {
 		return new Builder();
 	}
 
+	public void postDataDefinitionDataRecordCollectionPermission(
+			Long dataDefinitionId, String operation,
+			com.liferay.data.engine.rest.client.dto.v1_0.
+				DataRecordCollectionPermission dataRecordCollectionPermission)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			postDataDefinitionDataRecordCollectionPermissionHttpResponse(
+				Long dataDefinitionId, String operation,
+				com.liferay.data.engine.rest.client.dto.v1_0.
+					DataRecordCollectionPermission
+						dataRecordCollectionPermission)
+		throws Exception;
+
 	public Page<DataRecordCollection>
 			getDataDefinitionDataRecordCollectionsPage(
 				Long dataDefinitionId, String keywords, Pagination pagination)
@@ -184,6 +198,75 @@ public interface DataRecordCollectionResource {
 
 	public static class DataRecordCollectionResourceImpl
 		implements DataRecordCollectionResource {
+
+		public void postDataDefinitionDataRecordCollectionPermission(
+				Long dataDefinitionId, String operation,
+				com.liferay.data.engine.rest.client.dto.v1_0.
+					DataRecordCollectionPermission
+						dataRecordCollectionPermission)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postDataDefinitionDataRecordCollectionPermissionHttpResponse(
+					dataDefinitionId, operation,
+					dataRecordCollectionPermission);
+
+			String content = httpResponse.getContent();
+
+			_logger.fine("HTTP response content: " + content);
+
+			_logger.fine("HTTP response message: " + httpResponse.getMessage());
+			_logger.fine(
+				"HTTP response status code: " + httpResponse.getStatusCode());
+		}
+
+		public HttpInvoker.HttpResponse
+				postDataDefinitionDataRecordCollectionPermissionHttpResponse(
+					Long dataDefinitionId, String operation,
+					com.liferay.data.engine.rest.client.dto.v1_0.
+						DataRecordCollectionPermission
+							dataRecordCollectionPermission)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(
+				dataRecordCollectionPermission.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (operation != null) {
+				httpInvoker.parameter("operation", String.valueOf(operation));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port +
+						"/o/data-engine/v1.0/data-definitions/{dataDefinitionId}/data-record-collection-permissions",
+				dataDefinitionId);
+
+			httpInvoker.userNameAndPassword(
+				_builder._login + ":" + _builder._password);
+
+			return httpInvoker.invoke();
+		}
 
 		public Page<DataRecordCollection>
 				getDataDefinitionDataRecordCollectionsPage(

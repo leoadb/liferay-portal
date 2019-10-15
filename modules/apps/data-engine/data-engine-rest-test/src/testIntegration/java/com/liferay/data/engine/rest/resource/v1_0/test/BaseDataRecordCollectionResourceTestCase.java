@@ -197,6 +197,35 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 	}
 
 	@Test
+	public void testPostDataDefinitionDataRecordCollectionPermission()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DataRecordCollection dataRecordCollection =
+			testPostDataDefinitionDataRecordCollectionPermission_addDataRecordCollection();
+
+		assertHttpResponseStatusCode(
+			204,
+			dataRecordCollectionResource.
+				postDataDefinitionDataRecordCollectionPermissionHttpResponse(
+					null, null, null));
+
+		assertHttpResponseStatusCode(
+			404,
+			dataRecordCollectionResource.
+				postDataDefinitionDataRecordCollectionPermissionHttpResponse(
+					null, null, null));
+	}
+
+	protected DataRecordCollection
+			testPostDataDefinitionDataRecordCollectionPermission_addDataRecordCollection()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetDataDefinitionDataRecordCollectionsPage()
 		throws Exception {
 

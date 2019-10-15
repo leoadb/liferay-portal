@@ -71,7 +71,8 @@ public interface DataDefinitionResource {
 		throws Exception;
 
 	public DataDefinition postSiteDataDefinition(
-			Long siteId, DataDefinition dataDefinition)
+			Long siteId, Boolean createDataRecordCollectionPermission,
+			DataDefinition dataDefinition)
 		throws Exception;
 
 	public DataDefinition getSiteDataDefinition(

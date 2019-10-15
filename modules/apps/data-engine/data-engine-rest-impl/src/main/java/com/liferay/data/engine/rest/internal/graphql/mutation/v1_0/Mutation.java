@@ -160,6 +160,8 @@ public class Mutation {
 	public DataDefinition createSiteDataDefinition(
 			@GraphQLName("siteId") Long siteId,
 			@GraphQLName("siteKey") String siteKey,
+			@GraphQLName("createDataRecordCollectionPermission") Boolean
+				createDataRecordCollectionPermission,
 			@GraphQLName("dataDefinition") DataDefinition dataDefinition)
 		throws Exception {
 
@@ -168,7 +170,8 @@ public class Mutation {
 			this::_populateResourceContext,
 			dataDefinitionResource ->
 				dataDefinitionResource.postSiteDataDefinition(
-					siteId, dataDefinition));
+					siteId, createDataRecordCollectionPermission,
+					dataDefinition));
 	}
 
 	@GraphQLField
@@ -343,6 +346,26 @@ public class Mutation {
 			this::_populateResourceContext,
 			dataRecordResource -> dataRecordResource.putDataRecord(
 				dataRecordId, dataRecord));
+	}
+
+	@GraphQLField
+	public boolean createDataDefinitionDataRecordCollectionPermission(
+			@GraphQLName("dataDefinitionId") Long dataDefinitionId,
+			@GraphQLName("operation") String operation,
+			@GraphQLName("dataRecordCollectionPermission")
+				DataRecordCollectionPermission dataRecordCollectionPermission)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_dataRecordCollectionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataRecordCollectionResource ->
+				dataRecordCollectionResource.
+					postDataDefinitionDataRecordCollectionPermission(
+						dataDefinitionId, operation,
+						dataRecordCollectionPermission));
+
+		return true;
 	}
 
 	@GraphQLField
