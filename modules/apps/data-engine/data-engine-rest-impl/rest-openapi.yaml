@@ -572,6 +572,36 @@ paths:
                                 $ref: "#/components/schemas/DataListView"
                     description: ""
             tags: ["DataListView"]
+    "/data-definitions/{dataDefinitionId}/data-record-collection-permissions":
+        post:
+            operationId: postDataDefinitionDataRecordCollectionPermission
+            parameters:
+                - in: path
+                  name: dataDefinitionId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: query
+                  name: operation
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DataRecordCollectionPermission"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DataRecordCollectionPermission"
+                description: ""
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                    description: ""
+            tags: ["DataRecordCollection"]
     "/data-definitions/{dataDefinitionId}/data-record-collections":
         get:
             operationId: getDataDefinitionDataRecordCollectionsPage
