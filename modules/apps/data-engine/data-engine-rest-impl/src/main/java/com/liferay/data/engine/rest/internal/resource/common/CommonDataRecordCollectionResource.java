@@ -213,12 +213,25 @@ public class CommonDataRecordCollectionResource<T> {
 			Map<String, Object> name)
 		throws Exception {
 
+		return postDataDefinitionDataRecordCollection(
+			company, dataDefinitionId, dataRecordCollectionKey, description,
+			name, true);
+	}
+
+	public T postDataDefinitionDataRecordCollection(
+			Company company, Long dataDefinitionId,
+			String dataRecordCollectionKey, Map<String, Object> description,
+			Map<String, Object> name, boolean usePermissions)
+		throws Exception {
+
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
-		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_RECORD_COLLECTION, _groupLocalService,
-			ddmStructure.getGroupId());
+		if (usePermissions) {
+			DataEnginePermissionUtil.checkPermission(
+				DataActionKeys.ADD_DATA_RECORD_COLLECTION, _groupLocalService,
+				ddmStructure.getGroupId());
+		}
 
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -229,11 +242,14 @@ public class CommonDataRecordCollectionResource<T> {
 			LocalizedValueUtil.toLocaleStringMap(description), 0,
 			DDLRecordSetConstants.SCOPE_DATA_ENGINE, serviceContext);
 
-		_resourceLocalService.addModelResources(
-			company.getCompanyId(), ddmStructure.getGroupId(),
-			PrincipalThreadLocal.getUserId(),
-			InternalDataRecordCollection.class.getName(),
-			ddlRecordSet.getPrimaryKey(), serviceContext.getModelPermissions());
+		if (usePermissions) {
+			_resourceLocalService.addModelResources(
+				company.getCompanyId(), ddmStructure.getGroupId(),
+				PrincipalThreadLocal.getUserId(),
+				InternalDataRecordCollection.class.getName(),
+				ddlRecordSet.getPrimaryKey(),
+				serviceContext.getModelPermissions());
+		}
 
 		return _transformUnsafeFunction.apply(ddlRecordSet);
 	}
@@ -241,10 +257,10 @@ public class CommonDataRecordCollectionResource<T> {
 	public void postDataRecordCollectionDataRecordCollectionPermissions(
 			Company company, Long dataRecordCollectionId,
 			boolean hasAddDataRecordPermission, boolean hasDeletePermission,
-			boolean hasDeleteDataRecordPermission, boolean hasUpdatePermission,
+			boolean hasDeleteDataRecordPermission,
+			boolean hasExportDataRecordPermission, boolean hasUpdatePermission,
 			boolean hasUpdateDataRecordPermission, boolean hasViewPermission,
-			boolean hasViewDataRecordPermission,
-			boolean hasExportDataRecordPermission, String operation,
+			boolean hasViewDataRecordPermission, String operation,
 			String[] roleNames)
 		throws Exception {
 

@@ -278,7 +278,8 @@ public class DataDefinitionResourceImpl
 
 	@Override
 	public DataDefinition postSiteDataDefinition(
-			Long siteId, DataDefinition dataDefinition)
+			Long siteId, Boolean createDataRecordCollectionPermission,
+			DataDefinition dataDefinition)
 		throws Exception {
 
 		DataEnginePermissionUtil.checkPermission(
@@ -319,7 +320,8 @@ public class DataDefinitionResourceImpl
 			postDataDefinitionDataRecordCollection(
 				contextCompany, dataDefinition.getId(),
 				dataDefinition.getDataDefinitionKey(),
-				dataDefinition.getDescription(), dataDefinition.getName());
+				dataDefinition.getDescription(), dataDefinition.getName(),
+				GetterUtil.getBoolean(createDataRecordCollectionPermission));
 
 		return dataDefinition;
 	}
