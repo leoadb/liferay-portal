@@ -36,7 +36,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Marcela Cunha
+ * @deprecated As of Mueller (7.2.x), with no replacement
  */
+@Deprecated
 public abstract class BaseFieldType implements FieldType {
 
 	@Override

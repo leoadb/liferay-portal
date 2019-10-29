@@ -19,7 +19,9 @@ import java.util.Map;
 
 /**
  * @author Leonardo Barros
+ * @deprecated As of Mueller (7.2.x), with no replacement
  */
+@Deprecated
 public interface FieldTypeTracker {
 
 	public FieldType getFieldType(String type);
