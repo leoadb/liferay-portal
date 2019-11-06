@@ -81,6 +81,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -473,6 +474,11 @@ public class DataDefinitionResourceImpl
 		DDMFormFieldType ddmFormFieldType,
 		HttpServletRequest httpServletRequest, Locale locale, String type) {
 
+		Locale currentThemeDisplayLocale =
+			LocaleThreadLocal.getThemeDisplayLocale();
+
+		LocaleThreadLocal.setThemeDisplayLocale(locale);
+
 		try {
 			DDMForm ddmFormFieldTypeSettingsDDMForm = DDMFormFactory.create(
 				ddmFormFieldType.getDDMFormFieldTypeSettings());
@@ -508,6 +514,9 @@ public class DataDefinitionResourceImpl
 				_log.debug(e, e);
 			}
 		}
+		finally {
+			LocaleThreadLocal.setThemeDisplayLocale(currentThemeDisplayLocale);
+		}
 
 		return null;
 	}
@@ -535,6 +544,11 @@ public class DataDefinitionResourceImpl
 					ddmFormFieldTypeProperties,
 					"ddm.form.field.type.description"),
 				resourceBundle)
+		).put(
+			"displayOrder",
+			MapUtil.getInteger(
+				ddmFormFieldTypeProperties, "ddm.form.field.type.display.order",
+				Integer.MAX_VALUE)
 		).put(
 			"group",
 			MapUtil.getString(

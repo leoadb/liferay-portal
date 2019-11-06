@@ -18,8 +18,12 @@ import com.liferay.data.engine.renderer.DataLayoutRenderer;
 import com.liferay.data.engine.renderer.DataLayoutRendererContext;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeResponse;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
@@ -28,7 +32,8 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
-import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -57,11 +62,22 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 			_ddmStructureVersionLocalService.getDDMStructureVersion(
 				ddmStructureLayout.getStructureVersionId());
 
-		DDMForm ddmForm = ddmStructureVersion.getDDMForm();
+		DDMStructure ddmStructure = ddmStructureVersion.getStructure();
+
+		DDMFormDeserializerDeserializeRequest.Builder builder =
+			DDMFormDeserializerDeserializeRequest.Builder.newBuilder(
+				ddmStructure.getDefinition());
+
+		DDMFormDeserializerDeserializeResponse
+			ddmFormDeserializerDeserializeResponse =
+				_ddmFormDeserializer.deserialize(builder.build());
 
 		return _ddmFormRenderer.render(
-			ddmForm, ddmStructureLayout.getDDMFormLayout(),
-			_toDDMFormRenderingContext(dataLayoutRendererContext, ddmForm));
+			ddmFormDeserializerDeserializeResponse.getDDMForm(),
+			ddmStructureLayout.getDDMFormLayout(),
+			_toDDMFormRenderingContext(
+				dataLayoutRendererContext,
+				ddmFormDeserializerDeserializeResponse.getDDMForm()));
 	}
 
 	private DDMFormFieldValue _createDDMFormFieldValue(
@@ -74,19 +90,25 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 
 		ddmFormFieldValue.setName(name);
 
-		if (dataRecordValues.containsKey(name)) {
+		Object value = dataRecordValues.get(name);
+
+		if (value != null) {
+			if (value instanceof Object[]) {
+				JSONArray jsonArray = JSONUtil.putAll((Object[])value);
+
+				value = jsonArray.toString();
+			}
+
 			if (ddmFormField.isLocalizable()) {
 				LocalizedValue localizedValue = new LocalizedValue();
 
-				localizedValue.addString(
-					locale, GetterUtil.getString(dataRecordValues.get(name)));
+				localizedValue.addString(locale, String.valueOf(value));
 
 				ddmFormFieldValue.setValue(localizedValue);
 			}
 			else {
 				ddmFormFieldValue.setValue(
-					new UnlocalizedValue(
-						GetterUtil.getString(dataRecordValues.get(name))));
+					new UnlocalizedValue(String.valueOf(value)));
 			}
 		}
 
@@ -148,6 +170,9 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 
 		return ddmFormValues;
 	}
+
+	@Reference(target = "(ddm.form.deserializer.type=json)")
+	private DDMFormDeserializer _ddmFormDeserializer;
 
 	@Reference
 	private DDMFormRenderer _ddmFormRenderer;
