@@ -27,10 +27,12 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -51,7 +53,10 @@ import java.util.stream.Stream;
  */
 public class DataDefinitionUtil {
 
-	public static DataDefinition toDataDefinition(DDMStructure ddmStructure) {
+	public static DataDefinition toDataDefinition(
+		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker,
+		DDMStructure ddmStructure) {
+
 		DDMForm ddmForm = ddmStructure.getDDMForm();
 
 		return new DataDefinition() {
@@ -60,7 +65,8 @@ public class DataDefinitionUtil {
 					ddmForm.getAvailableLocales());
 				classNameId = ddmStructure.getClassNameId();
 				dataDefinitionFields = _toDataDefinitionFields(
-					ddmForm.getDDMFormFields());
+					ddmForm.getDDMFormFields(),
+					ddmFormFieldTypeServicesTracker);
 				dataDefinitionKey = ddmStructure.getStructureKey();
 				dateCreated = ddmStructure.getCreateDate();
 				dateModified = ddmStructure.getModifiedDate();
@@ -97,13 +103,70 @@ public class DataDefinitionUtil {
 	}
 
 	private static Map<String, Object> _getCustomProperties(
-		Map<String, Object> properties) {
+		DDMFormField ddmFormField,
+		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker) {
+
+		DDMFormFieldType ddmFormFieldType =
+			ddmFormFieldTypeServicesTracker.getDDMFormFieldType(
+				ddmFormField.getType());
+
+		Class<? extends DDMFormFieldTypeSettings> ddmFormFieldTypeSettings =
+			DefaultDDMFormFieldTypeSettings.class;
+
+		if (ddmFormFieldType != null) {
+			ddmFormFieldTypeSettings =
+				ddmFormFieldType.getDDMFormFieldTypeSettings();
+		}
+
+		DDMForm settingsDDMForm = DDMFormFactory.create(
+			ddmFormFieldTypeSettings);
+
+		Map<String, DDMFormField> settingsDDMFormFieldsMap =
+			settingsDDMForm.getDDMFormFieldsMap(true);
+
+		Map<String, Object> properties = ddmFormField.getProperties();
 
 		Map<String, Object> customProperties = new HashMap<>();
 
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
 			if (!ArrayUtil.contains(_PREDEFINED_PROPERTIES, entry.getKey())) {
-				customProperties.put(entry.getKey(), entry.getValue());
+				DDMFormField settingsDDMFormField =
+					settingsDDMFormFieldsMap.get(entry.getKey());
+
+				if (settingsDDMFormField != null) {
+					if (settingsDDMFormField.isLocalizable()) {
+						customProperties.put(
+							entry.getKey(),
+							LocalizedValueUtil.toLocalizedValuesMap(
+								(LocalizedValue)entry.getValue()));
+					}
+					else if (Objects.equals(
+								settingsDDMFormField.getDataType(),
+								"boolean")) {
+
+						customProperties.put(
+							entry.getKey(),
+							GetterUtil.getBoolean(entry.getValue()));
+					}
+					else if (Objects.equals(
+								settingsDDMFormField.getDataType(),
+								"ddm-options")) {
+
+						customProperties.put(
+							entry.getKey(),
+							_toMap((DDMFormFieldOptions)entry.getValue()));
+					}
+					else if (Objects.equals(
+								settingsDDMFormField.getType(), "validation")) {
+
+						customProperties.put(
+							entry.getKey(),
+							_toMap((DDMFormFieldValidation)entry.getValue()));
+					}
+					else {
+						customProperties.put(entry.getKey(), entry.getValue());
+					}
+				}
 			}
 		}
 
@@ -168,12 +231,13 @@ public class DataDefinitionUtil {
 	}
 
 	private static DataDefinitionField _toDataDefinitionField(
-		DDMFormField ddmFormField) {
+		DDMFormField ddmFormField,
+		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker) {
 
 		return new DataDefinitionField() {
 			{
 				customProperties = _getCustomProperties(
-					ddmFormField.getProperties());
+					ddmFormField, ddmFormFieldTypeServicesTracker);
 				defaultValue = LocalizedValueUtil.toLocalizedValuesMap(
 					ddmFormField.getPredefinedValue());
 				fieldType = ddmFormField.getType();
@@ -185,7 +249,8 @@ public class DataDefinitionUtil {
 				localizable = ddmFormField.isLocalizable();
 				name = ddmFormField.getName();
 				nestedDataDefinitionFields = _toDataDefinitionFields(
-					ddmFormField.getNestedDDMFormFields());
+					ddmFormField.getNestedDDMFormFields(),
+					ddmFormFieldTypeServicesTracker);
 				readOnly = ddmFormField.isReadOnly();
 				repeatable = ddmFormField.isRepeatable();
 				required = ddmFormField.isRequired();
@@ -197,7 +262,8 @@ public class DataDefinitionUtil {
 	}
 
 	private static DataDefinitionField[] _toDataDefinitionFields(
-		List<DDMFormField> ddmFormFields) {
+		List<DDMFormField> ddmFormFields,
+		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker) {
 
 		if (ListUtil.isEmpty(ddmFormFields)) {
 			return new DataDefinitionField[0];
@@ -206,7 +272,8 @@ public class DataDefinitionUtil {
 		Stream<DDMFormField> stream = ddmFormFields.stream();
 
 		return stream.map(
-			DataDefinitionUtil::_toDataDefinitionField
+			ddmFormField -> _toDataDefinitionField(
+				ddmFormField, ddmFormFieldTypeServicesTracker)
 		).collect(
 			Collectors.toList()
 		).toArray(
@@ -366,6 +433,62 @@ public class DataDefinitionUtil {
 		).collect(
 			Collectors.toSet()
 		);
+	}
+
+	private static Map<String, Map<String, Object>> _toMap(
+		DDMFormFieldOptions ddmFormFieldOptions) {
+
+		if (ddmFormFieldOptions == null) {
+			return Collections.emptyMap();
+		}
+
+		Set<String> optionsValues = ddmFormFieldOptions.getOptionsValues();
+
+		Map<String, Map<String, Object>> options = new HashMap<>();
+
+		for (String value : optionsValues) {
+			options.put(
+				value,
+				LocalizedValueUtil.toLocalizedValuesMap(
+					ddmFormFieldOptions.getOptionLabels(value)));
+		}
+
+		return options;
+	}
+
+	private static Map<String, Object> _toMap(
+		DDMFormFieldValidation ddmFormFieldValidation) {
+
+		if (ddmFormFieldValidation == null) {
+			return Collections.emptyMap();
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"errorMessage",
+			LocalizedValueUtil.toLocalizedValuesMap(
+				ddmFormFieldValidation.getErrorMessageLocalizedValue())
+		).put(
+			"expression",
+			_toMap(ddmFormFieldValidation.getDDMFormFieldValidationExpression())
+		).put(
+			"parameter",
+			LocalizedValueUtil.toLocalizedValuesMap(
+				ddmFormFieldValidation.getParameterLocalizedValue())
+		).build();
+	}
+
+	private static Map<String, Object> _toMap(
+		DDMFormFieldValidationExpression ddmFormFieldValidationExpression) {
+
+		if (ddmFormFieldValidationExpression == null) {
+			return Collections.emptyMap();
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"name", ddmFormFieldValidationExpression.getName()
+		).put(
+			"value", ddmFormFieldValidationExpression.getValue()
+		).build();
 	}
 
 	private static final String[] _PREDEFINED_PROPERTIES = {
