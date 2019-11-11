@@ -35,6 +35,13 @@ public final class DDMFormSerializerSerializeRequest {
 			return _ddmFormSerializerSerializeRequest;
 		}
 
+		public Builder schemaVersion(String schemaVersion) {
+			_ddmFormSerializerSerializeRequest._ddmForm.setSchemaVersion(
+				schemaVersion);
+
+			return this;
+		}
+
 		private Builder(DDMForm ddmForm) {
 			_ddmFormSerializerSerializeRequest._ddmForm = ddmForm;
 		}

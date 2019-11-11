@@ -35,6 +35,13 @@ public final class DDMFormLayoutSerializerSerializeRequest {
 			return _ddmFormLayoutSerializerSerializeRequest;
 		}
 
+		public Builder schemaVersion(String schemaVersion) {
+			_ddmFormLayoutSerializerSerializeRequest._ddmFormLayout.
+				setSchemaVersion(schemaVersion);
+
+			return this;
+		}
+
 		private Builder(DDMFormLayout ddmFormLayout) {
 			_ddmFormLayoutSerializerSerializeRequest._ddmFormLayout =
 				ddmFormLayout;
