@@ -69,6 +69,8 @@ public class DDMFormJSONSerializer implements DDMFormSerializer {
 		addSuccessPageSettings(
 			jsonObject, ddmForm.getDDMFormSuccessPageSettings());
 
+		jsonObject.put("schemaVersion", ddmForm.getSchemaVersion());
+
 		DDMFormSerializerSerializeResponse.Builder builder =
 			DDMFormSerializerSerializeResponse.Builder.newBuilder(
 				jsonObject.toString());
