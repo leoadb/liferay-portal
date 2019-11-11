@@ -74,6 +74,7 @@ public class DataDefinitionUtil {
 				siteId = ddmStructure.getGroupId();
 				storageType = ddmStructure.getStorageType();
 				userId = ddmStructure.getUserId();
+				schemaVersion = ddmForm.getSchemaVersion();
 			}
 		};
 	}
