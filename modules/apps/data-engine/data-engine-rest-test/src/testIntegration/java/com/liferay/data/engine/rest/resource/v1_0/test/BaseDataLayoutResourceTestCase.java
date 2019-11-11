@@ -188,6 +188,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		dataLayout.setDataLayoutKey(regex);
 		dataLayout.setPaginationMode(regex);
+		dataLayout.setSchemaVersion(regex);
 
 		String json = DataLayoutSerDes.toJSON(dataLayout);
 
@@ -197,6 +198,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 		Assert.assertEquals(regex, dataLayout.getDataLayoutKey());
 		Assert.assertEquals(regex, dataLayout.getPaginationMode());
+		Assert.assertEquals(regex, dataLayout.getSchemaVersion());
 	}
 
 	@Test
@@ -1077,6 +1079,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("schemaVersion", additionalAssertFieldName)) {
+				if (dataLayout.getSchemaVersion() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("userId", additionalAssertFieldName)) {
 				if (dataLayout.getUserId() == null) {
 					valid = false;
@@ -1239,6 +1249,17 @@ public abstract class BaseDataLayoutResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("schemaVersion", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout1.getSchemaVersion(),
+						dataLayout2.getSchemaVersion())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("userId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						dataLayout1.getUserId(), dataLayout2.getUserId())) {
@@ -1297,6 +1318,17 @@ public abstract class BaseDataLayoutResourceTestCase {
 				if (!Objects.deepEquals(
 						dataLayout.getPaginationMode(),
 						jsonObject.getString("paginationMode"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("schemaVersion", fieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout.getSchemaVersion(),
+						jsonObject.getString("schemaVersion"))) {
 
 					return false;
 				}
@@ -1475,6 +1507,14 @@ public abstract class BaseDataLayoutResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("schemaVersion")) {
+			sb.append("'");
+			sb.append(String.valueOf(dataLayout.getSchemaVersion()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("siteId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1515,6 +1555,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 				dateModified = RandomTestUtil.nextDate();
 				id = RandomTestUtil.randomLong();
 				paginationMode = RandomTestUtil.randomString();
+				schemaVersion = RandomTestUtil.randomString();
 				siteId = testGroup.getGroupId();
 				userId = RandomTestUtil.randomLong();
 			}

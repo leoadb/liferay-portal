@@ -190,6 +190,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		dataDefinition.setDataDefinitionKey(regex);
 		dataDefinition.setDefaultLanguageId(regex);
+		dataDefinition.setSchemaVersion(regex);
 		dataDefinition.setStorageType(regex);
 
 		String json = DataDefinitionSerDes.toJSON(dataDefinition);
@@ -200,6 +201,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		Assert.assertEquals(regex, dataDefinition.getDataDefinitionKey());
 		Assert.assertEquals(regex, dataDefinition.getDefaultLanguageId());
+		Assert.assertEquals(regex, dataDefinition.getSchemaVersion());
 		Assert.assertEquals(regex, dataDefinition.getStorageType());
 	}
 
@@ -883,6 +885,24 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				sb.append(", ");
 			}
 
+			if (Objects.equals("schemaVersion", additionalAssertFieldName)) {
+				sb.append(additionalAssertFieldName);
+				sb.append(": ");
+
+				Object value = dataDefinition.getSchemaVersion();
+
+				if (value instanceof String) {
+					sb.append("\"");
+					sb.append(value);
+					sb.append("\"");
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append(", ");
+			}
+
 			if (Objects.equals("siteId", additionalAssertFieldName)) {
 				sb.append(additionalAssertFieldName);
 				sb.append(": ");
@@ -1141,6 +1161,14 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("schemaVersion", additionalAssertFieldName)) {
+				if (dataDefinition.getSchemaVersion() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("storageType", additionalAssertFieldName)) {
 				if (dataDefinition.getStorageType() == null) {
 					valid = false;
@@ -1347,6 +1375,17 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("schemaVersion", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition1.getSchemaVersion(),
+						dataDefinition2.getSchemaVersion())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("storageType", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						dataDefinition1.getStorageType(),
@@ -1417,6 +1456,17 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			if (Objects.equals("id", fieldName)) {
 				if (!Objects.deepEquals(
 						dataDefinition.getId(), jsonObject.getLong("id"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("schemaVersion", fieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition.getSchemaVersion(),
+						jsonObject.getString("schemaVersion"))) {
 
 					return false;
 				}
@@ -1621,6 +1671,14 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("schemaVersion")) {
+			sb.append("'");
+			sb.append(String.valueOf(dataDefinition.getSchemaVersion()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("siteId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1669,6 +1727,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = RandomTestUtil.randomString();
 				id = RandomTestUtil.randomLong();
+				schemaVersion = RandomTestUtil.randomString();
 				siteId = testGroup.getGroupId();
 				storageType = RandomTestUtil.randomString();
 				userId = RandomTestUtil.randomLong();
