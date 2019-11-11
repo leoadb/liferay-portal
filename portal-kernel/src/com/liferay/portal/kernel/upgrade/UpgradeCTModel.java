@@ -15,20 +15,22 @@
 package com.liferay.portal.kernel.upgrade;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import java.util.Collection;
 
 /**
  * @author Preston Crary
  */
 public class UpgradeCTModel extends UpgradeProcess {
 
-	public UpgradeCTModel(Class<?> tableClass) {
-		_tableClass = tableClass;
+	public UpgradeCTModel(String tableName) {
+		_tableName = tableName;
 	}
 
 	@Override
@@ -38,7 +40,7 @@ public class UpgradeCTModel extends UpgradeProcess {
 		DBInspector dbInspector = new DBInspector(connection);
 
 		String tableName = dbInspector.normalizeName(
-			getTableName(_tableClass), databaseMetaData);
+			_tableName, databaseMetaData);
 
 		try (ResultSet rs = databaseMetaData.getColumns(
 				dbInspector.getCatalog(), dbInspector.getSchema(), tableName,
@@ -71,71 +73,53 @@ public class UpgradeCTModel extends UpgradeProcess {
 				"No primary key column found for " + tableName);
 		}
 
-		alter(
-			_tableClass, new AlterTableAddCTCollectionIdColumn(),
-			new DropPrimaryKeyAlterable(),
-			new AddPrimaryKeyAlterable(primaryKeyColumnName));
-	}
-
-	private final Class<?> _tableClass;
-
-	private static class AddPrimaryKeyAlterable
-		extends BasePrimaryKeyAlterable {
-
-		@Override
-		public String getSQL(String tableName) {
-			return StringBundler.concat(
-				"alter table ", tableName, " add primary key (",
-				_primaryKeyColumnName, ", ctCollectionId)");
-		}
-
-		private AddPrimaryKeyAlterable(String primaryKeyColumnName) {
-			_primaryKeyColumnName = primaryKeyColumnName;
-		}
-
-		private final String _primaryKeyColumnName;
-
-	}
-
-	private abstract static class BasePrimaryKeyAlterable implements Alterable {
-
-		@Override
-		public boolean shouldAddIndex(Collection<String> columnNames) {
-			return false;
-		}
-
-		@Override
-		public boolean shouldDropIndex(Collection<String> columnNames) {
-			return false;
-		}
-
-	}
-
-	private static class DropPrimaryKeyAlterable
-		extends BasePrimaryKeyAlterable {
-
-		@Override
-		public String getSQL(String tableName) {
-			return StringBundler.concat(
-				"alter table ", tableName, " drop primary key");
-		}
-
-	}
-
-	private class AlterTableAddCTCollectionIdColumn
-		extends AlterTableAddColumn {
-
-		@Override
-		public String getSQL(String tableName) {
-			return StringBundler.concat(
+		runSQL(
+			StringBundler.concat(
 				"alter table ", tableName,
-				" add ctCollectionId LONG default 0 not null");
+				" add ctCollectionId LONG default 0 not null"));
+
+		DB db = DBManagerUtil.getDB();
+
+		if (db.getDBType() == DBType.SYBASE) {
+			String primaryKeyConstraintName = null;
+
+			try (PreparedStatement ps = connection.prepareStatement(
+					"sp_helpconstraint " + tableName);
+				ResultSet rs = ps.executeQuery()) {
+
+				while (rs.next()) {
+					String definition = rs.getString("definition");
+
+					if (definition.startsWith("PRIMARY KEY INDEX")) {
+						primaryKeyConstraintName = rs.getString("name");
+
+						break;
+					}
+				}
+			}
+
+			if (primaryKeyConstraintName == null) {
+				throw new UpgradeException(
+					"No primary key constraint found for " + tableName);
+			}
+
+			runSQL(
+				StringBundler.concat(
+					"sp_dropkey primary ", tableName, " ",
+					primaryKeyConstraintName));
+		}
+		else {
+			runSQL(
+				StringBundler.concat(
+					"alter table ", tableName, " drop primary key"));
 		}
 
-		private AlterTableAddCTCollectionIdColumn() {
-			super("ctCollectionId");
-		}
-
+		runSQL(
+			StringBundler.concat(
+				"alter table ", tableName, " add primary key (",
+				primaryKeyColumnName, ", ctCollectionId)"));
 	}
+
+	private final String _tableName;
 
 }

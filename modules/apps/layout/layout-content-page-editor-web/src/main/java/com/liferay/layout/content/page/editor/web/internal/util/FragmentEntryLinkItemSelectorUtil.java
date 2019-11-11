@@ -41,12 +41,20 @@ public class FragmentEntryLinkItemSelectorUtil {
 
 		JSONArray fieldSetsJSONArray = jsonObject.getJSONArray("fieldSets");
 
+		if (fieldSetsJSONArray == null) {
+			return;
+		}
+
 		for (int i = 0; i < fieldSetsJSONArray.length(); i++) {
 			JSONObject fieldSetsJSONObject = fieldSetsJSONArray.getJSONObject(
 				i);
 
 			JSONArray fieldsJSONArray = fieldSetsJSONObject.getJSONArray(
 				"fields");
+
+			if (fieldsJSONArray == null) {
+				continue;
+			}
 
 			for (int j = 0; j < fieldsJSONArray.length(); j++) {
 				JSONObject fieldJSONObject = fieldsJSONArray.getJSONObject(j);
@@ -59,13 +67,12 @@ public class FragmentEntryLinkItemSelectorUtil {
 					JSONObject typeOptionsJSONObject =
 						fieldJSONObject.getJSONObject("typeOptions");
 
-					if (typeOptionsJSONObject.has("className")) {
+					if (typeOptionsJSONObject.has("itemType")) {
 						typeOptionsJSONObject.put(
 							"itemSelectorUrl",
 							_getInfoItemSelectorURL(
 								itemSelector, httpServletRequest,
-								liferayPortletResponse,
-								typeOptionsJSONObject.getString("className")));
+								liferayPortletResponse, typeOptionsJSONObject));
 					}
 				}
 			}
@@ -74,13 +81,22 @@ public class FragmentEntryLinkItemSelectorUtil {
 
 	private static String _getInfoItemSelectorURL(
 		ItemSelector itemSelector, HttpServletRequest httpServletRequest,
-		LiferayPortletResponse liferayPortletResponse, String className) {
+		LiferayPortletResponse liferayPortletResponse,
+		JSONObject typeOptionsJSONObject) {
 
 		InfoItemItemSelectorCriterion itemSelectorCriterion =
 			new InfoItemItemSelectorCriterion();
 
-		if (Validator.isNotNull(className)) {
-			itemSelectorCriterion.setClassName(className);
+		String itemType = typeOptionsJSONObject.getString("itemType");
+
+		if (Validator.isNotNull(itemType)) {
+			itemSelectorCriterion.setItemType(itemType);
+
+			String itemSubtype = typeOptionsJSONObject.getString("itemSubtype");
+
+			if (Validator.isNotNull(itemSubtype)) {
+				itemSelectorCriterion.setItemSubtype(itemSubtype);
+			}
 		}
 
 		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(

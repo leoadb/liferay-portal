@@ -16,9 +16,9 @@ package com.liferay.change.tracking.web.internal.portlet.action;
 
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,14 +31,14 @@ public abstract class BaseCTProcessMVCResourceCommand
 		return _statuses.getOrDefault(type, 0);
 	}
 
-	private static final Map<String, Integer> _statuses =
-		new HashMap<String, Integer>() {
-			{
-				put("all", WorkflowConstants.STATUS_ANY);
-				put("failed", BackgroundTaskConstants.STATUS_FAILED);
-				put("in-progress", BackgroundTaskConstants.STATUS_IN_PROGRESS);
-				put("published", BackgroundTaskConstants.STATUS_SUCCESSFUL);
-			}
-		};
+	private static final Map<String, Integer> _statuses = HashMapBuilder.put(
+		"all", WorkflowConstants.STATUS_ANY
+	).put(
+		"failed", BackgroundTaskConstants.STATUS_FAILED
+	).put(
+		"in-progress", BackgroundTaskConstants.STATUS_IN_PROGRESS
+	).put(
+		"published", BackgroundTaskConstants.STATUS_SUCCESSFUL
+	).build();
 
 }

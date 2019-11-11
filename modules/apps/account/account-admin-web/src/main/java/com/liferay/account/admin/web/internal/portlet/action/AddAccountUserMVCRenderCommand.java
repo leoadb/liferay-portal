@@ -16,7 +16,7 @@ package com.liferay.account.admin.web.internal.portlet.action;
 
 import com.liferay.account.admin.web.internal.constants.AccountWebKeys;
 import com.liferay.account.admin.web.internal.display.AccountEntryDisplay;
-import com.liferay.account.constants.AccountsPortletKeys;
+import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
 
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=" + AccountsPortletKeys.ACCOUNTS_ADMIN,
+		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
 		"mvc.command.name=/account_admin/add_account_user"
 	},
 	service = MVCRenderCommand.class
@@ -51,7 +51,7 @@ public class AddAccountUserMVCRenderCommand implements MVCRenderCommand {
 			AccountWebKeys.ACCOUNT_ENTRY_DISPLAY,
 			AccountEntryDisplay.of(accountEntryId));
 
-		return "/add_account_user.jsp";
+		return "/account_entries_admin/add_account_user.jsp";
 	}
 
 }

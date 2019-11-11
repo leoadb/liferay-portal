@@ -19,10 +19,10 @@ import com.liferay.batch.engine.BatchEngineTaskMethod;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.ItemClassRegistry;
 import com.liferay.batch.engine.internal.item.BatchEngineTaskItemResourceDelegate;
-import com.liferay.petra.function.UnsafeBiFunction;
+import com.liferay.batch.engine.internal.item.BatchEngineTaskItemResourceDelegateCreator;
+import com.liferay.batch.engine.internal.writer.ItemClassIndexUtil;
 import com.liferay.petra.lang.HashUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -57,6 +58,18 @@ public class BatchEngineTaskMethodRegistryImpl
 	implements BatchEngineTaskMethodRegistry {
 
 	@Override
+	public BatchEngineTaskItemResourceDelegateCreator
+		getBatchEngineTaskItemResourceDelegateCreator(
+			String apiVersion,
+			BatchEngineTaskOperation batchEngineTaskOperation,
+			String itemClassName) {
+
+		return _batchEngineTaskItemResourceDelegateCreators.get(
+			new CreatorKey(
+				apiVersion, batchEngineTaskOperation, itemClassName));
+	}
+
+	@Override
 	public Class<?> getItemClass(String itemClassName) {
 		Map.Entry<Class<?>, AtomicInteger> entry = _itemClasses.get(
 			itemClassName);
@@ -66,19 +79,6 @@ public class BatchEngineTaskMethodRegistryImpl
 		}
 
 		return entry.getKey();
-	}
-
-	@Override
-	public UnsafeBiFunction
-		<Company, User, BatchEngineTaskItemResourceDelegate,
-		 ReflectiveOperationException> getUnsafeBiFunction(
-			String apiVersion,
-			BatchEngineTaskOperation batchEngineTaskOperation,
-			String itemClassName) {
-
-		return _unsafeBiFunctions.get(
-			new FactoryKey(
-				apiVersion, batchEngineTaskOperation, itemClassName));
 	}
 
 	@Activate
@@ -100,27 +100,24 @@ public class BatchEngineTaskMethodRegistryImpl
 		_serviceTracker.close();
 	}
 
+	private final Map<CreatorKey, BatchEngineTaskItemResourceDelegateCreator>
+		_batchEngineTaskItemResourceDelegateCreators =
+			new ConcurrentHashMap<>();
 	private final Map<String, Map.Entry<Class<?>, AtomicInteger>> _itemClasses =
 		new ConcurrentHashMap<>();
-	private ServiceTracker<Object, List<FactoryKey>> _serviceTracker;
-	private final Map
-		<FactoryKey,
-		 UnsafeBiFunction
-			 <Company, User, BatchEngineTaskItemResourceDelegate,
-			  ReflectiveOperationException>> _unsafeBiFunctions =
-				new ConcurrentHashMap<>();
+	private ServiceTracker<Object, List<CreatorKey>> _serviceTracker;
 
-	private static class FactoryKey {
+	private static class CreatorKey {
 
 		@Override
 		public boolean equals(Object obj) {
-			FactoryKey factoryKey = (FactoryKey)obj;
+			CreatorKey creatorKey = (CreatorKey)obj;
 
-			if (Objects.equals(factoryKey._apiVersion, _apiVersion) &&
+			if (Objects.equals(creatorKey._apiVersion, _apiVersion) &&
 				Objects.equals(
-					factoryKey._batchEngineTaskOperation,
+					creatorKey._batchEngineTaskOperation,
 					_batchEngineTaskOperation) &&
-				Objects.equals(factoryKey._itemClassName, _itemClassName)) {
+				Objects.equals(creatorKey._itemClassName, _itemClassName)) {
 
 				return true;
 			}
@@ -138,7 +135,7 @@ public class BatchEngineTaskMethodRegistryImpl
 			return hashCode;
 		}
 
-		private FactoryKey(
+		private CreatorKey(
 			String apiVersion,
 			BatchEngineTaskOperation batchEngineTaskOperation,
 			String itemClassName) {
@@ -155,17 +152,17 @@ public class BatchEngineTaskMethodRegistryImpl
 	}
 
 	private class BatchEngineTaskMethodServiceTrackerCustomizer
-		implements ServiceTrackerCustomizer<Object, List<FactoryKey>> {
+		implements ServiceTrackerCustomizer<Object, List<CreatorKey>> {
 
 		@Override
-		public List<FactoryKey> addingService(
+		public List<CreatorKey> addingService(
 			ServiceReference<Object> serviceReference) {
 
 			Object resource = _bundleContext.getService(serviceReference);
 
 			Class<?> resourceClass = resource.getClass();
 
-			List<FactoryKey> factoryKeys = null;
+			List<CreatorKey> creatorKeys = null;
 
 			for (Method resourceMethod : resourceClass.getMethods()) {
 				BatchEngineTaskMethod batchEngineTaskMethod =
@@ -177,37 +174,41 @@ public class BatchEngineTaskMethodRegistryImpl
 
 				Class<?> itemClass = batchEngineTaskMethod.itemClass();
 
-				FactoryKey factoryKey = new FactoryKey(
+				CreatorKey creatorKey = new CreatorKey(
 					String.valueOf(serviceReference.getProperty("api.version")),
 					batchEngineTaskMethod.batchEngineTaskOperation(),
 					itemClass.getName());
 
 				try {
-					String[] itemClassFieldNames = _getItemClassFieldNames(
-						resourceClass, resourceMethod);
+					Map.Entry<String, Class<?>>[]
+						resourceMethodArgNameTypeEntries =
+							_getResourceMethodArgNameTypeEntries(
+								resourceClass, resourceMethod);
 
 					ServiceObjects<Object> serviceObjects =
 						_bundleContext.getServiceObjects(serviceReference);
 
-					_unsafeBiFunctions.put(
-						factoryKey,
-						(company, user) ->
+					_batchEngineTaskItemResourceDelegateCreators.put(
+						creatorKey,
+						(company, parameters, user) ->
 							new BatchEngineTaskItemResourceDelegate(
-								company, itemClassFieldNames, resourceMethod,
+								company, ItemClassIndexUtil.index(itemClass),
+								parameters, resourceMethod,
+								resourceMethodArgNameTypeEntries,
 								serviceObjects, user));
 				}
 				catch (NoSuchMethodException nsme) {
 					throw new IllegalStateException(nsme);
 				}
 
-				if (factoryKeys == null) {
-					factoryKeys = new ArrayList<>();
+				if (creatorKeys == null) {
+					creatorKeys = new ArrayList<>();
 				}
 
-				factoryKeys.add(factoryKey);
+				creatorKeys.add(creatorKey);
 
 				_itemClasses.compute(
-					factoryKey._itemClassName,
+					creatorKey._itemClassName,
 					(itemClassName, entry) -> {
 						if (entry == null) {
 							return new AbstractMap.SimpleImmutableEntry<>(
@@ -222,25 +223,25 @@ public class BatchEngineTaskMethodRegistryImpl
 					});
 			}
 
-			return factoryKeys;
+			return creatorKeys;
 		}
 
 		@Override
 		public void modifiedService(
 			ServiceReference<Object> serviceReference,
-			List<FactoryKey> factoryKeys) {
+			List<CreatorKey> creatorKeys) {
 		}
 
 		@Override
 		public void removedService(
 			ServiceReference<Object> serviceReference,
-			List<FactoryKey> factoryKeys) {
+			List<CreatorKey> creatorKeys) {
 
-			for (FactoryKey factoryKey : factoryKeys) {
-				_unsafeBiFunctions.remove(factoryKey);
+			for (CreatorKey creatorKey : creatorKeys) {
+				_batchEngineTaskItemResourceDelegateCreators.remove(creatorKey);
 
 				_itemClasses.compute(
-					factoryKey._itemClassName,
+					creatorKey._itemClassName,
 					(itemClassName, entry) -> {
 						if (entry == null) {
 							return null;
@@ -265,15 +266,16 @@ public class BatchEngineTaskMethodRegistryImpl
 			_bundleContext = bundleContext;
 		}
 
-		private String[] _getItemClassFieldNames(
-				Class<?> resourceClass, Method resourceMethod)
+		private Map.Entry<String, Class<?>>[]
+				_getResourceMethodArgNameTypeEntries(
+					Class<?> resourceClass, Method resourceMethod)
 			throws NoSuchMethodException {
 
 			Parameter[] resourceMethodParameters =
 				resourceMethod.getParameters();
 
-			String[] itemClassFieldNames =
-				new String[resourceMethodParameters.length];
+			Map.Entry<String, Class<?>>[] resourceMethodArgNameTypeEntries =
+				new Map.Entry[resourceMethodParameters.length];
 
 			Class<?> parentResourceClass = resourceClass.getSuperclass();
 
@@ -289,22 +291,51 @@ public class BatchEngineTaskMethodRegistryImpl
 				BatchEngineTaskField batchEngineTaskField =
 					parameter.getAnnotation(BatchEngineTaskField.class);
 
+				Class<?> parameterType = parameter.getType();
+
 				if (batchEngineTaskField == null) {
+					if (parentResourceMethodParameters == null) {
+						continue;
+					}
+
 					parameter = parentResourceMethodParameters[i];
+
+					if (parameterType == Pagination.class) {
+						resourceMethodArgNameTypeEntries[i] =
+							new AbstractMap.SimpleImmutableEntry<>(
+								parameter.getName(), parameterType);
+
+						continue;
+					}
 
 					PathParam pathParam = parameter.getAnnotation(
 						PathParam.class);
 
 					if (pathParam != null) {
-						itemClassFieldNames[i] = pathParam.value();
+						resourceMethodArgNameTypeEntries[i] =
+							new AbstractMap.SimpleImmutableEntry<>(
+								pathParam.value(), parameterType);
+
+						continue;
+					}
+
+					QueryParam queryParam = parameter.getAnnotation(
+						QueryParam.class);
+
+					if (queryParam != null) {
+						resourceMethodArgNameTypeEntries[i] =
+							new AbstractMap.SimpleImmutableEntry<>(
+								queryParam.value(), parameterType);
 					}
 				}
 				else {
-					itemClassFieldNames[i] = batchEngineTaskField.value();
+					resourceMethodArgNameTypeEntries[i] =
+						new AbstractMap.SimpleImmutableEntry<>(
+							batchEngineTaskField.value(), parameterType);
 				}
 			}
 
-			return itemClassFieldNames;
+			return resourceMethodArgNameTypeEntries;
 		}
 
 		private final BundleContext _bundleContext;

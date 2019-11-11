@@ -14,7 +14,7 @@
 
 package com.liferay.account.admin.web.internal.portlet.action;
 
-import com.liferay.account.constants.AccountsPortletKeys;
+import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.exception.AccountEntryDomainsException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=" + AccountsPortletKeys.ACCOUNTS_ADMIN,
+		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
 		"mvc.command.name=/account_admin/edit_account_entry"
 	},
 	service = MVCActionCommand.class
@@ -97,12 +97,12 @@ public class EditAccountEntryMVCActionCommand extends BaseMVCActionCommand {
 			}
 		}
 		catch (Exception e) {
-			String mvcPath = "/edit_account_entry.jsp";
+			String mvcPath = "/account_entries_admin/edit_account_entry.jsp";
 
 			if (e instanceof PrincipalException) {
 				SessionErrors.add(actionRequest, e.getClass());
 
-				mvcPath = "/error.jsp";
+				mvcPath = "/account_entries_admin/error.jsp";
 			}
 			else if (e instanceof AccountEntryDomainsException) {
 				SessionErrors.add(actionRequest, e.getClass());

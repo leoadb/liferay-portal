@@ -191,11 +191,16 @@ const Body = ({page, pageSize, processId, query, search, sort}) => {
 	);
 };
 
-const Item = ({durationAvg, instanceCount, name, overdueInstanceCount}) => {
+const Item = ({
+	breachedInstanceCount,
+	breachedInstancePercentage,
+	durationAvg,
+	name
+}) => {
 	const formattedDuration = formatDuration(durationAvg);
 	const formattedPercentage = getFormattedPercentage(
-		overdueInstanceCount,
-		instanceCount
+		breachedInstancePercentage,
+		100
 	);
 
 	return (
@@ -208,7 +213,7 @@ const Item = ({durationAvg, instanceCount, name, overdueInstanceCount}) => {
 			</td>
 
 			<td className="text-right">
-				{overdueInstanceCount} {`(${formattedPercentage})`}
+				{breachedInstanceCount} ({formattedPercentage})
 			</td>
 
 			<td className="text-right">{formattedDuration}</td>
@@ -231,7 +236,7 @@ const Table = ({items}) => {
 
 						<th className="text-right" style={{width: '20%'}}>
 							<ListHeadItem
-								name="overdueInstanceCount"
+								name="breachedInstancePercentage"
 								title={Liferay.Language.get(
 									'sla-breached-percent'
 								)}

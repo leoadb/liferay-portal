@@ -21,14 +21,23 @@ import com.liferay.item.selector.BaseItemSelectorCriterion;
  */
 public class InfoItemItemSelectorCriterion extends BaseItemSelectorCriterion {
 
-	public String getClassName() {
-		return _className;
+	public String getItemSubtype() {
+		return _itemSubtype;
 	}
 
-	public void setClassName(String className) {
-		_className = className;
+	public String getItemType() {
+		return _itemType;
 	}
 
-	private String _className;
+	public void setItemSubtype(String itemSubtype) {
+		_itemSubtype = itemSubtype;
+	}
+
+	public void setItemType(String itemType) {
+		_itemType = itemType;
+	}
+
+	private String _itemSubtype;
+	private String _itemType;
 
 }

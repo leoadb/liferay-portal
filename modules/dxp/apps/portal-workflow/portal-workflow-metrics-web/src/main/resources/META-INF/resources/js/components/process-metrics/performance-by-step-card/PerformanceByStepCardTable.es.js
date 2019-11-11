@@ -43,11 +43,16 @@ const Table = ({items = []}) => (
 	</div>
 );
 
-const Item = ({durationAvg, instanceCount, name, overdueInstanceCount}) => {
+const Item = ({
+	breachedInstanceCount,
+	breachedInstancePercentage,
+	durationAvg,
+	name
+}) => {
 	const formattedDuration = formatDuration(durationAvg);
 	const formattedPercentage = getFormattedPercentage(
-		overdueInstanceCount,
-		instanceCount
+		breachedInstancePercentage,
+		100
 	);
 
 	return (
@@ -55,7 +60,7 @@ const Item = ({durationAvg, instanceCount, name, overdueInstanceCount}) => {
 			<td data-testid="stepName">{name}</td>
 
 			<td className="text-right" data-testid="slaBreached">
-				{`${overdueInstanceCount} (${formattedPercentage})`}
+				{breachedInstanceCount} ({formattedPercentage})
 			</td>
 
 			<td className="text-right" data-testid="avgCompletionTime">

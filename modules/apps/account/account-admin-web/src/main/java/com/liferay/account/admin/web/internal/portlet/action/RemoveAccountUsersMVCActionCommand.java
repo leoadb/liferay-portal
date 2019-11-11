@@ -14,7 +14,7 @@
 
 package com.liferay.account.admin.web.internal.portlet.action;
 
-import com.liferay.account.constants.AccountsPortletKeys;
+import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.exception.NoSuchEntryUserRelException;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=" + AccountsPortletKeys.ACCOUNTS_ADMIN,
+		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
 		"mvc.command.name=/account_admin/remove_account_users"
 	},
 	service = MVCActionCommand.class
@@ -70,7 +70,8 @@ public class RemoveAccountUsersMVCActionCommand extends BaseMVCActionCommand {
 				throw e;
 			}
 
-			actionResponse.setRenderParameter("mvcPath", "/view.jsp");
+			actionResponse.setRenderParameter(
+				"mvcPath", "/account_entries_admin/view.jsp");
 		}
 	}
 
