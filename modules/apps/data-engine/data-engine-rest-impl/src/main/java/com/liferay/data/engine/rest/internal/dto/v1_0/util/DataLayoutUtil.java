@@ -43,6 +43,7 @@ public class DataLayoutUtil {
 				dataLayoutPages = _toDataLayoutPages(
 					ddmFormLayout.getDDMFormLayoutPages());
 				paginationMode = ddmFormLayout.getPaginationMode();
+				schemaVersion = ddmFormLayout.getSchemaVersion();
 			}
 		};
 	}
