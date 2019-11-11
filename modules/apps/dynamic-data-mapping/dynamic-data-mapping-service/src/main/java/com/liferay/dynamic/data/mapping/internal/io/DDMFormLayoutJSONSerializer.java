@@ -57,6 +57,8 @@ public class DDMFormLayoutJSONSerializer implements DDMFormLayoutSerializer {
 		addPages(jsonObject, ddmFormLayout.getDDMFormLayoutPages());
 		addPaginationMode(jsonObject, ddmFormLayout.getPaginationMode());
 
+		jsonObject.put("schemaVersion", ddmFormLayout.getSchemaVersion());
+
 		DDMFormLayoutSerializerSerializeResponse.Builder builder =
 			DDMFormLayoutSerializerSerializeResponse.Builder.newBuilder(
 				jsonObject.toString());
