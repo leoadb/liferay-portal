@@ -349,8 +349,9 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		}
 
 		DDMFormValues ddmFormValues = getDDMFormValues(
+			ddmFormInstanceRecordVersion.getDDMForm(),
 			ddmFormInstanceRecordVersion.getStorageId(),
-			ddmFormInstanceRecordVersion.getDDMForm());
+			getStorageType(ddmFormInstanceRecordVersion.getFormInstance()));
 
 		serviceContext.setCommand(Constants.REVERT);
 
@@ -746,11 +747,14 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		}
 
 		DDMFormValues lastDDMFormValues = getDDMFormValues(
+			lastDDMFormInstanceRecordVersion.getDDMForm(),
 			lastDDMFormInstanceRecordVersion.getStorageId(),
-			lastDDMFormInstanceRecordVersion.getDDMForm());
+			getStorageType(lastDDMFormInstanceRecordVersion.getFormInstance()));
 		DDMFormValues latestDDMFormValues = getDDMFormValues(
+			latestDDMFormInstanceRecordVersion.getDDMForm(),
 			latestDDMFormInstanceRecordVersion.getStorageId(),
-			latestDDMFormInstanceRecordVersion.getDDMForm());
+			getStorageType(
+				latestDDMFormInstanceRecordVersion.getFormInstance()));
 
 		if (!lastDDMFormValues.equals(latestDDMFormValues)) {
 			return false;
