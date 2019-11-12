@@ -36,6 +36,9 @@ components:
                 id:
                     format: int64
                     type: integer
+                instanceId:
+                    format: int64
+                    type: integer
                 name:
                     additionalProperties:
                         type: object
@@ -330,7 +333,7 @@ info:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"
     title: "Data Engine"
-    version: v1.0
+    version: v2.0
 openapi: 3.0.1
 paths:
     "/data-definitions/data-definition-fields/field-types":
@@ -1166,42 +1169,12 @@ paths:
                     description:
                         ""
             tags: ["DataRecord"]
-    "/sites/{siteId}/data-definition-permissions":
-        post:
-            operationId: postSiteDataDefinitionPermission
-            parameters:
-                - in: path
-                  name: siteId
-                  required: true
-                  schema:
-                      format: int64
-                      type: integer
-                - in: query
-                  name: operation
-                  required: true
-                  schema:
-                      type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/DataDefinitionPermission"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/DataDefinitionPermission"
-            responses:
-                204:
-                    content:
-                        application/json: {}
-                    description:
-                        ""
-            tags: ["DataDefinition"]
-    "/sites/{siteId}/data-definitions":
+    "/instances/{instanceId}/data-definitions":
         get:
-            operationId: getSiteDataDefinitionsPage
+            operationId: getInstanceDataDefinitionsPage
             parameters:
                 - in: path
-                  name: siteId
+                  name: instanceId
                   required: true
                   schema:
                       format: int64
@@ -1245,10 +1218,10 @@ paths:
                         ""
             tags: ["DataDefinition"]
         post:
-            operationId: postSiteDataDefinition
+            operationId: postInstanceDataDefinition
             parameters:
                 - in: path
-                  name: siteId
+                  name: instanceId
                   required: true
                   schema:
                       format: int64
@@ -1273,12 +1246,12 @@ paths:
                     description:
                         ""
             tags: ["DataDefinition"]
-    "/sites/{siteId}/data-definitions/{dataDefinitionKey}":
+    "/instances/{instanceId}/data-definitions/{dataDefinitionKey}":
         get:
-            operationId: getSiteDataDefinition
+            operationId: getInstanceDataDefinition
             parameters:
                 - in: path
-                  name: siteId
+                  name: instanceId
                   required: true
                   schema:
                       format: int64
@@ -1302,6 +1275,36 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DataDefinition"
+                    description:
+                        ""
+            tags: ["DataDefinition"]
+    "/sites/{siteId}/data-definition-permissions":
+        post:
+            operationId: postSiteDataDefinitionPermission
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: query
+                  name: operation
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DataDefinitionPermission"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DataDefinitionPermission"
+            responses:
+                204:
+                    content:
+                        application/json: {}
                     description:
                         ""
             tags: ["DataDefinition"]

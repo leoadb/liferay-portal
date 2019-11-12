@@ -67,6 +67,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -240,6 +241,29 @@ public class DataDefinitionResourceImpl
 	}
 
 	@Override
+	public DataDefinition getInstanceDataDefinition(
+			Long instanceId, String dataDefinitionKey, Long classNameId)
+		throws Exception {
+
+		Group group = _groupLocalService.fetchCompanyGroup(instanceId);
+
+		return getSiteDataDefinition(
+			group.getGroupId(), dataDefinitionKey, classNameId);
+	}
+
+	@Override
+	public Page<DataDefinition> getInstanceDataDefinitionsPage(
+			Long instanceId, Long classNameId, String keywords,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		Group group = _groupLocalService.fetchCompanyGroup(instanceId);
+
+		return getSiteDataDefinitionsPage(
+			group.getGroupId(), classNameId, keywords, pagination, sorts);
+	}
+
+	@Override
 	public DataDefinition getSiteDataDefinition(
 			Long siteId, String dataDefinitionKey, Long classNameId)
 		throws Exception {
@@ -353,6 +377,18 @@ public class DataDefinitionResourceImpl
 			DataDefinitionConstants.RESOURCE_NAME,
 			_resourcePermissionLocalService, _roleLocalService,
 			dataDefinitionPermission.getRoleNames(), ddmStructure.getGroupId());
+	}
+
+	@Override
+	public DataDefinition postInstanceDataDefinition(
+			Long instanceId, DataDefinition dataDefinition)
+		throws Exception {
+
+		Group group = _groupLocalService.fetchCompanyGroup(instanceId);
+
+		dataDefinition.setSiteId(group.getGroupId());
+
+		return postSiteDataDefinition(group.getGroupId(), dataDefinition);
 	}
 
 	@Override

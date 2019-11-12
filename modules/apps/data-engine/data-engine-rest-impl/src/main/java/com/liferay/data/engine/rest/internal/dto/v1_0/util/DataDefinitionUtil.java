@@ -69,6 +69,7 @@ public class DataDefinitionUtil {
 				description = LocalizedValueUtil.toStringObjectMap(
 					ddmStructure.getDescriptionMap());
 				id = ddmStructure.getStructureId();
+				instanceId = ddmStructure.getCompanyId();
 				name = LocalizedValueUtil.toStringObjectMap(
 					ddmStructure.getNameMap());
 				siteId = ddmStructure.getGroupId();

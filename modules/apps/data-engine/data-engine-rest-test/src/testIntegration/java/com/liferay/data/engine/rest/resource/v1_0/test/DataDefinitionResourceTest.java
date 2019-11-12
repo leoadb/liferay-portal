@@ -73,6 +73,52 @@ public class DataDefinitionResourceTest
 
 	@Override
 	@Test
+	public void testGetInstanceDataDefinition() throws Exception {
+		DataDefinition postDataDefinition =
+			testGetInstanceDataDefinition_addDataDefinition();
+
+		DataDefinition getDataDefinition =
+			dataDefinitionResource.getInstanceDataDefinition(
+				postDataDefinition.getInstanceId(),
+				postDataDefinition.getDataDefinitionKey(), null);
+
+		assertEquals(postDataDefinition, getDataDefinition);
+	}
+
+	@Override
+	@Test
+	public void testGetInstanceDataDefinitionsPage() throws Exception {
+		super.testGetInstanceDataDefinitionsPage();
+
+		Page<DataDefinition> page =
+			dataDefinitionResource.getInstanceDataDefinitionsPage(
+				testGetInstanceDataDefinitionsPage_getInstanceId(), null,
+				"definition", Pagination.of(1, 2), null);
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		dataDefinitionResource.postInstanceDataDefinition(
+			testCompany.getCompanyId(), randomDataDefinition());
+
+		DataDefinition expectedDataDefinition = randomDataDefinition();
+
+		long classNameId = _portal.getClassNameId(
+			DDMFormInstance.class.getName());
+
+		expectedDataDefinition.setClassNameId(classNameId);
+
+		dataDefinitionResource.postInstanceDataDefinition(
+			testCompany.getCompanyId(), expectedDataDefinition);
+
+		page = dataDefinitionResource.getInstanceDataDefinitionsPage(
+			testGetInstanceDataDefinitionsPage_getInstanceId(), classNameId,
+			null, Pagination.of(1, 2), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+	}
+
+	@Override
+	@Test
 	public void testGetSiteDataDefinitionsPage() throws Exception {
 		super.testGetSiteDataDefinitionsPage();
 
@@ -127,6 +173,12 @@ public class DataDefinitionResourceTest
 	@Override
 	@Test
 	public void testGraphQLGetDataDefinition() {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetInstanceDataDefinition() {
 	}
 
 	@Ignore
@@ -219,6 +271,21 @@ public class DataDefinitionResourceTest
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 	}
 
+	@Override
+	protected DataDefinition testGetInstanceDataDefinition_addDataDefinition()
+		throws Exception {
+
+		return dataDefinitionResource.postInstanceDataDefinition(
+			testCompany.getCompanyId(), randomDataDefinition());
+	}
+
+	@Override
+	protected Long testGetInstanceDataDefinitionsPage_getInstanceId()
+		throws Exception {
+
+		return testCompany.getCompanyId();
+	}
+
 	private DataDefinition _createDataDefinition(
 			String description, String name)
 		throws Exception {
@@ -245,6 +312,7 @@ public class DataDefinitionResourceTest
 				};
 				dataDefinitionKey = RandomTestUtil.randomString();
 				defaultLanguageId = "en_US";
+				instanceId = testCompany.getCompanyId();
 				siteId = testGroup.getGroupId();
 				userId = TestPropsValues.getUserId();
 			}
