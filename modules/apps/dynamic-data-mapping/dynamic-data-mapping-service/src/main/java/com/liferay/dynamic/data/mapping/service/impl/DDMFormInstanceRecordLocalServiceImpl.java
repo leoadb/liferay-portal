@@ -248,10 +248,11 @@ public class DDMFormInstanceRecordLocalServiceImpl
 	}
 
 	@Override
-	public DDMFormValues getDDMFormValues(long storageId, DDMForm ddmForm)
+	public DDMFormValues getDDMFormValues(
+			DDMForm ddmForm, long storageId, String storageType)
 		throws StorageException {
 
-		DDMStorageAdapter ddmStorageAdapter = getDDMStorageAdapter();
+		DDMStorageAdapter ddmStorageAdapter = getDDMStorageAdapter(storageType);
 
 		DDMStorageAdapterGetRequest.Builder builder =
 			DDMStorageAdapterGetRequest.Builder.newBuilder(storageId, ddmForm);
