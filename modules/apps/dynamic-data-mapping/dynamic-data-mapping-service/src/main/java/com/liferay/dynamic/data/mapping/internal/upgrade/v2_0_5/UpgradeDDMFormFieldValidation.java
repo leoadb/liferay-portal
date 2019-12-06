@@ -17,6 +17,7 @@ package com.liferay.dynamic.data.mapping.internal.upgrade.v2_0_5;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -113,6 +114,10 @@ public class UpgradeDDMFormFieldValidation extends UpgradeProcess {
 				String originalValue = validationJSONObject.getString(
 					"errorMessage");
 
+				if (_isValidJSONObject(originalValue)) {
+					continue;
+				}
+
 				Map<String, String> localizedValue = new HashMap<>();
 
 				for (int j = 0; j < availableLanguageIdsJSONArray.length();
@@ -160,6 +165,17 @@ public class UpgradeDDMFormFieldValidation extends UpgradeProcess {
 		}
 
 		return true;
+	}
+
+	private boolean _isValidJSONObject(String value) {
+		try {
+			_jsonFactory.createJSONObject(value);
+
+			return true;
+		}
+		catch (JSONException jsone) {
+			return false;
+		}
 	}
 
 	private final JSONFactory _jsonFactory;
