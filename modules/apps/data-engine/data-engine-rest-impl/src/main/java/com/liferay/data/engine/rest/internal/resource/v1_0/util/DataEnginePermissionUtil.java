@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -175,17 +174,13 @@ public class DataEnginePermissionUtil {
 		}
 		else {
 			for (Role role : roles) {
-				ResourcePermission resourcePermission =
-					resourcePermissionLocalService.fetchResourcePermission(
+				for (String actionId : actionIds) {
+					resourcePermissionLocalService.removeResourcePermission(
 						company.getCompanyId(),
 						DataEngineConstants.RESOURCE_NAME,
 						ResourceConstants.SCOPE_COMPANY,
 						String.valueOf(company.getCompanyId()),
-						role.getRoleId());
-
-				if (resourcePermission != null) {
-					resourcePermissionLocalService.deleteResourcePermission(
-						resourcePermission);
+						role.getRoleId(), actionId);
 				}
 			}
 		}
