@@ -163,11 +163,14 @@ public class DataEnginePermissionUtil {
 				DataEngineConstants.OPERATION_SAVE_PERMISSION, operation)) {
 
 			for (Role role : roles) {
-				resourcePermissionLocalService.setResourcePermissions(
-					company.getCompanyId(), DataEngineConstants.RESOURCE_NAME,
-					ResourceConstants.SCOPE_COMPANY,
-					String.valueOf(company.getCompanyId()), role.getRoleId(),
-					ArrayUtil.toStringArray(actionIds));
+				for (String actionId : actionIds) {
+					resourcePermissionLocalService.addResourcePermission(
+						company.getCompanyId(),
+						DataEngineConstants.RESOURCE_NAME,
+						ResourceConstants.SCOPE_COMPANY,
+						String.valueOf(company.getCompanyId()),
+						role.getRoleId(), actionId);
+				}
 			}
 		}
 		else {
