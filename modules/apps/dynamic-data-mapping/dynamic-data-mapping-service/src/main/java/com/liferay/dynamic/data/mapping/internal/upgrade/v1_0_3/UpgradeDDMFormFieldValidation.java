@@ -28,6 +28,7 @@ public class UpgradeDDMFormFieldValidation
 		super(jsonFactory);
 	}
 
+	@Override
 	protected long getClassNameId() {
 		return PortalUtil.getClassNameId(
 			"com.liferay.dynamic.data.lists.model.DDLRecordSet");
