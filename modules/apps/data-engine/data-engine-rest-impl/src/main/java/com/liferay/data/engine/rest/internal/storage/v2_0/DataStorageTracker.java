@@ -48,7 +48,9 @@ public class DataStorageTracker {
 		String dataStorageType = MapUtil.getString(
 			properties, "data.storage.type");
 
-		_dataStorages.put(dataStorageType, dataStorage);
+		if (!properties.containsKey("data.storage.version")) {
+			_dataStorages.put(dataStorageType, dataStorage);
+		}
 	}
 
 	@Deactivate
@@ -62,7 +64,9 @@ public class DataStorageTracker {
 		String dataStorageType = MapUtil.getString(
 			properties, "data.storage.type");
 
-		_dataStorages.remove(dataStorageType);
+		if (!properties.containsKey("data.storage.version")) {
+			_dataStorages.remove(dataStorageType);
+		}
 	}
 
 	private final Map<String, DataStorage> _dataStorages = new TreeMap<>();
