@@ -56,6 +56,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
@@ -164,20 +165,17 @@ public class DDMFormInstanceRecordExporterImpl
 
 		Stream<DDMFormFieldValue> stream = ddmFormFieldValues.stream();
 
-		ArrayList<String> arrayListValues = stream.collect(
-			ArrayList::new,
-			(list, ddmForFieldValue) -> {
-				String value = ddmFormFieldValueRenderer.render(
-					ddmForFieldValue, locale);
-
-				if (Validator.isNotNull(value)) {
-					list.add(value);
-				}
-			},
-			ArrayList::addAll);
-
 		return HtmlUtil.render(
-			StringUtil.merge(arrayListValues, StringPool.COMMA_AND_SPACE));
+			StringUtil.merge(
+				stream.map(
+					ddmForFieldValue -> ddmFormFieldValueRenderer.render(
+						ddmForFieldValue, locale)
+				).filter(
+					Validator::isNotNull
+				).collect(
+					Collectors.toList()
+				),
+				StringPool.COMMA_AND_SPACE));
 	}
 
 	protected List<Map<String, String>> getDDMFormFieldValues(
