@@ -50,6 +50,10 @@ public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.I
 		return _dataLayoutInputId;
 	}
 
+	public java.util.List getExcludeFields() {
+		return _excludeFields;
+	}
+
 	public boolean getLocalizable() {
 		return _localizable;
 	}
@@ -72,6 +76,10 @@ public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.I
 
 	public void setDataLayoutInputId(java.lang.String dataLayoutInputId) {
 		_dataLayoutInputId = dataLayoutInputId;
+	}
+
+	public void setExcludeFields(java.util.List excludeFields) {
+		_excludeFields = excludeFields;
 	}
 
 	public void setLocalizable(boolean localizable) {
@@ -97,6 +105,7 @@ public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.I
 		_dataDefinitionInputId = null;
 		_dataLayoutId = null;
 		_dataLayoutInputId = null;
+		_excludeFields = null;
 		_localizable = false;
 		_namespace = null;
 	}
@@ -117,6 +126,7 @@ public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.I
 		setNamespacedAttribute(request, "dataDefinitionInputId", _dataDefinitionInputId);
 		setNamespacedAttribute(request, "dataLayoutId", _dataLayoutId);
 		setNamespacedAttribute(request, "dataLayoutInputId", _dataLayoutInputId);
+		setNamespacedAttribute(request, "excludeFields", _excludeFields);
 		setNamespacedAttribute(request, "localizable", _localizable);
 		setNamespacedAttribute(request, "namespace", _namespace);
 	}
@@ -133,6 +143,7 @@ public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.I
 	private java.lang.String _dataDefinitionInputId = null;
 	private java.lang.Long _dataLayoutId = null;
 	private java.lang.String _dataLayoutInputId = null;
+	private java.util.List _excludeFields = null;
 	private boolean _localizable = false;
 	private java.lang.String _namespace = null;
 

@@ -30,6 +30,12 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>excludeFields</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.util.List</type>
+		</attribute>
+		<attribute>
 			<name>localizable</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
