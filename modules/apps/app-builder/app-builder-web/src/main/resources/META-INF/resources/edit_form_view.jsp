@@ -69,6 +69,7 @@ boolean newCustomObject = ParamUtil.getBoolean(request, "newCustomObject");
 					dataDefinitionInputId="dataDefinition"
 					dataLayoutId="<%= dataLayoutId %>"
 					dataLayoutInputId="dataLayout"
+					excludeFields='<%= Arrays.asList("color", "grid", "separator") %>'
 					namespace="<%= renderResponse.getNamespace() %>"
 				/>
 			</div>

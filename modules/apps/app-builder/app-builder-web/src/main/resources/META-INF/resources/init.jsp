@@ -28,7 +28,8 @@ page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortalUtil" %>
 
-<%@ page import="java.util.HashMap" %><%@
+<%@ page import="java.util.Arrays" %><%@
+page import="java.util.HashMap" %><%@
 page import="java.util.Map" %>
 
 <liferay-frontend:defineObjects />
