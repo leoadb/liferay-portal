@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Jeyvison Nascimento
+ * @author Leonardo Barros
  */
 @RunWith(Arquillian.class)
 public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
@@ -164,7 +165,10 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 			{
 				dataRecordCollectionId = _ddlRecordSet.getRecordSetId();
 				dataRecordValues = HashMapBuilder.<String, Object>put(
-					fieldName, RandomTestUtil.randomString()
+					fieldName,
+					HashMapBuilder.put(
+						"en_US", RandomTestUtil.randomString()
+					).build()
 				).build();
 			}
 		};
