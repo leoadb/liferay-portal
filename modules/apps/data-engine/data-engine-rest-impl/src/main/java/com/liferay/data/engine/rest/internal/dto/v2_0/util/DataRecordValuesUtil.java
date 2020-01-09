@@ -20,66 +20,62 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
+import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang.ClassUtils;
+
 /**
  * @author Jeyvison Nascimento
+ * @author Leonardo Barros
  */
 public class DataRecordValuesUtil {
-
-	public static Map<String, Object> toDataRecordValues(
-			DataDefinition dataDefinition, String json)
-		throws Exception {
-
-		Map<String, Object> dataRecordValues = new HashMap<>();
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
-
-		for (DataDefinitionField dataDefinitionField :
-				dataDefinition.getDataDefinitionFields()) {
-
-			if (!jsonObject.has(dataDefinitionField.getName())) {
-				continue;
-			}
-
-			dataRecordValues.put(
-				dataDefinitionField.getName(),
-				_toDataRecordValue(dataDefinitionField, jsonObject));
-		}
-
-		return dataRecordValues;
-	}
 
 	public static DDMFormValues toDDMFormValues(
 		Map<String, Object> dataRecordValues, DDMForm ddmForm, Locale locale) {
 
 		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
 
-		ddmFormValues.addAvailableLocale(locale);
+		if (locale == null) {
+			Set<Locale> availableLocales = ddmForm.getAvailableLocales();
+
+			Stream<Locale> stream = availableLocales.stream();
+
+			stream.forEach(ddmFormValues::addAvailableLocale);
+
+			ddmFormValues.setDefaultLocale(ddmForm.getDefaultLocale());
+		}
+		else {
+			ddmFormValues.addAvailableLocale(locale);
+
+			ddmFormValues.setDefaultLocale(locale);
+		}
 
 		Map<String, DDMFormField> ddmFormFields = ddmForm.getDDMFormFieldsMap(
 			true);
 
 		for (Map.Entry<String, DDMFormField> entry : ddmFormFields.entrySet()) {
 			ddmFormValues.addDDMFormFieldValue(
-				_createDDMFormFieldValue(
+				createDDMFormFieldValue(
 					dataRecordValues, entry.getValue(), locale));
 		}
-
-		ddmFormValues.setDefaultLocale(locale);
 
 		return ddmFormValues;
 	}
@@ -121,7 +117,7 @@ public class DataRecordValuesUtil {
 		return jsonObject.toString();
 	}
 
-	private static DDMFormFieldValue _createDDMFormFieldValue(
+	protected static DDMFormFieldValue createDDMFormFieldValue(
 		Map<String, Object> dataRecordValues, DDMFormField ddmFormField,
 		Locale locale) {
 
@@ -131,38 +127,19 @@ public class DataRecordValuesUtil {
 
 		ddmFormFieldValue.setName(name);
 
-		if (dataRecordValues == null) {
+		if ((dataRecordValues == null) || !dataRecordValues.containsKey(name)) {
 			return ddmFormFieldValue;
 		}
 
-		Object value = dataRecordValues.get(name);
-
-		if (value != null) {
-			if (value instanceof Object[]) {
-				JSONArray jsonArray = JSONUtil.putAll((Object[])value);
-
-				value = jsonArray.toString();
-			}
-
-			if (ddmFormField.isLocalizable()) {
-				LocalizedValue localizedValue = new LocalizedValue();
-
-				localizedValue.addString(locale, String.valueOf(value));
-
-				ddmFormFieldValue.setValue(localizedValue);
-			}
-			else {
-				ddmFormFieldValue.setValue(
-					new UnlocalizedValue(String.valueOf(value)));
-			}
-		}
+		ddmFormFieldValue.setValue(
+			createValue(ddmFormField, locale, dataRecordValues.get(name)));
 
 		if (ListUtil.isNotEmpty(ddmFormField.getNestedDDMFormFields())) {
 			for (DDMFormField nestedDDMFormField :
 					ddmFormField.getNestedDDMFormFields()) {
 
 				ddmFormFieldValue.addNestedDDMFormFieldValue(
-					_createDDMFormFieldValue(
+					createDDMFormFieldValue(
 						dataRecordValues, nestedDDMFormField, locale));
 			}
 		}
@@ -170,15 +147,79 @@ public class DataRecordValuesUtil {
 		return ddmFormFieldValue;
 	}
 
-	private static Object _toDataRecordValue(
-		DataDefinitionField dataDefinitionField, JSONObject jsonObject) {
+	protected static LocalizedValue createLocalizedValue(
+		Locale locale, Object value) {
 
-		if (dataDefinitionField.getRepeatable()) {
-			return JSONUtil.toObjectArray(
-				jsonObject.getJSONArray(dataDefinitionField.getName()));
+		if (!(value instanceof Map)) {
+			throw new IllegalArgumentException("Field's value must be a map");
 		}
 
-		return jsonObject.get(dataDefinitionField.getName());
+		LocalizedValue localizedValue = new LocalizedValue();
+
+		Map<String, ?> localizedValues = (Map<String, ?>)value;
+
+		if (locale == null) {
+			for (Map.Entry<String, ?> entry : localizedValues.entrySet()) {
+				if (entry.getValue() instanceof Object[]) {
+					JSONArray jsonArray = JSONUtil.putAll(
+						(Object[])entry.getValue());
+
+					localizedValue.addString(
+						LocaleUtil.fromLanguageId(entry.getKey()),
+						jsonArray.toString());
+				}
+				else {
+					localizedValue.addString(
+						LocaleUtil.fromLanguageId(entry.getKey()),
+						MapUtil.getString(
+							(Map<String, ?>)value, entry.getKey()));
+				}
+			}
+		}
+		else {
+			String languageId = LanguageUtil.getLanguageId(locale);
+
+			if (!localizedValues.containsKey(languageId)) {
+				return localizedValue;
+			}
+
+			if (localizedValues.get(languageId) instanceof Object[]) {
+				JSONArray jsonArray = JSONUtil.putAll(
+					(Object[])localizedValues.get(languageId));
+
+				localizedValue.addString(locale, jsonArray.toString());
+			}
+			else {
+				localizedValue.addString(
+					locale,
+					MapUtil.getString((Map<String, ?>)value, languageId));
+			}
+		}
+
+		return localizedValue;
+	}
+
+	protected static Value createValue(
+		DDMFormField ddmFormField, Locale locale, Object value) {
+
+		if (value instanceof Object[]) {
+			JSONArray jsonArray = JSONUtil.putAll((Object[])value);
+
+			value = jsonArray.toString();
+		}
+
+		if (ddmFormField.isLocalizable()) {
+			return createLocalizedValue(locale, value);
+		}
+
+		if (!(value instanceof String) &&
+			(ClassUtils.wrapperToPrimitive(value.getClass()) == null)) {
+
+			throw new IllegalArgumentException(
+				"Field's value must be a primitive value");
+		}
+
+		return new UnlocalizedValue(GetterUtil.getString(value));
 	}
 
 }

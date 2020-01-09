@@ -31,6 +31,7 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMContentLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
@@ -39,19 +40,26 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Portal;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Jeyvison Nascimento
+ * @author Leonardo Barros
  */
 @Component(
 	immediate = true, property = "data.storage.type=json",
@@ -142,8 +150,8 @@ public class JSONDataStorage implements DataStorage {
 		return ddmFormValuesSerializerSerializeResponse.getContent();
 	}
 
-	private Map<String, Object> _toDataRecordValues(DDMFormValues ddmFormValues)
-		throws JSONException {
+	private Map<String, Object> _toDataRecordValues(
+		DDMFormValues ddmFormValues) {
 
 		Map<String, Object> dataRecordValues = new HashMap<>();
 
@@ -159,16 +167,11 @@ public class JSONDataStorage implements DataStorage {
 
 			DDMFormField ddmFormField = ddmFormFieldValue.getDDMFormField();
 
-			String fieldType = ddmFormField.getType();
-
-			if (fieldType.equals(DDMFormFieldType.CHECKBOX_MULTIPLE) ||
-				fieldType.equals(DDMFormFieldType.SELECT)) {
-
+			if (value.isLocalized()) {
 				dataRecordValues.put(
 					ddmFormFieldValue.getName(),
-					JSONUtil.toStringList(
-						JSONFactoryUtil.createJSONArray(
-							value.getString(value.getDefaultLocale()))));
+					_toLocalizedMap(
+						ddmFormField.getType(), (LocalizedValue)value));
 			}
 			else {
 				dataRecordValues.put(
@@ -178,6 +181,40 @@ public class JSONDataStorage implements DataStorage {
 		}
 
 		return dataRecordValues;
+	}
+
+	private Map<String, Object> _toLocalizedMap(
+		String fieldType, LocalizedValue localizedValue) {
+
+		Set<Locale> availableLocales = localizedValue.getAvailableLocales();
+
+		Stream<Locale> stream = availableLocales.stream();
+
+		if (fieldType.equals(DDMFormFieldType.CHECKBOX_MULTIPLE) ||
+			fieldType.equals(DDMFormFieldType.SELECT)) {
+
+			return stream.collect(
+				Collectors.toMap(
+					LanguageUtil::getLanguageId,
+					locale -> _toStringList(locale, localizedValue)));
+		}
+
+		return stream.collect(
+			Collectors.toMap(
+				LanguageUtil::getLanguageId, localizedValue::getString));
+	}
+
+	private List<String> _toStringList(
+		Locale locale, LocalizedValue localizedValue) {
+
+		try {
+			return JSONUtil.toStringList(
+				JSONFactoryUtil.createJSONArray(
+					localizedValue.getString(locale)));
+		}
+		catch (JSONException jsone) {
+			return Collections.emptyList();
+		}
 	}
 
 	@Reference
