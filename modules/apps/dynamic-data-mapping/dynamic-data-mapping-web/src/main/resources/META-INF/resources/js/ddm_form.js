@@ -83,7 +83,7 @@ AUI.add(
 			'<div class="lfr-ddm-repeatable-helper"></div>';
 
 		var TPL_REQUIRED_MARK =
-			'<span class="text-warning">' +
+			'<span class="reference-mark">' +
 			Liferay.Util.getLexiconIconTpl('asterisk') +
 			'<span class="hide-accessible">' +
 			Liferay.Language.get('required') +
