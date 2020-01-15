@@ -120,6 +120,19 @@ public class DataLayoutTaglibUtil {
 		}
 
 		return 0L;
+	public static Long getDataLayoutId(
+			long dataDefinitionId, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		DataDefinition dataDefinition =
+			_dataLayoutTaglibUtil._getDataDefinition(
+				dataDefinitionId, httpServletRequest);
+
+		DataLayout dataLayout = _dataLayoutTaglibUtil._getDataLayout(
+			dataDefinition.getSiteId(), dataDefinition.getDataDefinitionKey(),
+			httpServletRequest);
+
+		return dataLayout.getId();
 	}
 
 	public static JSONObject getDataLayoutJSONObject(
