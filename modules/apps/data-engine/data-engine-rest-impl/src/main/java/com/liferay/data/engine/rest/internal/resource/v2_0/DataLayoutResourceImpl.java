@@ -365,29 +365,6 @@ public class DataLayoutResourceImpl
 		return ddmStructureVersion.getStructureVersionId();
 	}
 
-	private DataLayout _toDataLayout(DDMStructureLayout ddmStructureLayout)
-		throws Exception {
-
-		DataLayout dataLayout = DataLayoutUtil.toDataLayout(
-			ddmStructureLayout.getDDMFormLayout());
-
-		dataLayout.setDateCreated(ddmStructureLayout.getCreateDate());
-		dataLayout.setDataDefinitionId(_getDDMStructureId(ddmStructureLayout));
-		dataLayout.setDataLayoutKey(ddmStructureLayout.getStructureLayoutKey());
-		dataLayout.setDateModified(ddmStructureLayout.getModifiedDate());
-		dataLayout.setDescription(
-			LocalizedValueUtil.toStringObjectMap(
-				ddmStructureLayout.getDescriptionMap()));
-		dataLayout.setId(ddmStructureLayout.getStructureLayoutId());
-		dataLayout.setName(
-			LocalizedValueUtil.toStringObjectMap(
-				ddmStructureLayout.getNameMap()));
-		dataLayout.setSiteId(ddmStructureLayout.getGroupId());
-		dataLayout.setUserId(ddmStructureLayout.getUserId());
-
-		return dataLayout;
-	}
-
 	private OrderByComparator<DDMStructureLayout> _toOrderByComparator(
 		Sort sort) {
 
