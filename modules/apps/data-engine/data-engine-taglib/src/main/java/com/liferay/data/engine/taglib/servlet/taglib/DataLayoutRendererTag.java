@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import javax.portlet.RenderResponse;
 
@@ -67,8 +68,16 @@ public class DataLayoutRendererTag extends BaseDataLayoutRendererTag {
 						JavaConstants.JAVAX_PORTLET_RESPONSE)));
 			dataLayoutRendererContext.setPortletNamespace(getNamespace());
 
-			content = DataLayoutTaglibUtil.renderDataLayout(
-				getDataLayoutId(), dataLayoutRendererContext);
+			if (Validator.isNotNull(getDataDefinitionId())) {
+				content = DataLayoutTaglibUtil.renderDataLayout(
+					DataLayoutTaglibUtil.getDataLayoutId(
+						getDataDefinitionId(), request),
+					dataLayoutRendererContext);
+			}
+			else if (Validator.isNotNull(getDataLayoutId())) {
+				content = DataLayoutTaglibUtil.renderDataLayout(
+					getDataLayoutId(), dataLayoutRendererContext);
+			}
 		}
 		catch (Exception e) {
 			if (_log.isDebugEnabled()) {
