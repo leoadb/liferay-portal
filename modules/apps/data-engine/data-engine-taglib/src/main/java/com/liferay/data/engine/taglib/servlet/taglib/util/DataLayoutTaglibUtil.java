@@ -254,6 +254,31 @@ public class DataLayoutTaglibUtil {
 		return dataLayoutResource.getDataLayout(dataLayoutId);
 	}
 
+	private DataLayout _getDataLayout(
+			Long siteId, String dataLayoutKey,
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		if (Validator.isNull(dataLayoutKey)) {
+			return new DataLayout();
+		}
+
+		DataLayoutResource dataLayoutResource = DataLayoutResource.builder(
+		).endpoint(
+			_portal.getHost(httpServletRequest),
+			httpServletRequest.getServerPort(), httpServletRequest.getScheme()
+		).header(
+			"Cookie",
+			"JSESSIONID=" +
+				CookieKeys.getCookie(httpServletRequest, CookieKeys.JSESSIONID)
+		).parameter(
+			"p_auth", AuthTokenUtil.getToken(httpServletRequest)
+		).build();
+
+		return dataLayoutResource.getSiteDataLayoutByDataLayoutKey(
+			siteId, dataLayoutKey);
+	}
+
 	private JSONObject _getDataLayoutJSONObject(
 		Set<Locale> availableLocales, Long dataLayoutId,
 		HttpServletRequest httpServletRequest,
