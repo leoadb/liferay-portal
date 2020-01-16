@@ -23,6 +23,7 @@
 <%
 Map<String, Object> data = new HashMap<>();
 
+data.put("contentType", contentType);
 data.put("context", dataLayoutJSONObject);
 data.put("dataDefinitionId", dataDefinitionId);
 data.put("dataLayoutBuilderElementId", renderResponse.getNamespace() + "-data-layout-builder");
@@ -30,6 +31,7 @@ data.put("dataLayoutBuilderId", componentId);
 data.put("dataLayoutId", dataLayoutId);
 data.put("fieldTypes", fieldTypesJSONArray);
 data.put("fieldTypesModules", fieldTypesModules);
+data.put("groupId", groupId);
 data.put("spritemap", themeDisplay.getPathThemeImages() + "/lexicon/icons.svg");
 %>
 
