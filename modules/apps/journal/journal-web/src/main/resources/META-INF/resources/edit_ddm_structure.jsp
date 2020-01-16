@@ -177,9 +177,11 @@ if (ddmStructure != null) {
 				<c:when test="<%= journalDisplayContext.useDataEngineEditor() %>">
 					<liferay-data-engine:data-layout-builder
 						componentId='<%= renderResponse.getNamespace() + "dataLayoutBuilder" %>'
+						contentType="journal"
 						dataDefinitionInputId="dataDefinition"
 						dataLayoutId="<%= 0L %>"
 						dataLayoutInputId="dataLayout"
+						groupId="<%= groupId %>"
 						namespace="<%= renderResponse.getNamespace() %>"
 					>
 					</liferay-data-engine:data-layout-builder>
@@ -251,11 +253,51 @@ if (ddmStructure != null) {
 	}
 
 	function <portlet:namespace />saveDDMStructure() {
-		Liferay.Util.postForm(document.<portlet:namespace />fm, {
-			data: {
-				definition: <portlet:namespace />formBuilder.getContentValue()
-			}
-		});
+		<c:choose>
+			<c:when test="<%= journalDisplayContext.useDataEngineEditor() %>">
+				Liferay.componentReady(
+					'<%= renderResponse.getNamespace() + "dataLayoutBuilder" %>'
+				).then(function(dataLayoutBuilder) {
+					var name =
+						document.<portlet:namespace />fm[
+							'<portlet:namespace />name_' + themeDisplay.getLanguageId()
+						].value;
+					var description =
+						document.<portlet:namespace />fm['<portlet:namespace />description']
+							.value;
+
+					dataLayoutBuilder
+						.save({
+							dataDefinition: {
+								description: {
+									value: description
+								},
+								name: {
+									value: name
+								}
+							},
+							dataLayout: {
+								description: {
+									value: description
+								},
+								name: {
+									value: name
+								}
+							}
+						})
+						.then(function(dataLayout) {
+							Liferay.Util.navigate('<%= HtmlUtil.escapeJS(redirect) %>');
+						});
+				});
+			</c:when>
+			<c:otherwise>
+				Liferay.Util.postForm(document.<portlet:namespace />fm, {
+					data: {
+						definition: <portlet:namespace />formBuilder.getContentValue()
+					}
+				});
+			</c:otherwise>
+		</c:choose>
 	}
 
 	var contextualSidebarButton = document.getElementById(
