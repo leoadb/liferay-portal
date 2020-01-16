@@ -27,12 +27,14 @@ const parseProps = ({
 	dataDefinitionId,
 	dataLayoutId,
 	fieldTypesModules,
+	groupId,
 	...props
 }) => ({
 	...props,
 	dataDefinitionId: Number(dataDefinitionId),
 	dataLayoutId: Number(dataLayoutId),
-	fieldTypesModules: fieldTypesModules.split(',')
+	fieldTypesModules: fieldTypesModules.split(','),
+	groupId: Number(groupId)
 });
 
 const AppContent = ({dataLayoutBuilder, setDataLayoutBuilder, ...props}) => {
@@ -51,7 +53,7 @@ const AppContent = ({dataLayoutBuilder, setDataLayoutBuilder, ...props}) => {
 				defaultLanguageId={themeDisplay.getLanguageId()}
 				editingLanguageId={themeDisplay.getLanguageId()}
 				onLoad={setDataLayoutBuilder}
-				{...props}
+				{...parseProps(props)}
 			/>
 
 			{dataLayoutBuilder && (
