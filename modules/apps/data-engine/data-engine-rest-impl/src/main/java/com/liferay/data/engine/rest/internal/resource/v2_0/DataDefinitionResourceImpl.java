@@ -18,6 +18,7 @@ import com.liferay.data.engine.content.type.DataDefinitionContentType;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
+import com.liferay.data.engine.rest.dto.v2_0.DataDefinitionLayout;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayoutColumn;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayoutPage;
@@ -32,6 +33,7 @@ import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
 import com.liferay.data.engine.rest.internal.model.InternalDataLayout;
 import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
+import com.liferay.data.engine.rest.internal.resource.common.CommonDataLayoutResource;
 import com.liferay.data.engine.rest.internal.resource.common.CommonDataRecordCollectionResource;
 import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
@@ -349,6 +351,16 @@ public class DataDefinitionResourceImpl
 	}
 
 	@Override
+	public DataDefinitionLayout postDataDefinitionByContentTypeDataLayout(
+			String contentType, DataDefinitionLayout dataDefinitionLayout)
+		throws Exception {
+
+		return postSiteDataDefinitionByContentTypeDataLayout(
+			_portal.getSiteGroupId(contextCompany.getGroupId()), contentType,
+			dataDefinitionLayout);
+	}
+
+	@Override
 	public DataDefinition postSiteDataDefinitionByContentType(
 			Long siteId, String contentType, DataDefinition dataDefinition)
 		throws Exception {
@@ -404,6 +416,37 @@ public class DataDefinitionResourceImpl
 				dataDefinition.getDescription(), dataDefinition.getName());
 
 		return dataDefinition;
+	}
+
+	@Override
+	public DataDefinitionLayout postSiteDataDefinitionByContentTypeDataLayout(
+			Long siteId, String contentType,
+			DataDefinitionLayout dataDefinitionLayout)
+		throws Exception {
+
+		DataDefinition dataDefinition = postSiteDataDefinitionByContentType(
+			siteId, contentType, dataDefinitionLayout.getDataDefinition());
+
+		DataLayout dataLayout = dataDefinitionLayout.getDataLayout();
+
+		dataLayout.setDataLayoutKey(dataDefinition.getDataDefinitionKey());
+
+		CommonDataLayoutResource<DataLayout> commonDataLayoutResource =
+			new CommonDataLayoutResource<>(
+				_deDataDefinitionFieldLinkLocalService,
+				_ddmFormLayoutSerializer, _ddmStructureLayoutLocalService,
+				_ddmStructureLocalService, _ddmStructureVersionLocalService,
+				_groupLocalService, _modelResourcePermission,
+				DataLayoutUtil::toDataLayout);
+
+		dataDefinitionLayout = new DataDefinitionLayout();
+
+		dataDefinitionLayout.setDataDefinition(dataDefinition);
+		dataDefinitionLayout.setDataLayout(
+			commonDataLayoutResource.postDataDefinitionDataLayout(
+				dataDefinition.getId(), dataLayout));
+
+		return dataDefinitionLayout;
 	}
 
 	@Override
