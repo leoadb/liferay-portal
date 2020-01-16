@@ -263,6 +263,10 @@ public class DDMStructureLocalServiceImpl
 
 		ddmStructurePersistence.update(structure);
 
+		// Resources
+
+		addStructureResources(structure, true, true);
+
 		addStructureVersion(
 			user, structure, DDMStructureConstants.VERSION_DEFAULT,
 			serviceContext);
