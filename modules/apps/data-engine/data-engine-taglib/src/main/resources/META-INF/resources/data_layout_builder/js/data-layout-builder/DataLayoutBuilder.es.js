@@ -18,6 +18,7 @@ import core from 'metal';
 import React from 'react';
 
 import EventEmitter from './EventEmitter.es';
+import saveDefinitionAndLayout from './saveDefinitionAndLayout.es';
 
 /**
  * Data Layout Builder.
@@ -333,6 +334,30 @@ class DataLayoutBuilder extends React.Component {
 		return (
 			<div className={'ddm-form-builder'} ref={this.containerRef}></div>
 		);
+	}
+
+	save(params = {}) {
+		const {
+			contentType,
+			dataDefinitionId,
+			dataLayoutId,
+			groupId
+		} = this.props;
+		const {pages} = this.getStore();
+		const {
+			definition: dataDefinition,
+			layout: dataLayout
+		} = this.getDefinitionAndLayout(pages);
+
+		return saveDefinitionAndLayout({
+			contentType,
+			dataDefinition,
+			dataDefinitionId,
+			dataLayout,
+			dataLayoutId,
+			groupId,
+			params
+		});
 	}
 
 	serialize(pages) {
