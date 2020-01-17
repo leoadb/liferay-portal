@@ -102,24 +102,6 @@ public class DataLayoutTaglibUtil {
 			dataLayoutId, httpServletRequest);
 	}
 
-	public static long getDataDefinitionId(
-		long dataLayoutId, HttpServletRequest httpServletRequest) {
-
-		try {
-			DataLayout dataLayout = _dataLayoutTaglibUtil._getDataLayout(
-				dataLayoutId, httpServletRequest);
-
-			return dataLayout.getDataDefinitionId();
-		}
-		catch (Exception e) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(e, e);
-			}
-
-			e.printStackTrace();
-		}
-
-		return 0L;
 	public static Long getDataLayoutId(
 			long dataDefinitionId, HttpServletRequest httpServletRequest)
 		throws Exception {
