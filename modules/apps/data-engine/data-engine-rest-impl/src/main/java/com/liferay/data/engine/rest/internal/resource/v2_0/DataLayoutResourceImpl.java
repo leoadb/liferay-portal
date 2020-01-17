@@ -74,17 +74,10 @@ public class DataLayoutResourceImpl
 
 	@Override
 	public void deleteDataLayout(Long dataLayoutId) throws Exception {
-		DDMStructureLayout ddmStructureLayout =
-			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
+		CommonDataLayoutResource<DataLayout> commonDataLayoutResource =
+			_getCommonDataLayoutResource();
 
-		_modelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			ddmStructureLayout.getDDMStructureId(), ActionKeys.DELETE);
-
-		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(dataLayoutId);
-
-		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			_getClassNameId(), dataLayoutId);
+		commonDataLayoutResource.deleteDataLayout(dataLayoutId);
 	}
 
 	@Override
@@ -115,7 +108,8 @@ public class DataLayoutResourceImpl
 			return Page.of(
 				transform(
 					_ddmStructureLayoutLocalService.getStructureLayouts(
-						ddmStructure.getGroupId(), _getClassNameId(),
+						ddmStructure.getGroupId(),
+						ddmStructure.getClassNameId(),
 						_getDDMStructureVersionId(dataDefinitionId),
 						pagination.getStartPosition(),
 						pagination.getEndPosition(),
@@ -124,7 +118,7 @@ public class DataLayoutResourceImpl
 					DataLayoutUtil::toDataLayout),
 				pagination,
 				_ddmStructureLayoutLocalService.getStructureLayoutsCount(
-					ddmStructure.getGroupId(), _getClassNameId(),
+					ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
 					_getDDMStructureVersionId(dataDefinitionId)));
 		}
 
@@ -136,7 +130,7 @@ public class DataLayoutResourceImpl
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {
 				searchContext.setAttribute(
-					Field.CLASS_NAME_ID, _getClassNameId());
+					Field.CLASS_NAME_ID, ddmStructure.getClassNameId());
 				searchContext.setAttribute(Field.DESCRIPTION, keywords);
 				searchContext.setAttribute(Field.NAME, keywords);
 				searchContext.setAttribute(

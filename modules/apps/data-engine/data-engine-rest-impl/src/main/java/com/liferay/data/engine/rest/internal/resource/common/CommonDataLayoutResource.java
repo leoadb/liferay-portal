@@ -73,6 +73,42 @@ public class CommonDataLayoutResource<T> {
 		_transformUnsafeFunction = transformUnsafeFunction;
 	}
 
+	public void deleteDataLayout(Long dataLayoutId) throws Exception {
+		DDMStructureLayout ddmStructureLayout =
+			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
+
+		_modelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			ddmStructureLayout.getDDMStructureId(), ActionKeys.DELETE);
+
+		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(dataLayoutId);
+
+		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
+			ddmStructureLayout.getClassNameId(), dataLayoutId);
+	}
+
+	public void deleteDataLayoutDataDefinition(Long dataDefinitionId)
+		throws Exception {
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
+			dataDefinitionId);
+
+		List<DDMStructureVersion> ddmStructureVersions =
+			_ddmStructureVersionLocalService.getStructureVersions(
+				dataDefinitionId);
+
+		for (DDMStructureVersion ddmStructureVersion : ddmStructureVersions) {
+			List<DDMStructureLayout> ddmStructureLayouts =
+				_ddmStructureLayoutLocalService.getStructureLayouts(
+					ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
+					ddmStructureVersion.getStructureVersionId());
+
+			for (DDMStructureLayout ddmStructureLayout : ddmStructureLayouts) {
+				deleteDataLayout(ddmStructureLayout.getStructureLayoutId());
+			}
+		}
+	}
+
 	public T postDataDefinitionDataLayout(
 			Long dataDefinitionId, DataLayout dataLayout)
 		throws Exception {

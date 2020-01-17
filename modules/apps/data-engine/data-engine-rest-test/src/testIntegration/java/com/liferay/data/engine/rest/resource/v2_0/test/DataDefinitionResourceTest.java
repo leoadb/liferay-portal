@@ -21,7 +21,6 @@ import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinitionLayout;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
-import com.liferay.data.engine.rest.resource.v2_0.DataLayoutResource;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -60,10 +59,6 @@ public class DataDefinitionResourceTest
 
 		for (DataDefinition dataDefinition : _dataDefinitions) {
 			dataDefinitionResource.deleteDataDefinition(dataDefinition.getId());
-		}
-
-		for (DataLayout dataLayout : _dataLayouts) {
-			_dataLayoutResource.deleteDataLayout(dataLayout.getId());
 		}
 	}
 
@@ -187,8 +182,6 @@ public class DataDefinitionResourceTest
 
 		DataLayout dataLayout = dataDefinitionLayout.getDataLayout();
 
-		_dataLayouts.add(dataLayout);
-
 		Assert.assertEquals(
 			dataDefinition.getId(), dataLayout.getDataDefinitionId());
 		Assert.assertEquals(
@@ -231,8 +224,6 @@ public class DataDefinitionResourceTest
 		_dataDefinitions.add(dataDefinition);
 
 		DataLayout dataLayout = dataDefinitionLayout.getDataLayout();
-
-		_dataLayouts.add(dataLayout);
 
 		Assert.assertEquals(
 			testGroup.getGroupId(), (long)dataDefinition.getSiteId());
@@ -461,11 +452,6 @@ public class DataDefinitionResourceTest
 	private static final String _CONTENT_TYPE = "default";
 
 	private List<DataDefinition> _dataDefinitions;
-
-	@Inject
-	private DataLayoutResource _dataLayoutResource;
-
-	private List<DataLayout> _dataLayouts;
 
 	@Inject(type = Portal.class)
 	private Portal _portal;

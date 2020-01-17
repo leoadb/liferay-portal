@@ -144,6 +144,12 @@ public class DataDefinitionResourceImpl
 		_ddlRecordSetLocalService.deleteDDMStructureRecordSets(
 			dataDefinitionId);
 
+		CommonDataLayoutResource<DataLayout> commonDataLayoutResource =
+			_getCommonDataLayoutResource();
+
+		commonDataLayoutResource.deleteDataLayoutDataDefinition(
+			dataDefinitionId);
+
 		_ddmStructureLocalService.deleteDDMStructure(dataDefinitionId);
 
 		List<DDMStructureVersion> ddmStructureVersions =
@@ -151,10 +157,6 @@ public class DataDefinitionResourceImpl
 				dataDefinitionId);
 
 		for (DDMStructureVersion ddmStructureVersion : ddmStructureVersions) {
-			_ddmStructureLayoutLocalService.deleteDDMStructureLayouts(
-				_portal.getClassNameId(InternalDataLayout.class),
-				ddmStructureVersion);
-
 			_ddmStructureVersionLocalService.deleteDDMStructureVersion(
 				ddmStructureVersion);
 		}
@@ -432,12 +434,7 @@ public class DataDefinitionResourceImpl
 		dataLayout.setDataLayoutKey(dataDefinition.getDataDefinitionKey());
 
 		CommonDataLayoutResource<DataLayout> commonDataLayoutResource =
-			new CommonDataLayoutResource<>(
-				_deDataDefinitionFieldLinkLocalService,
-				_ddmFormLayoutSerializer, _ddmStructureLayoutLocalService,
-				_ddmStructureLocalService, _ddmStructureVersionLocalService,
-				_groupLocalService, _modelResourcePermission,
-				DataLayoutUtil::toDataLayout);
+			_getCommonDataLayoutResource();
 
 		dataDefinitionLayout = new DataDefinitionLayout();
 
@@ -540,6 +537,16 @@ public class DataDefinitionResourceImpl
 		}
 
 		return null;
+	}
+
+	private CommonDataLayoutResource<DataLayout>
+		_getCommonDataLayoutResource() {
+
+		return new CommonDataLayoutResource<>(
+			_deDataDefinitionFieldLinkLocalService, _ddmFormLayoutSerializer,
+			_ddmStructureLayoutLocalService, _ddmStructureLocalService,
+			_ddmStructureVersionLocalService, _groupLocalService,
+			_modelResourcePermission, DataLayoutUtil::toDataLayout);
 	}
 
 	private JSONObject _getFieldTypeMetadataJSONObject(
