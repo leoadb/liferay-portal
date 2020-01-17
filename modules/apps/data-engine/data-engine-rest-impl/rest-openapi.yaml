@@ -93,6 +93,15 @@ components:
                 visible:
                     type: boolean
             type: object
+        DataDefinitionLayout:
+            properties:
+                dataDefinition:
+                    allOf:
+                        - $ref: "#/components/schemas/DataDefinition"
+                dataLayout:
+                    allOf:
+                        - $ref: "#/components/schemas/DataLayout"
+            type: object
         DataLayout:
             properties:
                 dataDefinitionId:
@@ -326,6 +335,35 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DataDefinition"
+                    description:
+                        ""
+            tags: ["DataDefinition"]
+    "/data-definitions/by-content-type/{contentType}/data-layout":
+        post:
+            operationId: postDataDefinitionByContentTypeDataLayout
+            parameters:
+                - in: path
+                  name: contentType
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DataDefinitionLayout"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DataDefinitionLayout"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinitionLayout"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinitionLayout"
                     description:
                         ""
             tags: ["DataDefinition"]
@@ -1438,6 +1476,41 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/DataDefinition"
+                    description:
+                        ""
+            tags: ["DataDefinition"]
+    "/sites/{siteId}/data-definitions/by-content-type/{contentType}/data-layout":
+        post:
+            operationId: postSiteDataDefinitionByContentTypeDataLayout
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: contentType
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DataDefinitionLayout"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DataDefinitionLayout"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinitionLayout"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinitionLayout"
                     description:
                         ""
             tags: ["DataDefinition"]
