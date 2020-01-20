@@ -19,6 +19,10 @@ import {withRouter} from 'react-router-dom';
 import ControlMenu from '../../components/control-menu/ControlMenu.es';
 import DragLayer from '../../components/drag-and-drop/DragLayer.es';
 import {Loading} from '../../components/loading/Loading.es';
+import {
+	ToastContext,
+	ToastContextProvider
+} from '../../components/toast/ToastContext.es';
 import UpperToolbar from '../../components/upper-toolbar/UpperToolbar.es';
 import {addItem, updateItem} from '../../utils/client.es';
 import DropZone from './DropZone.es';
@@ -35,11 +39,28 @@ const EditTableView = withRouter(({history}) => {
 		EditTableViewContext
 	);
 
+	const {addToast} = useContext(ToastContext);
+
 	let title = Liferay.Language.get('new-table-view');
 
 	if (dataListView.id) {
 		title = Liferay.Language.get('edit-table-view');
 	}
+
+	const onError = error => {
+		const {title: message = ''} = error;
+
+		addToast({
+			displayType: 'danger',
+			message: (
+				<>
+					{message}
+					{'.'}
+				</>
+			),
+			title: `${Liferay.Language.get('error')}:`
+		});
+	};
 
 	const onInput = event => {
 		const name = event.target.value;
@@ -73,12 +94,20 @@ const EditTableView = withRouter(({history}) => {
 			updateItem(
 				`/o/data-engine/v2.0/data-list-views/${dataListView.id}`,
 				dataListView
-			).then(() => history.goBack());
+			)
+				.then(() => history.goBack())
+				.catch(error => {
+					onError(error);
+				});
 		} else {
 			addItem(
 				`/o/data-engine/v2.0/data-definitions/${dataDefinition.id}/data-list-views`,
 				dataListView
-			).then(() => history.goBack());
+			)
+				.then(() => history.goBack())
+				.catch(error => {
+					onError(error);
+				});
 		}
 	};
 
@@ -177,7 +206,9 @@ const EditTableView = withRouter(({history}) => {
 export default props => {
 	return (
 		<EditTableViewContextProvider>
-			<EditTableView {...props} />
+			<ToastContextProvider>
+				<EditTableView {...props} />
+			</ToastContextProvider>
 		</EditTableViewContextProvider>
 	);
 };
