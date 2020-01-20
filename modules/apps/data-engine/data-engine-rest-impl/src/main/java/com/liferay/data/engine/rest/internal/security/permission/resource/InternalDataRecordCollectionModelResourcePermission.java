@@ -14,7 +14,7 @@
 
 package com.liferay.data.engine.rest.internal.security.permission.resource;
 
-import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
+import com.liferay.data.engine.spi.model.InternalDataRecordCollection;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	immediate = true,
-	property = "model.class.name=com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection",
+	property = "model.class.name=com.liferay.data.engine.spi.model.InternalDataRecordCollection",
 	service = ModelResourcePermission.class
 )
 public class InternalDataRecordCollectionModelResourcePermission
