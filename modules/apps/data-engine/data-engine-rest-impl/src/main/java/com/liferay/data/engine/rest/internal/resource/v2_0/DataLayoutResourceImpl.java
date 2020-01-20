@@ -56,6 +56,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
@@ -233,6 +234,14 @@ public class DataLayoutResourceImpl
 			ddmFormLayoutSerializerSerializeResponse =
 				_ddmFormLayoutSerializer.serialize(builder.build());
 
+		String content = ddmFormLayoutSerializerSerializeResponse.getContent();
+
+		List<String> fieldNames = _getFieldNames(content);
+
+		if (ListUtil.isEmpty(fieldNames)) {
+			throw new ValidationException("Layout cannot be empty");
+		}
+
 		ServiceContext serviceContext = new ServiceContext();
 
 		dataLayout = _toDataLayout(
@@ -243,13 +252,11 @@ public class DataLayoutResourceImpl
 				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
 				LocalizedValueUtil.toLocaleStringMap(
 					dataLayout.getDescription()),
-				ddmFormLayoutSerializerSerializeResponse.getContent(),
-				serviceContext));
+				content, serviceContext));
 
 		_addDataDefinitionFieldLinks(
 			ddmStructure.getClassNameId(), dataDefinitionId, dataLayout.getId(),
-			ddmFormLayoutSerializerSerializeResponse.getContent(),
-			dataLayout.getSiteId());
+			fieldNames, dataLayout.getSiteId());
 
 		return dataLayout;
 	}
@@ -280,6 +287,14 @@ public class DataLayoutResourceImpl
 			ddmFormLayoutSerializerSerializeResponse =
 				_ddmFormLayoutSerializer.serialize(builder.build());
 
+		String content = ddmFormLayoutSerializerSerializeResponse.getContent();
+
+		List<String> fieldNames = _getFieldNames(content);
+
+		if (ListUtil.isEmpty(fieldNames)) {
+			throw new ValidationException("Layout cannot be empty");
+		}
+
 		dataLayout = _toDataLayout(
 			_ddmStructureLayoutLocalService.updateStructureLayout(
 				dataLayoutId,
@@ -287,8 +302,7 @@ public class DataLayoutResourceImpl
 				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
 				LocalizedValueUtil.toLocaleStringMap(
 					dataLayout.getDescription()),
-				ddmFormLayoutSerializerSerializeResponse.getContent(),
-				new ServiceContext()));
+				content, new ServiceContext()));
 
 		long classNameId = _getClassNameId(dataLayout);
 
@@ -297,8 +311,7 @@ public class DataLayoutResourceImpl
 
 		_addDataDefinitionFieldLinks(
 			classNameId, dataLayout.getDataDefinitionId(), dataLayoutId,
-			ddmFormLayoutSerializerSerializeResponse.getContent(),
-			dataLayout.getSiteId());
+			fieldNames, dataLayout.getSiteId());
 
 		return dataLayout;
 	}
@@ -316,12 +329,7 @@ public class DataLayoutResourceImpl
 
 	private void _addDataDefinitionFieldLinks(
 		long classNameId, long dataDefinitionId, long dataLayoutId,
-		String dataLayoutJSON, long groupId) {
-
-		DocumentContext documentContext = JsonPath.parse(dataLayoutJSON);
-
-		List<String> fieldNames = documentContext.read(
-			"$[\"pages\"][*][\"rows\"][*][\"columns\"][*][\"fieldNames\"][*]");
+		List<String> fieldNames, long groupId) {
 
 		for (String fieldName : fieldNames) {
 			_deDataDefinitionFieldLinkLocalService.addDEDataDefinitionFieldLink(
@@ -363,6 +371,13 @@ public class DataLayoutResourceImpl
 				deDataDefinitionId);
 
 		return ddmStructureVersion.getStructureVersionId();
+	}
+
+	private List<String> _getFieldNames(String content) {
+		DocumentContext documentContext = JsonPath.parse(content);
+
+		return documentContext.read(
+			"$[\"pages\"][*][\"rows\"][*][\"columns\"][*][\"fieldNames\"][*]");
 	}
 
 	private DataLayout _toDataLayout(DDMStructureLayout ddmStructureLayout)
