@@ -15,13 +15,17 @@
 package com.liferay.data.engine.rest.internal.resource.v2_0;
 
 import com.liferay.data.engine.rest.dto.v2_0.DataRecordCollection;
+import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionUtil;
-import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
-import com.liferay.data.engine.rest.internal.resource.common.CommonDataRecordCollectionResource;
+import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordCollectionResource;
+import com.liferay.data.engine.spi.model.InternalDataRecordCollection;
+import com.liferay.data.engine.spi.resource.SPIDataRecordCollectionResource;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -47,11 +51,15 @@ public class DataRecordCollectionResourceImpl
 	public void deleteDataRecordCollection(Long dataRecordCollectionId)
 		throws Exception {
 
-		CommonDataRecordCollectionResource<DataRecordCollection>
-			commonDataRecordCollectionResource =
-				_getCommonDataRecordCollectionResource();
+		_modelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			dataRecordCollectionId, ActionKeys.DELETE);
 
-		commonDataRecordCollectionResource.deleteDataRecordCollection(
+		SPIDataRecordCollectionResource<DataRecordCollection>
+			spiDataRecordCollectionResource =
+				_getSPIDataRecordCollectionResource();
+
+		spiDataRecordCollectionResource.deleteDataRecordCollection(
 			dataRecordCollectionId);
 	}
 
@@ -74,11 +82,11 @@ public class DataRecordCollectionResourceImpl
 				Long dataDefinitionId, String keywords, Pagination pagination)
 		throws Exception {
 
-		CommonDataRecordCollectionResource<DataRecordCollection>
-			commonDataRecordCollectionResource =
-				_getCommonDataRecordCollectionResource();
+		SPIDataRecordCollectionResource<DataRecordCollection>
+			spiDataRecordCollectionResource =
+				_getSPIDataRecordCollectionResource();
 
-		return commonDataRecordCollectionResource.
+		return spiDataRecordCollectionResource.
 			getDataDefinitionDataRecordCollectionsPage(
 				contextAcceptLanguage, contextCompany, dataDefinitionId,
 				keywords, pagination);
@@ -89,11 +97,15 @@ public class DataRecordCollectionResourceImpl
 			Long dataRecordCollectionId)
 		throws Exception {
 
-		CommonDataRecordCollectionResource<DataRecordCollection>
-			commonDataRecordCollectionResource =
-				_getCommonDataRecordCollectionResource();
+		_modelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			dataRecordCollectionId, ActionKeys.VIEW);
 
-		return commonDataRecordCollectionResource.getDataRecordCollection(
+		SPIDataRecordCollectionResource<DataRecordCollection>
+			spiDataRecordCollectionResource =
+				_getSPIDataRecordCollectionResource();
+
+		return spiDataRecordCollectionResource.getDataRecordCollection(
 			dataRecordCollectionId);
 	}
 
@@ -103,11 +115,11 @@ public class DataRecordCollectionResourceImpl
 				Long siteId, String dataRecordCollectionKey)
 		throws Exception {
 
-		CommonDataRecordCollectionResource<DataRecordCollection>
-			commonDataRecordCollectionResource =
-				_getCommonDataRecordCollectionResource();
+		SPIDataRecordCollectionResource<DataRecordCollection>
+			spiDataRecordCollectionResource =
+				_getSPIDataRecordCollectionResource();
 
-		return commonDataRecordCollectionResource.getSiteDataRecordCollection(
+		return spiDataRecordCollectionResource.getSiteDataRecordCollection(
 			dataRecordCollectionKey, siteId);
 	}
 
@@ -119,6 +131,10 @@ public class DataRecordCollectionResourceImpl
 		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
 			dataDefinitionId);
 
+		DataEnginePermissionUtil.checkPermission(
+			DataActionKeys.ADD_DATA_RECORD_COLLECTION, _groupLocalService,
+			ddmStructure.getGroupId());
+
 		String dataRecordCollectionKey =
 			dataRecordCollection.getDataRecordCollectionKey();
 
@@ -126,11 +142,11 @@ public class DataRecordCollectionResourceImpl
 			dataRecordCollectionKey = ddmStructure.getStructureKey();
 		}
 
-		CommonDataRecordCollectionResource<DataRecordCollection>
-			commonDataRecordCollectionResource =
-				_getCommonDataRecordCollectionResource();
+		SPIDataRecordCollectionResource<DataRecordCollection>
+			spiDataRecordCollectionResource =
+				_getSPIDataRecordCollectionResource();
 
-		return commonDataRecordCollectionResource.
+		return spiDataRecordCollectionResource.
 			postDataDefinitionDataRecordCollection(
 				contextCompany, dataDefinitionId, dataRecordCollectionKey,
 				dataRecordCollection.getDescription(),
@@ -143,17 +159,21 @@ public class DataRecordCollectionResourceImpl
 			DataRecordCollection dataRecordCollection)
 		throws Exception {
 
-		CommonDataRecordCollectionResource<DataRecordCollection>
-			commonDataRecordCollectionResource =
-				_getCommonDataRecordCollectionResource();
+		_modelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			dataRecordCollectionId, ActionKeys.UPDATE);
 
-		return commonDataRecordCollectionResource.putDataRecordCollection(
+		SPIDataRecordCollectionResource<DataRecordCollection>
+			spiDataRecordCollectionResource =
+				_getSPIDataRecordCollectionResource();
+
+		return spiDataRecordCollectionResource.putDataRecordCollection(
 			dataRecordCollectionId, dataRecordCollection.getDescription(),
 			dataRecordCollection.getName());
 	}
 
 	@Reference(
-		target = "(model.class.name=com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection)",
+		target = "(model.class.name=com.liferay.data.engine.spi.model.InternalDataRecordCollection)",
 		unbind = "-"
 	)
 	protected void setModelResourcePermission(
@@ -163,12 +183,12 @@ public class DataRecordCollectionResourceImpl
 		_modelResourcePermission = modelResourcePermission;
 	}
 
-	private CommonDataRecordCollectionResource<DataRecordCollection>
-		_getCommonDataRecordCollectionResource() {
+	private SPIDataRecordCollectionResource<DataRecordCollection>
+		_getSPIDataRecordCollectionResource() {
 
-		return new CommonDataRecordCollectionResource<>(
+		return new SPIDataRecordCollectionResource<>(
 			_ddlRecordSetLocalService, _ddmStructureLocalService,
-			_groupLocalService, _modelResourcePermission, _resourceLocalService,
+			_resourceLocalService,
 			DataRecordCollectionUtil::toDataRecordCollection);
 	}
 
