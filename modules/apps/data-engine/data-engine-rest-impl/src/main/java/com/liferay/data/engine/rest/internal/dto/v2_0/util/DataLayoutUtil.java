@@ -134,10 +134,6 @@ public class DataLayoutUtil {
 	private static DataLayoutRow[] _toDataLayoutRows(
 		List<DDMFormLayoutRow> ddmFormLayoutRows) {
 
-		if (ListUtil.isEmpty(ddmFormLayoutRows)) {
-			return new DataLayoutRow[0];
-		}
-
 		Stream<DDMFormLayoutRow> stream = ddmFormLayoutRows.stream();
 
 		return stream.map(

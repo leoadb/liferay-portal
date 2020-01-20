@@ -177,6 +177,10 @@ public class DataListViewResourceImpl
 			Long dataDefinitionId, DataListView dataListView)
 		throws Exception {
 
+		if (ArrayUtil.isEmpty(dataListView.getFieldNames())) {
+			throw new Exception("View cannot be empty");
+		}
+
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
@@ -210,6 +214,10 @@ public class DataListViewResourceImpl
 			_getDDMStructureId(
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
 			ActionKeys.UPDATE);
+
+		if (ArrayUtil.isEmpty(dataListView.getFieldNames())) {
+			throw new Exception("View cannot be empty");
+		}
 
 		dataListView = _toDataListView(
 			_deDataListViewLocalService.updateDEDataListView(
