@@ -18,6 +18,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataListView;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -50,6 +51,16 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 	@Override
 	@Test
 	public void testGraphQLGetDataListView() {
+	}
+
+	@Override
+	protected DataListView randomDataListView() throws Exception {
+		DataListView dataListView = super.randomDataListView();
+
+		dataListView.setFieldNames(
+			new String[] {RandomTestUtil.randomString()});
+
+		return dataListView;
 	}
 
 	@Override
