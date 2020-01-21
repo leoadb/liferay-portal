@@ -73,7 +73,6 @@ public class DataRecordCollectionTestUtil {
 	}
 
 	private static final String _RESOURCE_NAME =
-		"com.liferay.data.engine.rest.internal.model." +
-			"InternalDataRecordCollection";
+		"com.liferay.data.engine.spi.model.InternalDataRecordCollection";
 
 }
