@@ -16,10 +16,8 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 
 import com.liferay.data.engine.constants.DataEngineConstants;
 import com.liferay.data.engine.rest.dto.v2_0.DataModelPermission;
-import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
 import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.resource.v2_0.DataModelPermissionResource;
-import com.liferay.data.engine.spi.model.InternalDataRecordCollection;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -34,6 +32,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -81,7 +80,7 @@ public class DataModelPermissionResourceImpl
 				role -> _toDataModelPermission(
 					ddmStructure.getCompanyId(), dataDefinitionId,
 					_resourceActionLocalService.getResourceActions(
-						InternalDataDefinition.class.getName()),
+						_getResourceName(ddmStructure)),
 					_portal.getClassName(ddmStructure.getClassNameId()),
 					role)));
 	}
@@ -117,17 +116,17 @@ public class DataModelPermissionResourceImpl
 		DDLRecordSet ddlRecordSet = _ddlRecordSetLocalService.getRecordSet(
 			dataRecordCollectionId);
 
+		String resourceName = _getResourceName(ddlRecordSet);
+
 		List<ResourceAction> resourceActions =
-			_resourceActionLocalService.getResourceActions(
-				InternalDataRecordCollection.class.getName());
+			_resourceActionLocalService.getResourceActions(resourceName);
 
 		for (ResourceAction resourceAction : resourceActions) {
 			PermissionChecker permissionChecker =
 				PermissionThreadLocal.getPermissionChecker();
 
 			if (permissionChecker.hasPermission(
-					ddlRecordSet.getGroupId(),
-					InternalDataRecordCollection.class.getName(),
+					ddlRecordSet.getGroupId(), resourceName,
 					dataRecordCollectionId, resourceAction.getActionId())) {
 
 				actionIdsJSONArray.put(resourceAction.getActionId());
@@ -150,6 +149,8 @@ public class DataModelPermissionResourceImpl
 			ActionKeys.PERMISSIONS, _groupLocalService,
 			ddlRecordSet.getGroupId());
 
+		String resourceName = _getResourceName(ddlRecordSet);
+
 		return Page.of(
 			transform(
 				DataEnginePermissionUtil.getRoles(
@@ -158,8 +159,8 @@ public class DataModelPermissionResourceImpl
 				role -> _toDataModelPermission(
 					ddlRecordSet.getCompanyId(), dataRecordCollectionId,
 					_resourceActionLocalService.getResourceActions(
-						InternalDataRecordCollection.class.getName()),
-					InternalDataRecordCollection.class.getName(), role)));
+						resourceName),
+					resourceName, role)));
 	}
 
 	@Override
@@ -213,14 +214,14 @@ public class DataModelPermissionResourceImpl
 			ActionKeys.PERMISSIONS, _groupLocalService,
 			ddlRecordSet.getGroupId());
 
+		String resourceName = _getResourceName(ddlRecordSet);
+
 		_resourcePermissionLocalService.updateResourcePermissions(
 			ddlRecordSet.getCompanyId(), ddlRecordSet.getGroupId(),
-			InternalDataRecordCollection.class.getName(),
-			String.valueOf(dataRecordCollectionId),
+			resourceName, String.valueOf(dataRecordCollectionId),
 			_getModelPermissions(
 				ddlRecordSet.getCompanyId(), dataModelPermissions,
-				dataRecordCollectionId,
-				InternalDataRecordCollection.class.getName()));
+				dataRecordCollectionId, resourceName));
 	}
 
 	private ModelPermissions _getModelPermissions(
@@ -259,6 +260,22 @@ public class DataModelPermissionResourceImpl
 		}
 
 		return modelPermissions;
+	}
+
+	private String _getResourceName(DDLRecordSet ddlRecordSet)
+		throws PortalException {
+
+		DDMStructure ddmStructure = ddlRecordSet.getDDMStructure();
+
+		return ResourceActionsUtil.getCompositeModelName(
+			_portal.getClassName(ddmStructure.getClassNameId()),
+			DDLRecordSet.class.getName());
+	}
+
+	private String _getResourceName(DDMStructure ddmStructure) {
+		return ResourceActionsUtil.getCompositeModelName(
+			_portal.getClassName(ddmStructure.getClassNameId()),
+			DDMStructure.class.getName());
 	}
 
 	private DataModelPermission _toDataModelPermission(

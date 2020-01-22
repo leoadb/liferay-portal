@@ -18,17 +18,17 @@ import com.liferay.data.engine.rest.dto.v2_0.DataRecordCollection;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionUtil;
 import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
+import com.liferay.data.engine.rest.internal.security.permission.resource.DataRecordCollectionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordCollectionResource;
-import com.liferay.data.engine.spi.model.InternalDataRecordCollection;
 import com.liferay.data.engine.spi.resource.SPIDataRecordCollectionResource;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -51,7 +51,7 @@ public class DataRecordCollectionResourceImpl
 	public void deleteDataRecordCollection(Long dataRecordCollectionId)
 		throws Exception {
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, ActionKeys.DELETE);
 
@@ -97,7 +97,7 @@ public class DataRecordCollectionResourceImpl
 			Long dataRecordCollectionId)
 		throws Exception {
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, ActionKeys.VIEW);
 
@@ -159,7 +159,7 @@ public class DataRecordCollectionResourceImpl
 			DataRecordCollection dataRecordCollection)
 		throws Exception {
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, ActionKeys.UPDATE);
 
@@ -172,25 +172,18 @@ public class DataRecordCollectionResourceImpl
 			dataRecordCollection.getName());
 	}
 
-	@Reference(
-		target = "(model.class.name=com.liferay.data.engine.spi.model.InternalDataRecordCollection)",
-		unbind = "-"
-	)
-	protected void setModelResourcePermission(
-		ModelResourcePermission<InternalDataRecordCollection>
-			modelResourcePermission) {
-
-		_modelResourcePermission = modelResourcePermission;
-	}
-
 	private SPIDataRecordCollectionResource<DataRecordCollection>
 		_getSPIDataRecordCollectionResource() {
 
 		return new SPIDataRecordCollectionResource<>(
-			_ddlRecordSetLocalService, _ddmStructureLocalService,
+			_ddlRecordSetLocalService, _ddmStructureLocalService, _portal,
 			_resourceLocalService,
 			DataRecordCollectionUtil::toDataRecordCollection);
 	}
+
+	@Reference
+	private DataRecordCollectionModelResourcePermission
+		_dataRecordCollectionModelResourcePermission;
 
 	@Reference
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;
@@ -201,8 +194,8 @@ public class DataRecordCollectionResourceImpl
 	@Reference
 	private GroupLocalService _groupLocalService;
 
-	private ModelResourcePermission<InternalDataRecordCollection>
-		_modelResourcePermission;
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;

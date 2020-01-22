@@ -23,9 +23,9 @@ import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataLayoutUtil;
-import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataLayoutEntityModel;
 import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
+import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataLayoutResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutSerializer;
@@ -48,7 +48,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -95,7 +94,7 @@ public class DataLayoutResourceImpl
 
 		DDMStructure ddmStructure = _getDDMStructure(ddmStructureLayout);
 
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructure.getStructureId(), ActionKeys.DELETE);
 
@@ -173,7 +172,7 @@ public class DataLayoutResourceImpl
 
 	@Override
 	public DataLayout getDataLayout(Long dataLayoutId) throws Exception {
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			_getDDMStructureId(
 				_ddmStructureLayoutLocalService.getStructureLayout(
@@ -213,7 +212,7 @@ public class DataLayoutResourceImpl
 		throws Exception {
 
 		if (MapUtil.isEmpty(dataLayout.getName())) {
-			throw new Exception("Name is required");
+			throw new ValidationException("Name is required");
 		}
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
@@ -269,7 +268,7 @@ public class DataLayoutResourceImpl
 			throw new Exception("Name is required");
 		}
 
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			_getDDMStructureId(
 				_ddmStructureLayoutLocalService.getStructureLayout(
@@ -314,17 +313,6 @@ public class DataLayoutResourceImpl
 			fieldNames, dataLayout.getSiteId());
 
 		return dataLayout;
-	}
-
-	@Reference(
-		target = "(model.class.name=com.liferay.data.engine.rest.internal.model.InternalDataDefinition)",
-		unbind = "-"
-	)
-	protected void setModelResourcePermission(
-		ModelResourcePermission<InternalDataDefinition>
-			modelResourcePermission) {
-
-		_modelResourcePermission = modelResourcePermission;
 	}
 
 	private void _addDataDefinitionFieldLinks(
@@ -425,6 +413,10 @@ public class DataLayoutResourceImpl
 	@Reference
 	private DataDefinitionContentTypeTracker _dataDefinitionContentTypeTracker;
 
+	@Reference
+	private DataDefinitionModelResourcePermission
+		_dataDefinitionModelResourcePermission;
+
 	@Reference(target = "(ddm.form.layout.serializer.type=json)")
 	private DDMFormLayoutSerializer _ddmFormLayoutSerializer;
 
@@ -443,9 +435,6 @@ public class DataLayoutResourceImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
-
-	private ModelResourcePermission<InternalDataDefinition>
-		_modelResourcePermission;
 
 	@Reference
 	private Portal _portal;

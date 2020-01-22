@@ -18,9 +18,9 @@ import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.rest.dto.v2_0.DataListView;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
-import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
 import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
+import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataListViewResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
@@ -39,7 +39,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -60,6 +59,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.ValidationException;
+
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -79,7 +80,7 @@ public class DataListViewResourceImpl
 
 	@Override
 	public void deleteDataListView(Long dataListViewId) throws Exception {
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			_getDDMStructureId(
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
@@ -155,7 +156,7 @@ public class DataListViewResourceImpl
 
 	@Override
 	public DataListView getDataListView(Long dataListViewId) throws Exception {
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			_getDDMStructureId(
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
@@ -178,7 +179,7 @@ public class DataListViewResourceImpl
 		throws Exception {
 
 		if (ArrayUtil.isEmpty(dataListView.getFieldNames())) {
-			throw new Exception("View cannot be empty");
+			throw new ValidationException("View cannot be empty");
 		}
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
@@ -209,14 +210,14 @@ public class DataListViewResourceImpl
 			Long dataListViewId, DataListView dataListView)
 		throws Exception {
 
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			_getDDMStructureId(
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
 			ActionKeys.UPDATE);
 
 		if (ArrayUtil.isEmpty(dataListView.getFieldNames())) {
-			throw new Exception("View cannot be empty");
+			throw new ValidationException("View cannot be empty");
 		}
 
 		dataListView = _toDataListView(
@@ -234,17 +235,6 @@ public class DataListViewResourceImpl
 			dataListView.getFieldNames(), dataListView.getSiteId());
 
 		return dataListView;
-	}
-
-	@Reference(
-		target = "(model.class.name=com.liferay.data.engine.rest.internal.model.InternalDataDefinition)",
-		unbind = "-"
-	)
-	protected void setModelResourcePermission(
-		ModelResourcePermission<InternalDataDefinition>
-			modelResourcePermission) {
-
-		_modelResourcePermission = modelResourcePermission;
 	}
 
 	private void _addDataDefinitionFieldLinks(
@@ -349,6 +339,10 @@ public class DataListViewResourceImpl
 		new DataDefinitionEntityModel();
 
 	@Reference
+	private DataDefinitionModelResourcePermission
+		_dataDefinitionModelResourcePermission;
+
+	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
 
 	@Reference
@@ -363,9 +357,6 @@ public class DataListViewResourceImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	private ModelResourcePermission<InternalDataDefinition>
-		_modelResourcePermission;
 
 	@Reference
 	private Portal _portal;

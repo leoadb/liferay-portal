@@ -15,20 +15,22 @@
 package com.liferay.data.engine.spi.resource;
 
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
-import com.liferay.data.engine.spi.model.InternalDataRecordCollection;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -47,12 +49,13 @@ public class SPIDataRecordCollectionResource<T> {
 
 	public SPIDataRecordCollectionResource(
 		DDLRecordSetLocalService ddlRecordSetLocalService,
-		DDMStructureLocalService ddmStructureLocalService,
+		DDMStructureLocalService ddmStructureLocalService, Portal portal,
 		ResourceLocalService resourceLocalService,
 		UnsafeFunction<DDLRecordSet, T, Exception> transformUnsafeFunction) {
 
 		_ddlRecordSetLocalService = ddlRecordSetLocalService;
 		_ddmStructureLocalService = ddmStructureLocalService;
+		_portal = portal;
 		_resourceLocalService = resourceLocalService;
 		_transformUnsafeFunction = transformUnsafeFunction;
 	}
@@ -152,8 +155,7 @@ public class SPIDataRecordCollectionResource<T> {
 
 		_resourceLocalService.addModelResources(
 			company.getCompanyId(), ddmStructure.getGroupId(),
-			PrincipalThreadLocal.getUserId(),
-			InternalDataRecordCollection.class.getName(),
+			PrincipalThreadLocal.getUserId(), _getResourceName(ddlRecordSet),
 			ddlRecordSet.getPrimaryKey(), serviceContext.getModelPermissions());
 
 		return _transformUnsafeFunction.apply(ddlRecordSet);
@@ -179,8 +181,19 @@ public class SPIDataRecordCollectionResource<T> {
 				serviceContext));
 	}
 
+	private String _getResourceName(DDLRecordSet ddlRecordSet)
+		throws PortalException {
+
+		DDMStructure ddmStructure = ddlRecordSet.getDDMStructure();
+
+		return ResourceActionsUtil.getCompositeModelName(
+			_portal.getClassName(ddmStructure.getClassNameId()),
+			DDLRecordSet.class.getName());
+	}
+
 	private final DDLRecordSetLocalService _ddlRecordSetLocalService;
 	private final DDMStructureLocalService _ddmStructureLocalService;
+	private final Portal _portal;
 	private final ResourceLocalService _resourceLocalService;
 	private final UnsafeFunction<DDLRecordSet, T, Exception>
 		_transformUnsafeFunction;

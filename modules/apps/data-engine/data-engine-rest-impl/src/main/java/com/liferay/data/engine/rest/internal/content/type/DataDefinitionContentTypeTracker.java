@@ -15,7 +15,6 @@
 package com.liferay.data.engine.rest.internal.content.type;
 
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
-import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -38,8 +37,7 @@ public class DataDefinitionContentTypeTracker {
 	public DataDefinitionContentType getDataDefinitionContentType(
 		String contentType) {
 
-		return _dataDefinitionContentTypes.getOrDefault(
-			contentType, new DefaultDataDefinitionContentType());
+		return _dataDefinitionContentTypes.get(contentType);
 	}
 
 	@Reference(
@@ -78,16 +76,5 @@ public class DataDefinitionContentTypeTracker {
 
 	@Reference
 	private Portal _portal;
-
-	private class DefaultDataDefinitionContentType
-		implements DataDefinitionContentType {
-
-		@Override
-		public long getClassNameId() {
-			return _portal.getClassNameId(
-				InternalDataDefinition.class.getName());
-		}
-
-	}
 
 }

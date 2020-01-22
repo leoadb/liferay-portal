@@ -28,9 +28,9 @@ import com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentT
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataLayoutUtil;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionUtil;
-import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
 import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
+import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
@@ -80,7 +80,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -133,7 +133,7 @@ public class DataDefinitionResourceImpl
 
 	@Override
 	public void deleteDataDefinition(Long dataDefinitionId) throws Exception {
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
 			ActionKeys.DELETE);
 
@@ -167,7 +167,7 @@ public class DataDefinitionResourceImpl
 	public DataDefinition getDataDefinition(Long dataDefinitionId)
 		throws Exception {
 
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
 			ActionKeys.VIEW);
 
@@ -385,14 +385,17 @@ public class DataDefinitionResourceImpl
 		_resourceLocalService.addResources(
 			contextCompany.getCompanyId(), siteId,
 			PrincipalThreadLocal.getUserId(),
-			_portal.getClassName(dataDefinitionContentType.getClassNameId()),
+			ResourceActionsUtil.getCompositeModelName(
+				_portal.getClassName(
+					dataDefinitionContentType.getClassNameId()),
+				DDMStructure.class.getName()),
 			dataDefinition.getId(), false, false, false);
 
 		SPIDataRecordCollectionResource<DataRecordCollection>
 			spiDataRecordCollectionResource =
 				new SPIDataRecordCollectionResource<>(
 					_ddlRecordSetLocalService, _ddmStructureLocalService,
-					_resourceLocalService,
+					_portal, _resourceLocalService,
 					DataRecordCollectionUtil::toDataRecordCollection);
 
 		spiDataRecordCollectionResource.postDataDefinitionDataRecordCollection(
@@ -408,7 +411,7 @@ public class DataDefinitionResourceImpl
 			Long dataDefinitionId, DataDefinition dataDefinition)
 		throws Exception {
 
-		_modelResourcePermission.check(
+		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
 			ActionKeys.UPDATE);
 
@@ -432,17 +435,6 @@ public class DataDefinitionResourceImpl
 					dataDefinition.getDescription()),
 				ddmFormSerializerSerializeResponse.getContent(),
 				new ServiceContext()));
-	}
-
-	@Reference(
-		target = "(model.class.name=com.liferay.data.engine.rest.internal.model.InternalDataDefinition)",
-		unbind = "-"
-	)
-	protected void setModelResourcePermission(
-		ModelResourcePermission<InternalDataDefinition>
-			modelResourcePermission) {
-
-		_modelResourcePermission = modelResourcePermission;
 	}
 
 	private JSONObject _createFieldContextJSONObject(
@@ -794,6 +786,10 @@ public class DataDefinitionResourceImpl
 	private DataDefinitionContentTypeTracker _dataDefinitionContentTypeTracker;
 
 	@Reference
+	private DataDefinitionModelResourcePermission
+		_dataDefinitionModelResourcePermission;
+
+	@Reference
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;
 
 	@Reference
@@ -832,9 +828,6 @@ public class DataDefinitionResourceImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	private ModelResourcePermission<InternalDataDefinition>
-		_modelResourcePermission;
 
 	@Reference
 	private NPMResolver _npmResolver;

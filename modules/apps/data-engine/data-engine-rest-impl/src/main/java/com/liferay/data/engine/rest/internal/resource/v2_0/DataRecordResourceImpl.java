@@ -21,11 +21,11 @@ import com.liferay.data.engine.rest.dto.v2_0.DataRecord;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataRecordEntityModel;
+import com.liferay.data.engine.rest.internal.security.permission.resource.DataRecordCollectionModelResourcePermission;
 import com.liferay.data.engine.rest.internal.storage.DataRecordExporter;
 import com.liferay.data.engine.rest.internal.storage.DataStorageTracker;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordResource;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
-import com.liferay.data.engine.spi.model.InternalDataRecordCollection;
 import com.liferay.data.engine.storage.DataStorage;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
@@ -52,7 +52,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -96,7 +95,7 @@ public class DataRecordResourceImpl
 	public void deleteDataRecord(Long dataRecordId) throws Exception {
 		DDLRecord ddlRecord = _ddlRecordLocalService.getDDLRecord(dataRecordId);
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			ddlRecord.getRecordSetId(), DataActionKeys.DELETE_DATA_RECORD);
 
@@ -130,7 +129,7 @@ public class DataRecordResourceImpl
 	public DataRecord getDataRecord(Long dataRecordId) throws Exception {
 		DDLRecord ddlRecord = _ddlRecordLocalService.getDDLRecord(dataRecordId);
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			ddlRecord.getRecordSetId(), DataActionKeys.VIEW_DATA_RECORD);
 
@@ -149,7 +148,7 @@ public class DataRecordResourceImpl
 					"page-size-is-greater-than-x", 250));
 		}
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, DataActionKeys.EXPORT_DATA_RECORDS);
 
@@ -177,7 +176,7 @@ public class DataRecordResourceImpl
 					"page-size-is-greater-than-x", 250));
 		}
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, DataActionKeys.VIEW_DATA_RECORD);
 
@@ -259,7 +258,7 @@ public class DataRecordResourceImpl
 			Long dataRecordCollectionId, DataRecord dataRecord)
 		throws Exception {
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, DataActionKeys.ADD_DATA_RECORD);
 
@@ -307,7 +306,7 @@ public class DataRecordResourceImpl
 
 		DDLRecordSet ddlRecordSet = ddlRecord.getRecordSet();
 
-		_modelResourcePermission.check(
+		_dataRecordCollectionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			ddlRecordSet.getRecordSetId(), DataActionKeys.UPDATE_DATA_RECORD);
 
@@ -334,17 +333,6 @@ public class DataRecordResourceImpl
 			new ServiceContext());
 
 		return dataRecord;
-	}
-
-	@Reference(
-		target = "(model.class.name=com.liferay.data.engine.spi.model.InternalDataRecordCollection)",
-		unbind = "-"
-	)
-	protected void setModelResourcePermission(
-		ModelResourcePermission<InternalDataRecordCollection>
-			modelResourcePermission) {
-
-		_modelResourcePermission = modelResourcePermission;
 	}
 
 	private BooleanFilter _getBooleanFilter(
@@ -489,6 +477,10 @@ public class DataRecordResourceImpl
 	}
 
 	@Reference
+	private DataRecordCollectionModelResourcePermission
+		_dataRecordCollectionModelResourcePermission;
+
+	@Reference
 	private DataStorageTracker _dataStorageTracker;
 
 	@Reference
@@ -511,9 +503,6 @@ public class DataRecordResourceImpl
 
 	@Reference
 	private DEDataListViewLocalService _deDataListViewLocalService;
-
-	private ModelResourcePermission<InternalDataRecordCollection>
-		_modelResourcePermission;
 
 	@Reference
 	private Portal _portal;
