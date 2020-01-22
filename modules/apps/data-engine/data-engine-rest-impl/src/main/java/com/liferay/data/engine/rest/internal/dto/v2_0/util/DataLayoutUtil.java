@@ -24,7 +24,6 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayoutColumn;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayoutPage;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayoutRow;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,10 +71,6 @@ public class DataLayoutUtil {
 	private static DataLayoutColumn[] _toDataLayoutColumns(
 		List<DDMFormLayoutColumn> ddmFormLayoutColumns) {
 
-		if (ListUtil.isEmpty(ddmFormLayoutColumns)) {
-			return new DataLayoutColumn[0];
-		}
-
 		Stream<DDMFormLayoutColumn> stream = ddmFormLayoutColumns.stream();
 
 		return stream.map(
@@ -105,10 +100,6 @@ public class DataLayoutUtil {
 	private static DataLayoutPage[] _toDataLayoutPages(
 		List<DDMFormLayoutPage> ddmFormLayoutPages) {
 
-		if (ListUtil.isEmpty(ddmFormLayoutPages)) {
-			return new DataLayoutPage[0];
-		}
-
 		Stream<DDMFormLayoutPage> stream = ddmFormLayoutPages.stream();
 
 		return stream.map(
@@ -133,10 +124,6 @@ public class DataLayoutUtil {
 
 	private static DataLayoutRow[] _toDataLayoutRows(
 		List<DDMFormLayoutRow> ddmFormLayoutRows) {
-
-		if (ListUtil.isEmpty(ddmFormLayoutRows)) {
-			return new DataLayoutRow[0];
-		}
 
 		Stream<DDMFormLayoutRow> stream = ddmFormLayoutRows.stream();
 

@@ -17,6 +17,9 @@ package com.liferay.data.engine.rest.resource.v2_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
+import com.liferay.data.engine.rest.client.dto.v2_0.DataLayoutColumn;
+import com.liferay.data.engine.rest.client.dto.v2_0.DataLayoutPage;
+import com.liferay.data.engine.rest.client.dto.v2_0.DataLayoutRow;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
@@ -172,6 +175,30 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 				siteId = testGroup.getGroupId();
 			}
 		};
+
+		dataLayout.setDataLayoutPages(
+			new DataLayoutPage[] {
+				new DataLayoutPage() {
+					{
+						dataLayoutRows = new DataLayoutRow[] {
+							new DataLayoutRow() {
+								{
+									dataLayoutColumns = new DataLayoutColumn[] {
+										new DataLayoutColumn() {
+											{
+												fieldNames = new String[] {
+													RandomTestUtil.
+														randomString()
+												};
+											}
+										}
+									};
+								}
+							}
+						};
+					}
+				}
+			});
 
 		dataLayout.setName(
 			HashMapBuilder.<String, Object>put(

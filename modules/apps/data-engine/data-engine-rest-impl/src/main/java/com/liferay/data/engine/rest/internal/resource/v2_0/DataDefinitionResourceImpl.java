@@ -29,13 +29,12 @@ import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataLayoutUtil;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionUtil;
 import com.liferay.data.engine.rest.internal.model.InternalDataDefinition;
-import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
-import com.liferay.data.engine.rest.internal.resource.common.CommonDataRecordCollectionResource;
 import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
+import com.liferay.data.engine.spi.resource.SPIDataRecordCollectionResource;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
@@ -389,20 +388,17 @@ public class DataDefinitionResourceImpl
 			_portal.getClassName(dataDefinitionContentType.getClassNameId()),
 			dataDefinition.getId(), false, false, false);
 
-		CommonDataRecordCollectionResource<DataRecordCollection>
-			commonDataRecordCollectionResource =
-				new CommonDataRecordCollectionResource<>(
+		SPIDataRecordCollectionResource<DataRecordCollection>
+			spiDataRecordCollectionResource =
+				new SPIDataRecordCollectionResource<>(
 					_ddlRecordSetLocalService, _ddmStructureLocalService,
-					_groupLocalService,
-					_dataRecordCollectionModelResourcePermission,
 					_resourceLocalService,
 					DataRecordCollectionUtil::toDataRecordCollection);
 
-		commonDataRecordCollectionResource.
-			postDataDefinitionDataRecordCollection(
-				contextCompany, dataDefinition.getId(),
-				dataDefinition.getDataDefinitionKey(),
-				dataDefinition.getDescription(), dataDefinition.getName());
+		spiDataRecordCollectionResource.postDataDefinitionDataRecordCollection(
+			contextCompany, dataDefinition.getId(),
+			dataDefinition.getDataDefinitionKey(),
+			dataDefinition.getDescription(), dataDefinition.getName());
 
 		return dataDefinition;
 	}
@@ -796,12 +792,6 @@ public class DataDefinitionResourceImpl
 
 	@Reference
 	private DataDefinitionContentTypeTracker _dataDefinitionContentTypeTracker;
-
-	@Reference(
-		target = "(model.class.name=com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection)"
-	)
-	private ModelResourcePermission<InternalDataRecordCollection>
-		_dataRecordCollectionModelResourcePermission;
 
 	@Reference
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;

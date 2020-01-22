@@ -20,12 +20,12 @@ import com.liferay.data.engine.rest.dto.v2_0.DataDefinitionField;
 import com.liferay.data.engine.rest.dto.v2_0.DataRecord;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataDefinitionUtil;
-import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataRecordEntityModel;
 import com.liferay.data.engine.rest.internal.storage.DataRecordExporter;
 import com.liferay.data.engine.rest.internal.storage.DataStorageTracker;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordResource;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
+import com.liferay.data.engine.spi.model.InternalDataRecordCollection;
 import com.liferay.data.engine.storage.DataStorage;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
@@ -337,7 +337,7 @@ public class DataRecordResourceImpl
 	}
 
 	@Reference(
-		target = "(model.class.name=com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection)",
+		target = "(model.class.name=com.liferay.data.engine.spi.model.InternalDataRecordCollection)",
 		unbind = "-"
 	)
 	protected void setModelResourcePermission(

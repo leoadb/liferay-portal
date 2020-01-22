@@ -49,7 +49,7 @@
 		</permissions>
 	</model-resource>
 	<model-resource>
-		<model-name>com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection</model-name>
+		<model-name>com.liferay.data.engine.spi.model.InternalDataRecordCollection</model-name>
 		<portlet-ref>
 			<portlet-name>com_liferay_data_engine_web_portlet_DataRecordCollectionPortlet</portlet-name>
 		</portlet-ref>

@@ -12,12 +12,10 @@
  * details.
  */
 
-package com.liferay.data.engine.rest.internal.resource.common;
+package com.liferay.data.engine.spi.resource;
 
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
-import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
-import com.liferay.data.engine.rest.internal.model.InternalDataRecordCollection;
-import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
+import com.liferay.data.engine.spi.model.InternalDataRecordCollection;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
@@ -28,10 +26,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -47,33 +41,24 @@ import java.util.Map;
 import javax.validation.ValidationException;
 
 /**
- * @author Leonardo Barros
+ * @author Jeyvison Nascimento
  */
-public class CommonDataRecordCollectionResource<T> {
+public class SPIDataRecordCollectionResource<T> {
 
-	public CommonDataRecordCollectionResource(
+	public SPIDataRecordCollectionResource(
 		DDLRecordSetLocalService ddlRecordSetLocalService,
 		DDMStructureLocalService ddmStructureLocalService,
-		GroupLocalService groupLocalService,
-		ModelResourcePermission<InternalDataRecordCollection>
-			modelResourcePermission,
 		ResourceLocalService resourceLocalService,
 		UnsafeFunction<DDLRecordSet, T, Exception> transformUnsafeFunction) {
 
 		_ddlRecordSetLocalService = ddlRecordSetLocalService;
 		_ddmStructureLocalService = ddmStructureLocalService;
-		_groupLocalService = groupLocalService;
-		_modelResourcePermission = modelResourcePermission;
 		_resourceLocalService = resourceLocalService;
 		_transformUnsafeFunction = transformUnsafeFunction;
 	}
 
 	public void deleteDataRecordCollection(Long dataRecordCollectionId)
 		throws Exception {
-
-		_modelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			dataRecordCollectionId, ActionKeys.DELETE);
 
 		_ddlRecordSetLocalService.deleteRecordSet(dataRecordCollectionId);
 	}
@@ -134,10 +119,6 @@ public class CommonDataRecordCollectionResource<T> {
 	public T getDataRecordCollection(Long dataRecordCollectionId)
 		throws Exception {
 
-		_modelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			dataRecordCollectionId, ActionKeys.VIEW);
-
 		return _transformUnsafeFunction.apply(
 			_ddlRecordSetLocalService.getRecordSet(dataRecordCollectionId));
 	}
@@ -151,53 +132,6 @@ public class CommonDataRecordCollectionResource<T> {
 				siteId, dataRecordCollectionKey));
 	}
 
-	public Page<T> getSiteDataRecordCollectionsPage(
-			AcceptLanguage acceptLanguage, Company company, String keywords,
-			Pagination pagination, Long siteId)
-		throws Exception {
-
-		if (pagination.getPageSize() > 250) {
-			throw new ValidationException(
-				LanguageUtil.format(
-					acceptLanguage.getPreferredLocale(),
-					"page-size-is-greater-than-x", 250));
-		}
-
-		if (Validator.isNull(keywords)) {
-			return Page.of(
-				TransformUtil.transform(
-					_ddlRecordSetLocalService.search(
-						company.getCompanyId(), siteId, keywords,
-						DDLRecordSetConstants.SCOPE_DATA_ENGINE,
-						pagination.getStartPosition(),
-						pagination.getEndPosition(), null),
-					_transformUnsafeFunction),
-				pagination,
-				_ddlRecordSetLocalService.searchCount(
-					company.getCompanyId(), siteId, keywords,
-					DDLRecordSetConstants.SCOPE_DATA_ENGINE));
-		}
-
-		return SearchUtil.search(
-			booleanQuery -> {
-			},
-			null, DDLRecordSet.class, keywords, pagination,
-			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ENTRY_CLASS_PK),
-			searchContext -> {
-				searchContext.setAttribute(Field.DESCRIPTION, keywords);
-				searchContext.setAttribute(Field.NAME, keywords);
-				searchContext.setAttribute(
-					"scope", DDLRecordSetConstants.SCOPE_DATA_ENGINE);
-				searchContext.setCompanyId(company.getCompanyId());
-				searchContext.setGroupIds(new long[] {siteId});
-			},
-			document -> _transformUnsafeFunction.apply(
-				_ddlRecordSetLocalService.getRecordSet(
-					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))),
-			null);
-	}
-
 	public T postDataDefinitionDataRecordCollection(
 			Company company, Long dataDefinitionId,
 			String dataRecordCollectionKey, Map<String, Object> description,
@@ -206,10 +140,6 @@ public class CommonDataRecordCollectionResource<T> {
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
-
-		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_RECORD_COLLECTION, _groupLocalService,
-			ddmStructure.getGroupId());
 
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -234,10 +164,6 @@ public class CommonDataRecordCollectionResource<T> {
 			Map<String, Object> name)
 		throws Exception {
 
-		_modelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			dataRecordCollectionId, ActionKeys.UPDATE);
-
 		DDLRecordSet ddlRecordSet = _ddlRecordSetLocalService.getRecordSet(
 			dataRecordCollectionId);
 
@@ -255,9 +181,6 @@ public class CommonDataRecordCollectionResource<T> {
 
 	private final DDLRecordSetLocalService _ddlRecordSetLocalService;
 	private final DDMStructureLocalService _ddmStructureLocalService;
-	private final GroupLocalService _groupLocalService;
-	private final ModelResourcePermission<InternalDataRecordCollection>
-		_modelResourcePermission;
 	private final ResourceLocalService _resourceLocalService;
 	private final UnsafeFunction<DDLRecordSet, T, Exception>
 		_transformUnsafeFunction;
