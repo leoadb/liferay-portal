@@ -18,7 +18,9 @@ import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -26,6 +28,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Locale;
 import java.util.Map;
@@ -65,14 +68,21 @@ public class DataRecordCollectionTestUtil {
 
 		resourceLocalService.addModelResources(
 			TestPropsValues.getCompanyId(), ddmStructure.getGroupId(),
-			TestPropsValues.getUserId(), _RESOURCE_NAME,
+			TestPropsValues.getUserId(), _getResourceName(ddlRecordSet),
 			ddlRecordSet.getRecordSetId(),
 			serviceContext.getModelPermissions());
 
 		return ddlRecordSet;
 	}
 
-	private static final String _RESOURCE_NAME =
-		"com.liferay.data.engine.spi.model.InternalDataRecordCollection";
+	private static String _getResourceName(DDLRecordSet ddlRecordSet)
+		throws PortalException {
+
+		DDMStructure ddmStructure = ddlRecordSet.getDDMStructure();
+
+		return ResourceActionsUtil.getCompositeModelName(
+			PortalUtil.getClassName(ddmStructure.getClassNameId()),
+			DDLRecordSet.class.getName());
+	}
 
 }

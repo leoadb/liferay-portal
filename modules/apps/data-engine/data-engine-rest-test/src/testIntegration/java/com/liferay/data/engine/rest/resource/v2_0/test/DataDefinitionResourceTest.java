@@ -231,8 +231,13 @@ public class DataDefinitionResourceTest
 			testGetSiteDataDefinitionByContentTypeByDataDefinitionKey_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinitionByContentType(
-			testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+
+		dataDefinition.setContentType(_CONTENT_TYPE);
+
+		return dataDefinition;
 	}
 
 	@Override
@@ -362,7 +367,7 @@ public class DataDefinitionResourceTest
 		dataDefinitionResource.deleteDataDefinition(dataDefinition.getId());
 	}
 
-	private static final String _CONTENT_TYPE = "default";
+	private static final String _CONTENT_TYPE = "app-builder";
 
 	private List<DataDefinition> _dataDefinitions;
 

@@ -153,8 +153,12 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			testGetSiteDataLayoutByContentTypeByDataLayoutKey_addDataLayout()
 		throws Exception {
 
-		return dataLayoutResource.postDataDefinitionDataLayout(
+		DataLayout dataLayout = dataLayoutResource.postDataDefinitionDataLayout(
 			_dataDefinition.getId(), randomDataLayout());
+
+		dataLayout.setContentType("app-builder");
+
+		return dataLayout;
 	}
 
 	@Override
@@ -186,6 +190,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 									dataLayoutColumns = new DataLayoutColumn[] {
 										new DataLayoutColumn() {
 											{
+												columnSize = 12;
 												fieldNames = new String[] {
 													RandomTestUtil.
 														randomString()
@@ -196,6 +201,12 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 								}
 							}
 						};
+						description = HashMapBuilder.<String, Object>put(
+							"en_US", "Page Description"
+						).build();
+						title = HashMapBuilder.<String, Object>put(
+							"en_US", "Page Title"
+						).build();
 					}
 				}
 			});

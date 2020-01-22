@@ -46,16 +46,19 @@ public class DataDefinitionTestUtil {
 		).build();
 
 		return dataDefinitionResource.postSiteDataDefinitionByContentType(
-			groupId, "default", _randomDataDefinition(groupId));
+			groupId, "app-builder", _randomDataDefinition(groupId));
 	}
 
 	public static DDMStructure addDDMStructure(Group group) throws Exception {
 		DDMStructureTestHelper ddmStructureTestHelper =
 			new DDMStructureTestHelper(
-				PortalUtil.getClassNameId(_RESOURCE_NAME), group);
+				PortalUtil.getClassNameId(
+					"com.liferay.app.builder.model.AppBuilderApp"),
+				group);
 
 		return ddmStructureTestHelper.addStructure(
-			PortalUtil.getClassNameId(_RESOURCE_NAME),
+			PortalUtil.getClassNameId(
+				"com.liferay.app.builder.model.AppBuilderApp"),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			_read("test-structured-content-structure.json"),
 			StorageType.JSON.getValue());
@@ -111,8 +114,5 @@ public class DataDefinitionTestUtil {
 
 		return StringUtil.read(inputStream);
 	}
-
-	private static final String _RESOURCE_NAME =
-		"com.liferay.data.engine.rest.internal.model.InternalDataDefinition";
 
 }
