@@ -1,6 +1,4 @@
 Bundle-Name: Liferay Data Engine SPI
 Bundle-SymbolicName: com.liferay.data.engine.spi
 Bundle-Version: 1.0.0
-Export-Package:\
-	com.liferay.data.engine.spi.model,\
-	com.liferay.data.engine.spi.resource
+Export-Package: com.liferay.data.engine.spi.resource
