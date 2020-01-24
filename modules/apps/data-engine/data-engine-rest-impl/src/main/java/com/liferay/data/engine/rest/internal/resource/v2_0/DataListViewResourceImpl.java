@@ -185,7 +185,7 @@ public class DataListViewResourceImpl
 			dataDefinitionId);
 
 		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService,
+			DataActionKeys.ADD_DATA_DEFINITION, _groupLocalService,
 			ddmStructure.getGroupId());
 
 		dataListView = _toDataListView(

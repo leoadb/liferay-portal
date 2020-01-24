@@ -222,7 +222,7 @@ public class DataLayoutResourceImpl
 			dataDefinitionId);
 
 		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService,
+			DataActionKeys.ADD_DATA_DEFINITION, _groupLocalService,
 			ddmStructure.getGroupId());
 
 		DDMFormLayout ddmFormLayout = DataLayoutUtil.toDDMFormLayout(

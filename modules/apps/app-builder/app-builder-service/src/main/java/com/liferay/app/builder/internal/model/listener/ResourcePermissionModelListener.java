@@ -95,7 +95,8 @@ public class ResourcePermissionModelListener
 				{
 					setActionIds(
 						new String[] {
-							"ADD_DATA_DEFINITION", "ADD_DATA_RECORD_COLLECTION"
+							"ADD_DATA_RECORD_COLLECTION",
+							"MANAGE_DATA_DEFINITION"
 						});
 					setRoleName(role.getName());
 				}
