@@ -66,8 +66,8 @@ public class DataLayoutUtil {
 		};
 	}
 
-	public static DataLayout toDataLayout(
-		DDMStructureLayout ddmStructureLayout) {
+	public static DataLayout toDataLayout(DDMStructureLayout ddmStructureLayout)
+		throws Exception {
 
 		if (ddmStructureLayout == null) {
 			return null;
