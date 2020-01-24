@@ -132,9 +132,7 @@ public class DataDefinitionResourceImpl
 
 	@Override
 	public void deleteDataDefinition(Long dataDefinitionId) throws Exception {
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
-			ActionKeys.DELETE);
+		_checkPermissions(dataDefinitionId, ActionKeys.DELETE);
 
 		_ddlRecordSetLocalService.deleteDDMStructureRecordSets(
 			dataDefinitionId);
@@ -166,9 +164,7 @@ public class DataDefinitionResourceImpl
 	public DataDefinition getDataDefinition(Long dataDefinitionId)
 		throws Exception {
 
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
-			ActionKeys.VIEW);
+		_checkPermissions(dataDefinitionId, ActionKeys.VIEW);
 
 		return DataDefinitionUtil.toDataDefinition(
 			_ddmFormFieldTypeServicesTracker,
@@ -267,11 +263,14 @@ public class DataDefinitionResourceImpl
 			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
 				contentType);
 
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			siteId, dataDefinitionContentType.getClassNameId(),
+			dataDefinitionKey);
+
+		_checkPermissions(ddmStructure.getStructureId(), ActionKeys.VIEW);
+
 		return DataDefinitionUtil.toDataDefinition(
-			_ddmFormFieldTypeServicesTracker,
-			_ddmStructureLocalService.getStructure(
-				siteId, dataDefinitionContentType.getClassNameId(),
-				dataDefinitionKey));
+			_ddmFormFieldTypeServicesTracker, ddmStructure);
 	}
 
 	@Override
@@ -410,9 +409,7 @@ public class DataDefinitionResourceImpl
 			Long dataDefinitionId, DataDefinition dataDefinition)
 		throws Exception {
 
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
-			ActionKeys.UPDATE);
+		_checkPermissions(dataDefinitionId, ActionKeys.UPDATE);
 
 		_updateFieldNames(dataDefinitionId, dataDefinition);
 
@@ -452,6 +449,20 @@ public class DataDefinitionResourceImpl
 			(long)id);
 
 		return _getResourceName(ddmStructure);
+	}
+
+	private void _checkPermissions(long dataDefinitionId, String actionId)
+		throws PortalException {
+
+		if (DataEnginePermissionUtil.hasManageDataDefinitionPermission(
+				groupLocalService, contextCompany.getGroupId())) {
+
+			return;
+		}
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
+			actionId);
 	}
 
 	private JSONObject _createFieldContextJSONObject(

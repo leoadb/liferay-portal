@@ -14,6 +14,8 @@
 
 package com.liferay.data.engine.rest.internal.resource.util;
 
+import com.liferay.data.engine.constants.DataEngineConstants;
+import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -30,6 +32,10 @@ public class DataEnginePermissionUtil {
 			String actionId, GroupLocalService groupLocalService, Long siteId)
 		throws PortalException {
 
+		if (hasManageDataDefinitionPermission(groupLocalService, siteId)) {
+			return;
+		}
+
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
@@ -39,14 +45,30 @@ public class DataEnginePermissionUtil {
 			group = group.getLiveGroup();
 		}
 
-		String resourceName = "com.liferay.data.engine";
-
 		if (!permissionChecker.hasPermission(
-				group, resourceName, siteId, actionId)) {
+				group, DataEngineConstants.RESOURCE_NAME, siteId, actionId)) {
 
 			throw new PrincipalException.MustHavePermission(
-				permissionChecker, resourceName, siteId, actionId);
+				permissionChecker, DataEngineConstants.RESOURCE_NAME, siteId,
+				actionId);
 		}
+	}
+
+	public static boolean hasManageDataDefinitionPermission(
+		GroupLocalService groupLocalService, Long siteId) {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		Group group = groupLocalService.fetchGroup(siteId);
+
+		if ((group != null) && group.isStagingGroup()) {
+			group = group.getLiveGroup();
+		}
+
+		return permissionChecker.hasPermission(
+			group, DataEngineConstants.RESOURCE_NAME, siteId,
+			DataActionKeys.MANAGE_DATA_DEFINITION);
 	}
 
 }

@@ -29,6 +29,7 @@ import com.liferay.data.engine.util.comparator.DEDataListViewModifiedDateCompara
 import com.liferay.data.engine.util.comparator.DEDataListViewNameComparator;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -80,8 +81,7 @@ public class DataListViewResourceImpl
 
 	@Override
 	public void deleteDataListView(Long dataListViewId) throws Exception {
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
+		_checkPermissions(
 			_getDDMStructureId(
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
 			ActionKeys.DELETE);
@@ -156,8 +156,7 @@ public class DataListViewResourceImpl
 
 	@Override
 	public DataListView getDataListView(Long dataListViewId) throws Exception {
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
+		_checkPermissions(
 			_getDDMStructureId(
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
 			ActionKeys.VIEW);
@@ -186,7 +185,7 @@ public class DataListViewResourceImpl
 			dataDefinitionId);
 
 		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, _groupLocalService,
+			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService,
 			ddmStructure.getGroupId());
 
 		dataListView = _toDataListView(
@@ -210,8 +209,7 @@ public class DataListViewResourceImpl
 			Long dataListViewId, DataListView dataListView)
 		throws Exception {
 
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
+		_checkPermissions(
 			_getDDMStructureId(
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
 			ActionKeys.UPDATE);
@@ -246,6 +244,20 @@ public class DataListViewResourceImpl
 				groupId, _getClassNameId(), dataListViewId, dataDefinitionId,
 				fieldName);
 		}
+	}
+
+	private void _checkPermissions(long dataDefinitionId, String actionId)
+		throws PortalException {
+
+		if (DataEnginePermissionUtil.hasManageDataDefinitionPermission(
+				groupLocalService, contextCompany.getGroupId())) {
+
+			return;
+		}
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
+			actionId);
 	}
 
 	private long _getClassNameId() {

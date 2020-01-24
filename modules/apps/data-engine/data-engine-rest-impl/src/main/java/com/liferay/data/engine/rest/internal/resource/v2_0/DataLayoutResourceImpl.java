@@ -94,9 +94,7 @@ public class DataLayoutResourceImpl
 
 		DDMStructure ddmStructure = _getDDMStructure(ddmStructureLayout);
 
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			ddmStructure.getStructureId(), ActionKeys.DELETE);
+		_checkPermissions(ddmStructure.getStructureId(), ActionKeys.DELETE);
 
 		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(dataLayoutId);
 
@@ -172,8 +170,7 @@ public class DataLayoutResourceImpl
 
 	@Override
 	public DataLayout getDataLayout(Long dataLayoutId) throws Exception {
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
+		_checkPermissions(
 			_getDDMStructureId(
 				_ddmStructureLayoutLocalService.getStructureLayout(
 					dataLayoutId)),
@@ -200,10 +197,16 @@ public class DataLayoutResourceImpl
 			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
 				contentType);
 
-		return _toDataLayout(
+		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.getStructureLayout(
 				siteId, dataDefinitionContentType.getClassNameId(),
-				dataLayoutKey));
+				dataLayoutKey);
+
+		DDMStructure ddmStructure = _getDDMStructure(ddmStructureLayout);
+
+		_checkPermissions(ddmStructure.getStructureId(), ActionKeys.VIEW);
+
+		return _toDataLayout(ddmStructureLayout);
 	}
 
 	@Override
@@ -219,7 +222,7 @@ public class DataLayoutResourceImpl
 			dataDefinitionId);
 
 		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, _groupLocalService,
+			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService,
 			ddmStructure.getGroupId());
 
 		DDMFormLayout ddmFormLayout = DataLayoutUtil.toDDMFormLayout(
@@ -268,8 +271,7 @@ public class DataLayoutResourceImpl
 			throw new Exception("Name is required");
 		}
 
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
+		_checkPermissions(
 			_getDDMStructureId(
 				_ddmStructureLayoutLocalService.getStructureLayout(
 					dataLayoutId)),
@@ -324,6 +326,20 @@ public class DataLayoutResourceImpl
 				groupId, classNameId, dataLayoutId, dataDefinitionId,
 				fieldName);
 		}
+	}
+
+	private void _checkPermissions(long dataDefinitionId, String actionId)
+		throws PortalException {
+
+		if (DataEnginePermissionUtil.hasManageDataDefinitionPermission(
+				groupLocalService, contextCompany.getGroupId())) {
+
+			return;
+		}
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
+			actionId);
 	}
 
 	private long _getClassNameId(DataLayout dataLayout) throws PortalException {
