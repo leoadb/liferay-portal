@@ -1,5 +1,7 @@
 {namespace ColorPickerRegister}
 
 {deltemplate PageRenderer.RegisterFieldType variant="'color'"}
-	{call ColorPicker.render data="all" /}
+	<div class="ddm-target">
+		{call ColorPicker.render data="all" /}
+	</div>
 {/deltemplate}

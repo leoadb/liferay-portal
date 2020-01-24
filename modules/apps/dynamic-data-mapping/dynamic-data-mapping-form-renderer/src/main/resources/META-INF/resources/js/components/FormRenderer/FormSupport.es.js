@@ -261,8 +261,8 @@ export const getColumnPosition = (pages, pageIndex, rowIndex, columnIndex) => {
 		: 0;
 };
 
-export const getField = (pages, pageIndex, rowIndex, columnIndex) => {
-	return getColumn(pages, pageIndex, rowIndex, columnIndex).fields[0];
+export const getField = (pages, pageIndex, rowIndex, columnIndex, fieldIndex = 0) => {
+	return getColumn(pages, pageIndex, rowIndex, columnIndex).fields[fieldIndex];
 };
 
 export const getRow = (pages, pageIndex, rowIndex) => {
@@ -284,14 +284,32 @@ export const rowHasFields = (pages, pageIndex, rowIndex) => {
 };
 
 export const getIndexes = node => {
-	const {ddmFieldColumn, ddmFieldPage, ddmFieldRow} = node.dataset;
+	const {ddmFieldColumn, ddmFieldField, ddmFieldPage, ddmFieldRow} = node.dataset;
 
 	return {
 		columnIndex: Number(ddmFieldColumn) || 0,
+		fieldIndex: Number(ddmFieldField) || 0,
 		pageIndex: Number(ddmFieldPage) || 0,
 		rowIndex: Number(ddmFieldRow) || 0
 	};
 };
+
+export const getNestedIndexes = node => {
+	let indexes = [];
+
+	if (node.dataset.ddmFieldField) {
+		indexes = [getIndexes(node)];
+	}
+
+	if (!node.parentElement.classList.contains('ddm-form-page')) {
+		indexes = [
+			...getNestedIndexes(node.parentElement),
+			...indexes
+		];
+	}
+
+	return indexes;
+}
 
 export const updateField = (pages, fieldName, properties) => {
 	const visitor = new PagesVisitor(pages);
