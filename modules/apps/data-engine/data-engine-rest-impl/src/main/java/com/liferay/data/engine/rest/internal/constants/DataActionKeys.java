@@ -30,6 +30,9 @@ public class DataActionKeys {
 
 	public static final String EXPORT_DATA_RECORDS = "EXPORT_DATA_RECORDS";
 
+	public static final String MANAGE_DATA_DEFINITION =
+		"MANAGE_DATA_DEFINITION";
+
 	public static final String UPDATE_DATA_RECORD = "UPDATE_DATA_RECORD";
 
 	public static final String VIEW_DATA_RECORD = "VIEW_DATA_RECORD";

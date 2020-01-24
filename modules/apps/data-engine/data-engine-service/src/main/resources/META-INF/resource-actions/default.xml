@@ -13,6 +13,7 @@
 			<supports>
 				<action-key>ADD_DATA_DEFINITION</action-key>
 				<action-key>ADD_DATA_RECORD_COLLECTION</action-key>
+				<action-key>MANAGE_DATA_DEFINITION</action-key>
 				<action-key>PERMISSIONS</action-key>
 			</supports>
 			<guest-unsupported>
