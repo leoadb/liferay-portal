@@ -50,9 +50,6 @@ class DataLayoutBuilder extends React.Component {
 			context,
 			defaultLanguageId,
 			editingLanguageId,
-			events: {
-				pagesChanged: this._handlePagesChanged.bind(this)
-			},
 			initialPages: context.pages,
 			initialPaginationMode: context.paginationMode,
 			ref: 'layoutProvider'
@@ -367,24 +364,6 @@ class DataLayoutBuilder extends React.Component {
 			definition: JSON.stringify(definition),
 			layout: JSON.stringify(layout)
 		};
-	}
-
-	_handlePagesChanged({newVal}) {
-		const {dataDefinitionInputId, dataLayoutInputId} = this.props;
-
-		if (dataDefinitionInputId && dataLayoutInputId) {
-			const dataDefinitionInput = document.querySelector(
-				`#${dataDefinitionInputId}`
-			);
-			const dataLayoutInput = document.querySelector(
-				`#${dataLayoutInputId}`
-			);
-
-			const data = this.serialize(newVal);
-
-			dataLayoutInput.value = data.layout;
-			dataDefinitionInput.value = data.definition;
-		}
 	}
 
 	_isCustomProperty(name) {
