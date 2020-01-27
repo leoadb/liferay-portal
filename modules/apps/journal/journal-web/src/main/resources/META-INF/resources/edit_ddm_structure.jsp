@@ -31,9 +31,11 @@ portletDisplay.setURLBack(redirect);
 renderResponse.setTitle((ddmStructure != null) ? LanguageUtil.format(request, "edit-x", ddmStructure.getName(locale), false) : LanguageUtil.get(request, "new-structure"));
 
 DDMForm ddmForm = null;
+long ddmStructureId = 0L;
 
 if (ddmStructure != null) {
 	ddmForm = ddmStructure.getDDMForm();
+	ddmStructureId = ddmStructure.getStructureId();
 }
 %>
 
@@ -178,9 +180,7 @@ if (ddmStructure != null) {
 					<liferay-data-engine:data-layout-builder
 						componentId='<%= renderResponse.getNamespace() + "dataLayoutBuilder" %>'
 						contentType="journal"
-						dataDefinitionInputId="dataDefinition"
-						dataLayoutId="<%= 0L %>"
-						dataLayoutInputId="dataLayout"
+						dataDefinitionId="<%= ddmStructureId %>"
 						groupId="<%= groupId %>"
 						namespace="<%= renderResponse.getNamespace() %>"
 					>

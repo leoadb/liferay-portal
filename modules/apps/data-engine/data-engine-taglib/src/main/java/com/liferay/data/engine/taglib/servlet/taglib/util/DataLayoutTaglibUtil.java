@@ -96,44 +96,25 @@ import org.osgi.service.component.annotations.Reference;
 public class DataLayoutTaglibUtil {
 
 	public static Set<Locale> getAvailableLocales(
-		long dataLayoutId, HttpServletRequest httpServletRequest) {
+		Long dataDefinitionId, Long dataLayoutId,
+		HttpServletRequest httpServletRequest) {
 
 		return _dataLayoutTaglibUtil._getAvailableLocales(
-			dataLayoutId, httpServletRequest);
-	}
-
-	public static long getDataDefinitionId(
-		long dataLayoutId, HttpServletRequest httpServletRequest) {
-
-		try {
-			DataLayout dataLayout = _dataLayoutTaglibUtil._getDataLayout(
-				dataLayoutId, httpServletRequest);
-
-			return dataLayout.getDataDefinitionId();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception, exception);
-			}
-
-			exception.printStackTrace();
-		}
-
-		return 0L;
+			dataDefinitionId, dataLayoutId, httpServletRequest);
 	}
 
 	public static JSONObject getDataLayoutJSONObject(
-		Set<Locale> availableLocales, Long dataLayoutId,
+		Set<Locale> availableLocales, Long dataDefinitionId, Long dataLayoutId,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
 		return _dataLayoutTaglibUtil._getDataLayoutJSONObject(
-			availableLocales, dataLayoutId, httpServletRequest,
-			httpServletResponse);
+			availableLocales, dataDefinitionId, dataLayoutId,
+			httpServletRequest, httpServletResponse);
 	}
 
 	public static Map<String, Object> getDataRecordValues(
-			long dataRecordId, HttpServletRequest httpServletRequest)
+			Long dataRecordId, HttpServletRequest httpServletRequest)
 		throws Exception {
 
 		return _dataLayoutTaglibUtil._getDataRecordValues(
@@ -148,7 +129,7 @@ public class DataLayoutTaglibUtil {
 	}
 
 	public static String renderDataLayout(
-			long dataLayoutId,
+			Long dataLayoutId,
 			DataLayoutRendererContext dataLayoutRendererContext)
 		throws Exception {
 
@@ -175,9 +156,12 @@ public class DataLayoutTaglibUtil {
 	}
 
 	private Set<Locale> _getAvailableLocales(
-		long dataLayoutId, HttpServletRequest httpServletRequest) {
+		Long dataDefinitionId, Long dataLayoutId,
+		HttpServletRequest httpServletRequest) {
 
-		if (dataLayoutId == 0) {
+		if (Validator.isNull(dataDefinitionId) &&
+			Validator.isNull(dataLayoutId)) {
+
 			return new HashSet() {
 				{
 					add(LocaleThreadLocal.getDefaultLocale());
@@ -186,11 +170,19 @@ public class DataLayoutTaglibUtil {
 		}
 
 		try {
-			DataLayout dataLayout = _getDataLayout(
-				dataLayoutId, httpServletRequest);
+			DataDefinition dataDefinition = null;
 
-			DataDefinition dataDefinition = _getDataDefinition(
-				dataLayout.getDataDefinitionId(), httpServletRequest);
+			if (Validator.isNotNull(dataDefinitionId)) {
+				dataDefinition = _getDataDefinition(
+					dataDefinitionId, httpServletRequest);
+			}
+			else {
+				DataLayout dataLayout = _getDataLayout(
+					dataLayoutId, httpServletRequest);
+
+				dataDefinition = _getDataDefinition(
+					dataLayout.getDataDefinitionId(), httpServletRequest);
+			}
 
 			return Stream.of(
 				dataDefinition.getAvailableLanguageIds()
@@ -210,7 +202,7 @@ public class DataLayoutTaglibUtil {
 	}
 
 	private DataDefinition _getDataDefinition(
-			long dataDefinitionId, HttpServletRequest httpServletRequest)
+			Long dataDefinitionId, HttpServletRequest httpServletRequest)
 		throws Exception {
 
 		String sessionId = CookieKeys.getCookie(
@@ -232,12 +224,8 @@ public class DataLayoutTaglibUtil {
 	}
 
 	private DataLayout _getDataLayout(
-			long dataLayoutId, HttpServletRequest httpServletRequest)
+			Long dataLayoutId, HttpServletRequest httpServletRequest)
 		throws Exception {
-
-		if (dataLayoutId <= 0) {
-			return new DataLayout();
-		}
 
 		DataLayoutResource dataLayoutResource = DataLayoutResource.builder(
 		).endpoint(
@@ -255,17 +243,28 @@ public class DataLayoutTaglibUtil {
 	}
 
 	private JSONObject _getDataLayoutJSONObject(
-		Set<Locale> availableLocales, Long dataLayoutId,
+		Set<Locale> availableLocales, Long dataDefinitionId, Long dataLayoutId,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		if (dataLayoutId == null) {
+		if (Validator.isNull(dataDefinitionId) &&
+			Validator.isNull(dataLayoutId)) {
+
 			return _jsonFactory.createJSONObject();
 		}
 
 		try {
-			DataLayout dataLayout = _getDataLayout(
-				dataLayoutId, httpServletRequest);
+			DataLayout dataLayout = null;
+
+			if (Validator.isNotNull(dataLayoutId)) {
+				dataLayout = _getDataLayout(dataLayoutId, httpServletRequest);
+			}
+			else {
+				DataDefinition dataDefinition = _getDataDefinition(
+					dataDefinitionId, httpServletRequest);
+
+				dataLayout = dataDefinition.getDefaultDataLayout();
+			}
 
 			DataLayoutDDMFormAdapter dataLayoutDDMFormAdapter =
 				new DataLayoutDDMFormAdapter(
@@ -284,10 +283,10 @@ public class DataLayoutTaglibUtil {
 	}
 
 	private Map<String, Object> _getDataRecordValues(
-			long dataRecordId, HttpServletRequest httpServletRequest)
+			Long dataRecordId, HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		if (dataRecordId == 0) {
+		if (Validator.isNull(dataRecordId)) {
 			return Collections.emptyMap();
 		}
 
