@@ -56,7 +56,6 @@ export default ({
 	dataDefinition,
 	dataDefinitionId,
 	dataLayout,
-	dataLayoutId,
 	groupId,
 	params = {}
 }) => {
@@ -85,13 +84,14 @@ export default ({
 		...(params.dataLayout || {})
 	};
 
-	const saveDataDefinition = () => {
+	const saveDataDefinitionDataLayout = () => {
 		if (dataDefinitionId) {
 			return updateItem(
 				`/o/data-engine/v2.0/data-definitions/${dataDefinitionId}`,
 				{
 					...dataDefinition,
-					...(params.dataDefinition || {})
+					...(params.dataDefinition || {}),
+					defaultDataLayout: normalizedDataLayout
 				}
 			);
 		}
@@ -105,23 +105,10 @@ export default ({
 		return addItem(endpoint, {
 			availableLanguageIds: [themeDisplay.getLanguageId()],
 			...dataDefinition,
-			...(params.dataDefinition || {})
+			...(params.dataDefinition || {}),
+			defaultDataLayout: normalizedDataLayout
 		});
 	};
 
-	if (dataLayoutId) {
-		return saveDataDefinition().then(() =>
-			updateItem(
-				`/o/data-engine/v2.0/data-layouts/${dataLayoutId}`,
-				normalizedDataLayout
-			)
-		);
-	}
-
-	return saveDataDefinition().then(({id}) =>
-		addItem(
-			`/o/data-engine/v2.0/data-definitions/${id}/data-layouts`,
-			normalizedDataLayout
-		)
-	);
+	return saveDataDefinitionDataLayout();
 };
