@@ -25,20 +25,10 @@
 			<type>java.lang.Long</type>
 		</attribute>
 		<attribute>
-			<name>dataDefinitionInputId</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
 			<name>dataLayoutId</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.Long</type>
-		</attribute>
-		<attribute>
-			<name>dataLayoutInputId</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>groupId</name>
