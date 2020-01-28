@@ -65,10 +65,16 @@
 				<required>true</required>
 			</attribute>
 			<attribute>
+				<name>dataDefinitionId</name>
+				<inputType>java.lang.Long</inputType>
+				<outputType>java.lang.Long</outputType>
+				<required>false</required>
+			</attribute>
+			<attribute>
 				<name>dataLayoutId</name>
 				<inputType>java.lang.Long</inputType>
 				<outputType>java.lang.Long</outputType>
-				<required>true</required>
+				<required>false</required>
 			</attribute>
 			<attribute>
 				<name>dataRecordId</name>
