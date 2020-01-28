@@ -103,6 +103,34 @@ public class DataLayoutTaglibUtil {
 			dataDefinitionId, dataLayoutId, httpServletRequest);
 	}
 
+	public static DataDefinition getDataDefinition(
+			long dataDefinitionId, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		return _dataLayoutTaglibUtil._getDataDefinition(
+			dataDefinitionId, httpServletRequest);
+	}
+
+	public static long getDataDefinitionId(
+		long dataLayoutId, HttpServletRequest httpServletRequest) {
+
+		try {
+			DataLayout dataLayout = _dataLayoutTaglibUtil._getDataLayout(
+				dataLayoutId, httpServletRequest);
+
+			return dataLayout.getDataDefinitionId();
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+
+			exception.printStackTrace();
+		}
+
+		return 0L;
+	}
+
 	public static JSONObject getDataLayoutJSONObject(
 		Set<Locale> availableLocales, Long dataDefinitionId, Long dataLayoutId,
 		HttpServletRequest httpServletRequest,
