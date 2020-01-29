@@ -39,15 +39,7 @@ if (ddmStructure != null) {
 }
 %>
 
-<portlet:actionURL name="/journal/add_ddm_structure" var="addDDMStructureURL">
-	<portlet:param name="mvcPath" value="/edit_ddm_structure.jsp" />
-</portlet:actionURL>
-
-<portlet:actionURL name="/journal/update_ddm_structure" var="updateDDMStructureURL">
-	<portlet:param name="mvcPath" value="/edit_ddm_structure.jsp" />
-</portlet:actionURL>
-
-<aui:form action="<%= (ddmStructure == null) ? addDDMStructureURL : updateDDMStructureURL %>" cssClass="edit-article-form" enctype="multipart/form-data" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveDDMStructure();" %>'>
+<aui:form cssClass="edit-article-form" enctype="multipart/form-data" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveDDMStructure();" %>'>
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="groupId" type="hidden" value="<%= groupId %>" />
 	<aui:input name="ddmStructureId" type="hidden" value="<%= journalEditDDMStructuresDisplayContext.getDDMStructureId() %>" />
