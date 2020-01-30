@@ -84,33 +84,21 @@ class DataLayoutBuilder extends React.Component {
 					this._translationManagerHandles = [
 						translationManager.on(
 							'availableLocales',
-							({newValue}) => {
+							({newValue, prevValue}) => {
 								this.props.availableLanguageIds = [
 									...newValue.keys()
 								];
+
+								this.onAvailableLocalesRemoved({
+									newValue,
+									prevValue
+								});
 							}
 						),
 						translationManager.on('editingLocale', ({newValue}) => {
-							// this.props.editingLanguageId = newValue;
-
-							// const {
-							// 	editingLanguageId
-							// } = this.props;
-
-							this.setState({
-								editingLanguageId: newValue
-							});
-
-							// metalFormBuilder.props.editg = mewLa
-
-							// useEffect(() => {
-							// 	metal.props.editingLocale = editingLanguageId
-							// }, [editingLanguageId])
-						}),
-						translationManager.on(
-							'availableLocales',
-							this.onAvailableLocalesRemoved.bind(this)
-						)
+							this.props.editingLanguageId = newValue;
+							this.formBuilderWithLayoutProvider.props.editingLanguageId = newValue;
+						})
 					];
 				}
 			);
@@ -205,7 +193,10 @@ class DataLayoutBuilder extends React.Component {
 	}
 
 	getDefinitionAndLayout(pages) {
-		const {availableLanguageIds, defaultLanguageId} = this.props;
+		const {
+			availableLanguageIds = [themeDisplay.getDefaultLanguageId()],
+			defaultLanguageId = themeDisplay.getDefaultLanguageId()
+		} = this.props;
 		const fieldDefinitions = [];
 		const pagesVisitor = new PagesVisitor(pages);
 
