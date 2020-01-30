@@ -185,6 +185,7 @@ editDDMStructureURL.setParameter("mvcPath", "/edit_ddm_structure.jsp");
 						contentType="journal"
 						dataDefinitionId="<%= ddmStructureId %>"
 						groupId="<%= groupId %>"
+						localizable="<%= true %>"
 						namespace="<%= renderResponse.getNamespace() %>"
 					/>
 				</c:when>
