@@ -233,31 +233,34 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 		return DDMStructureConstants.VERSION_DEFAULT;
 	}
 
-	protected void upgradeColorField(JSONObject field) {
-		field.put(
-			"dataType", "string"
-		).put(
-			"visibilityExpression", StringPool.BLANK
-		);
-		upgradeFieldType(field, StringPool.BLANK);
+	protected void upgradeColorField(JSONObject jsonObject) {
+		upgradeFieldType(
+			StringPool.BLANK,
+			jsonObject.put(
+				"dataType", "string"
+			).put(
+				"visibilityExpression", StringPool.BLANK
+			));
 	}
 
-	protected void upgradeDateField(JSONObject field) {
-		field.put(
-			"dataType", "string"
-		).put(
-			"visibilityExpression", StringPool.BLANK
-		);
-		upgradeFieldType(field, StringPool.BLANK);
+	protected void upgradeDateField(JSONObject jsonObject) {
+		upgradeFieldType(
+			StringPool.BLANK,
+			jsonObject.put(
+				"dataType", "string"
+			).put(
+				"visibilityExpression", StringPool.BLANK
+			));
 	}
 
-	protected void upgradeDecimalField(JSONObject field) {
-		field.put(
-			"dataType", "decimal"
-		).put(
-			"visibilityExpression", StringPool.BLANK
-		);
-		upgradeFieldType(field, "numeric");
+	protected void upgradeDecimalField(JSONObject jsonObject) {
+		upgradeFieldType(
+			"numeric",
+			jsonObject.put(
+				"dataType", "decimal"
+			).put(
+				"visibilityExpression", StringPool.BLANK
+			));
 	}
 
 	protected String upgradeDefinition(long companyId, String definition)
@@ -266,32 +269,30 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(definition);
 
 		jsonObject.put(
-			"fields", upgradeFields(companyId, jsonObject.get("fields")));
+			"fields",
+			upgradeFields(companyId, jsonObject.getJSONArray("fields")));
 
 		return jsonObject.toString();
 	}
 
-	protected void upgradeDocumentLibraryField(JSONObject field) {
-		field.put(
-			"dataType", "string"
-		).put(
-			"visibilityExpression", StringPool.BLANK
-		);
-		upgradeFieldType(field, "document_library");
+	protected void upgradeDocumentLibraryField(JSONObject jsonObject) {
+		upgradeFieldType(
+			"document_library",
+			jsonObject.put(
+				"dataType", "string"
+			).put(
+				"visibilityExpression", StringPool.BLANK
+			));
 	}
 
-	protected JSONArray upgradeFields(long companyId, Object fields)
+	protected JSONArray upgradeFields(long companyId, JSONArray fieldsJSONArray)
 		throws Exception {
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-		if (Validator.isNotNull(fields)) {
-			JSONArray fieldsJSONArray = JSONFactoryUtil.createJSONArray(
-				fields.toString());
-
-			for (Object field : fieldsJSONArray) {
-				JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-					field.toString());
+		if (fieldsJSONArray != null) {
+			for (int i = 0; i < fieldsJSONArray.length(); i++) {
+				JSONObject jsonObject = fieldsJSONArray.getJSONObject(i);
 
 				String type = jsonObject.getString("type");
 
@@ -320,7 +321,7 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 					upgradeSeparatorField(jsonObject);
 				}
 				else if (type.startsWith("ddm-")) {
-					upgradeFieldType(jsonObject, StringPool.BLANK);
+					upgradeFieldType(StringPool.BLANK, jsonObject);
 				}
 				else if (StringUtil.equals(type, "text")) {
 					upgradeTextField(companyId, jsonObject);
@@ -329,11 +330,12 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 					upgradeTextArea(jsonObject);
 				}
 
-				if (Validator.isNotNull(jsonObject.get("nestedFields"))) {
+				if (jsonObject.has("nestedFields")) {
 					jsonObject.put(
 						"nestedFields",
 						upgradeFields(
-							companyId, jsonObject.get("nestedFields")));
+							companyId,
+							jsonObject.getJSONArray("nestedFields")));
 				}
 
 				jsonArray.put(jsonObject);
@@ -343,54 +345,54 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 		return jsonArray;
 	}
 
-	protected void upgradeFieldType(JSONObject field, String fieldType) {
-		String type = field.getString("type");
+	protected void upgradeFieldType(String fieldType, JSONObject jsonObject) {
+		String type = jsonObject.getString("type");
 
-		if (fieldType.isEmpty()) {
-			field.put("type", type.substring(4));
+		if (Validator.isNull(fieldType.isEmpty())) {
+			jsonObject.put("type", type.substring(4));
 		}
 		else {
-			field.put("type", fieldType);
+			jsonObject.put("type", fieldType);
 		}
 	}
 
-	protected void upgradeGeolocation(JSONObject field) {
-		field.put("dataType", "string");
-
-		upgradeFieldType(field, StringPool.BLANK);
+	protected void upgradeGeolocation(JSONObject jsonObject) {
+		upgradeFieldType(
+			StringPool.BLANK, jsonObject.put("dataType", "string"));
 	}
 
-	protected void upgradeIntegerField(JSONObject field) {
-		field.put("visibilityExpression", StringPool.BLANK);
-
-		upgradeFieldType(field, "numeric");
+	protected void upgradeIntegerField(JSONObject jsonObject) {
+		upgradeFieldType(
+			"numeric",
+			jsonObject.put("visibilityExpression", StringPool.BLANK));
 	}
 
-	protected void upgradeNumberField(JSONObject field) {
-		field.put(
-			"dataType", "decimal"
-		).put(
-			"visibilityExpression", StringPool.BLANK
-		);
-		upgradeFieldType(field, "numeric");
+	protected void upgradeNumberField(JSONObject jsonObject) {
+		upgradeFieldType(
+			"numeric",
+			jsonObject.put(
+				"dataType", "decimal"
+			).put(
+				"visibilityExpression", StringPool.BLANK
+			));
 	}
 
-	protected void upgradeSeparatorField(JSONObject field) {
-		field.put("dataType", StringPool.BLANK);
+	protected void upgradeSeparatorField(JSONObject jsonObject) {
+		jsonObject.put("dataType", StringPool.BLANK);
 	}
 
-	protected void upgradeTextArea(JSONObject field) {
-		field.put(
-			"dataType", StringPool.BLANK
-		).put(
-			"fieldNamespace", StringPool.BLANK
-		).put(
-			"text", field.getJSONObject("predefinedValue")
-		).put(
-			"visibilityExpression", StringPool.BLANK
-		);
-
-		upgradeFieldType(field, "paragraph");
+	protected void upgradeTextArea(JSONObject jsonObject) {
+		upgradeFieldType(
+			"paragraph",
+			jsonObject.put(
+				"dataType", StringPool.BLANK
+			).put(
+				"fieldNamespace", StringPool.BLANK
+			).put(
+				"text", jsonObject.getJSONObject("predefinedValue")
+			).put(
+				"visibilityExpression", StringPool.BLANK
+			));
 	}
 
 	protected void upgradeTextField(long companyId, JSONObject jsonObject)
