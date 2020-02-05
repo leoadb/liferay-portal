@@ -34,7 +34,6 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -143,7 +142,7 @@ public class DataLayoutResourceImpl
 			dataDefinitionId);
 
 		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, _groupLocalService,
+			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService,
 			ddmStructure.getGroupId());
 
 		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
@@ -208,8 +207,5 @@ public class DataLayoutResourceImpl
 	@Reference
 	private DEDataDefinitionFieldLinkLocalService
 		_deDataDefinitionFieldLinkLocalService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
 
 }
