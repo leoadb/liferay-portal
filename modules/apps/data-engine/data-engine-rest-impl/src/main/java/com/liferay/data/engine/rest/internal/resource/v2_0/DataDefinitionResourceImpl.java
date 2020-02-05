@@ -451,7 +451,9 @@ public class DataDefinitionResourceImpl
 		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
 			(long)id);
 
-		return _getResourceName(ddmStructure);
+		return ResourceActionsUtil.getCompositeModelName(
+			_portal.getClassName(ddmStructure.getClassNameId()),
+			DDMStructure.class.getName());
 	}
 
 	private JSONObject _createFieldContextJSONObject(
@@ -595,12 +597,6 @@ public class DataDefinitionResourceImpl
 			ResourceBundleUtil.getBundle(
 				"content.Language", locale, getClass()),
 			_portal.getResourceBundle(locale));
-	}
-
-	private String _getResourceName(DDMStructure ddmStructure) {
-		return ResourceActionsUtil.getCompositeModelName(
-			_portal.getClassName(ddmStructure.getClassNameId()),
-			DDMStructure.class.getName());
 	}
 
 	private String[] _removeFieldNames(
