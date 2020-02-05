@@ -48,7 +48,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -215,7 +214,7 @@ public class DataLayoutResourceImpl
 			dataDefinitionId);
 
 		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, _groupLocalService,
+			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService,
 			ddmStructure.getGroupId());
 
 		DDMFormLayout ddmFormLayout = DataLayoutUtil.toDDMFormLayout(
@@ -428,8 +427,5 @@ public class DataLayoutResourceImpl
 	@Reference
 	private DEDataDefinitionFieldLinkLocalService
 		_deDataDefinitionFieldLinkLocalService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
 
 }
