@@ -40,7 +40,7 @@ public class AppBuilderDataDefinitionContentType
 	}
 
 	@Override
-	public default boolean hasPermission(
+	public boolean hasPermission(
 		PermissionChecker permissionChecker, long companyId, long groupId,
 		String resourceName, long primKey, long userId, String actionId) {
 
@@ -59,6 +59,14 @@ public class AppBuilderDataDefinitionContentType
 
 		return permissionChecker.hasPermission(
 			groupId, resourceName, primKey, actionId);
+	}
+
+	@Override
+	public boolean hasPortletPermission(
+		PermissionChecker permissionChecker, long groupId, String actionId) {
+
+		return _portletResourcePermission.contains(
+			permissionChecker, groupId, ActionKeys.ACCESS_IN_CONTROL_PANEL);
 	}
 
 	@Reference

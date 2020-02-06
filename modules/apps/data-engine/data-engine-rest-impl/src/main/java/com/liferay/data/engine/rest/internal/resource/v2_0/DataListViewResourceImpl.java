@@ -19,7 +19,6 @@ import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.rest.dto.v2_0.DataListView;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
-import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataListViewResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
@@ -184,9 +183,11 @@ public class DataListViewResourceImpl
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
-		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService,
-			ddmStructure.getGroupId());
+		// TODO: get contentType from ddmStructure
+
+		_dataDefinitionModelResourcePermission.checkPortletPermission(
+			PermissionThreadLocal.getPermissionChecker(), "",
+			ddmStructure.getGroupId(), DataActionKeys.ADD_DATA_DEFINITION);
 
 		dataListView = _toDataListView(
 			_deDataListViewLocalService.addDEDataListView(

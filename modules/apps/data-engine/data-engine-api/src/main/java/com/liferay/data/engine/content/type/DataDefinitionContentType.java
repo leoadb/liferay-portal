@@ -14,6 +14,7 @@
 
 package com.liferay.data.engine.content.type;
 
+import com.liferay.data.engine.constants.DataEngineConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 /**
@@ -35,6 +36,13 @@ public interface DataDefinitionContentType {
 
 		return permissionChecker.hasPermission(
 			groupId, resourceName, primKey, actionId);
+	}
+
+	public default boolean hasPortletPermission(
+		PermissionChecker permissionChecker, long groupId, String actionId) {
+
+		return permissionChecker.hasPermission(
+			groupId, DataEngineConstants.RESOURCE_NAME, groupId, actionId);
 	}
 
 }

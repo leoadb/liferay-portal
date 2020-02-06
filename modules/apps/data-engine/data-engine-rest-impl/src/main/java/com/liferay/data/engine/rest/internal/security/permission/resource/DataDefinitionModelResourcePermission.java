@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Portal;
 
 import org.osgi.service.component.annotations.Component;
@@ -62,6 +63,23 @@ public class DataDefinitionModelResourcePermission
 		check(
 			permissionChecker,
 			_ddmStructureLocalService.getDDMStructure(primaryKey), actionId);
+	}
+
+	public void checkPortletPermission(
+			PermissionChecker permissionChecker, String contentType,
+			long groupId, String actionId)
+		throws PortalException {
+
+		DataDefinitionContentType dataDefinitionContentType =
+			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
+				contentType);
+
+		if (!dataDefinitionContentType.hasPortletPermission(
+				permissionChecker, groupId, actionId)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, contentType, groupId, actionId);
+		}
 	}
 
 	@Override
@@ -114,6 +132,9 @@ public class DataDefinitionModelResourcePermission
 
 	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Portal _portal;

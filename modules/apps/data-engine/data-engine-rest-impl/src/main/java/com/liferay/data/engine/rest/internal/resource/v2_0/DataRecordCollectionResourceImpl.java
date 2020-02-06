@@ -17,7 +17,7 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 import com.liferay.data.engine.rest.dto.v2_0.DataRecordCollection;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionUtil;
-import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
+import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataRecordCollectionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordCollectionResource;
 import com.liferay.data.engine.spi.resource.SPIDataRecordCollectionResource;
@@ -168,9 +168,12 @@ public class DataRecordCollectionResourceImpl
 		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
 			dataDefinitionId);
 
-		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_RECORD_COLLECTION, groupLocalService,
-			ddmStructure.getGroupId());
+		// TODO: get contentType from ddmStructure
+
+		_dataDefinitionModelResourcePermission.checkPortletPermission(
+			PermissionThreadLocal.getPermissionChecker(), "",
+			ddmStructure.getGroupId(),
+			DataActionKeys.ADD_DATA_RECORD_COLLECTION);
 
 		String dataRecordCollectionKey =
 			dataRecordCollection.getDataRecordCollectionKey();
@@ -244,6 +247,10 @@ public class DataRecordCollectionResourceImpl
 			_resourceLocalService,
 			DataRecordCollectionUtil::toDataRecordCollection);
 	}
+
+	@Reference
+	private DataDefinitionModelResourcePermission
+		_dataDefinitionModelResourcePermission;
 
 	@Reference
 	private DataRecordCollectionModelResourcePermission
