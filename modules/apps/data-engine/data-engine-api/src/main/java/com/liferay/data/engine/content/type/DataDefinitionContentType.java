@@ -14,11 +14,27 @@
 
 package com.liferay.data.engine.content.type;
 
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+
 /**
  * @author Leonardo Barros
  */
 public interface DataDefinitionContentType {
 
 	public long getClassNameId();
+
+	public default boolean hasPermission(
+		PermissionChecker permissionChecker, long companyId, long groupId,
+		String resourceName, long primKey, long userId, String actionId) {
+
+		if (permissionChecker.hasOwnerPermission(
+				companyId, resourceName, primKey, userId, actionId)) {
+
+			return true;
+		}
+
+		return permissionChecker.hasPermission(
+			groupId, resourceName, primKey, actionId);
+	}
 
 }

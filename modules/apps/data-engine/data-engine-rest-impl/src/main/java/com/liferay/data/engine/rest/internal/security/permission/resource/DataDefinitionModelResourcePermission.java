@@ -14,6 +14,8 @@
 
 package com.liferay.data.engine.rest.internal.security.permission.resource;
 
+import com.liferay.data.engine.content.type.DataDefinitionContentType;
+import com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -68,21 +70,16 @@ public class DataDefinitionModelResourcePermission
 			String actionId)
 		throws PortalException {
 
-		String dataRecordCollectionModelResourceName = _getModelResourceName(
-			ddmStructure);
+		// TODO: get DataDefinitionContentType by classNameId or className
 
-		if (permissionChecker.hasOwnerPermission(
-				ddmStructure.getCompanyId(),
-				dataRecordCollectionModelResourceName,
-				ddmStructure.getStructureId(), ddmStructure.getUserId(),
-				actionId)) {
+		DataDefinitionContentType dataDefinitionContentType =
+			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
+				ddmStructure.getClassNameId() + "");
 
-			return true;
-		}
-
-		return permissionChecker.hasPermission(
-			ddmStructure.getGroupId(), dataRecordCollectionModelResourceName,
-			ddmStructure.getStructureId(), actionId);
+		return dataDefinitionContentType.hasPermission(
+			permissionChecker, ddmStructure.getCompanyId(),
+			ddmStructure.getGroupId(), _getModelResourceName(ddmStructure),
+			ddmStructure.getStructureId(), ddmStructure.getUserId(), actionId);
 	}
 
 	@Override
@@ -106,13 +103,14 @@ public class DataDefinitionModelResourcePermission
 		return null;
 	}
 
-	private String _getModelResourceName(DDMStructure ddmStructure)
-		throws PortalException {
-
+	private String _getModelResourceName(DDMStructure ddmStructure) {
 		return ResourceActionsUtil.getCompositeModelName(
 			_portal.getClassName(ddmStructure.getClassNameId()),
 			DDMStructure.class.getName());
 	}
+
+	@Reference
+	private DataDefinitionContentTypeTracker _dataDefinitionContentTypeTracker;
 
 	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
