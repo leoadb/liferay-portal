@@ -29,7 +29,6 @@ import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataLayoutUtil;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionUtil;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
-import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
@@ -353,12 +352,13 @@ public class DataDefinitionResourceImpl
 			Long siteId, String contentType, DataDefinition dataDefinition)
 		throws Exception {
 
-		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService, siteId);
-
 		DataDefinitionContentType dataDefinitionContentType =
 			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
 				contentType);
+
+		_dataDefinitionModelResourcePermission.checkPortletPermission(
+			DataActionKeys.ADD_DATA_DEFINITION, dataDefinitionContentType,
+			siteId, PermissionThreadLocal.getPermissionChecker());
 
 		DDMFormSerializerSerializeRequest.Builder builder =
 			DDMFormSerializerSerializeRequest.Builder.newBuilder(

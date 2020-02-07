@@ -16,6 +16,9 @@ package com.liferay.app.builder.internal.data.engine.content.type;
 
 import com.liferay.app.builder.model.AppBuilderApp;
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.util.Portal;
 
 import org.osgi.service.component.annotations.Component;
@@ -36,7 +39,50 @@ public class AppBuilderDataDefinitionContentType
 		return _portal.getClassNameId(AppBuilderApp.class);
 	}
 
+	@Override
+	public String getContentType() {
+		return "app-builder";
+	}
+
+	@Override
+	public String getResourceName() {
+		return "com.liferay.app.builder";
+	}
+
+	@Override
+	public boolean hasPermission(
+		PermissionChecker permissionChecker, long companyId, long groupId,
+		String resourceName, long primKey, long userId, String actionId) {
+
+		if (_portletResourcePermission.contains(
+				permissionChecker, groupId,
+				ActionKeys.ACCESS_IN_CONTROL_PANEL)) {
+
+			return true;
+		}
+
+		if (permissionChecker.hasOwnerPermission(
+				companyId, resourceName, primKey, userId, actionId)) {
+
+			return true;
+		}
+
+		return permissionChecker.hasPermission(
+			groupId, resourceName, primKey, actionId);
+	}
+
+	@Override
+	public boolean hasPortletPermission(
+		PermissionChecker permissionChecker, long groupId, String actionId) {
+
+		return _portletResourcePermission.contains(
+			permissionChecker, groupId, ActionKeys.ACCESS_IN_CONTROL_PANEL);
+	}
+
 	@Reference
 	private Portal _portal;
+
+	@Reference(target = "(resource.name=com.liferay.app.builder)")
+	private PortletResourcePermission _portletResourcePermission;
 
 }

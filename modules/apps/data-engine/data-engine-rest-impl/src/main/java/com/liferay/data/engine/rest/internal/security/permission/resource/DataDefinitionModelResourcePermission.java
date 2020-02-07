@@ -14,6 +14,8 @@
 
 package com.liferay.data.engine.rest.internal.security.permission.resource;
 
+import com.liferay.data.engine.content.type.DataDefinitionContentType;
+import com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -22,6 +24,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Portal;
 
 import org.osgi.service.component.annotations.Component;
@@ -62,27 +65,39 @@ public class DataDefinitionModelResourcePermission
 			_ddmStructureLocalService.getDDMStructure(primaryKey), actionId);
 	}
 
+	public void checkPortletPermission(
+			String actionId,
+			DataDefinitionContentType dataDefinitionContentType, long groupId,
+			PermissionChecker permissionChecker)
+		throws PortalException {
+
+		if (!dataDefinitionContentType.hasPortletPermission(
+				permissionChecker, groupId, actionId)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, dataDefinitionContentType.getContentType(),
+				groupId, actionId);
+		}
+	}
+
 	@Override
 	public boolean contains(
 			PermissionChecker permissionChecker, DDMStructure ddmStructure,
 			String actionId)
 		throws PortalException {
 
-		String dataRecordCollectionModelResourceName = _getModelResourceName(
-			ddmStructure);
+		DataDefinitionContentType dataDefinitionContentType =
+			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
+				ddmStructure.getClassNameId());
 
-		if (permissionChecker.hasOwnerPermission(
-				ddmStructure.getCompanyId(),
-				dataRecordCollectionModelResourceName,
-				ddmStructure.getStructureId(), ddmStructure.getUserId(),
-				actionId)) {
-
-			return true;
+		if (dataDefinitionContentType == null) {
+			return false;
 		}
 
-		return permissionChecker.hasPermission(
-			ddmStructure.getGroupId(), dataRecordCollectionModelResourceName,
-			ddmStructure.getStructureId(), actionId);
+		return dataDefinitionContentType.hasPermission(
+			permissionChecker, ddmStructure.getCompanyId(),
+			ddmStructure.getGroupId(), _getModelResourceName(ddmStructure),
+			ddmStructure.getStructureId(), ddmStructure.getUserId(), actionId);
 	}
 
 	@Override
@@ -106,16 +121,20 @@ public class DataDefinitionModelResourcePermission
 		return null;
 	}
 
-	private String _getModelResourceName(DDMStructure ddmStructure)
-		throws PortalException {
-
+	private String _getModelResourceName(DDMStructure ddmStructure) {
 		return ResourceActionsUtil.getCompositeModelName(
 			_portal.getClassName(ddmStructure.getClassNameId()),
-			DDMStructure.class.getName());
+			getModelName());
 	}
 
 	@Reference
+	private DataDefinitionContentTypeTracker _dataDefinitionContentTypeTracker;
+
+	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Portal _portal;

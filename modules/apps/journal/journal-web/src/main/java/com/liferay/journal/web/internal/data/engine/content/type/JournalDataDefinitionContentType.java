@@ -36,6 +36,16 @@ public class JournalDataDefinitionContentType
 		return _portal.getClassNameId(JournalArticle.class);
 	}
 
+	@Override
+	public String getContentType() {
+		return "journal";
+	}
+
+	@Override
+	public String getResourceName() {
+		return "com.liferay.journal";
+	}
+
 	@Reference
 	private Portal _portal;
 

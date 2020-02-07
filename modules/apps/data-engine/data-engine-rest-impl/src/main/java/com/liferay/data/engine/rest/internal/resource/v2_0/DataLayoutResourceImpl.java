@@ -20,7 +20,6 @@ import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataLayoutUtil;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataLayoutEntityModel;
-import com.liferay.data.engine.rest.internal.resource.util.DataEnginePermissionUtil;
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataLayoutResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
@@ -141,9 +140,12 @@ public class DataLayoutResourceImpl
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
-		DataEnginePermissionUtil.checkPermission(
-			DataActionKeys.ADD_DATA_DEFINITION, groupLocalService,
-			ddmStructure.getGroupId());
+		_dataDefinitionModelResourcePermission.checkPortletPermission(
+			DataActionKeys.ADD_DATA_DEFINITION,
+			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
+				ddmStructure.getClassNameId()),
+			ddmStructure.getGroupId(),
+			PermissionThreadLocal.getPermissionChecker());
 
 		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
 			_getSPIDataLayoutResource();
