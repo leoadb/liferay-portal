@@ -41,12 +41,7 @@ public class UpgradeResourcePermission extends UpgradeProcess {
 			dynamicQuery -> {
 				Property nameProperty = PropertyFactoryUtil.forName("name");
 
-				dynamicQuery.add(
-					nameProperty.in(
-						new String[] {
-							"com.liferay.document.library",
-							"com.liferay.journal"
-						}));
+				dynamicQuery.add(nameProperty.eq("com.liferay.journal"));
 			});
 		actionableDynamicQuery.setPerformActionMethod(
 			(ResourcePermission resourcePermission) -> {

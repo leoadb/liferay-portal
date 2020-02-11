@@ -89,8 +89,7 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 
 	protected void doStructureDefinitionUpgrade() throws Exception {
 		try (PreparedStatement ps1 = connection.prepareStatement(
-				"select * from DDMStructure where classNameId = ? or " +
-					"classNameId = ?");
+				"select * from DDMStructure where classNameId = ? ");
 			PreparedStatement ps2 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
@@ -101,11 +100,6 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 				1,
 				PortalUtil.getClassNameId(
 					"com.liferay.journal.model.JournalArticle"));
-			ps1.setLong(
-				2,
-				PortalUtil.getClassNameId(
-					"com.liferay.document.library.kernel.model." +
-						"DLFileEntryMetadata"));
 
 			try (ResultSet rs = ps1.executeQuery()) {
 				while (rs.next()) {
@@ -124,7 +118,7 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 	}
 
 	protected void doStructureLayoutUpgrade() throws Exception {
-		StringBundler sb1 = new StringBundler(11);
+		StringBundler sb1 = new StringBundler(10);
 
 		sb1.append("select DDMStructureLayout.definition, ");
 		sb1.append("DDMStructureLayout.structureLayoutId, ");
@@ -135,8 +129,7 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 		sb1.append("DDMStructure on DDMStructure.structureId = ");
 		sb1.append("DDMStructureVersion.structureId and DDMStructure.version ");
 		sb1.append("= DDMStructureVersion.version where ");
-		sb1.append("DDMStructure.classNameId = ? or DDMStructure.classNameId ");
-		sb1.append("= ?");
+		sb1.append("DDMStructure.classNameId = ? ");
 
 		try (PreparedStatement ps1 = connection.prepareStatement(
 				sb1.toString());
@@ -151,11 +144,6 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 				1,
 				PortalUtil.getClassNameId(
 					"com.liferay.journal.model.JournalArticle"));
-			ps1.setLong(
-				2,
-				PortalUtil.getClassNameId(
-					"com.liferay.document.library.kernel.model." +
-						"DLFileEntryMetadata"));
 
 			try (ResultSet rs = ps1.executeQuery()) {
 				while (rs.next()) {
@@ -176,14 +164,13 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 	}
 
 	protected void doStructureVersionDefinitionUpgrade() throws Exception {
-		StringBundler sb1 = new StringBundler(6);
+		StringBundler sb1 = new StringBundler(5);
 
 		sb1.append("select DDMStructure.structureKey, DDMStructureVersion.* ");
 		sb1.append("from DDMStructureVersion inner join DDMStructure on ");
 		sb1.append("DDMStructure.structureId = ");
 		sb1.append("DDMStructureVersion.structureId where ");
-		sb1.append("DDMStructure.classNameId = ? or DDMStructure.classNameId ");
-		sb1.append("= ?");
+		sb1.append("DDMStructure.classNameId = ? ");
 
 		try (PreparedStatement ps1 = connection.prepareStatement(
 				sb1.toString());
@@ -197,11 +184,6 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 				1,
 				PortalUtil.getClassNameId(
 					"com.liferay.journal.model.JournalArticle"));
-			ps1.setLong(
-				2,
-				PortalUtil.getClassNameId(
-					"com.liferay.document.library.kernel.model." +
-						"DLFileEntryMetadata"));
 
 			try (ResultSet rs = ps1.executeQuery()) {
 				while (rs.next()) {
