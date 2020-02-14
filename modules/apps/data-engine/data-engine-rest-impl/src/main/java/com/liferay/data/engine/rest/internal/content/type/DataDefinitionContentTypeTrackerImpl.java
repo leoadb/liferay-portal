@@ -15,6 +15,7 @@
 package com.liferay.data.engine.rest.internal.content.type;
 
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
+import com.liferay.data.engine.content.type.DataDefinitionContentTypeTracker;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -32,14 +33,17 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  * @author Leonardo Barros
  */
 @Component(immediate = true, service = DataDefinitionContentTypeTracker.class)
-public class DataDefinitionContentTypeTracker {
+public class DataDefinitionContentTypeTrackerImpl
+	implements DataDefinitionContentTypeTracker {
 
+	@Override
 	public DataDefinitionContentType getDataDefinitionContentType(
 		long classNameId) {
 
 		return _dataDefinitionContentTypesByClassNameId.get(classNameId);
 	}
 
+	@Override
 	public DataDefinitionContentType getDataDefinitionContentType(
 		String contentType) {
 
