@@ -37,7 +37,7 @@ import duplicateItem from '../../thunks/duplicateItem';
 import {useSelectItem} from '../Controls';
 import Topper from '../Topper';
 import FloatingToolbar from '../floating-toolbar/FloatingToolbar';
-import FragmentContent from './FragmentContent';
+import FragmentContent from '../fragment-content/FragmentContent';
 
 const FragmentWithControls = React.forwardRef(({item, layoutData}, ref) => {
 	const config = useContext(ConfigContext);
@@ -99,7 +99,7 @@ const FragmentWithControls = React.forwardRef(({item, layoutData}, ref) => {
 			/>
 
 			<FragmentContent
-				fragmentEntryLink={fragmentEntryLink}
+				fragmentEntryLinkId={fragmentEntryLink.fragmentEntryLinkId}
 				itemId={item.itemId}
 				ref={ref}
 			/>

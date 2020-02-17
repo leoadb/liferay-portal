@@ -38,6 +38,28 @@ public class LayoutPageTemplateStructureHelperUtil {
 	public static JSONObject generateContentLayoutStructure(
 		List<FragmentEntryLink> fragmentEntryLinks, int type) {
 
+		if (fragmentEntryLinks.isEmpty() &&
+			(type == LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT)) {
+
+			LayoutStructure layoutStructure = new LayoutStructure();
+
+			LayoutStructureItem rootLayoutStructureItem =
+				layoutStructure.addRootLayoutStructureItem();
+
+			layoutStructure.addDropZoneLayoutStructureItem(
+				rootLayoutStructureItem.getItemId(), 0);
+
+			return layoutStructure.toJSONObject();
+		}
+
+		if (fragmentEntryLinks.isEmpty()) {
+			LayoutStructure layoutStructure = new LayoutStructure();
+
+			layoutStructure.addRootLayoutStructureItem();
+
+			return layoutStructure.toJSONObject();
+		}
+
 		LayoutStructure layoutStructure = new LayoutStructure();
 
 		LayoutStructureItem rootLayoutStructureItem =
@@ -51,20 +73,12 @@ public class LayoutPageTemplateStructureHelperUtil {
 			layoutStructure.addRowLayoutStructureItem(
 				containerLayoutStructureItem.getItemId(), 0, 0);
 
-		if (fragmentEntryLinks.isEmpty() &&
-			(type == LayoutPageTemplateEntryTypeConstants.TYPE_MASTER_LAYOUT)) {
+		for (int i = 0; i < fragmentEntryLinks.size(); i++) {
+			FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(i);
 
-			layoutStructure.addDropZoneLayoutStructureItem(
-				rowLayoutStructureItem.getItemId(), 0);
-		}
-		else {
-			for (int i = 0; i < fragmentEntryLinks.size(); i++) {
-				FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(i);
-
-				layoutStructure.addFragmentLayoutStructureItem(
-					fragmentEntryLink.getFragmentEntryLinkId(),
-					rowLayoutStructureItem.getItemId(), i);
-			}
+			layoutStructure.addFragmentLayoutStructureItem(
+				fragmentEntryLink.getFragmentEntryLinkId(),
+				rowLayoutStructureItem.getItemId(), i);
 		}
 
 		return layoutStructure.toJSONObject();

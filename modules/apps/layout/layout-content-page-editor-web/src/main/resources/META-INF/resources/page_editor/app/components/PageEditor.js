@@ -29,6 +29,8 @@ import {useDispatch, useSelector} from '../store/index';
 import moveItem from '../thunks/moveItem';
 import {useActiveItemId, useIsActive, useSelectItem} from './Controls';
 import DragPreview from './DragPreview';
+import {EditableDecorationProvider} from './fragment-content/EditableDecorationContext';
+import {EditableProcessorContextProvider} from './fragment-content/EditableProcessorContext';
 import {
 	ColumnWithControls,
 	ContainerWithControls,
@@ -139,16 +141,41 @@ export default function PageEditor({withinMasterPage = false}) {
 
 	useEventListener('keyup', onKeyUp, false, document.body);
 
+	const isPageConversion = pageType === PAGE_TYPES.conversion;
+	const hasWarningMessages =
+		isPageConversion &&
+		layoutConversionWarningMessages &&
+		layoutConversionWarningMessages.length > 0;
+
 	return (
 		<>
-			{layoutConversionWarningMessages &&
-				layoutConversionWarningMessages.length &&
-				pageType === PAGE_TYPES.conversion && (
+			{isPageConversion && (
+				<div
+					className={classNames('page-editor__conversion-messages', {
+						'page-editor__conversion-messages--with-sidebar-open': sidebarOpen
+					})}
+				>
 					<ClayAlert
-						displayType="warning"
-						title={layoutConversionWarningMessages.join('<br>')}
+						displayType="info"
+						title={Liferay.Language.get(
+							'page-conversion-description'
+						)}
+						variant="stripe"
 					/>
-				)}
+
+					{hasWarningMessages && (
+						<ClayAlert displayType="warning" variant="stripe">
+							{layoutConversionWarningMessages.map(message => (
+								<>
+									{message}
+									<br />
+								</>
+							))}
+						</ClayAlert>
+					)}
+				</div>
+			)}
+
 			<div
 				className={classNames('page-editor', {
 					'page-editor--with-sidebar': !withinMasterPage,
@@ -161,13 +188,17 @@ export default function PageEditor({withinMasterPage = false}) {
 			>
 				<DragPreview />
 
-				<DragDropManager>
-					<LayoutDataItem
-						fragmentEntryLinks={fragmentEntryLinks}
-						item={mainItem}
-						layoutData={layoutData}
-					/>
-				</DragDropManager>
+				<EditableProcessorContextProvider>
+					<EditableDecorationProvider>
+						<DragDropManager>
+							<LayoutDataItem
+								fragmentEntryLinks={fragmentEntryLinks}
+								item={mainItem}
+								layoutData={layoutData}
+							/>
+						</DragDropManager>
+					</EditableDecorationProvider>
+				</EditableProcessorContextProvider>
 			</div>
 		</>
 	);

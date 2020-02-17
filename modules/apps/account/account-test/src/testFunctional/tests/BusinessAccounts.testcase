@@ -80,6 +80,40 @@ definition {
 	}
 
 	@priority = "4"
+	test AssignOrganizationToAccount {
+		JSONOrganization.addOrganization(
+			organizationName = "Organization for Account",
+			organizationSite = "true");
+
+		ProductMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Control Panel",
+			portlet = "Accounts");
+
+		Accounts.addCP(
+			accountDescription = "This is a test for adding organization to account.",
+			accountName = "Account with Organization");
+
+		Accounts.gotoAssigneeTab(assigneeTab = "Organizations");
+
+		Accounts.addAssignee(
+			accountName = "Account with Organization",
+			assigneeName = "Organization for Account",
+			assigneeType = "Organizations");
+
+		ProductMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Control Panel",
+			portlet = "Accounts");
+
+		LexiconEntry.gotoEntry(rowEntry = "Account with Organization");
+
+		Accounts.gotoAssigneeTab(assigneeTab = "Organizations");
+
+		Accounts.viewAssignee(assigneeName = "Organization for Account");
+	}
+
+	@priority = "4"
 	test CancelAccountCreation {
 		ProductMenu.gotoPortlet(
 			category = "Accounts",
@@ -381,22 +415,20 @@ definition {
 
 		LexiconEntry.gotoEntry(rowEntry = "Remove Account User");
 
-		Navigator.gotoNavItem(navItem = "Users");
+		Accounts.gotoAssigneeTab(assigneeTab = "Users");
 
-		Accounts.removeUser(userFirstName = "userfn");
+		Accounts.unassignAssignee(
+			assigneeName = "userfn",
+			assigneeType = "Users");
 
 		ProductMenu.gotoPortlet(
 			category = "Accounts",
 			panel = "Control Panel",
 			portlet = "Accounts");
 
-		LexiconEntry.gotoEntry(rowEntry = "Remove Account User");
-
-		Navigator.gotoNavItem(navItem = "Users");
-
-		AssertTextEquals(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "There are no users associated with this account.");
+		Accounts.viewNoAssignee(
+			accountName = "Remove Account User",
+			assigneeType = "Users");
 	}
 
 	@priority = "5"
@@ -420,6 +452,51 @@ definition {
 		LexiconEntry.viewEntryStatus(
 			rowEntry = "Accounts Name for Test",
 			rowStatus = "ACTIVE");
+	}
+
+	@priority = "4"
+	test UnassignOrganizationFromAccount {
+		JSONOrganization.addOrganization(
+			organizationName = "Organization for Account",
+			organizationSite = "true");
+
+		ProductMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Control Panel",
+			portlet = "Accounts");
+
+		Accounts.addCP(
+			accountDescription = "This is a test for unassign organization from account.",
+			accountName = "Unassign Organization from Account");
+
+		Accounts.gotoAssigneeTab(assigneeTab = "Organizations");
+
+		Accounts.addAssignee(
+			accountName = "Unassign Organization from Account",
+			assigneeName = "Organization for Account",
+			assigneeType = "Organizations");
+
+		ProductMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Control Panel",
+			portlet = "Accounts");
+
+		LexiconEntry.gotoEntry(rowEntry = "Unassign Organization from Account");
+
+		Accounts.gotoAssigneeTab(assigneeTab = "Organizations");
+
+		Accounts.unassignAssignee(
+			assigneeName = "Organization for Account",
+			assigneeType = "Organizations");
+
+		ProductMenu.gotoPortlet(
+			category = "Accounts",
+			panel = "Control Panel",
+			portlet = "Accounts");
+
+		Accounts.viewNoAssignee(
+			accountName = "Unassign Organization from Account",
+			assigneeType = "Organizations");
 	}
 
 	@priority = "4"

@@ -112,6 +112,8 @@ List groupNames = (List)objArray[8];
 
 						groupItemSelectorCriterion.setAllowNavigation(false);
 						groupItemSelectorCriterion.setDesiredItemSelectorReturnTypes(new URLItemSelectorReturnType());
+						groupItemSelectorCriterion.setIncludeFormsSite(true);
+						groupItemSelectorCriterion.setIncludeUserPersonalSite(true);
 						groupItemSelectorCriterion.setTarget(target);
 
 						PortletURL itemSelectorURL = itemSelector.getItemSelectorURL(RequestBackedPortletURLFactoryUtil.create(liferayPortletRequest), liferayPortletResponse.getNamespace() + "selectGroup", groupItemSelectorCriterion);
