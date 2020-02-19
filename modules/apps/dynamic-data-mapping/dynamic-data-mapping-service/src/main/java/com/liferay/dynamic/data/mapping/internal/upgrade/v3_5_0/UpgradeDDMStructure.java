@@ -229,14 +229,26 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 				else if (type.startsWith("ddm-geolocation")) {
 					_upgradeGeolocation(jsonObject);
 				}
+				else if (type.startsWith("ddm-image")) {
+					_upgradeImageField(jsonObject);
+				}
 				else if (type.startsWith("ddm-integer")) {
 					_upgradeIntegerField(jsonObject);
+				}
+				else if (type.startsWith("ddm-journal-article")) {
+					_upgradeJournalArticleField(jsonObject);
+				}
+				else if (type.startsWith("ddm-link-to-page")) {
+					_upgradeLinkToPageField(jsonObject);
 				}
 				else if (type.startsWith("ddm-number")) {
 					_upgradeNumberField(jsonObject);
 				}
 				else if (StringUtil.equals(type, "ddm-separator")) {
 					_upgradeSeparatorField(jsonObject);
+				}
+				else if (type.startsWith("ddm-text-html")) {
+					_upgradeHTMLField(jsonObject);
 				}
 				else if (type.startsWith("ddm-")) {
 					jsonObject.put(
@@ -275,11 +287,43 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 		);
 	}
 
+	private void _upgradeHTMLField(JSONObject jsonObject) {
+		jsonObject.put(
+			"dataType", "string"
+		).put(
+			"type", "rich_text"
+		);
+	}
+
+	private void _upgradeImageField(JSONObject jsonObject) {
+		jsonObject.put(
+			"dataType", "string"
+		).put(
+			"type", "image"
+		);
+	}
+
 	private void _upgradeIntegerField(JSONObject jsonObject) {
 		jsonObject.put(
 			"type", "numeric"
 		).put(
 			"visibilityExpression", StringPool.BLANK
+		);
+	}
+
+	private void _upgradeJournalArticleField(JSONObject jsonObject) {
+		jsonObject.put(
+			"dataType", "string"
+		).put(
+			"type", "journal_article"
+		);
+	}
+
+	private void _upgradeLinkToPageField(JSONObject jsonObject) {
+		jsonObject.put(
+			"dataType", "string"
+		).put(
+			"type", "link_to_layout"
 		);
 	}
 
