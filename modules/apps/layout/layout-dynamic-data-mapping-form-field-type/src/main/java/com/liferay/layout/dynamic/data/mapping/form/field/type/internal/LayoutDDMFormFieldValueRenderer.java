@@ -44,23 +44,18 @@ public class LayoutDDMFormFieldValueRenderer
 	public String render(DDMFormFieldValue ddmFormFieldValue, Locale locale) {
 		Value value = ddmFormFieldValue.getValue();
 
-		String valueString = value.getString(locale);
-
-		if (Validator.isNull(valueString)) {
+		if ((value == null) || Validator.isNull(value.getString(locale))) {
 			return StringPool.BLANK;
 		}
 
 		try {
-			JSONObject fieldValueJSONObject = _jsonFactory.createJSONObject(
-				valueString);
-
-			long groupId = fieldValueJSONObject.getLong("groupId");
-			boolean privateLayout = fieldValueJSONObject.getBoolean(
-				"privateLayout");
-			long layoutId = fieldValueJSONObject.getLong("layoutId");
+			JSONObject jsonObject = _jsonFactory.createJSONObject(
+				value.getString(locale));
 
 			Layout layout = _layoutService.fetchLayout(
-				groupId, privateLayout, layoutId);
+				jsonObject.getLong("groupId"),
+				jsonObject.getBoolean("privateLayout"),
+				jsonObject.getLong("layoutId"));
 
 			if (layout == null) {
 				return StringPool.BLANK;
