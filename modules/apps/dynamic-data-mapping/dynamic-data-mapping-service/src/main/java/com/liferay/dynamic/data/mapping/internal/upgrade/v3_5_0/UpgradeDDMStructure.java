@@ -61,8 +61,8 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		_upgradeStructureDefinition();
-		_upgradeStructureVersionDefinition();
 		_upgradeStructureLayoutDefinition();
+		_upgradeStructureVersionDefinition();
 	}
 
 	private void _upgradeColorField(JSONObject jsonObject) {
