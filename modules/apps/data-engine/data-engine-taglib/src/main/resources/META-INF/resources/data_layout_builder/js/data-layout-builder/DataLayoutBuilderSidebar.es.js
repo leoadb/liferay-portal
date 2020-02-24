@@ -116,9 +116,10 @@ const SettingsSidebarBody = () => {
 		: fieldSettingsContext;
 
 	useEffect(() => {
-		const filteredSettingsContext = getFilteredSettingsContext(
+		const filteredSettingsContext = getFilteredSettingsContext({
+			config: state.config,
 			settingsContext
-		);
+		});
 
 		const dispatchEvent = (type, payload) => {
 			if (hasFocusedCustomObjectField && type === 'fieldEdited') {
@@ -185,6 +186,7 @@ const SettingsSidebarBody = () => {
 		formRef,
 		hasFocusedCustomObjectField,
 		settingsContext,
+		state.config,
 	]);
 
 	useEffect(() => {
