@@ -33,6 +33,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.security.permission.DDMPermissionSupport;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
@@ -68,6 +69,7 @@ import com.liferay.portal.kernel.xml.Element;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -340,6 +342,11 @@ public class DDMStructureStagedModelDataHandler
 		DDMForm ddmForm = getImportDDMForm(
 			portletDataContext, structureElement);
 
+		long groupId = portletDataContext.getScopeGroupId();
+
+		updateDDMFormFieldsPredefinedValues(
+			groupId, portletDataContext.getSourceGroupId(), ddmForm);
+
 		importDDMDataProviderInstances(
 			portletDataContext, structureElement, ddmForm);
 
@@ -350,8 +357,6 @@ public class DDMStructureStagedModelDataHandler
 			structure);
 
 		DDMStructure importedStructure = null;
-
-		long groupId = portletDataContext.getScopeGroupId();
 
 		if (structure.getGroupId() ==
 				portletDataContext.getSourceCompanyGroupId()) {
@@ -799,6 +804,32 @@ public class DDMStructureStagedModelDataHandler
 	@Reference(unbind = "-")
 	protected void setUserLocalService(UserLocalService userLocalService) {
 		_userLocalService = userLocalService;
+	}
+
+	protected void updateDDMFormFieldsPredefinedValues(
+		long groupId, long sourceId, DDMForm ddmForm) {
+
+		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
+
+		for (DDMFormField ddmFormField : ddmFormFields) {
+			LocalizedValue predefinedValue = ddmFormField.getPredefinedValue();
+
+			Map<Locale, String> predefinedValues = predefinedValue.getValues();
+
+			for (Map.Entry<Locale, String> entry :
+					predefinedValues.entrySet()) {
+
+				String sourceGroupId = String.valueOf(sourceId);
+				String value = entry.getValue();
+
+				if (value.contains(sourceGroupId)) {
+					value = StringUtil.replace(
+						value, sourceGroupId, String.valueOf(groupId));
+
+					entry.setValue(value);
+				}
+			}
+		}
 	}
 
 	@Reference
