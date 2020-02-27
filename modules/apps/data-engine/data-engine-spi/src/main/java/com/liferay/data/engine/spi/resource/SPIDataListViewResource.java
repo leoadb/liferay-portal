@@ -24,7 +24,6 @@ import com.liferay.data.engine.util.comparator.DEDataListViewNameComparator;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -196,7 +195,7 @@ public class SPIDataListViewResource<T> {
 	private void _addDataDefinitionFieldLinks(
 			long dataDefinitionId, long dataListViewId, String[] fieldNames,
 			long groupId)
-		throws PortalException {
+		throws Exception {
 
 		for (String fieldName : fieldNames) {
 			_deDataDefinitionFieldLinkLocalService.addDEDataDefinitionFieldLink(
