@@ -70,9 +70,9 @@ public class SPIDataListViewResource<T> {
 	}
 
 	public T addDataDefinitionDataListView(
-			long dataDefinitionId, long dataListViewId,
-			Map<String, Object> appliedFilters, String[] fieldNames,
-			Map<String, Object> name, String sortField)
+			Map<String, Object> appliedFilters, long dataDefinitionId,
+			long dataListViewId, String[] fieldNames, Map<String, Object> name,
+			String sortField)
 		throws Exception {
 
 		_validate(fieldNames);
@@ -167,9 +167,9 @@ public class SPIDataListViewResource<T> {
 	}
 
 	public T updateDataListView(
-			long dataDefinitionId, long dataListViewId,
-			Map<String, Object> appliedFilters, String[] fieldNames,
-			Map<String, Object> name, String sortField)
+			Map<String, Object> appliedFilters, long dataDefinitionId,
+			long dataListViewId, String[] fieldNames, Map<String, Object> name,
+			String sortField)
 		throws Exception {
 
 		_validate(fieldNames);
