@@ -114,8 +114,8 @@ public class DataListViewResourceImpl
 			_getSPIDataListViewResource();
 
 		return spiDataListViewResource.addDataDefinitionDataListView(
-			dataDefinitionId, dataListView.getId(),
-			dataListView.getAppliedFilters(), dataListView.getFieldNames(),
+			dataListView.getAppliedFilters(), dataDefinitionId,
+			dataListView.getId(), dataListView.getFieldNames(),
 			dataListView.getName(), dataListView.getSortField());
 	}
 
@@ -134,9 +134,10 @@ public class DataListViewResourceImpl
 			_getSPIDataListViewResource();
 
 		return spiDataListViewResource.updateDataListView(
+			dataListView.getAppliedFilters(),
 			dataListView.getDataDefinitionId(), dataListViewId,
-			dataListView.getAppliedFilters(), dataListView.getFieldNames(),
-			dataListView.getName(), dataListView.getSortField());
+			dataListView.getFieldNames(), dataListView.getName(),
+			dataListView.getSortField());
 	}
 
 	private long _getDDMStructureId(DEDataListView deDataListView) {
