@@ -35,6 +35,7 @@ import Sidebar from '../components/sidebar/Sidebar.es';
 import {useSidebarContent} from '../hooks/index.es';
 import isClickOutside from '../utils/clickOutside.es';
 import renderSettingsForm, {
+	getEvents,
 	getFilteredSettingsContext,
 } from '../utils/renderSettingsForm.es';
 import DataLayoutBuilderContext from './DataLayoutBuilderContext.es';
@@ -103,22 +104,20 @@ const SettingsSidebarBody = () => {
 			settingsContext
 		);
 
-		if (form === null || form.isDisposed()) {
-			const dispatchEvent = (type, payload) => {
-				if (hasFocusedCustomObjectField && type === 'fieldEdited') {
-					dispatch({payload, type: EDIT_CUSTOM_OBJECT_FIELD});
-				}
-				else if (!hasFocusedCustomObjectField) {
-					dataLayoutBuilder.dispatch(type, payload);
-				}
-			};
+		const dispatchEvent = (type, payload) => {
+			if (hasFocusedCustomObjectField && type === 'fieldEdited') {
+				dispatch({payload, type: EDIT_CUSTOM_OBJECT_FIELD});
+			}
+			else if (!hasFocusedCustomObjectField) {
+				dataLayoutBuilder.dispatch(type, payload);
+			}
+		};
 
+		if (form === null || form.isDisposed()) {
 			setForm(
 				renderSettingsForm(
-					{
-						dispatchEvent,
-						settingsContext: filteredSettingsContext,
-					},
+					getEvents(dispatchEvent, filteredSettingsContext),
+					filteredSettingsContext,
 					formRef.current
 				)
 			);
@@ -133,6 +132,11 @@ const SettingsSidebarBody = () => {
 					activePage: 0,
 				};
 			}
+
+			newState = {
+				...newState,
+				events: getEvents(dispatchEvent, filteredSettingsContext),
+			};
 
 			form.setState(newState, () => {
 				let evaluableForm = false;
