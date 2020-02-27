@@ -81,7 +81,7 @@ public class DataListViewResourceImpl
 		SPIDataListViewResource<DataListView> spiDataListViewResource =
 			_getSPIDataListViewResource();
 
-		return spiDataListViewResource.getDataDefinitionDataListViewsPage(
+		return spiDataListViewResource.getDataDefinitionDataListViews(
 			dataDefinitionId, keywords,
 			contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
 	}
