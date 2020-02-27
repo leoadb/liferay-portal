@@ -101,7 +101,7 @@ public class SPIDataListViewResource<T> {
 		_deDataListViewLocalService.deleteDEDataListView(dataListViewId);
 	}
 
-	public Page<T> getDataDefinitionDataListViewsPage(
+	public Page<T> getDataDefinitionDataListViews(
 			long dataDefinitionId, String keywords, Locale locale,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
