@@ -21,6 +21,14 @@ import java.util.Map;
  */
 public class SPIDataRecordCollection {
 
+	public Long getDataDefinitionId() {
+		return _dataDefinitionId;
+	}
+
+	public String getDataRecordCollectionKey() {
+		return _dataRecordCollectionKey;
+	}
+
 	public Map<String, Object> getDescription() {
 		return _description;
 	}
@@ -37,12 +45,12 @@ public class SPIDataRecordCollection {
 		return _siteId;
 	}
 
-	public Long getSPIDataDefinitionId() {
-		return _spiDataDefinitionId;
+	public void setDataDefinitionId(Long spiDataDefinitionId) {
+		_dataDefinitionId = spiDataDefinitionId;
 	}
 
-	public String getSPIDataRecordCollectionKey() {
-		return _spiDataRecordCollectionKey;
+	public void setDataRecordCollectionKey(String dataRecordCollectionKey) {
+		_dataRecordCollectionKey = dataRecordCollectionKey;
 	}
 
 	public void setDescription(Map<String, Object> description) {
@@ -61,19 +69,11 @@ public class SPIDataRecordCollection {
 		_siteId = siteId;
 	}
 
-	public void setSPIDataDefinitionId(Long spiDataDefinitionId) {
-		_spiDataDefinitionId = spiDataDefinitionId;
-	}
-
-	public void setSPIDataRecordCollectionKey(String dataRecordCollectionKey) {
-		_spiDataRecordCollectionKey = dataRecordCollectionKey;
-	}
-
+	private Long _dataDefinitionId;
+	private String _dataRecordCollectionKey;
 	private Map<String, Object> _description;
 	private Long _id;
 	private Map<String, Object> _name;
 	private Long _siteId;
-	private Long _spiDataDefinitionId;
-	private String _spiDataRecordCollectionKey;
 
 }

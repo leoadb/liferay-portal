@@ -63,8 +63,8 @@ public class DataDefinitionUtil {
 			_toLocales(spiDataDefinition.getAvailableLanguageIds()));
 		ddmForm.setDDMFormFields(
 			_toDDMFormFields(
-				spiDataDefinition.getSPIDataDefinitionFields(),
-				ddmFormFieldTypeServicesTracker));
+				ddmFormFieldTypeServicesTracker,
+				spiDataDefinition.getSPIDataDefinitionFields()));
 		ddmForm.setDefaultLocale(
 			LocaleUtil.fromLanguageId(
 				spiDataDefinition.getDefaultLanguageId()));
@@ -83,16 +83,9 @@ public class DataDefinitionUtil {
 			{
 				setAvailableLanguageIds(
 					_toLanguageIds(ddmForm.getAvailableLocales()));
-				setSPIDataDefinitionFields(
-					_toSPIDataDefinitionFields(
-						ddmForm.getDDMFormFields(),
-						ddmFormFieldTypeServicesTracker));
-				setSPIDataDefinitionKey(ddmStructure.getStructureKey());
 				setDateCreated(ddmStructure.getCreateDate());
+				setDataDefinitionKey(ddmStructure.getStructureKey());
 				setDateModified(ddmStructure.getModifiedDate());
-				setDefaultDataLayout(
-					DataLayoutUtil.toSPIDataLayout(
-						ddmStructure.fetchDDMStructureLayout()));
 				setDefaultLanguageId(
 					LanguageUtil.getLanguageId(ddmForm.getDefaultLocale()));
 				setDescription(
@@ -103,6 +96,13 @@ public class DataDefinitionUtil {
 					LocalizedValueUtil.toStringObjectMap(
 						ddmStructure.getNameMap()));
 				setSiteId(ddmStructure.getGroupId());
+				setSPIDataDefinitionFields(
+					_toSPIDataDefinitionFields(
+						ddmForm.getDDMFormFields(),
+						ddmFormFieldTypeServicesTracker));
+				setSPIDefaultDataLayout(
+					DataLayoutUtil.toSPIDataLayout(
+						ddmStructure.fetchDDMStructureLayout()));
 				setStorageType(ddmStructure.getStorageType());
 				setUserId(ddmStructure.getUserId());
 			}
@@ -239,10 +239,9 @@ public class DataDefinitionUtil {
 				ddmFormFieldType.getDDMFormFieldTypeSettings();
 		}
 
-		DDMForm settingsDDMForm = DDMFormFactory.create(
-			ddmFormFieldTypeSettings);
+		DDMForm ddmForm = DDMFormFactory.create(ddmFormFieldTypeSettings);
 
-		return settingsDDMForm.getDDMFormFieldsMap(true);
+		return ddmForm.getDDMFormFieldsMap(true);
 	}
 
 	private static SPIDataDefinitionField _toDataDefinitionField(
@@ -266,14 +265,14 @@ public class DataDefinitionUtil {
 					LocalizedValueUtil.toLocalizedValuesMap(
 						ddmFormField.getLabel()));
 				setName(ddmFormField.getName());
-				setSPINestedDataDefinitionFields(
-					_toSPIDataDefinitionFields(
-						ddmFormField.getNestedDDMFormFields(),
-						ddmFormFieldTypeServicesTracker));
 				setReadOnly(ddmFormField.isReadOnly());
 				setRepeatable(ddmFormField.isRepeatable());
 				setRequired(ddmFormField.isRequired());
 				setShowLabel(ddmFormField.isShowLabel());
+				setSPINestedDataDefinitionFields(
+					_toSPIDataDefinitionFields(
+						ddmFormField.getNestedDDMFormFields(),
+						ddmFormFieldTypeServicesTracker));
 				setTip(
 					LocalizedValueUtil.toLocalizedValuesMap(
 						ddmFormField.getTip()));
@@ -282,45 +281,47 @@ public class DataDefinitionUtil {
 	}
 
 	private static DDMFormField _toDDMFormField(
-		SPIDataDefinitionField dataDefinitionField,
-		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker) {
+		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker,
+		SPIDataDefinitionField spiDataDefinitionField) {
 
 		DDMFormField ddmFormField = new DDMFormField();
 
-		ddmFormField.setIndexType(dataDefinitionField.getIndexTypeAsString());
+		ddmFormField.setIndexType(
+			spiDataDefinitionField.getIndexTypeAsString());
 		ddmFormField.setLabel(
 			LocalizedValueUtil.toLocalizedValue(
-				dataDefinitionField.getLabel()));
+				spiDataDefinitionField.getLabel()));
 		ddmFormField.setLocalizable(
-			GetterUtil.getBoolean(dataDefinitionField.getLocalizable()));
-		ddmFormField.setName(dataDefinitionField.getName());
+			GetterUtil.getBoolean(spiDataDefinitionField.getLocalizable()));
+		ddmFormField.setName(spiDataDefinitionField.getName());
 		ddmFormField.setNestedDDMFormFields(
 			_toDDMFormFields(
-				dataDefinitionField.getSPINestedDataDefinitionFields(),
-				ddmFormFieldTypeServicesTracker));
+				ddmFormFieldTypeServicesTracker,
+				spiDataDefinitionField.getSPINestedDataDefinitionFields()));
 		ddmFormField.setPredefinedValue(
 			LocalizedValueUtil.toLocalizedValue(
-				dataDefinitionField.getDefaultValue()));
+				spiDataDefinitionField.getDefaultValue()));
 		ddmFormField.setReadOnly(
-			GetterUtil.getBoolean(dataDefinitionField.getReadOnly()));
+			GetterUtil.getBoolean(spiDataDefinitionField.getReadOnly()));
 		ddmFormField.setRepeatable(
-			GetterUtil.getBoolean(dataDefinitionField.getRepeatable()));
+			GetterUtil.getBoolean(spiDataDefinitionField.getRepeatable()));
 		ddmFormField.setRequired(
-			GetterUtil.getBoolean(dataDefinitionField.getRequired()));
+			GetterUtil.getBoolean(spiDataDefinitionField.getRequired()));
 		ddmFormField.setShowLabel(
-			GetterUtil.getBoolean(dataDefinitionField.getShowLabel()));
+			GetterUtil.getBoolean(spiDataDefinitionField.getShowLabel()));
 		ddmFormField.setTip(
-			LocalizedValueUtil.toLocalizedValue(dataDefinitionField.getTip()));
-		ddmFormField.setType(dataDefinitionField.getFieldType());
+			LocalizedValueUtil.toLocalizedValue(
+				spiDataDefinitionField.getTip()));
+		ddmFormField.setType(spiDataDefinitionField.getFieldType());
 
 		Map<String, Object> customProperties =
-			dataDefinitionField.getCustomProperties();
+			spiDataDefinitionField.getCustomProperties();
 
 		if (MapUtil.isNotEmpty(customProperties)) {
 			Map<String, DDMFormField> settingsDDMFormFieldsMap =
 				_getSettingsDDMFormFields(
 					ddmFormFieldTypeServicesTracker,
-					dataDefinitionField.getFieldType());
+					spiDataDefinitionField.getFieldType());
 
 			for (Map.Entry<String, Object> entry :
 					customProperties.entrySet()) {
@@ -379,8 +380,8 @@ public class DataDefinitionUtil {
 	}
 
 	private static List<DDMFormField> _toDDMFormFields(
-		SPIDataDefinitionField[] spiDataDefinitionFields,
-		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker) {
+		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker,
+		SPIDataDefinitionField[] spiDataDefinitionFields) {
 
 		if (ArrayUtil.isEmpty(spiDataDefinitionFields)) {
 			return Collections.emptyList();
@@ -389,8 +390,8 @@ public class DataDefinitionUtil {
 		return Stream.of(
 			spiDataDefinitionFields
 		).map(
-			dataDefinitionField -> _toDDMFormField(
-				dataDefinitionField, ddmFormFieldTypeServicesTracker)
+			spiDataDefinitionField -> _toDDMFormField(
+				ddmFormFieldTypeServicesTracker, spiDataDefinitionField)
 		).collect(
 			Collectors.toList()
 		);
