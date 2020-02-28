@@ -28,6 +28,8 @@ public class DataRecordCollectionUtil {
 
 		return new SPIDataRecordCollection() {
 			{
+				setDataDefinitionId(ddlRecordSet.getDDMStructureId());
+				setDataRecordCollectionKey(ddlRecordSet.getRecordSetKey());
 				setDescription(
 					LocalizedValueUtil.toStringObjectMap(
 						ddlRecordSet.getDescriptionMap()));
@@ -36,8 +38,6 @@ public class DataRecordCollectionUtil {
 					LocalizedValueUtil.toStringObjectMap(
 						ddlRecordSet.getNameMap()));
 				setSiteId(ddlRecordSet.getGroupId());
-				setSPIDataDefinitionId(ddlRecordSet.getDDMStructureId());
-				setSPIDataRecordCollectionKey(ddlRecordSet.getRecordSetKey());
 			}
 		};
 	}
