@@ -17,7 +17,6 @@ package com.liferay.data.engine.spi.resource;
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
 import com.liferay.data.engine.content.type.DataDefinitionContentTypeTracker;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
-import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
@@ -35,8 +34,6 @@ import com.liferay.dynamic.data.mapping.util.comparator.StructureModifiedDateCom
 import com.liferay.dynamic.data.mapping.util.comparator.StructureNameComparator;
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -102,17 +99,6 @@ public class SPIDataDefinitionResource<T, U, V> {
 	}
 
 	public T addDataDefinitionByContentType(
-			long companyId, String content, String contentType,
-			Map<String, Object> description, String dataDefinitionKey,
-			Map<String, Object> name, long siteId, String storageType)
-		throws Exception {
-
-		return addSiteDataDefinitionByContentType(
-			companyId, content, contentType, dataDefinitionKey, description,
-			name, _portal.getSiteGroupId(siteId), storageType);
-	}
-
-	public T addSiteDataDefinitionByContentType(
 			long companyId, String content, String contentType,
 			String dataDefinitionKey, Map<String, Object> description,
 			Map<String, Object> name, long siteId, String storageType)
@@ -185,53 +171,14 @@ public class SPIDataDefinitionResource<T, U, V> {
 			_ddmStructureLocalService.getStructure(dataDefinitionId));
 	}
 
-	public Page<T> getDataDefinitionByContentTypeContentTypePage(
+	public Page<T> getDataDefinitionsByContentType(
 			long companyId, String contentType, String keywords, long groupId,
 			Locale locale, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		return getSiteDataDefinitionByContentTypeContentTypePage(
+		return getSiteDataDefinitionsByContentType(
 			companyId, contentType, keywords, locale, pagination,
 			_portal.getSiteGroupId(groupId), sorts);
-	}
-
-	public String getDataDefinitionDataDefinitionFieldLinks(
-			String fieldName, long dataDefinitionId)
-		throws Exception {
-
-		return JSONUtil.put(
-			"dataLayouts",
-			TransformUtil.transformToArray(
-				_deDataDefinitionFieldLinkLocalService.
-					getDEDataDefinitionFieldLinks(
-						_getClassNameId(dataDefinitionId), dataDefinitionId,
-						fieldName),
-				deDataDefinitionFieldLink -> {
-					DDMStructureLayout ddmStructureLayout =
-						_ddmStructureLayoutLocalService.getDDMStructureLayout(
-							deDataDefinitionFieldLink.getClassPK());
-
-					return ddmStructureLayout.getName(
-						ddmStructureLayout.getDefaultLanguageId());
-				},
-				String.class)
-		).put(
-			"dataListViews",
-			TransformUtil.transformToArray(
-				_deDataDefinitionFieldLinkLocalService.
-					getDEDataDefinitionFieldLinks(
-						_portal.getClassNameId(DEDataListView.class),
-						dataDefinitionId, fieldName),
-				deDataDefinitionFieldLink -> {
-					DEDataListView deDataListView =
-						_deDataListViewLocalService.getDEDataListView(
-							deDataDefinitionFieldLink.getClassPK());
-
-					return deDataListView.getName(
-						deDataListView.getDefaultLanguageId());
-				},
-				String.class)
-		).toString();
 	}
 
 	public T getSiteDataDefinitionByContentTypeByDataDefinitionKey(
@@ -249,7 +196,7 @@ public class SPIDataDefinitionResource<T, U, V> {
 				dataDefinitionKey));
 	}
 
-	public Page<T> getSiteDataDefinitionByContentTypeContentTypePage(
+	public Page<T> getSiteDataDefinitionsByContentType(
 			long companyId, String contentType, String keywords, Locale locale,
 			Pagination pagination, long siteId, Sort[] sorts)
 		throws Exception {
@@ -324,13 +271,6 @@ public class SPIDataDefinitionResource<T, U, V> {
 				LocalizedValueUtil.toLocaleStringMap(name),
 				LocalizedValueUtil.toLocaleStringMap(description), content,
 				new ServiceContext()));
-	}
-
-	private long _getClassNameId(long dataDefinitionId) throws PortalException {
-		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
-			dataDefinitionId);
-
-		return ddmStructure.getClassNameId();
 	}
 
 	private SPIDataLayoutResource _getSPIDataLayoutResource() {

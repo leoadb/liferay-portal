@@ -89,6 +89,7 @@ import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
+import com.liferay.portal.vulcan.util.TransformUtil;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -155,11 +156,10 @@ public class DataDefinitionResourceImpl
 			<DataDefinition, DataLayout, DataRecordCollection>
 				spiDataDefinitionResource = _getSPIDataDefinitionResource();
 
-		return spiDataDefinitionResource.
-			getDataDefinitionByContentTypeContentTypePage(
-				contextCompany.getCompanyId(), contentType, keywords,
-				_portal.getSiteGroupId(contextCompany.getGroupId()),
-				contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
+		return spiDataDefinitionResource.getDataDefinitionsByContentType(
+			contextCompany.getCompanyId(), contentType, keywords,
+			_portal.getSiteGroupId(contextCompany.getGroupId()),
+			contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
 	}
 
 	@Override
@@ -192,13 +192,39 @@ public class DataDefinitionResourceImpl
 			Long dataDefinitionId, String fieldName)
 		throws Exception {
 
-		SPIDataDefinitionResource
-			<DataDefinition, DataLayout, DataRecordCollection>
-				spiDataDefinitionResource = _getSPIDataDefinitionResource();
+		return JSONUtil.put(
+			"dataLayouts",
+			TransformUtil.transformToArray(
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(
+						_getClassNameId(dataDefinitionId), dataDefinitionId,
+						fieldName),
+				deDataDefinitionFieldLink -> {
+					DDMStructureLayout ddmStructureLayout =
+						_ddmStructureLayoutLocalService.getDDMStructureLayout(
+							deDataDefinitionFieldLink.getClassPK());
 
-		return spiDataDefinitionResource.
-			getDataDefinitionDataDefinitionFieldLinks(
-				fieldName, dataDefinitionId);
+					return ddmStructureLayout.getName(
+						ddmStructureLayout.getDefaultLanguageId());
+				},
+				String.class)
+		).put(
+			"dataListViews",
+			TransformUtil.transformToArray(
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(
+						_portal.getClassNameId(DEDataListView.class),
+						dataDefinitionId, fieldName),
+				deDataDefinitionFieldLink -> {
+					DEDataListView deDataListView =
+						_deDataListViewLocalService.getDEDataListView(
+							deDataDefinitionFieldLink.getClassPK());
+
+					return deDataListView.getName(
+						deDataListView.getDefaultLanguageId());
+				},
+				String.class)
+		).toString();
 	}
 
 	@Override
@@ -256,11 +282,10 @@ public class DataDefinitionResourceImpl
 			<DataDefinition, DataLayout, DataRecordCollection>
 				spiDataDefinitionResource = _getSPIDataDefinitionResource();
 
-		return spiDataDefinitionResource.
-			getSiteDataDefinitionByContentTypeContentTypePage(
-				contextCompany.getCompanyId(), contentType, keywords,
-				contextAcceptLanguage.getPreferredLocale(), pagination, siteId,
-				sorts);
+		return spiDataDefinitionResource.getSiteDataDefinitionsByContentType(
+			contextCompany.getCompanyId(), contentType, keywords,
+			contextAcceptLanguage.getPreferredLocale(), pagination, siteId,
+			sorts);
 	}
 
 	@Override
@@ -300,8 +325,8 @@ public class DataDefinitionResourceImpl
 			spiDataDefinitionResource.addDataDefinitionByContentType(
 				contextCompany.getCompanyId(),
 				ddmFormSerializerSerializeResponse.getContent(), contentType,
-				dataDefinition.getDescription(),
-				dataDefinition.getDataDefinitionKey(), dataDefinition.getName(),
+				dataDefinition.getDataDefinitionKey(),
+				dataDefinition.getDescription(), dataDefinition.getName(),
 				siteId, dataDefinition.getStorageType());
 
 		if (defaultDataLayout != null) {
