@@ -58,7 +58,7 @@ public class SPIDataLayout {
 		return _siteId;
 	}
 
-	public SPIDataLayoutPage[] getSpiDataLayoutPages() {
+	public SPIDataLayoutPage[] getSPIDataLayoutPages() {
 		return _spiDataLayoutPages;
 	}
 

@@ -42,8 +42,8 @@ import java.util.stream.Stream;
 public class DataLayoutUtil {
 
 	public static String serialize(
-		SPIDataLayout spiDataLayout,
-		DDMFormLayoutSerializer ddmFormLayoutSerializer) {
+		DDMFormLayoutSerializer ddmFormLayoutSerializer,
+		SPIDataLayout spiDataLayout) {
 
 		DDMFormLayoutSerializerSerializeRequest.Builder builder =
 			DDMFormLayoutSerializerSerializeRequest.Builder.newBuilder(
@@ -60,7 +60,7 @@ public class DataLayoutUtil {
 		DDMFormLayout ddmFormLayout = new DDMFormLayout();
 
 		ddmFormLayout.setDDMFormLayoutPages(
-			_toDDMFormLayoutPages(dataLayout.getSpiDataLayoutPages()));
+			_toDDMFormLayoutPages(dataLayout.getSPIDataLayoutPages()));
 		ddmFormLayout.setPaginationMode(dataLayout.getPaginationMode());
 
 		return ddmFormLayout;
@@ -143,12 +143,12 @@ public class DataLayoutUtil {
 
 		return new SPIDataLayoutPage() {
 			{
-				setSPIDataLayoutRows(
-					_toDataLayoutRows(
-						ddmFormLayoutPage.getDDMFormLayoutRows()));
 				setDescription(
 					LocalizedValueUtil.toLocalizedValuesMap(
 						ddmFormLayoutPage.getDescription()));
+				setSPIDataLayoutRows(
+					_toDataLayoutRows(
+						ddmFormLayoutPage.getDDMFormLayoutRows()));
 				setTitle(
 					LocalizedValueUtil.toLocalizedValuesMap(
 						ddmFormLayoutPage.getTitle()));
@@ -227,14 +227,14 @@ public class DataLayoutUtil {
 	}
 
 	private static List<DDMFormLayoutPage> _toDDMFormLayoutPages(
-		SPIDataLayoutPage[] dataLayoutPages) {
+		SPIDataLayoutPage[] spiDataLayoutPages) {
 
-		if (ArrayUtil.isEmpty(dataLayoutPages)) {
+		if (ArrayUtil.isEmpty(spiDataLayoutPages)) {
 			return Collections.emptyList();
 		}
 
 		return Stream.of(
-			dataLayoutPages
+			spiDataLayoutPages
 		).map(
 			DataLayoutUtil::_toDDMFormLayoutPage
 		).collect(
@@ -255,14 +255,14 @@ public class DataLayoutUtil {
 	}
 
 	private static List<DDMFormLayoutRow> _toDDMFormLayoutRows(
-		SPIDataLayoutRow[] dataLayoutRows) {
+		SPIDataLayoutRow[] spiDataLayoutRows) {
 
-		if (ArrayUtil.isEmpty(dataLayoutRows)) {
+		if (ArrayUtil.isEmpty(spiDataLayoutRows)) {
 			return Collections.emptyList();
 		}
 
 		return Stream.of(
-			dataLayoutRows
+			spiDataLayoutRows
 		).map(
 			DataLayoutUtil::_toDDMFormLayoutRow
 		).collect(

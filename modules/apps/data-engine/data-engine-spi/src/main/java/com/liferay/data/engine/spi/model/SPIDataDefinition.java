@@ -30,16 +30,16 @@ public class SPIDataDefinition {
 		return _contentType;
 	}
 
+	public String getDataDefinitionKey() {
+		return _dataDefinitionKey;
+	}
+
 	public Date getDateCreated() {
 		return _dateCreated;
 	}
 
 	public Date getDateModified() {
 		return _dateModified;
-	}
-
-	public SPIDataLayout getDefaultDataLayout() {
-		return _defaultDataLayout;
 	}
 
 	public String getDefaultLanguageId() {
@@ -66,8 +66,8 @@ public class SPIDataDefinition {
 		return _spiDataDefinitionFields;
 	}
 
-	public String getSPIDataDefinitionKey() {
-		return _spiDataDefinitionKey;
+	public SPIDataLayout getSPIDefaultDataLayout() {
+		return _spiDefaultDataLayout;
 	}
 
 	public String getStorageType() {
@@ -86,16 +86,16 @@ public class SPIDataDefinition {
 		_contentType = contentType;
 	}
 
+	public void setDataDefinitionKey(String dataDefinitionKey) {
+		_dataDefinitionKey = dataDefinitionKey;
+	}
+
 	public void setDateCreated(Date dateCreated) {
 		_dateCreated = dateCreated;
 	}
 
 	public void setDateModified(Date dateModified) {
 		_dateModified = dateModified;
-	}
-
-	public void setDefaultDataLayout(SPIDataLayout defaultDataLayout) {
-		_defaultDataLayout = defaultDataLayout;
 	}
 
 	public void setDefaultLanguageId(String defaultLanguageId) {
@@ -124,8 +124,8 @@ public class SPIDataDefinition {
 		_spiDataDefinitionFields = spiDataDefinitionFields;
 	}
 
-	public void setSPIDataDefinitionKey(String dataDefinitionKey) {
-		_spiDataDefinitionKey = dataDefinitionKey;
+	public void setSPIDefaultDataLayout(SPIDataLayout spiDataLayout) {
+		_spiDefaultDataLayout = spiDataLayout;
 	}
 
 	public void setStorageType(String storageType) {
@@ -138,16 +138,16 @@ public class SPIDataDefinition {
 
 	private String[] _availableLanguageIds;
 	private String _contentType;
+	private String _dataDefinitionKey;
 	private Date _dateCreated;
 	private Date _dateModified;
-	private SPIDataLayout _defaultDataLayout;
 	private String _defaultLanguageId;
 	private Map<String, Object> _description;
 	private Long _id;
 	private Map<String, Object> _name;
 	private Long _siteId;
 	private SPIDataDefinitionField[] _spiDataDefinitionFields;
-	private String _spiDataDefinitionKey;
+	private SPIDataLayout _spiDefaultDataLayout;
 	private String _storageType;
 	private Long _userId;
 
