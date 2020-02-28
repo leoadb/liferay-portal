@@ -118,7 +118,7 @@ const SettingsSidebarBody = () => {
 	useEffect(() => {
 		const filteredSettingsContext = getFilteredSettingsContext({
 			config: state.config,
-			settingsContext
+			settingsContext,
 		});
 
 		const dispatchEvent = (type, payload) => {
