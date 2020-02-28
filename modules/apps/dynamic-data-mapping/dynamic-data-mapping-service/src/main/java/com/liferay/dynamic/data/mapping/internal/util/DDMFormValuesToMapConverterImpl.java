@@ -74,6 +74,10 @@ public class DDMFormValuesToMapConverterImpl
 		DDMFormField ddmFormField, DDMFormFieldValue ddmFormFieldValue,
 		Map<String, Object> values) {
 
+		if (ddmFormField == null) {
+			return;
+		}
+
 		Value value = ddmFormFieldValue.getValue();
 
 		if (value == null) {
