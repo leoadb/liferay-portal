@@ -16,6 +16,7 @@ package com.liferay.data.engine.rest.internal.dto.v2_0.util;
 
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataRecordCollection;
+import com.liferay.data.engine.spi.model.SPIDataRecordCollection;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 
 /**
@@ -38,6 +39,42 @@ public class DataRecordCollectionUtil {
 				siteId = ddlRecordSet.getGroupId();
 			}
 		};
+	}
+
+	public static DataRecordCollection toDataRecordCollection(
+		SPIDataRecordCollection spiDataRecordCollection) {
+
+		return new DataRecordCollection() {
+			{
+				dataDefinitionId =
+					spiDataRecordCollection.getDataDefinitionId();
+				dataRecordCollectionKey =
+					spiDataRecordCollection.getDataRecordCollectionKey();
+				description = spiDataRecordCollection.getDescription();
+				id = spiDataRecordCollection.getId();
+				name = spiDataRecordCollection.getName();
+				siteId = spiDataRecordCollection.getSiteId();
+			}
+		};
+	}
+
+	public static SPIDataRecordCollection toSPIDataRecordCollection(
+		DataRecordCollection dataRecordCollection) {
+
+		SPIDataRecordCollection spiDataRecordCollection =
+			new SPIDataRecordCollection();
+
+		spiDataRecordCollection.setDataDefinitionId(
+			dataRecordCollection.getDataDefinitionId());
+		spiDataRecordCollection.setDataRecordCollectionKey(
+			dataRecordCollection.getDataRecordCollectionKey());
+		spiDataRecordCollection.setDescription(
+			dataRecordCollection.getDescription());
+		spiDataRecordCollection.setId(dataRecordCollection.getId());
+		spiDataRecordCollection.setName(dataRecordCollection.getName());
+		spiDataRecordCollection.setSiteId(dataRecordCollection.getSiteId());
+
+		return spiDataRecordCollection;
 	}
 
 }

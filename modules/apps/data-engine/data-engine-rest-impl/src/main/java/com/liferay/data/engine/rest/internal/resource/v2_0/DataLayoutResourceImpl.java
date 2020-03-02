@@ -23,6 +23,7 @@ import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataLayoutEntityM
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataLayoutResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
+import com.liferay.data.engine.spi.model.SPIDataLayout;
 import com.liferay.data.engine.spi.resource.SPIDataLayoutResource;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutSerializer;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -37,6 +38,10 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -65,10 +70,10 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructure.getStructureId(), ActionKeys.DELETE);
 
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
+		SPIDataLayoutResource spiDataLayoutResource =
 			_getSPIDataLayoutResource();
 
-		spiDataLayoutResource.deleteDataLayout(dataLayoutId, ddmStructure);
+		spiDataLayoutResource.deleteDataLayout(dataLayoutId);
 	}
 
 	@Override
@@ -77,12 +82,24 @@ public class DataLayoutResourceImpl
 			Sort[] sorts)
 		throws Exception {
 
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
+		SPIDataLayoutResource spiDataLayoutResource =
 			_getSPIDataLayoutResource();
 
-		return spiDataLayoutResource.getDataLayouts(
+		Page<SPIDataLayout> page = spiDataLayoutResource.getDataLayouts(
 			dataDefinitionId, keywords,
 			contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
+
+		Collection<SPIDataLayout> items = page.getItems();
+
+		Stream<SPIDataLayout> stream = items.stream();
+
+		return Page.of(
+			stream.map(
+				DataLayoutUtil::toDataLayout
+			).collect(
+				Collectors.toList()
+			),
+			pagination, page.getTotalCount());
 	}
 
 	@Override
@@ -94,10 +111,11 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructureLayout.getDDMStructureId(), ActionKeys.VIEW);
 
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
+		SPIDataLayoutResource spiDataLayoutResource =
 			_getSPIDataLayoutResource();
 
-		return spiDataLayoutResource.getDataLayout(dataLayoutId);
+		return DataLayoutUtil.toDataLayout(
+			spiDataLayoutResource.getDataLayout(dataLayoutId));
 	}
 
 	@Override
@@ -125,11 +143,13 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructureLayout.getDDMStructureId(), ActionKeys.VIEW);
 
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
+		SPIDataLayoutResource spiDataLayoutResource =
 			_getSPIDataLayoutResource();
 
-		return spiDataLayoutResource.getDataLayout(
-			dataDefinitionContentType.getClassNameId(), dataLayoutKey, siteId);
+		return DataLayoutUtil.toDataLayout(
+			spiDataLayoutResource.getDataLayout(
+				dataDefinitionContentType.getClassNameId(), dataLayoutKey,
+				siteId));
 	}
 
 	@Override
@@ -144,14 +164,16 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(), ddmStructure,
 			DataActionKeys.ADD_DATA_DEFINITION);
 
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
+		SPIDataLayoutResource spiDataLayoutResource =
 			_getSPIDataLayoutResource();
 
-		return spiDataLayoutResource.addDataLayout(
-			dataDefinitionId,
-			DataLayoutUtil.serialize(dataLayout, _ddmFormLayoutSerializer),
-			dataLayout.getDataLayoutKey(), dataLayout.getDescription(),
-			dataLayout.getName());
+		SPIDataLayout spiDataLayout = DataLayoutUtil.toSPIDataLayout(
+			dataLayout);
+
+		spiDataLayout.setDataDefinitionId(dataDefinitionId);
+
+		return DataLayoutUtil.toDataLayout(
+			spiDataLayoutResource.addDataLayout(spiDataLayout));
 	}
 
 	@Override
@@ -165,21 +187,23 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructureLayout.getDDMStructureId(), ActionKeys.UPDATE);
 
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
+		SPIDataLayoutResource spiDataLayoutResource =
 			_getSPIDataLayoutResource();
 
-		return spiDataLayoutResource.updateDataLayout(
-			dataLayoutId,
-			DataLayoutUtil.serialize(dataLayout, _ddmFormLayoutSerializer),
-			dataLayout.getDescription(), dataLayout.getName());
+		SPIDataLayout spiDataLayout = DataLayoutUtil.toSPIDataLayout(
+			dataLayout);
+
+		spiDataLayout.setId(dataLayoutId);
+
+		return DataLayoutUtil.toDataLayout(
+			spiDataLayoutResource.updateDataLayout(spiDataLayout));
 	}
 
 	private SPIDataLayoutResource _getSPIDataLayoutResource() {
-		return new SPIDataLayoutResource<>(
-			_ddmStructureLayoutLocalService, _ddmStructureLocalService,
-			_ddmStructureVersionLocalService,
-			_deDataDefinitionFieldLinkLocalService,
-			DataLayoutUtil::toDataLayout);
+		return new SPIDataLayoutResource(
+			_ddmFormLayoutSerializer, _ddmStructureLayoutLocalService,
+			_ddmStructureLocalService, _ddmStructureVersionLocalService,
+			_deDataDefinitionFieldLinkLocalService);
 	}
 
 	private static final EntityModel _entityModel = new DataLayoutEntityModel();
