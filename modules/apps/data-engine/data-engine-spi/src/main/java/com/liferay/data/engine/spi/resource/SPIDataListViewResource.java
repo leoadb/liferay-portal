@@ -18,12 +18,13 @@ import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
+import com.liferay.data.engine.spi.model.SPIDataListView;
+import com.liferay.data.engine.spi.util.DataListViewUtil;
 import com.liferay.data.engine.util.comparator.DEDataListViewCreateDateComparator;
 import com.liferay.data.engine.util.comparator.DEDataListViewModifiedDateComparator;
 import com.liferay.data.engine.util.comparator.DEDataListViewNameComparator;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
-import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -52,23 +53,21 @@ import javax.validation.ValidationException;
 /**
  * @author Eudaldo Alonso
  */
-public class SPIDataListViewResource<T> {
+public class SPIDataListViewResource {
 
 	public SPIDataListViewResource(
 		DDMStructureLocalService ddmStructureLocalService,
 		DEDataDefinitionFieldLinkLocalService
 			deDataDefinitionFieldLinkLocalService,
-		DEDataListViewLocalService deDataListViewLocalService,
-		UnsafeFunction<DEDataListView, T, Exception> toDataListViewFunction) {
+		DEDataListViewLocalService deDataListViewLocalService) {
 
 		_ddmStructureLocalService = ddmStructureLocalService;
 		_deDataDefinitionFieldLinkLocalService =
 			deDataDefinitionFieldLinkLocalService;
 		_deDataListViewLocalService = deDataListViewLocalService;
-		_toDataListViewFunction = toDataListViewFunction;
 	}
 
-	public T addDataDefinitionDataListView(
+	public SPIDataListView addDataDefinitionDataListView(
 			Map<String, Object> appliedFilters, long dataDefinitionId,
 			long dataListViewId, String[] fieldNames, Map<String, Object> name,
 			String sortField)
@@ -90,7 +89,7 @@ public class SPIDataListViewResource<T> {
 			dataDefinitionId, dataListViewId, fieldNames,
 			ddmStructure.getGroupId());
 
-		return _toDataListViewFunction.apply(deDataListView);
+		return DataListViewUtil.toSPIDataListView(deDataListView);
 	}
 
 	public void deleteDataListView(long dataListViewId) throws Exception {
@@ -100,7 +99,7 @@ public class SPIDataListViewResource<T> {
 		_deDataListViewLocalService.deleteDEDataListView(dataListViewId);
 	}
 
-	public Page<T> getDataDefinitionDataListViews(
+	public Page<SPIDataListView> getDataDefinitionDataListViewsPage(
 			long dataDefinitionId, String keywords, Locale locale,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
@@ -132,7 +131,7 @@ public class SPIDataListViewResource<T> {
 						pagination.getEndPosition(),
 						_toOrderByComparator(
 							(Sort)ArrayUtil.getValue(sorts, 0))),
-					_toDataListViewFunction),
+					DataListViewUtil::toSPIDataListView),
 				pagination,
 				_deDataListViewLocalService.getDEDataListViewsCount(
 					ddmStructure.getGroupId(), ddmStructure.getCompanyId(),
@@ -155,17 +154,19 @@ public class SPIDataListViewResource<T> {
 					new long[] {ddmStructure.getGroupId()});
 			},
 			sorts,
-			document -> _toDataListViewFunction.apply(
+			document -> DataListViewUtil.toSPIDataListView(
 				_deDataListViewLocalService.getDEDataListView(
 					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
 	}
 
-	public T getDataListView(long dataListViewId) throws Exception {
-		return _toDataListViewFunction.apply(
+	public SPIDataListView getDataListView(long dataListViewId)
+		throws Exception {
+
+		return DataListViewUtil.toSPIDataListView(
 			_deDataListViewLocalService.getDEDataListView(dataListViewId));
 	}
 
-	public T updateDataListView(
+	public SPIDataListView updateDataListView(
 			Map<String, Object> appliedFilters, long dataDefinitionId,
 			long dataListViewId, String[] fieldNames, Map<String, Object> name,
 			String sortField)
@@ -189,7 +190,7 @@ public class SPIDataListViewResource<T> {
 			dataDefinitionId, dataListViewId, fieldNames,
 			ddmStructure.getGroupId());
 
-		return _toDataListViewFunction.apply(deDataListView);
+		return DataListViewUtil.toSPIDataListView(deDataListView);
 	}
 
 	private void _addDataDefinitionFieldLinks(
@@ -247,7 +248,5 @@ public class SPIDataListViewResource<T> {
 	private final DEDataDefinitionFieldLinkLocalService
 		_deDataDefinitionFieldLinkLocalService;
 	private final DEDataListViewLocalService _deDataListViewLocalService;
-	private final UnsafeFunction<DEDataListView, T, Exception>
-		_toDataListViewFunction;
 
 }
