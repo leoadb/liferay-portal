@@ -117,7 +117,7 @@ public class SPIDataDefinitionResource {
 		DDMFormSerializerSerializeRequest.Builder builder =
 			DDMFormSerializerSerializeRequest.Builder.newBuilder(
 				DataDefinitionUtil.toDDMForm(
-					spiDataDefinition, _ddmFormFieldTypeServicesTracker));
+					_ddmFormFieldTypeServicesTracker, spiDataDefinition));
 
 		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
 			_ddmFormSerializer.serialize(builder.build());
@@ -172,12 +172,12 @@ public class SPIDataDefinitionResource {
 			_ddmStructureLocalService.getStructure(dataDefinitionId));
 	}
 
-	public Page<SPIDataDefinition> getDataDefinitionsByContentType(
+	public Page<SPIDataDefinition> getDataDefinitionsByContentTypePage(
 			long companyId, String contentType, String keywords, long groupId,
 			Locale locale, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		return getSiteDataDefinitionsByContentType(
+		return getSiteDataDefinitionsByContentTypePage(
 			companyId, contentType, keywords, locale, pagination,
 			_portal.getSiteGroupId(groupId), sorts);
 	}
@@ -198,7 +198,7 @@ public class SPIDataDefinitionResource {
 				dataDefinitionKey));
 	}
 
-	public Page<SPIDataDefinition> getSiteDataDefinitionsByContentType(
+	public Page<SPIDataDefinition> getSiteDataDefinitionsByContentTypePage(
 			long companyId, String contentType, String keywords, Locale locale,
 			Pagination pagination, long siteId, Sort[] sorts)
 		throws Exception {
@@ -272,7 +272,7 @@ public class SPIDataDefinitionResource {
 		DDMFormSerializerSerializeRequest.Builder builder =
 			DDMFormSerializerSerializeRequest.Builder.newBuilder(
 				DataDefinitionUtil.toDDMForm(
-					spiDataDefinition, _ddmFormFieldTypeServicesTracker));
+					_ddmFormFieldTypeServicesTracker, spiDataDefinition));
 
 		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
 			_ddmFormSerializer.serialize(builder.build());
@@ -361,7 +361,7 @@ public class SPIDataDefinitionResource {
 	}
 
 	private String[] _getRemovedFieldNames(
-			SPIDataDefinition spiDataDefinition, DDMStructure ddmStructure)
+			DDMStructure ddmStructure, SPIDataDefinition spiDataDefinition)
 		throws Exception {
 
 		SPIDataDefinition existingSPIDataDefinition =
@@ -506,7 +506,7 @@ public class SPIDataDefinitionResource {
 			dataDefinitionId);
 
 		String[] removedFieldNames = _getRemovedFieldNames(
-			spiDataDefinition, ddmStructure);
+			ddmStructure, spiDataDefinition);
 
 		Set<Long> ddmStructureLayoutIds = new HashSet<>();
 		Set<Long> deDataListViewIds = new HashSet<>();

@@ -54,22 +54,22 @@ import java.util.stream.Stream;
 public class DataDefinitionUtil {
 
 	public static DDMForm toDDMForm(
-		SPIDataDefinition spiDataDefinition,
-		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker) {
+		DDMFormFieldTypeServicesTracker ddmFormFieldTypeServicesTracker,
+		SPIDataDefinition spiDataDefinition) {
 
-		DDMForm ddmForm = new DDMForm();
-
-		ddmForm.setAvailableLocales(
-			_toLocales(spiDataDefinition.getAvailableLanguageIds()));
-		ddmForm.setDDMFormFields(
-			_toDDMFormFields(
-				ddmFormFieldTypeServicesTracker,
-				spiDataDefinition.getSPIDataDefinitionFields()));
-		ddmForm.setDefaultLocale(
-			LocaleUtil.fromLanguageId(
-				spiDataDefinition.getDefaultLanguageId()));
-
-		return ddmForm;
+		return new DDMForm() {
+			{
+				setAvailableLocales(
+					_toLocales(spiDataDefinition.getAvailableLanguageIds()));
+				setDDMFormFields(
+					_toDDMFormFields(
+						ddmFormFieldTypeServicesTracker,
+						spiDataDefinition.getSPIDataDefinitionFields()));
+				setDefaultLocale(
+					LocaleUtil.fromLanguageId(
+						spiDataDefinition.getDefaultLanguageId()));
+			}
+		};
 	}
 
 	public static SPIDataDefinition toSPIDataDefinition(
