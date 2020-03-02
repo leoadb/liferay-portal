@@ -142,7 +142,7 @@ public class DataDefinitionResourceImpl
 			_getSPIDataDefinitionResource();
 
 		Page<SPIDataDefinition> page =
-			spiDataDefinitionResource.getDataDefinitionsByContentType(
+			spiDataDefinitionResource.getDataDefinitionsByContentTypePage(
 				contextCompany.getCompanyId(), contentType, keywords,
 				_portal.getSiteGroupId(contextCompany.getGroupId()),
 				contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
@@ -280,7 +280,7 @@ public class DataDefinitionResourceImpl
 			_getSPIDataDefinitionResource();
 
 		Page<SPIDataDefinition> page =
-			spiDataDefinitionResource.getSiteDataDefinitionsByContentType(
+			spiDataDefinitionResource.getSiteDataDefinitionsByContentTypePage(
 				contextCompany.getCompanyId(), contentType, keywords,
 				contextAcceptLanguage.getPreferredLocale(), pagination, siteId,
 				sorts);

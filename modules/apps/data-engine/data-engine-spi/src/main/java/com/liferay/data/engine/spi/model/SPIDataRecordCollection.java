@@ -45,8 +45,8 @@ public class SPIDataRecordCollection {
 		return _siteId;
 	}
 
-	public void setDataDefinitionId(Long spiDataDefinitionId) {
-		_dataDefinitionId = spiDataDefinitionId;
+	public void setDataDefinitionId(Long dataDefinitionId) {
+		_dataDefinitionId = dataDefinitionId;
 	}
 
 	public void setDataRecordCollectionKey(String dataRecordCollectionKey) {
