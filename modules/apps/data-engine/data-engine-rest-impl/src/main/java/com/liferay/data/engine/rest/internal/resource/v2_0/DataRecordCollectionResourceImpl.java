@@ -20,6 +20,7 @@ import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionU
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataRecordCollectionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordCollectionResource;
+import com.liferay.data.engine.spi.model.SPIDataRecordCollection;
 import com.liferay.data.engine.spi.resource.SPIDataRecordCollectionResource;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
@@ -36,14 +37,16 @@ import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -67,9 +70,8 @@ public class DataRecordCollectionResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, ActionKeys.DELETE);
 
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				_getSPIDataRecordCollectionResource();
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
 		spiDataRecordCollectionResource.deleteDataRecordCollection(
 			dataRecordCollectionId);
@@ -80,12 +82,12 @@ public class DataRecordCollectionResourceImpl
 			Long dataDefinitionId)
 		throws Exception {
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			dataDefinitionId);
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
 		return DataRecordCollectionUtil.toDataRecordCollection(
-			_ddlRecordSetLocalService.getRecordSet(
-				ddmStructure.getGroupId(), ddmStructure.getStructureKey()));
+			spiDataRecordCollectionResource.getDefaultDataRecordCollection(
+				dataDefinitionId));
 	}
 
 	@Override
@@ -94,13 +96,25 @@ public class DataRecordCollectionResourceImpl
 				Long dataDefinitionId, String keywords, Pagination pagination)
 		throws Exception {
 
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				_getSPIDataRecordCollectionResource();
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
-		return spiDataRecordCollectionResource.getDataRecordCollections(
-			dataDefinitionId, keywords,
-			contextAcceptLanguage.getPreferredLocale(), pagination);
+		Page<SPIDataRecordCollection> page =
+			spiDataRecordCollectionResource.getDataRecordCollections(
+				dataDefinitionId, keywords,
+				contextAcceptLanguage.getPreferredLocale(), pagination);
+
+		Collection<SPIDataRecordCollection> items = page.getItems();
+
+		Stream<SPIDataRecordCollection> stream = items.stream();
+
+		return Page.of(
+			stream.map(
+				DataRecordCollectionUtil::toDataRecordCollection
+			).collect(
+				Collectors.toList()
+			),
+			pagination, page.getTotalCount());
 	}
 
 	@Override
@@ -112,12 +126,12 @@ public class DataRecordCollectionResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, ActionKeys.VIEW);
 
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				_getSPIDataRecordCollectionResource();
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
-		return spiDataRecordCollectionResource.getDataRecordCollection(
-			dataRecordCollectionId);
+		return DataRecordCollectionUtil.toDataRecordCollection(
+			spiDataRecordCollectionResource.getDataRecordCollection(
+				dataRecordCollectionId));
 	}
 
 	@Override
@@ -155,17 +169,17 @@ public class DataRecordCollectionResourceImpl
 			Long dataRecordCollectionId, String roleNames)
 		throws Exception {
 
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				_getSPIDataRecordCollectionResource();
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
-		DataRecordCollection dataRecordCollection =
+		SPIDataRecordCollection spiDataRecordCollection =
 			spiDataRecordCollectionResource.getDataRecordCollection(
 				dataRecordCollectionId);
 
 		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
-			dataRecordCollection.getDataDefinitionId(), ActionKeys.PERMISSIONS);
+			spiDataRecordCollection.getDataDefinitionId(),
+			ActionKeys.PERMISSIONS);
 
 		String resourceName = getPermissionCheckerResourceName(
 			dataRecordCollectionId);
@@ -187,12 +201,12 @@ public class DataRecordCollectionResourceImpl
 				Long siteId, String dataRecordCollectionKey)
 		throws Exception {
 
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				_getSPIDataRecordCollectionResource();
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
-		return spiDataRecordCollectionResource.getSiteDataRecordCollection(
-			dataRecordCollectionKey, siteId);
+		return DataRecordCollectionUtil.toDataRecordCollection(
+			spiDataRecordCollectionResource.getSiteDataRecordCollection(
+				dataRecordCollectionKey, siteId));
 	}
 
 	@Override
@@ -200,28 +214,19 @@ public class DataRecordCollectionResourceImpl
 			Long dataDefinitionId, DataRecordCollection dataRecordCollection)
 		throws Exception {
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
-			dataDefinitionId);
-
 		_dataDefinitionModelResourcePermission.checkPortletPermission(
-			PermissionThreadLocal.getPermissionChecker(), ddmStructure,
+			PermissionThreadLocal.getPermissionChecker(),
+			_ddmStructureLocalService.getDDMStructure(dataDefinitionId),
 			DataActionKeys.ADD_DATA_RECORD_COLLECTION);
 
-		String dataRecordCollectionKey =
-			dataRecordCollection.getDataRecordCollectionKey();
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
-		if (Validator.isNull(dataRecordCollectionKey)) {
-			dataRecordCollectionKey = ddmStructure.getStructureKey();
-		}
-
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				_getSPIDataRecordCollectionResource();
-
-		return spiDataRecordCollectionResource.addDataRecordCollection(
-			dataDefinitionId, dataRecordCollectionKey,
-			dataRecordCollection.getDescription(),
-			dataRecordCollection.getName());
+		return DataRecordCollectionUtil.toDataRecordCollection(
+			spiDataRecordCollectionResource.addDataRecordCollection(
+				dataDefinitionId,
+				DataRecordCollectionUtil.toSPIDataRecordCollection(
+					dataRecordCollection)));
 	}
 
 	@Override
@@ -234,13 +239,14 @@ public class DataRecordCollectionResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			dataRecordCollectionId, ActionKeys.UPDATE);
 
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				_getSPIDataRecordCollectionResource();
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
-		return spiDataRecordCollectionResource.updateDataRecordCollection(
-			dataRecordCollectionId, dataRecordCollection.getDescription(),
-			dataRecordCollection.getName());
+		return DataRecordCollectionUtil.toDataRecordCollection(
+			spiDataRecordCollectionResource.updateDataRecordCollection(
+				dataRecordCollectionId,
+				DataRecordCollectionUtil.toSPIDataRecordCollection(
+					dataRecordCollection)));
 	}
 
 	@Override
@@ -248,17 +254,17 @@ public class DataRecordCollectionResourceImpl
 			Long dataRecordCollectionId, Permission[] permissions)
 		throws Exception {
 
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				_getSPIDataRecordCollectionResource();
+		SPIDataRecordCollectionResource spiDataRecordCollectionResource =
+			_getSPIDataRecordCollectionResource();
 
-		DataRecordCollection dataRecordCollection =
+		SPIDataRecordCollection spiDataRecordCollection =
 			spiDataRecordCollectionResource.getDataRecordCollection(
 				dataRecordCollectionId);
 
 		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
-			dataRecordCollection.getDataDefinitionId(), ActionKeys.PERMISSIONS);
+			spiDataRecordCollection.getDataDefinitionId(),
+			ActionKeys.PERMISSIONS);
 
 		String resourceName = getPermissionCheckerResourceName(
 			dataRecordCollectionId);
@@ -301,13 +307,12 @@ public class DataRecordCollectionResourceImpl
 			DDLRecordSet.class.getName());
 	}
 
-	private SPIDataRecordCollectionResource<DataRecordCollection>
+	private SPIDataRecordCollectionResource
 		_getSPIDataRecordCollectionResource() {
 
-		return new SPIDataRecordCollectionResource<>(
+		return new SPIDataRecordCollectionResource(
 			_ddlRecordSetLocalService, _ddmStructureLocalService, _portal,
-			_resourceLocalService,
-			DataRecordCollectionUtil::toDataRecordCollection);
+			_resourceLocalService);
 	}
 
 	@Reference

@@ -19,6 +19,9 @@ import com.jayway.jsonpath.JsonPath;
 
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
+import com.liferay.data.engine.spi.model.SPIDataLayout;
+import com.liferay.data.engine.spi.util.DataLayoutUtil;
+import com.liferay.dynamic.data.mapping.io.DDMFormLayoutSerializer;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
@@ -28,7 +31,6 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutCreateDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutModifiedDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutNameComparator;
-import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.search.Field;
@@ -56,64 +58,62 @@ import javax.validation.ValidationException;
 /**
  * @author Leonardo Barros
  */
-public class SPIDataLayoutResource<T> {
+public class SPIDataLayoutResource {
 
 	public SPIDataLayoutResource(
+		DDMFormLayoutSerializer ddmFormLayoutSerializer,
 		DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
 		DDMStructureLocalService ddmStructureLocalService,
 		DDMStructureVersionLocalService ddmStructureVersionLocalService,
 		DEDataDefinitionFieldLinkLocalService
-			deDataDefinitionFieldLinkLocalService,
-		UnsafeFunction<DDMStructureLayout, T, Exception> toDataLayoutFunction) {
+			deDataDefinitionFieldLinkLocalService) {
 
+		_ddmFormLayoutSerializer = ddmFormLayoutSerializer;
 		_ddmStructureLayoutLocalService = ddmStructureLayoutLocalService;
 		_ddmStructureLocalService = ddmStructureLocalService;
 		_ddmStructureVersionLocalService = ddmStructureVersionLocalService;
 		_deDataDefinitionFieldLinkLocalService =
 			deDataDefinitionFieldLinkLocalService;
-		_toDataLayoutFunction = toDataLayoutFunction;
 	}
 
-	public T addDataLayout(
-			long dataDefinitionId, String content, String dataLayoutKey,
-			Map<String, Object> description, Map<String, Object> name)
+	public SPIDataLayout addDataLayout(SPIDataLayout spiDataLayout)
 		throws Exception {
 
-		_validate(content, name);
+		String content = DataLayoutUtil.serialize(
+			_ddmFormLayoutSerializer, spiDataLayout);
+
+		_validate(content, spiDataLayout.getName());
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			dataDefinitionId);
+			spiDataLayout.getDataDefinitionId());
 
 		ServiceContext serviceContext = new ServiceContext();
 
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.addStructureLayout(
 				PrincipalThreadLocal.getUserId(), ddmStructure.getGroupId(),
-				ddmStructure.getClassNameId(), dataLayoutKey,
-				_getDDMStructureVersionId(dataDefinitionId),
-				LocalizedValueUtil.toLocaleStringMap(name),
-				LocalizedValueUtil.toLocaleStringMap(description), content,
-				serviceContext);
+				ddmStructure.getClassNameId(), spiDataLayout.getDataLayoutKey(),
+				_getDDMStructureVersionId(spiDataLayout.getDataDefinitionId()),
+				LocalizedValueUtil.toLocaleStringMap(spiDataLayout.getName()),
+				LocalizedValueUtil.toLocaleStringMap(
+					spiDataLayout.getDescription()),
+				content, serviceContext);
 
 		_addDataDefinitionFieldLinks(
-			ddmStructure.getClassNameId(), dataDefinitionId,
+			ddmStructure.getClassNameId(), spiDataLayout.getDataDefinitionId(),
 			ddmStructureLayout.getStructureLayoutId(), _getFieldNames(content),
 			ddmStructureLayout.getGroupId());
 
-		return _toDataLayoutFunction.apply(ddmStructureLayout);
+		return DataLayoutUtil.toSPIDataLayout(ddmStructureLayout);
 	}
 
-	public void deleteDataLayout(long dataLayoutId, DDMStructure ddmStructure)
-		throws PortalException {
-
-		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(dataLayoutId);
-
-		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			ddmStructure.getClassNameId(), dataLayoutId);
+	public void deleteDataLayout(long dataLayoutId) throws Exception {
+		_deleteDataLayout(
+			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId));
 	}
 
 	public void deleteDataLayoutDataDefinition(long dataDefinitionId)
-		throws PortalException {
+		throws Exception {
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
 			dataDefinitionId);
@@ -129,29 +129,27 @@ public class SPIDataLayoutResource<T> {
 					ddmStructureVersion.getStructureVersionId());
 
 			for (DDMStructureLayout ddmStructureLayout : ddmStructureLayouts) {
-				deleteDataLayout(
-					ddmStructureLayout.getStructureLayoutId(), ddmStructure);
+				_deleteDataLayout(ddmStructureLayout);
 			}
 		}
 	}
 
-	public T getDataLayout(long dataLayoutId) throws Exception {
-		return _toDataLayoutFunction.apply(
+	public SPIDataLayout getDataLayout(long dataLayoutId) throws Exception {
+		return DataLayoutUtil.toSPIDataLayout(
 			_ddmStructureLayoutLocalService.getDDMStructureLayout(
 				dataLayoutId));
 	}
 
-	public T getDataLayout(long classNameId, String dataLayoutKey, long siteId)
+	public SPIDataLayout getDataLayout(
+			long classNameId, String dataLayoutKey, long siteId)
 		throws Exception {
 
-		DDMStructureLayout ddmStructureLayout =
+		return DataLayoutUtil.toSPIDataLayout(
 			_ddmStructureLayoutLocalService.getStructureLayout(
-				siteId, classNameId, dataLayoutKey);
-
-		return getDataLayout(ddmStructureLayout.getStructureLayoutId());
+				siteId, classNameId, dataLayoutKey));
 	}
 
-	public Page<T> getDataLayouts(
+	public Page<SPIDataLayout> getDataLayouts(
 			long dataDefinitionId, String keywords, Locale locale,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
@@ -184,7 +182,7 @@ public class SPIDataLayoutResource<T> {
 						pagination.getEndPosition(),
 						_toOrderByComparator(
 							(Sort)ArrayUtil.getValue(sorts, 0))),
-					_toDataLayoutFunction),
+					DataLayoutUtil::toSPIDataLayout),
 				pagination,
 				_ddmStructureLayoutLocalService.getStructureLayoutsCount(
 					ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
@@ -209,40 +207,44 @@ public class SPIDataLayoutResource<T> {
 				searchContext.setGroupIds(
 					new long[] {ddmStructure.getGroupId()});
 			},
-			document -> _toDataLayoutFunction.apply(
+			document -> DataLayoutUtil.toSPIDataLayout(
 				_ddmStructureLayoutLocalService.getStructureLayout(
 					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))),
 			sorts);
 	}
 
-	public T updateDataLayout(
-			long dataLayoutId, String content, Map<String, Object> description,
-			Map<String, Object> name)
+	public SPIDataLayout updateDataLayout(SPIDataLayout spiDataLayout)
 		throws Exception {
 
-		_validate(content, name);
+		String content = DataLayoutUtil.serialize(
+			_ddmFormLayoutSerializer, spiDataLayout);
+
+		_validate(content, spiDataLayout.getName());
 
 		DDMStructureLayout ddmStructureLayout =
-			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
+			_ddmStructureLayoutLocalService.getStructureLayout(
+				spiDataLayout.getId());
 
 		DDMStructure ddmStructure = ddmStructureLayout.getDDMStructure();
 
 		ddmStructureLayout =
 			_ddmStructureLayoutLocalService.updateStructureLayout(
-				dataLayoutId,
+				spiDataLayout.getId(),
 				_getDDMStructureVersionId(ddmStructure.getStructureId()),
-				LocalizedValueUtil.toLocaleStringMap(name),
-				LocalizedValueUtil.toLocaleStringMap(description), content,
-				new ServiceContext());
+				LocalizedValueUtil.toLocaleStringMap(spiDataLayout.getName()),
+				LocalizedValueUtil.toLocaleStringMap(
+					spiDataLayout.getDescription()),
+				content, new ServiceContext());
 
 		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			ddmStructure.getClassNameId(), dataLayoutId);
+			ddmStructure.getClassNameId(), spiDataLayout.getId());
 
 		_addDataDefinitionFieldLinks(
 			ddmStructure.getClassNameId(), ddmStructure.getStructureId(),
-			dataLayoutId, _getFieldNames(content), ddmStructure.getGroupId());
+			spiDataLayout.getId(), _getFieldNames(content),
+			ddmStructure.getGroupId());
 
-		return _toDataLayoutFunction.apply(ddmStructureLayout);
+		return DataLayoutUtil.toSPIDataLayout(ddmStructureLayout);
 	}
 
 	private void _addDataDefinitionFieldLinks(
@@ -254,6 +256,19 @@ public class SPIDataLayoutResource<T> {
 			_deDataDefinitionFieldLinkLocalService.addDEDataDefinitionFieldLink(
 				siteId, classNameId, dataLayoutId, dataDefinitionId, fieldName);
 		}
+	}
+
+	private void _deleteDataLayout(DDMStructureLayout ddmStructureLayout)
+		throws Exception {
+
+		DDMStructure ddmStructure = ddmStructureLayout.getDDMStructure();
+
+		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(
+			ddmStructureLayout);
+
+		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
+			ddmStructure.getClassNameId(),
+			ddmStructureLayout.getStructureLayoutId());
 	}
 
 	private long _getDDMStructureVersionId(long deDataDefinitionId)
@@ -309,6 +324,7 @@ public class SPIDataLayoutResource<T> {
 		}
 	}
 
+	private final DDMFormLayoutSerializer _ddmFormLayoutSerializer;
 	private final DDMStructureLayoutLocalService
 		_ddmStructureLayoutLocalService;
 	private final DDMStructureLocalService _ddmStructureLocalService;
@@ -316,7 +332,5 @@ public class SPIDataLayoutResource<T> {
 		_ddmStructureVersionLocalService;
 	private final DEDataDefinitionFieldLinkLocalService
 		_deDataDefinitionFieldLinkLocalService;
-	private final UnsafeFunction<DDMStructureLayout, T, Exception>
-		_toDataLayoutFunction;
 
 }
