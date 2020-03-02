@@ -23,7 +23,7 @@ import com.liferay.dynamic.data.lists.model.DDLRecordSet;
  */
 public class DataRecordCollectionUtil {
 
-	public static SPIDataRecordCollection toDataRecordCollection(
+	public static SPIDataRecordCollection toSPIDataRecordCollection(
 		DDLRecordSet ddlRecordSet) {
 
 		return new SPIDataRecordCollection() {
