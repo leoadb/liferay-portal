@@ -14,7 +14,6 @@
 
 package com.liferay.data.engine.rest.internal.resource.v2_0;
 
-import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.rest.dto.v2_0.DataListView;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
@@ -22,12 +21,10 @@ import com.liferay.data.engine.rest.internal.security.permission.resource.DataDe
 import com.liferay.data.engine.rest.resource.v2_0.DataListViewResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
+import com.liferay.data.engine.spi.model.SPIDataListView;
 import com.liferay.data.engine.spi.resource.SPIDataListViewResource;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -37,10 +34,9 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -66,7 +62,7 @@ public class DataListViewResourceImpl
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
 			ActionKeys.DELETE);
 
-		SPIDataListViewResource<DataListView> spiDataListViewResource =
+		SPIDataListViewResource spiDataListViewResource =
 			_getSPIDataListViewResource();
 
 		spiDataListViewResource.deleteDataListView(dataListViewId);
@@ -78,12 +74,25 @@ public class DataListViewResourceImpl
 			Sort[] sorts)
 		throws Exception {
 
-		SPIDataListViewResource<DataListView> spiDataListViewResource =
+		SPIDataListViewResource spiDataListViewResource =
 			_getSPIDataListViewResource();
 
-		return spiDataListViewResource.getDataDefinitionDataListViews(
-			dataDefinitionId, keywords,
-			contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
+		Page<SPIDataListView> page =
+			spiDataListViewResource.getDataDefinitionDataListViewsPage(
+				dataDefinitionId, keywords,
+				contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
+
+		Collection<SPIDataListView> items = page.getItems();
+
+		Stream<SPIDataListView> stream = items.stream();
+
+		return Page.of(
+			stream.map(
+				this::_toDataListView
+			).collect(
+				Collectors.toList()
+			),
+			pagination, page.getTotalCount());
 	}
 
 	@Override
@@ -94,10 +103,11 @@ public class DataListViewResourceImpl
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
 			ActionKeys.VIEW);
 
-		SPIDataListViewResource<DataListView> spiDataListViewResource =
+		SPIDataListViewResource spiDataListViewResource =
 			_getSPIDataListViewResource();
 
-		return spiDataListViewResource.getDataListView(dataListViewId);
+		return _toDataListView(
+			spiDataListViewResource.getDataListView(dataListViewId));
 	}
 
 	@Override
@@ -110,13 +120,14 @@ public class DataListViewResourceImpl
 			Long dataDefinitionId, DataListView dataListView)
 		throws Exception {
 
-		SPIDataListViewResource<DataListView> spiDataListViewResource =
+		SPIDataListViewResource spiDataListViewResource =
 			_getSPIDataListViewResource();
 
-		return spiDataListViewResource.addDataDefinitionDataListView(
-			dataListView.getAppliedFilters(), dataDefinitionId,
-			dataListView.getId(), dataListView.getFieldNames(),
-			dataListView.getName(), dataListView.getSortField());
+		return _toDataListView(
+			spiDataListViewResource.addDataDefinitionDataListView(
+				dataListView.getAppliedFilters(), dataDefinitionId,
+				dataListView.getId(), dataListView.getFieldNames(),
+				dataListView.getName(), dataListView.getSortField()));
 	}
 
 	@Override
@@ -130,76 +141,42 @@ public class DataListViewResourceImpl
 				_deDataListViewLocalService.getDEDataListView(dataListViewId)),
 			ActionKeys.UPDATE);
 
-		SPIDataListViewResource<DataListView> spiDataListViewResource =
+		SPIDataListViewResource spiDataListViewResource =
 			_getSPIDataListViewResource();
 
-		return spiDataListViewResource.updateDataListView(
-			dataListView.getAppliedFilters(),
-			dataListView.getDataDefinitionId(), dataListViewId,
-			dataListView.getFieldNames(), dataListView.getName(),
-			dataListView.getSortField());
+		return _toDataListView(
+			spiDataListViewResource.updateDataListView(
+				dataListView.getAppliedFilters(),
+				dataListView.getDataDefinitionId(), dataListViewId,
+				dataListView.getFieldNames(), dataListView.getName(),
+				dataListView.getSortField()));
 	}
 
 	private long _getDDMStructureId(DEDataListView deDataListView) {
 		return deDataListView.getDdmStructureId();
 	}
 
-	private SPIDataListViewResource<DataListView>
-		_getSPIDataListViewResource() {
-
-		return new SPIDataListViewResource<>(
+	private SPIDataListViewResource _getSPIDataListViewResource() {
+		return new SPIDataListViewResource(
 			_ddmStructureLocalService, _deDataDefinitionFieldLinkLocalService,
-			_deDataListViewLocalService, this::_toDataListView);
+			_deDataListViewLocalService);
 	}
 
-	private DataListView _toDataListView(DEDataListView deDataListView)
-		throws Exception {
-
+	private DataListView _toDataListView(SPIDataListView spiDataListView) {
 		return new DataListView() {
 			{
-				appliedFilters = _toMap(deDataListView.getAppliedFilters());
-				dataDefinitionId = deDataListView.getDdmStructureId();
-				dateCreated = deDataListView.getCreateDate();
-				dateModified = deDataListView.getModifiedDate();
-				fieldNames = JSONUtil.toStringArray(
-					_jsonFactory.createJSONArray(
-						deDataListView.getFieldNames()));
-				id = deDataListView.getPrimaryKey();
-				name = LocalizedValueUtil.toStringObjectMap(
-					deDataListView.getNameMap());
-				siteId = deDataListView.getGroupId();
-				sortField = deDataListView.getSortField();
-				userId = deDataListView.getUserId();
+				appliedFilters = spiDataListView.getAppliedFilters();
+				dataDefinitionId = spiDataListView.getDataDefinitionId();
+				dateCreated = spiDataListView.getDateCreated();
+				dateModified = spiDataListView.getDateModified();
+				fieldNames = spiDataListView.getFieldNames();
+				id = spiDataListView.getId();
+				name = spiDataListView.getName();
+				siteId = spiDataListView.getSiteId();
+				sortField = spiDataListView.getSortField();
+				userId = spiDataListView.getUserId();
 			}
 		};
-	}
-
-	private Map<String, Object> _toMap(String json) throws Exception {
-		Map<String, Object> map = new HashMap<>();
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
-
-		Set<String> keySet = jsonObject.keySet();
-
-		Iterator<String> iterator = keySet.iterator();
-
-		while (iterator.hasNext()) {
-			String key = iterator.next();
-
-			if (jsonObject.get(key) instanceof JSONObject) {
-				map.put(
-					key,
-					_toMap(
-						jsonObject.get(
-							key
-						).toString()));
-			}
-			else {
-				map.put(key, jsonObject.get(key));
-			}
-		}
-
-		return map;
 	}
 
 	private static final EntityModel _entityModel =
