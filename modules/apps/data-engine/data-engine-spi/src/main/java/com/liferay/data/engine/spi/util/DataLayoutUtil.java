@@ -56,12 +56,12 @@ public class DataLayoutUtil {
 		return ddmFormLayoutSerializerSerializeResponse.getContent();
 	}
 
-	public static DDMFormLayout toDDMFormLayout(SPIDataLayout dataLayout) {
+	public static DDMFormLayout toDDMFormLayout(SPIDataLayout spiDataLayout) {
 		DDMFormLayout ddmFormLayout = new DDMFormLayout();
 
 		ddmFormLayout.setDDMFormLayoutPages(
-			_toDDMFormLayoutPages(dataLayout.getSPIDataLayoutPages()));
-		ddmFormLayout.setPaginationMode(dataLayout.getPaginationMode());
+			_toDDMFormLayoutPages(spiDataLayout.getSPIDataLayoutPages()));
+		ddmFormLayout.setPaginationMode(spiDataLayout.getPaginationMode());
 
 		return ddmFormLayout;
 	}
