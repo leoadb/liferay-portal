@@ -51,6 +51,7 @@ const AppContent = ({dataLayoutBuilder, setDataLayoutBuilder, ...props}) => {
 		<>
 			<DataLayoutBuilder
 				appContext={[state, dispatch]}
+				config={state.config}
 				onLoad={setDataLayoutBuilder}
 				{...parseProps(props)}
 			/>
@@ -72,6 +73,7 @@ const AppContent = ({dataLayoutBuilder, setDataLayoutBuilder, ...props}) => {
 
 const App = props => {
 	const {
+		config,
 		contentType,
 		dataDefinitionId,
 		dataLayoutId,
@@ -93,6 +95,7 @@ const App = props => {
 			<ClayModalProvider>
 				{loaded && (
 					<AppContextProvider
+						config={config}
 						contentType={contentType}
 						dataDefinitionId={dataDefinitionId}
 						dataLayoutBuilder={dataLayoutBuilder}
