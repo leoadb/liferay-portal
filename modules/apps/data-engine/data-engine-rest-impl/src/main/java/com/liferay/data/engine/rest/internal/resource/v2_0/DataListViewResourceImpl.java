@@ -17,6 +17,7 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.rest.dto.v2_0.DataListView;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
+import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataListViewUtil;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataListViewResource;
@@ -90,7 +91,7 @@ public class DataListViewResourceImpl
 
 		return Page.of(
 			stream.map(
-				this::_toDataListView
+				DataListViewUtil::toDataListView
 			).collect(
 				Collectors.toList()
 			),
@@ -108,7 +109,7 @@ public class DataListViewResourceImpl
 		SPIDataListViewResource spiDataListViewResource =
 			_getSPIDataListViewResource();
 
-		return _toDataListView(
+		return DataListViewUtil.toDataListView(
 			spiDataListViewResource.getDataListView(dataListViewId));
 	}
 
@@ -132,11 +133,14 @@ public class DataListViewResourceImpl
 		SPIDataListViewResource spiDataListViewResource =
 			_getSPIDataListViewResource();
 
-		return _toDataListView(
+		SPIDataListView spiDataListView = DataListViewUtil.toSPIDataListView(
+			dataListView);
+
+		spiDataListView.setDataDefinitionId(dataDefinitionId);
+
+		return DataListViewUtil.toDataListView(
 			spiDataListViewResource.addDataDefinitionDataListView(
-				dataListView.getAppliedFilters(), dataDefinitionId,
-				dataListView.getFieldNames(), dataListView.getName(),
-				dataListView.getSortField()));
+				spiDataListView));
 	}
 
 	@Override
@@ -153,12 +157,13 @@ public class DataListViewResourceImpl
 		SPIDataListViewResource spiDataListViewResource =
 			_getSPIDataListViewResource();
 
-		return _toDataListView(
-			spiDataListViewResource.updateDataListView(
-				dataListView.getAppliedFilters(),
-				dataListView.getDataDefinitionId(), dataListViewId,
-				dataListView.getFieldNames(), dataListView.getName(),
-				dataListView.getSortField()));
+		SPIDataListView spiDataListView = DataListViewUtil.toSPIDataListView(
+			dataListView);
+
+		spiDataListView.setId(dataListViewId);
+
+		return DataListViewUtil.toDataListView(
+			spiDataListViewResource.updateDataListView(spiDataListView));
 	}
 
 	private long _getDDMStructureId(DEDataListView deDataListView) {
@@ -169,23 +174,6 @@ public class DataListViewResourceImpl
 		return new SPIDataListViewResource(
 			_ddmStructureLocalService, _deDataDefinitionFieldLinkLocalService,
 			_deDataListViewLocalService);
-	}
-
-	private DataListView _toDataListView(SPIDataListView spiDataListView) {
-		return new DataListView() {
-			{
-				appliedFilters = spiDataListView.getAppliedFilters();
-				dataDefinitionId = spiDataListView.getDataDefinitionId();
-				dateCreated = spiDataListView.getDateCreated();
-				dateModified = spiDataListView.getDateModified();
-				fieldNames = spiDataListView.getFieldNames();
-				id = spiDataListView.getId();
-				name = spiDataListView.getName();
-				siteId = spiDataListView.getSiteId();
-				sortField = spiDataListView.getSortField();
-				userId = spiDataListView.getUserId();
-			}
-		};
 	}
 
 	private static final EntityModel _entityModel =
