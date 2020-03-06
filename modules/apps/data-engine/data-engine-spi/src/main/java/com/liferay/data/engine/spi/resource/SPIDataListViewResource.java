@@ -68,25 +68,28 @@ public class SPIDataListViewResource {
 	}
 
 	public SPIDataListView addDataDefinitionDataListView(
-			Map<String, Object> appliedFilters, long dataDefinitionId,
-			String[] fieldNames, Map<String, Object> name, String sortField)
+			SPIDataListView spiDataListView)
 		throws Exception {
 
-		_validate(fieldNames);
+		_validate(spiDataListView.getFieldNames());
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			dataDefinitionId);
+			spiDataListView.getDataDefinitionId());
 
 		DEDataListView deDataListView =
 			_deDataListViewLocalService.addDEDataListView(
 				ddmStructure.getGroupId(), ddmStructure.getCompanyId(),
-				PrincipalThreadLocal.getUserId(), _toJSON(appliedFilters),
-				dataDefinitionId, Arrays.toString(fieldNames),
-				LocalizedValueUtil.toLocaleStringMap(name), sortField);
+				PrincipalThreadLocal.getUserId(),
+				_toJSON(spiDataListView.getAppliedFilters()),
+				spiDataListView.getDataDefinitionId(),
+				Arrays.toString(spiDataListView.getFieldNames()),
+				LocalizedValueUtil.toLocaleStringMap(spiDataListView.getName()),
+				spiDataListView.getSortField());
 
 		_addDataDefinitionFieldLinks(
-			dataDefinitionId, deDataListView.getDeDataListViewId(), fieldNames,
-			ddmStructure.getGroupId());
+			spiDataListView.getDataDefinitionId(),
+			deDataListView.getDeDataListViewId(),
+			spiDataListView.getFieldNames(), ddmStructure.getGroupId());
 
 		return DataListViewUtil.toSPIDataListView(deDataListView);
 	}
@@ -165,29 +168,28 @@ public class SPIDataListViewResource {
 			_deDataListViewLocalService.getDEDataListView(dataListViewId));
 	}
 
-	public SPIDataListView updateDataListView(
-			Map<String, Object> appliedFilters, long dataDefinitionId,
-			long dataListViewId, String[] fieldNames, Map<String, Object> name,
-			String sortField)
+	public SPIDataListView updateDataListView(SPIDataListView spiDataListView)
 		throws Exception {
 
-		_validate(fieldNames);
+		_validate(spiDataListView.getFieldNames());
 
 		DEDataListView deDataListView =
 			_deDataListViewLocalService.updateDEDataListView(
-				dataListViewId, _toJSON(appliedFilters),
-				Arrays.toString(fieldNames),
-				LocalizedValueUtil.toLocaleStringMap(name), sortField);
+				spiDataListView.getId(),
+				_toJSON(spiDataListView.getAppliedFilters()),
+				Arrays.toString(spiDataListView.getFieldNames()),
+				LocalizedValueUtil.toLocaleStringMap(spiDataListView.getName()),
+				spiDataListView.getSortField());
 
 		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			_getClassNameId(), dataListViewId);
+			_getClassNameId(), spiDataListView.getId());
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			dataDefinitionId);
+			spiDataListView.getDataDefinitionId());
 
 		_addDataDefinitionFieldLinks(
-			dataDefinitionId, dataListViewId, fieldNames,
-			ddmStructure.getGroupId());
+			spiDataListView.getDataDefinitionId(), spiDataListView.getId(),
+			spiDataListView.getFieldNames(), ddmStructure.getGroupId());
 
 		return DataListViewUtil.toSPIDataListView(deDataListView);
 	}
