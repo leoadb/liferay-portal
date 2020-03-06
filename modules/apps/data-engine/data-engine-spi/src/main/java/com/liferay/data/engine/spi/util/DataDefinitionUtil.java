@@ -264,6 +264,7 @@ public class DataDefinitionUtil {
 				setLabel(
 					LocalizedValueUtil.toLocalizedValuesMap(
 						ddmFormField.getLabel()));
+				setLocalizable(ddmFormField.isLocalizable());
 				setName(ddmFormField.getName());
 				setReadOnly(ddmFormField.isReadOnly());
 				setRepeatable(ddmFormField.isRepeatable());
