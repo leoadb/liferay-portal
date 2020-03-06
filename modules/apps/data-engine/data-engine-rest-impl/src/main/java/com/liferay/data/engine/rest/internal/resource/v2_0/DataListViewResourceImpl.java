@@ -126,8 +126,8 @@ public class DataListViewResourceImpl
 		return _toDataListView(
 			spiDataListViewResource.addDataDefinitionDataListView(
 				dataListView.getAppliedFilters(), dataDefinitionId,
-				dataListView.getId(), dataListView.getFieldNames(),
-				dataListView.getName(), dataListView.getSortField()));
+				dataListView.getFieldNames(), dataListView.getName(),
+				dataListView.getSortField()));
 	}
 
 	@Override
