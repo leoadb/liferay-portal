@@ -51,7 +51,9 @@ class DataLayoutBuilder extends React.Component {
 					attached: () => {
 						this.props.onLoad(this);
 
-						Liferay.component(dataLayoutBuilderId, this);
+						Liferay.component(dataLayoutBuilderId, this, {
+							destroyOnNavigate: true,
+						});
 					},
 				},
 				formBuilderProps: {
