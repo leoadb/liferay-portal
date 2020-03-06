@@ -69,8 +69,7 @@ public class SPIDataListViewResource {
 
 	public SPIDataListView addDataDefinitionDataListView(
 			Map<String, Object> appliedFilters, long dataDefinitionId,
-			long dataListViewId, String[] fieldNames, Map<String, Object> name,
-			String sortField)
+			String[] fieldNames, Map<String, Object> name, String sortField)
 		throws Exception {
 
 		_validate(fieldNames);
@@ -86,7 +85,7 @@ public class SPIDataListViewResource {
 				LocalizedValueUtil.toLocaleStringMap(name), sortField);
 
 		_addDataDefinitionFieldLinks(
-			dataDefinitionId, dataListViewId, fieldNames,
+			dataDefinitionId, deDataListView.getDeDataListViewId(), fieldNames,
 			ddmStructure.getGroupId());
 
 		return DataListViewUtil.toSPIDataListView(deDataListView);
