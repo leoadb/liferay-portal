@@ -12,10 +12,9 @@
  * details.
  */
 
-package com.liferay.data.engine.service;
+package com.liferay.data.engine.manager;
 
-import com.liferay.data.engine.model.DEDataLayout;
-import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.data.engine.DataLayout;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -26,38 +25,34 @@ import java.util.List;
  * @author Leonardo Barros
  */
 @Transactional(isolation = Isolation.PORTAL, rollbackFor = Exception.class)
-public interface DEDataLayoutApp {
+public interface DataLayoutManager {
 
-	public DEDataLayout addDataLayout(
-			DEDataLayout deDataLayout, ServiceContext serviceContext)
-		throws Exception;
+	public DataLayout addDataLayout(DataLayout dataLayout) throws Exception;
 
 	public void deleteDataLayout(long dataLayoutId) throws Exception;
 
 	public void deleteDataLayoutDataDefinition(long dataDefinitionId)
 		throws Exception;
 
-	public DEDataLayout fetchDataLayout(long dataLayoutId);
+	public DataLayout fetchDataLayout(long dataLayoutId);
 
-	public DEDataLayout fetchDataLayout(
-		long groupId, long classNameId, String dataLayoutKey);
+	public DataLayout fetchDataLayout(
+		long classNameId, String dataLayoutKey, long groupId);
 
-	public DEDataLayout getDataLayout(long dataLayoutId) throws Exception;
+	public DataLayout getDataLayout(long dataLayoutId) throws Exception;
 
-	public DEDataLayout getDataLayout(
-			long groupId, long classNameId, String dataLayoutKey)
+	public DataLayout getDataLayout(
+			long classNameId, String dataLayoutKey, long groupId)
 		throws Exception;
 
-	public List<DEDataLayout> getDataLayouts(
-			long dataDefinitionId, String keywords, int start, int end,
-			OrderByComparator orderByComparator)
+	public List<DataLayout> getDataLayouts(
+			long dataDefinitionId, int end, String keywords,
+			OrderByComparator orderByComparator, int start)
 		throws Exception;
 
 	public int getDataLayoutsCount(long dataDefinitionId, String keywords)
 		throws Exception;
 
-	public DEDataLayout updateDataLayout(
-			DEDataLayout deDataLayout, ServiceContext serviceContext)
-		throws Exception;
+	public DataLayout updateDataLayout(DataLayout dataLayout) throws Exception;
 
 }

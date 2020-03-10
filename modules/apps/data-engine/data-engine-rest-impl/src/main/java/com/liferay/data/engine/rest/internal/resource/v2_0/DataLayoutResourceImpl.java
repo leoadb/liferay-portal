@@ -15,7 +15,7 @@
 package com.liferay.data.engine.rest.internal.resource.v2_0;
 
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
-import com.liferay.data.engine.model.DEDataLayout;
+import com.liferay.data.engine.manager.DataLayoutManager;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker;
@@ -23,7 +23,6 @@ import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataLayoutUtil;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataLayoutEntityModel;
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataLayoutResource;
-import com.liferay.data.engine.service.DEDataLayoutApp;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
@@ -36,7 +35,6 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -78,7 +76,7 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructure.getStructureId(), ActionKeys.DELETE);
 
-		_deDataLayoutApp.deleteDataLayout(dataLayoutId);
+		_dataLayoutManager.deleteDataLayout(dataLayoutId);
 	}
 
 	@Override
@@ -102,20 +100,22 @@ public class DataLayoutResourceImpl
 			};
 		}
 
-		List<DEDataLayout> deDataLayout = _deDataLayoutApp.getDataLayouts(
-			dataDefinitionId, keywords, pagination.getStartPosition(),
-			pagination.getEndPosition(), _toOrderByComparator(sorts[0]));
+		List<com.liferay.data.engine.DataLayout> dataLayouts =
+			_dataLayoutManager.getDataLayouts(
+				dataDefinitionId, pagination.getEndPosition(), keywords,
+				_toOrderByComparator(sorts[0]), pagination.getStartPosition());
 
-		Stream<DEDataLayout> deDataLayoutStream = deDataLayout.stream();
+		Stream<com.liferay.data.engine.DataLayout> dataLayoutStream =
+			dataLayouts.stream();
 
 		return Page.of(
-			deDataLayoutStream.map(
+			dataLayoutStream.map(
 				DataLayoutUtil::toDataLayout
 			).collect(
 				Collectors.toList()
 			),
 			pagination,
-			_deDataLayoutApp.getDataLayoutsCount(dataDefinitionId, keywords));
+			_dataLayoutManager.getDataLayoutsCount(dataDefinitionId, keywords));
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class DataLayoutResourceImpl
 			ddmStructureLayout.getDDMStructureId(), ActionKeys.VIEW);
 
 		return DataLayoutUtil.toDataLayout(
-			_deDataLayoutApp.getDataLayout(dataLayoutId));
+			_dataLayoutManager.getDataLayout(dataLayoutId));
 	}
 
 	@Override
@@ -157,9 +157,9 @@ public class DataLayoutResourceImpl
 			ddmStructureLayout.getDDMStructureId(), ActionKeys.VIEW);
 
 		return DataLayoutUtil.toDataLayout(
-			_deDataLayoutApp.getDataLayout(
-				siteId, dataDefinitionContentType.getClassNameId(),
-				dataLayoutKey));
+			_dataLayoutManager.getDataLayout(
+				dataDefinitionContentType.getClassNameId(), dataLayoutKey,
+				siteId));
 	}
 
 	@Override
@@ -174,12 +174,11 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(), ddmStructure,
 			DataActionKeys.ADD_DATA_DEFINITION);
 
-		DEDataLayout deDataLayout = DataLayoutUtil.toDEDataLayout(dataLayout);
-
-		deDataLayout.setDataDefinitionId(dataDefinitionId);
+		dataLayout.setDataDefinitionId(dataDefinitionId);
 
 		return DataLayoutUtil.toDataLayout(
-			_deDataLayoutApp.addDataLayout(deDataLayout, new ServiceContext()));
+			_dataLayoutManager.addDataLayout(
+				DataLayoutUtil.toDataLayout(dataLayout)));
 	}
 
 	@Override
@@ -193,14 +192,11 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructureLayout.getDDMStructureId(), ActionKeys.UPDATE);
 
-		DEDataLayout deDataLayout = DataLayoutUtil.toDEDataLayout(dataLayout);
+		dataLayout.setId(dataLayoutId);
 
-		deDataLayout.setId(dataLayoutId);
-
-		deDataLayout = _deDataLayoutApp.updateDataLayout(
-			deDataLayout, new ServiceContext());
-
-		return DataLayoutUtil.toDataLayout(deDataLayout);
+		return DataLayoutUtil.toDataLayout(
+			_dataLayoutManager.updateDataLayout(
+				DataLayoutUtil.toDataLayout(dataLayout)));
 	}
 
 	private OrderByComparator<DDMStructureLayout> _toOrderByComparator(
@@ -230,12 +226,12 @@ public class DataLayoutResourceImpl
 		_dataDefinitionModelResourcePermission;
 
 	@Reference
+	private DataLayoutManager _dataLayoutManager;
+
+	@Reference
 	private DDMStructureLayoutLocalService _ddmStructureLayoutLocalService;
 
 	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
-
-	@Reference
-	private DEDataLayoutApp _deDataLayoutApp;
 
 }

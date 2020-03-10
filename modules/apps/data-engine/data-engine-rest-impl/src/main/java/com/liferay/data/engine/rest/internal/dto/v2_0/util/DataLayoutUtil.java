@@ -15,10 +15,6 @@
 package com.liferay.data.engine.rest.internal.dto.v2_0.util;
 
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
-import com.liferay.data.engine.model.DEDataLayout;
-import com.liferay.data.engine.model.DEDataLayoutColumn;
-import com.liferay.data.engine.model.DEDataLayoutPage;
-import com.liferay.data.engine.model.DEDataLayoutRow;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayoutColumn;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayoutPage;
@@ -42,6 +38,48 @@ import java.util.stream.Stream;
  * @author Jeyvison Nascimento
  */
 public class DataLayoutUtil {
+
+	public static DataLayout toDataLayout(
+		com.liferay.data.engine.DataLayout dataLayout) {
+
+		return new DataLayout() {
+			{
+				dataDefinitionId = dataLayout.getDataDefinitionId();
+				dataLayoutKey = dataLayout.getDataLayoutKey();
+				dataLayoutPages = _toDataLayoutPages(
+					dataLayout.getDataLayoutPages());
+				dateCreated = dataLayout.getDateCreated();
+				dateModified = dataLayout.getDateModified();
+				description = dataLayout.getDescription();
+				id = dataLayout.getId();
+				name = dataLayout.getName();
+				paginationMode = dataLayout.getPaginationMode();
+				siteId = dataLayout.getGroupId();
+				userId = dataLayout.getUserId();
+			}
+		};
+	}
+
+	public static com.liferay.data.engine.DataLayout toDataLayout(
+		DataLayout dataLayout) {
+
+		return new com.liferay.data.engine.DataLayout() {
+			{
+				setDataDefinitionId(dataLayout.getDataDefinitionId());
+				setDataLayoutKey(dataLayout.getDataLayoutKey());
+				setDataLayoutPages(
+					_toDataLayoutPages(dataLayout.getDataLayoutPages()));
+				setDateCreated(dataLayout.getDateCreated());
+				setDateModified(dataLayout.getDateModified());
+				setDescription(dataLayout.getDescription());
+				setGroupId(dataLayout.getSiteId());
+				setId(dataLayout.getId());
+				setName(dataLayout.getName());
+				setPaginationMode(dataLayout.getPaginationMode());
+				setUserId(dataLayout.getUserId());
+			}
+		};
+	}
 
 	public static DataLayout toDataLayout(DDMFormLayout ddmFormLayout) {
 		return new DataLayout() {
@@ -67,75 +105,65 @@ public class DataLayoutUtil {
 			return null;
 		}
 
-		DataLayout dataLayout = toDataLayout(
-			ddmStructureLayout.getDDMFormLayout());
+		DDMFormLayout ddmFormLayout = ddmStructureLayout.getDDMFormLayout();
 
-		dataLayout.setDataDefinitionId(ddmStructureLayout.getDDMStructureId());
-		dataLayout.setDataLayoutKey(ddmStructureLayout.getStructureLayoutKey());
-		dataLayout.setDateCreated(ddmStructureLayout.getCreateDate());
-		dataLayout.setDateModified(ddmStructureLayout.getModifiedDate());
-		dataLayout.setDescription(
-			LocalizedValueUtil.toStringObjectMap(
-				ddmStructureLayout.getDescriptionMap()));
-		dataLayout.setId(ddmStructureLayout.getStructureLayoutId());
-		dataLayout.setName(
-			LocalizedValueUtil.toStringObjectMap(
-				ddmStructureLayout.getNameMap()));
-		dataLayout.setSiteId(ddmStructureLayout.getGroupId());
-		dataLayout.setUserId(ddmStructureLayout.getUserId());
-
-		return dataLayout;
-	}
-
-	public static DataLayout toDataLayout(DEDataLayout deDataLayout) {
 		return new DataLayout() {
 			{
-				dataDefinitionId = deDataLayout.getDataDefinitionId();
-				dataLayoutKey = deDataLayout.getDataLayoutKey();
+				dataDefinitionId = ddmStructureLayout.getDDMStructureId();
+				dataLayoutKey = ddmStructureLayout.getStructureLayoutKey();
 				dataLayoutPages = _toDataLayoutPages(
-					deDataLayout.getDEDataLayoutPages());
-				dateCreated = deDataLayout.getCreateDate();
-				dateModified = deDataLayout.getModifiedDate();
+					Optional.ofNullable(
+						ddmFormLayout.getDDMFormLayoutPages()
+					).map(
+						ddmFormLayoutPages -> ddmFormLayoutPages.toArray(
+							new DDMFormLayoutPage[0])
+					).orElse(
+						new DDMFormLayoutPage[0]
+					));
+				dateCreated = ddmStructureLayout.getCreateDate();
+				dateModified = ddmStructureLayout.getModifiedDate();
 				description = LocalizedValueUtil.toStringObjectMap(
-					deDataLayout.getDescription());
-				id = deDataLayout.getId();
+					ddmStructureLayout.getDescriptionMap());
+				id = ddmStructureLayout.getStructureLayoutId();
 				name = LocalizedValueUtil.toStringObjectMap(
-					deDataLayout.getName());
-				paginationMode = deDataLayout.getPaginationMode();
-				siteId = deDataLayout.getGroupId();
-				userId = deDataLayout.getUserId();
+					ddmStructureLayout.getNameMap());
+				paginationMode = ddmFormLayout.getPaginationMode();
+				siteId = ddmStructureLayout.getGroupId();
+				userId = ddmStructureLayout.getUserId();
 			}
 		};
 	}
 
 	public static DDMFormLayout toDDMFormLayout(DataLayout dataLayout) {
-		DDMFormLayout ddmFormLayout = new DDMFormLayout();
-
-		ddmFormLayout.setDDMFormLayoutPages(
-			_toDDMFormLayoutPages(dataLayout.getDataLayoutPages()));
-		ddmFormLayout.setPaginationMode(dataLayout.getPaginationMode());
-
-		return ddmFormLayout;
+		return new DDMFormLayout() {
+			{
+				setDDMFormLayoutPages(
+					_toDDMFormLayoutPages(dataLayout.getDataLayoutPages()));
+				setPaginationMode(dataLayout.getPaginationMode());
+			}
+		};
 	}
 
-	public static DEDataLayout toDEDataLayout(DataLayout dataLayout) {
-		return new DEDataLayout() {
+	private static DataLayoutColumn _toDataLayoutColumn(
+		com.liferay.data.engine.DataLayoutColumn dataLayoutColumn) {
+
+		return new DataLayoutColumn() {
 			{
-				setDataDefinitionId(dataLayout.getDataDefinitionId());
-				setDataLayoutKey(dataLayout.getDataLayoutKey());
-				setCreateDate(dataLayout.getDateCreated());
-				setDEDataLayoutPages(
-					_toDEDataLayoutPages(dataLayout.getDataLayoutPages()));
-				setDescription(
-					LocalizedValueUtil.toLocaleStringMap(
-						dataLayout.getDescription()));
-				setGroupId(dataLayout.getSiteId());
-				setId(dataLayout.getId());
-				setModifiedDate(dataLayout.getDateModified());
-				setName(
-					LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()));
-				setPaginationMode(dataLayout.getPaginationMode());
-				setUserId(dataLayout.getUserId());
+				setColumnSize(dataLayoutColumn.getColumnSize());
+				setFieldNames(
+					ArrayUtil.toStringArray(dataLayoutColumn.getFieldNames()));
+			}
+		};
+	}
+
+	private static com.liferay.data.engine.DataLayoutColumn _toDataLayoutColumn(
+		DataLayoutColumn dataLayoutColumn) {
+
+		return new com.liferay.data.engine.DataLayoutColumn() {
+			{
+				setColumnSize(dataLayoutColumn.getColumnSize());
+				setFieldNames(
+					ListUtil.fromArray(dataLayoutColumn.getFieldNames()));
 			}
 		};
 	}
@@ -152,17 +180,20 @@ public class DataLayoutUtil {
 		};
 	}
 
-	private static DataLayoutColumn _toDataLayoutColumn(
-		DEDataLayoutColumn deDataLayoutColumn) {
+	private static List<com.liferay.data.engine.DataLayoutColumn>
+		_toDataLayoutColumns(DataLayoutColumn[] dataLayoutColumns) {
 
-		return new DataLayoutColumn() {
-			{
-				setColumnSize(deDataLayoutColumn.getColumnSize());
-				setFieldNames(
-					ArrayUtil.toStringArray(
-						deDataLayoutColumn.getFieldNames()));
-			}
-		};
+		if (ArrayUtil.isEmpty(dataLayoutColumns)) {
+			return Collections.emptyList();
+		}
+
+		return Stream.of(
+			dataLayoutColumns
+		).map(
+			DataLayoutUtil::_toDataLayoutColumn
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	private static DataLayoutColumn[] _toDataLayoutColumns(
@@ -184,13 +215,14 @@ public class DataLayoutUtil {
 	}
 
 	private static DataLayoutColumn[] _toDataLayoutColumns(
-		List<DEDataLayoutColumn> deDataLayoutColumns) {
+		List<com.liferay.data.engine.DataLayoutColumn> dataLayoutColumns) {
 
-		if (ListUtil.isEmpty(deDataLayoutColumns)) {
+		if (ListUtil.isEmpty(dataLayoutColumns)) {
 			return new DataLayoutColumn[0];
 		}
 
-		Stream<DEDataLayoutColumn> stream = deDataLayoutColumns.stream();
+		Stream<com.liferay.data.engine.DataLayoutColumn> stream =
+			dataLayoutColumns.stream();
 
 		return stream.map(
 			DataLayoutUtil::_toDataLayoutColumn
@@ -199,6 +231,32 @@ public class DataLayoutUtil {
 		).toArray(
 			new DataLayoutColumn[0]
 		);
+	}
+
+	private static DataLayoutPage _toDataLayoutPage(
+		com.liferay.data.engine.DataLayoutPage dataLayoutPage) {
+
+		return new DataLayoutPage() {
+			{
+				dataLayoutRows = _toDataLayoutRows(
+					dataLayoutPage.getDataLayoutRows());
+				description = dataLayoutPage.getDescription();
+				title = dataLayoutPage.getTitle();
+			}
+		};
+	}
+
+	private static com.liferay.data.engine.DataLayoutPage _toDataLayoutPage(
+		DataLayoutPage dataLayoutPage) {
+
+		return new com.liferay.data.engine.DataLayoutPage() {
+			{
+				setDataLayoutRows(
+					_toDataLayoutRows(dataLayoutPage.getDataLayoutRows()));
+				setDescription(dataLayoutPage.getDescription());
+				setTitle(dataLayoutPage.getTitle());
+			}
+		};
 	}
 
 	private static DataLayoutPage _toDataLayoutPage(
@@ -223,19 +281,20 @@ public class DataLayoutUtil {
 		};
 	}
 
-	private static DataLayoutPage _toDataLayoutPage(
-		DEDataLayoutPage deDataLayoutPage) {
+	private static List<com.liferay.data.engine.DataLayoutPage>
+		_toDataLayoutPages(DataLayoutPage[] dataLayoutPages) {
 
-		return new DataLayoutPage() {
-			{
-				dataLayoutRows = _toDataLayoutRows(
-					deDataLayoutPage.getDEDataLayoutRows());
-				description = LocalizedValueUtil.toStringObjectMap(
-					deDataLayoutPage.getDescription());
-				title = LocalizedValueUtil.toStringObjectMap(
-					deDataLayoutPage.getTitle());
-			}
-		};
+		if (ArrayUtil.isEmpty(dataLayoutPages)) {
+			return Collections.emptyList();
+		}
+
+		return Stream.of(
+			dataLayoutPages
+		).map(
+			DataLayoutUtil::_toDataLayoutPage
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	private static DataLayoutPage[] _toDataLayoutPages(
@@ -257,13 +316,14 @@ public class DataLayoutUtil {
 	}
 
 	private static DataLayoutPage[] _toDataLayoutPages(
-		List<DEDataLayoutPage> deDataLayoutPages) {
+		List<com.liferay.data.engine.DataLayoutPage> dataLayoutPages) {
 
-		if (ListUtil.isEmpty(deDataLayoutPages)) {
+		if (ListUtil.isEmpty(dataLayoutPages)) {
 			return new DataLayoutPage[0];
 		}
 
-		Stream<DEDataLayoutPage> stream = deDataLayoutPages.stream();
+		Stream<com.liferay.data.engine.DataLayoutPage> stream =
+			dataLayoutPages.stream();
 
 		return stream.map(
 			DataLayoutUtil::_toDataLayoutPage
@@ -272,6 +332,28 @@ public class DataLayoutUtil {
 		).toArray(
 			new DataLayoutPage[0]
 		);
+	}
+
+	private static DataLayoutRow _toDataLayoutRow(
+		com.liferay.data.engine.DataLayoutRow dataLayoutRow) {
+
+		return new DataLayoutRow() {
+			{
+				dataLayoutColumns = _toDataLayoutColumns(
+					dataLayoutRow.getDataLayoutColumns());
+			}
+		};
+	}
+
+	private static com.liferay.data.engine.DataLayoutRow _toDataLayoutRow(
+		DataLayoutRow dataLayoutRow) {
+
+		return new com.liferay.data.engine.DataLayoutRow() {
+			{
+				setDataLayoutColumns(
+					_toDataLayoutColumns(dataLayoutRow.getDataLayoutColumns()));
+			}
+		};
 	}
 
 	private static DataLayoutRow _toDataLayoutRow(
@@ -292,15 +374,20 @@ public class DataLayoutUtil {
 		};
 	}
 
-	private static DataLayoutRow _toDataLayoutRow(
-		DEDataLayoutRow deDataLayoutRow) {
+	private static List<com.liferay.data.engine.DataLayoutRow>
+		_toDataLayoutRows(DataLayoutRow[] dataLayoutRows) {
 
-		return new DataLayoutRow() {
-			{
-				dataLayoutColumns = _toDataLayoutColumns(
-					deDataLayoutRow.getDEDataLayoutColumns());
-			}
-		};
+		if (ArrayUtil.isEmpty(dataLayoutRows)) {
+			return Collections.emptyList();
+		}
+
+		return Stream.of(
+			dataLayoutRows
+		).map(
+			DataLayoutUtil::_toDataLayoutRow
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	private static DataLayoutRow[] _toDataLayoutRows(
@@ -322,9 +409,10 @@ public class DataLayoutUtil {
 	}
 
 	private static DataLayoutRow[] _toDataLayoutRows(
-		List<DEDataLayoutRow> deDataLayoutRows) {
+		List<com.liferay.data.engine.DataLayoutRow> dataLayoutRows) {
 
-		Stream<DEDataLayoutRow> stream = deDataLayoutRows.stream();
+		Stream<com.liferay.data.engine.DataLayoutRow> stream =
+			dataLayoutRows.stream();
 
 		return stream.map(
 			DataLayoutUtil::_toDataLayoutRow
@@ -338,13 +426,13 @@ public class DataLayoutUtil {
 	private static DDMFormLayoutColumn _toDDMFormLayoutColumn(
 		DataLayoutColumn dataLayoutColumn) {
 
-		DDMFormLayoutColumn ddmFormLayoutColumn = new DDMFormLayoutColumn();
-
-		ddmFormLayoutColumn.setDDMFormFieldNames(
-			Arrays.asList(dataLayoutColumn.getFieldNames()));
-		ddmFormLayoutColumn.setSize(dataLayoutColumn.getColumnSize());
-
-		return ddmFormLayoutColumn;
+		return new DDMFormLayoutColumn() {
+			{
+				setDDMFormFieldNames(
+					Arrays.asList(dataLayoutColumn.getFieldNames()));
+				setSize(dataLayoutColumn.getColumnSize());
+			}
+		};
 	}
 
 	private static List<DDMFormLayoutColumn> _toDDMFormLayoutColumns(
@@ -366,17 +454,18 @@ public class DataLayoutUtil {
 	private static DDMFormLayoutPage _toDDMFormLayoutPage(
 		DataLayoutPage dataLayoutPage) {
 
-		DDMFormLayoutPage ddmFormLayoutPage = new DDMFormLayoutPage();
-
-		ddmFormLayoutPage.setDDMFormLayoutRows(
-			_toDDMFormLayoutRows(dataLayoutPage.getDataLayoutRows()));
-		ddmFormLayoutPage.setDescription(
-			LocalizedValueUtil.toLocalizedValue(
-				dataLayoutPage.getDescription()));
-		ddmFormLayoutPage.setTitle(
-			LocalizedValueUtil.toLocalizedValue(dataLayoutPage.getTitle()));
-
-		return ddmFormLayoutPage;
+		return new DDMFormLayoutPage() {
+			{
+				setDDMFormLayoutRows(
+					_toDDMFormLayoutRows(dataLayoutPage.getDataLayoutRows()));
+				setDescription(
+					LocalizedValueUtil.toLocalizedValue(
+						dataLayoutPage.getDescription()));
+				setTitle(
+					LocalizedValueUtil.toLocalizedValue(
+						dataLayoutPage.getTitle()));
+			}
+		};
 	}
 
 	private static List<DDMFormLayoutPage> _toDDMFormLayoutPages(
@@ -398,12 +487,13 @@ public class DataLayoutUtil {
 	private static DDMFormLayoutRow _toDDMFormLayoutRow(
 		DataLayoutRow dataLayoutRow) {
 
-		DDMFormLayoutRow ddmFormLayoutRow = new DDMFormLayoutRow();
-
-		ddmFormLayoutRow.setDDMFormLayoutColumns(
-			_toDDMFormLayoutColumns(dataLayoutRow.getDataLayoutColumns()));
-
-		return ddmFormLayoutRow;
+		return new DDMFormLayoutRow() {
+			{
+				setDDMFormLayoutColumns(
+					_toDDMFormLayoutColumns(
+						dataLayoutRow.getDataLayoutColumns()));
+			}
+		};
 	}
 
 	private static List<DDMFormLayoutRow> _toDDMFormLayoutRows(
@@ -417,95 +507,6 @@ public class DataLayoutUtil {
 			dataLayoutRows
 		).map(
 			DataLayoutUtil::_toDDMFormLayoutRow
-		).collect(
-			Collectors.toList()
-		);
-	}
-
-	private static DEDataLayoutColumn _toDEDataLayoutColumn(
-		DataLayoutColumn dataLayoutColumn) {
-
-		return new DEDataLayoutColumn() {
-			{
-				setColumnSize(dataLayoutColumn.getColumnSize());
-				setFieldNames(
-					ListUtil.fromArray(dataLayoutColumn.getFieldNames()));
-			}
-		};
-	}
-
-	private static List<DEDataLayoutColumn> _toDEDataLayoutColumns(
-		DataLayoutColumn[] dataLayoutColumns) {
-
-		if (ArrayUtil.isEmpty(dataLayoutColumns)) {
-			return Collections.emptyList();
-		}
-
-		return Stream.of(
-			dataLayoutColumns
-		).map(
-			DataLayoutUtil::_toDEDataLayoutColumn
-		).collect(
-			Collectors.toList()
-		);
-	}
-
-	private static DEDataLayoutPage _toDEDataLayoutPage(
-		DataLayoutPage dataLayoutPage) {
-
-		return new DEDataLayoutPage() {
-			{
-				setDEDataLayoutRows(
-					_toDEDataLayoutRows(dataLayoutPage.getDataLayoutRows()));
-				setDescription(
-					LocalizedValueUtil.toLocaleStringMap(
-						dataLayoutPage.getDescription()));
-				setTitle(
-					LocalizedValueUtil.toLocaleStringMap(
-						dataLayoutPage.getTitle()));
-			}
-		};
-	}
-
-	private static List<DEDataLayoutPage> _toDEDataLayoutPages(
-		DataLayoutPage[] dataLayoutPages) {
-
-		if (ArrayUtil.isEmpty(dataLayoutPages)) {
-			return Collections.emptyList();
-		}
-
-		return Stream.of(
-			dataLayoutPages
-		).map(
-			DataLayoutUtil::_toDEDataLayoutPage
-		).collect(
-			Collectors.toList()
-		);
-	}
-
-	private static DEDataLayoutRow _toDEDataLayoutRow(
-		DataLayoutRow dataLayoutRow) {
-
-		return new DEDataLayoutRow() {
-			{
-				setDEDataLayoutColumns(
-					_toDEDataLayoutColumns(
-						dataLayoutRow.getDataLayoutColumns()));
-			}
-		};
-	}
-
-	private static List<DEDataLayoutRow> _toDEDataLayoutRows(
-		DataLayoutRow[] dataLayoutRows) {
-
-		if (ArrayUtil.isEmpty(dataLayoutRows)) {
-			return Collections.emptyList();
-		}
-
-		return Stream.of(
-			dataLayoutRows
-		).map(
-			DataLayoutUtil::_toDEDataLayoutRow
 		).collect(
 			Collectors.toList()
 		);
