@@ -12,15 +12,16 @@
  * details.
  */
 
-package com.liferay.data.engine.service.impl;
+package com.liferay.data.engine.internal.manager;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
-import com.liferay.data.engine.model.DEDataLayout;
+import com.liferay.data.engine.DataLayout;
+import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
+import com.liferay.data.engine.internal.manager.util.DataLayoutUtil;
+import com.liferay.data.engine.manager.DataLayoutManager;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
-import com.liferay.data.engine.service.DEDataLayoutApp;
-import com.liferay.data.engine.service.impl.util.DataLayoutUtil;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutSerializer;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
@@ -51,7 +52,6 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -60,36 +60,35 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Leonardo Barros
  */
-@Component(immediate = true, service = DEDataLayoutApp.class)
-public class DEDataLayoutAppImpl implements DEDataLayoutApp {
+@Component(immediate = true, service = DataLayoutManager.class)
+public class DataLayoutManagerImpl implements DataLayoutManager {
 
 	@Override
-	public DEDataLayout addDataLayout(
-			DEDataLayout deDataLayout, ServiceContext serviceContext)
-		throws Exception {
-
+	public DataLayout addDataLayout(DataLayout dataLayout) throws Exception {
 		String content = DataLayoutUtil.serialize(
-			_ddmFormLayoutSerializer, deDataLayout);
+			_ddmFormLayoutSerializer, dataLayout);
 
-		_validate(deDataLayout.getName(), content);
+		_validate(content, dataLayout.getName());
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			deDataLayout.getDataDefinitionId());
+			dataLayout.getDataDefinitionId());
 
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.addStructureLayout(
 				PrincipalThreadLocal.getUserId(), ddmStructure.getGroupId(),
-				ddmStructure.getClassNameId(), deDataLayout.getDataLayoutKey(),
-				_getDDMStructureVersionId(deDataLayout.getDataDefinitionId()),
-				deDataLayout.getName(), deDataLayout.getDescription(), content,
-				serviceContext);
+				ddmStructure.getClassNameId(), dataLayout.getDataLayoutKey(),
+				_getDDMStructureVersionId(dataLayout.getDataDefinitionId()),
+				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
+				LocalizedValueUtil.toLocaleStringMap(
+					dataLayout.getDescription()),
+				content, new ServiceContext());
 
 		_addDataDefinitionFieldLinks(
-			ddmStructureLayout.getGroupId(), ddmStructure.getClassNameId(),
+			ddmStructure.getClassNameId(), dataLayout.getDataDefinitionId(),
 			ddmStructureLayout.getStructureLayoutId(),
-			deDataLayout.getDataDefinitionId(), _getFieldNames(content));
+			ddmStructureLayout.getGroupId(), _getFieldNames(content));
 
-		return DataLayoutUtil.toDEDataLayout(ddmStructureLayout);
+		return DataLayoutUtil.toDataLayout(ddmStructureLayout);
 	}
 
 	@Override
@@ -122,9 +121,9 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 	}
 
 	@Override
-	public DEDataLayout fetchDataLayout(long dataLayoutId) {
+	public DataLayout fetchDataLayout(long dataLayoutId) {
 		try {
-			return DataLayoutUtil.toDEDataLayout(
+			return DataLayoutUtil.toDataLayout(
 				_ddmStructureLayoutLocalService.fetchDDMStructureLayout(
 					dataLayoutId));
 		}
@@ -134,11 +133,11 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 	}
 
 	@Override
-	public DEDataLayout fetchDataLayout(
-		long groupId, long classNameId, String dataLayoutKey) {
+	public DataLayout fetchDataLayout(
+		long classNameId, String dataLayoutKey, long groupId) {
 
 		try {
-			return getDataLayout(groupId, classNameId, dataLayoutKey);
+			return getDataLayout(classNameId, dataLayoutKey, groupId);
 		}
 		catch (Exception exception) {
 			return null;
@@ -146,45 +145,44 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 	}
 
 	@Override
-	public DEDataLayout getDataLayout(long dataLayoutId) throws Exception {
-		return DataLayoutUtil.toDEDataLayout(
+	public DataLayout getDataLayout(long dataLayoutId) throws Exception {
+		return DataLayoutUtil.toDataLayout(
 			_ddmStructureLayoutLocalService.getDDMStructureLayout(
 				dataLayoutId));
 	}
 
 	@Override
-	public DEDataLayout getDataLayout(
-			long groupId, long classNameId, String dataLayoutKey)
+	public DataLayout getDataLayout(
+			long classNameId, String dataLayoutKey, long groupId)
 		throws Exception {
 
-		return DataLayoutUtil.toDEDataLayout(
+		return DataLayoutUtil.toDataLayout(
 			_ddmStructureLayoutLocalService.getStructureLayout(
 				groupId, classNameId, dataLayoutKey));
 	}
 
 	@Override
-	public List<DEDataLayout> getDataLayouts(
-			long dataDefinitionId, String keywords, int start, int end,
-			OrderByComparator orderByComparator)
+	public List<DataLayout> getDataLayouts(
+			long dataDefinitionId, int end, String keywords,
+			OrderByComparator orderByComparator, int start)
 		throws Exception {
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
 		if (Validator.isNull(keywords)) {
-			return _transform(
+			return DataLayoutUtil.toDataLayouts(
 				_ddmStructureLayoutLocalService.getStructureLayouts(
 					ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
 					_getDDMStructureVersionId(dataDefinitionId), start, end,
 					orderByComparator));
 		}
 
-		return _transform(
+		return DataLayoutUtil.toDataLayouts(
 			_search(
-				ddmStructure.getCompanyId(), ddmStructure.getGroupId(),
-				ddmStructure.getClassNameId(),
-				_getDDMStructureVersionId(dataDefinitionId), keywords, start,
-				end, orderByComparator));
+				ddmStructure.getClassNameId(), ddmStructure.getCompanyId(), end,
+				ddmStructure.getGroupId(), keywords, orderByComparator, start,
+				_getDDMStructureVersionId(dataDefinitionId)));
 	}
 
 	@Override
@@ -201,48 +199,47 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 		}
 
 		return _searchCount(
-			ddmStructure.getCompanyId(), ddmStructure.getGroupId(),
-			ddmStructure.getClassNameId(),
-			_getDDMStructureVersionId(dataDefinitionId), keywords);
+			ddmStructure.getClassNameId(), ddmStructure.getCompanyId(),
+			ddmStructure.getGroupId(), keywords,
+			_getDDMStructureVersionId(dataDefinitionId));
 	}
 
 	@Override
-	public DEDataLayout updateDataLayout(
-			DEDataLayout deDataLayout, ServiceContext serviceContext)
-		throws Exception {
-
+	public DataLayout updateDataLayout(DataLayout dataLayout) throws Exception {
 		String content = DataLayoutUtil.serialize(
-			_ddmFormLayoutSerializer, deDataLayout);
+			_ddmFormLayoutSerializer, dataLayout);
 
-		_validate(deDataLayout.getName(), content);
+		_validate(content, dataLayout.getName());
 
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.getStructureLayout(
-				deDataLayout.getId());
+				dataLayout.getId());
 
 		DDMStructure ddmStructure = ddmStructureLayout.getDDMStructure();
 
 		ddmStructureLayout =
 			_ddmStructureLayoutLocalService.updateStructureLayout(
-				deDataLayout.getId(),
+				dataLayout.getId(),
 				_getDDMStructureVersionId(ddmStructure.getStructureId()),
-				deDataLayout.getName(), deDataLayout.getDescription(), content,
-				serviceContext);
+				LocalizedValueUtil.toLocaleStringMap(dataLayout.getName()),
+				LocalizedValueUtil.toLocaleStringMap(
+					dataLayout.getDescription()),
+				content, new ServiceContext());
 
 		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			ddmStructure.getClassNameId(), deDataLayout.getId());
+			ddmStructure.getClassNameId(), dataLayout.getId());
 
 		_addDataDefinitionFieldLinks(
-			ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
-			deDataLayout.getId(), ddmStructure.getStructureId(),
+			ddmStructure.getClassNameId(), ddmStructure.getStructureId(),
+			dataLayout.getId(), ddmStructure.getGroupId(),
 			_getFieldNames(content));
 
-		return DataLayoutUtil.toDEDataLayout(ddmStructureLayout);
+		return DataLayoutUtil.toDataLayout(ddmStructureLayout);
 	}
 
 	private void _addDataDefinitionFieldLinks(
-			long groupId, long classNameId, long dataLayoutId,
-			long dataDefinitionId, List<String> fieldNames)
+			long classNameId, long dataDefinitionId, long dataLayoutId,
+			long groupId, List<String> fieldNames)
 		throws Exception {
 
 		for (String fieldName : fieldNames) {
@@ -265,12 +262,12 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 			ddmStructureLayout.getStructureLayoutId());
 	}
 
-	private long _getDDMStructureVersionId(long deDataDefinitionId)
+	private long _getDDMStructureVersionId(long dataDefinitionId)
 		throws Exception {
 
 		DDMStructureVersion ddmStructureVersion =
 			_ddmStructureVersionLocalService.getLatestStructureVersion(
-				deDataDefinitionId);
+				dataDefinitionId);
 
 		return ddmStructureVersion.getStructureVersionId();
 	}
@@ -302,9 +299,9 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 	}
 
 	private List<DDMStructureLayout> _search(
-		long companyId, long groupId, long classNameId, long structureVersionId,
-		String keywords, int start, int end,
-		OrderByComparator orderByComparator) {
+		long classNameId, long companyId, int end, long groupId,
+		String keywords, OrderByComparator orderByComparator, int start,
+		long structureVersionId) {
 
 		try {
 			List<DDMStructureLayout> ddmStructureLayouts = new ArrayList<>();
@@ -350,8 +347,8 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 	}
 
 	private int _searchCount(
-		long companyId, long groupId, long classNameId, long structureVersionId,
-		String keywords) {
+		long classNameId, long companyId, long groupId, String keywords,
+		long structureVersionId) {
 
 		try {
 			Indexer indexer = IndexerRegistryUtil.getIndexer(
@@ -378,29 +375,14 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 		return 0;
 	}
 
-	private List<DEDataLayout> _transform(
-			List<DDMStructureLayout> ddmStructureLayouts)
-		throws Exception {
-
-		List<DEDataLayout> deDataLayouts = new ArrayList<>(
-			ddmStructureLayouts.size());
-
-		for (DDMStructureLayout ddmStructureLayout : ddmStructureLayouts) {
-			deDataLayouts.add(
-				DataLayoutUtil.toDEDataLayout(ddmStructureLayout));
-		}
-
-		return deDataLayouts;
-	}
-
-	private void _validate(Map<Locale, String> nameMap, String content)
+	private void _validate(String content, Map<String, Object> nameMap)
 		throws PortalException {
 
 		if (MapUtil.isEmpty(nameMap)) {
 			throw new PortalException("Name is required");
 		}
 
-		for (Map.Entry<Locale, String> entry : nameMap.entrySet()) {
+		for (Map.Entry<String, Object> entry : nameMap.entrySet()) {
 			if (Validator.isNull(entry.getValue())) {
 				throw new PortalException("Name is required");
 			}
@@ -414,7 +396,7 @@ public class DEDataLayoutAppImpl implements DEDataLayoutApp {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		DEDataLayoutAppImpl.class);
+		DataLayoutManagerImpl.class);
 
 	@Reference
 	private DDMFormLayoutSerializer _ddmFormLayoutSerializer;

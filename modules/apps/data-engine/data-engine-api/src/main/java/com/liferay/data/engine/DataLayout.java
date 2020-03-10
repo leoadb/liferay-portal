@@ -12,25 +12,20 @@
  * details.
  */
 
-package com.liferay.data.engine.model;
+package com.liferay.data.engine;
 
 import java.io.Serializable;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
  * @author Leonardo Barros
  */
-public class DEDataLayout implements Serializable {
+public class DataLayout implements Serializable {
 
-	public Date getCreateDate() {
-		return _createDate;
-	}
-
-	public long getDataDefinitionId() {
+	public Long getDataDefinitionId() {
 		return _dataDefinitionId;
 	}
 
@@ -38,27 +33,31 @@ public class DEDataLayout implements Serializable {
 		return _dataLayoutKey;
 	}
 
-	public List<DEDataLayoutPage> getDEDataLayoutPages() {
-		return _deDataLayoutPages;
+	public List<DataLayoutPage> getDataLayoutPages() {
+		return _dataLayoutPages;
 	}
 
-	public Map<Locale, String> getDescription() {
+	public Date getDateCreated() {
+		return _dateCreated;
+	}
+
+	public Date getDateModified() {
+		return _dateModified;
+	}
+
+	public Map<String, Object> getDescription() {
 		return _description;
 	}
 
-	public long getGroupId() {
+	public Long getGroupId() {
 		return _groupId;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return _id;
 	}
 
-	public Date getModifiedDate() {
-		return _modifiedDate;
-	}
-
-	public Map<Locale, String> getName() {
+	public Map<String, Object> getName() {
 		return _name;
 	}
 
@@ -66,15 +65,11 @@ public class DEDataLayout implements Serializable {
 		return _paginationMode;
 	}
 
-	public long getUserId() {
+	public Long getUserId() {
 		return _userId;
 	}
 
-	public void setCreateDate(Date createDate) {
-		_createDate = createDate;
-	}
-
-	public void setDataDefinitionId(long dataDefinitionId) {
+	public void setDataDefinitionId(Long dataDefinitionId) {
 		_dataDefinitionId = dataDefinitionId;
 	}
 
@@ -82,27 +77,31 @@ public class DEDataLayout implements Serializable {
 		_dataLayoutKey = dataLayoutKey;
 	}
 
-	public void setDEDataLayoutPages(List<DEDataLayoutPage> deDataLayoutPages) {
-		_deDataLayoutPages = deDataLayoutPages;
+	public void setDataLayoutPages(List<DataLayoutPage> dataLayoutPages) {
+		_dataLayoutPages = dataLayoutPages;
 	}
 
-	public void setDescription(Map<Locale, String> description) {
+	public void setDateCreated(Date dateCreated) {
+		_dateCreated = dateCreated;
+	}
+
+	public void setDateModified(Date dateModified) {
+		_dateModified = dateModified;
+	}
+
+	public void setDescription(Map<String, Object> description) {
 		_description = description;
 	}
 
-	public void setGroupId(long groupId) {
+	public void setGroupId(Long groupId) {
 		_groupId = groupId;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		_id = id;
 	}
 
-	public void setModifiedDate(Date modifiedDate) {
-		_modifiedDate = modifiedDate;
-	}
-
-	public void setName(Map<Locale, String> name) {
+	public void setName(Map<String, Object> name) {
 		_name = name;
 	}
 
@@ -110,20 +109,20 @@ public class DEDataLayout implements Serializable {
 		_paginationMode = paginationMode;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		_userId = userId;
 	}
 
-	private Date _createDate;
-	private long _dataDefinitionId;
+	private Long _dataDefinitionId;
 	private String _dataLayoutKey;
-	private List<DEDataLayoutPage> _deDataLayoutPages;
-	private Map<Locale, String> _description;
-	private long _groupId;
-	private long _id;
-	private Date _modifiedDate;
-	private Map<Locale, String> _name;
+	private List<DataLayoutPage> _dataLayoutPages;
+	private Date _dateCreated;
+	private Date _dateModified;
+	private Map<String, Object> _description;
+	private Long _groupId;
+	private Long _id;
+	private Map<String, Object> _name;
 	private String _paginationMode;
-	private long _userId;
+	private Long _userId;
 
 }

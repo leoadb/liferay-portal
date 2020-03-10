@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.data.engine.model;
+package com.liferay.data.engine;
 
 import java.io.Serializable;
 
@@ -21,18 +21,25 @@ import java.util.List;
 /**
  * @author Leonardo Barros
  */
-public class DEDataLayoutRow implements Serializable {
+public class DataLayoutColumn implements Serializable {
 
-	public List<DEDataLayoutColumn> getDEDataLayoutColumns() {
-		return _deDataLayoutColumns;
+	public int getColumnSize() {
+		return _columnSize;
 	}
 
-	public void setDEDataLayoutColumns(
-		List<DEDataLayoutColumn> deDataLayoutColumns) {
-
-		_deDataLayoutColumns = deDataLayoutColumns;
+	public List<String> getFieldNames() {
+		return _fieldNames;
 	}
 
-	private List<DEDataLayoutColumn> _deDataLayoutColumns;
+	public void setColumnSize(int size) {
+		_columnSize = size;
+	}
+
+	public void setFieldNames(List<String> fieldNames) {
+		_fieldNames = fieldNames;
+	}
+
+	private int _columnSize;
+	private List<String> _fieldNames;
 
 }

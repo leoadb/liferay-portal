@@ -16,7 +16,7 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
-import com.liferay.data.engine.model.DEDataLayout;
+import com.liferay.data.engine.manager.DataLayoutManager;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
@@ -33,7 +33,6 @@ import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEnt
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
-import com.liferay.data.engine.service.DEDataLayoutApp;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
 import com.liferay.data.engine.spi.resource.SPIDataRecordCollectionResource;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
@@ -145,7 +144,7 @@ public class DataDefinitionResourceImpl
 		_ddlRecordSetLocalService.deleteDDMStructureRecordSets(
 			dataDefinitionId);
 
-		_deDataLayoutApp.deleteDataLayoutDataDefinition(dataDefinitionId);
+		_dataLayoutManager.deleteDataLayoutDataDefinition(dataDefinitionId);
 
 		_ddmStructureLocalService.deleteDDMStructure(dataDefinitionId);
 
@@ -409,18 +408,13 @@ public class DataDefinitionResourceImpl
 		DataLayout dataLayout = dataDefinition.getDefaultDataLayout();
 
 		if (dataLayout != null) {
+			dataLayout.setDataDefinitionId(ddmStructure.getStructureId());
 			dataLayout.setDataLayoutKey(ddmStructure.getStructureKey());
 
-			DEDataLayout deDataLayout = DataLayoutUtil.toDEDataLayout(
-				dataLayout);
-
-			deDataLayout.setDataDefinitionId(ddmStructure.getStructureId());
-
-			deDataLayout = _deDataLayoutApp.addDataLayout(
-				deDataLayout, new ServiceContext());
-
 			dataDefinition.setDefaultDataLayout(
-				DataLayoutUtil.toDataLayout(deDataLayout));
+				DataLayoutUtil.toDataLayout(
+					_dataLayoutManager.addDataLayout(
+						DataLayoutUtil.toDataLayout(dataLayout))));
 		}
 
 		dataDefinition = DataDefinitionUtil.toDataDefinition(
@@ -461,21 +455,17 @@ public class DataDefinitionResourceImpl
 		DataLayout dataLayout = dataDefinition.getDefaultDataLayout();
 
 		if (dataLayout != null) {
-			DEDataLayout deDataLayout = DataLayoutUtil.toDEDataLayout(
-				dataLayout);
-
-			deDataLayout.setId(
+			dataLayout.setId(
 				Optional.ofNullable(
 					dataLayout.getId()
 				).orElse(
 					_getDefaultDataLayoutId(dataDefinitionId)
 				));
 
-			deDataLayout = _deDataLayoutApp.updateDataLayout(
-				deDataLayout, new ServiceContext());
-
 			dataDefinition.setDefaultDataLayout(
-				DataLayoutUtil.toDataLayout(deDataLayout));
+				DataLayoutUtil.toDataLayout(
+					_dataLayoutManager.updateDataLayout(
+						DataLayoutUtil.toDataLayout(dataLayout))));
 		}
 
 		_updateFieldNames(dataDefinitionId, dataDefinition);
@@ -605,11 +595,12 @@ public class DataDefinitionResourceImpl
 		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
 			dataDefinitionId);
 
-		DEDataLayout deDataLayout = _deDataLayoutApp.getDataLayout(
-			ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
-			ddmStructure.getStructureKey());
+		com.liferay.data.engine.DataLayout dataLayout =
+			_dataLayoutManager.getDataLayout(
+				ddmStructure.getClassNameId(), ddmStructure.getStructureKey(),
+				ddmStructure.getGroupId());
 
-		return deDataLayout.getId();
+		return dataLayout.getId();
 	}
 
 	private JSONObject _getFieldTypeMetadataJSONObject(
@@ -918,6 +909,9 @@ public class DataDefinitionResourceImpl
 		_dataDefinitionModelResourcePermission;
 
 	@Reference
+	private DataLayoutManager _dataLayoutManager;
+
+	@Reference
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;
 
 	@Reference
@@ -947,9 +941,6 @@ public class DataDefinitionResourceImpl
 	@Reference
 	private DEDataDefinitionFieldLinkLocalService
 		_deDataDefinitionFieldLinkLocalService;
-
-	@Reference
-	private DEDataLayoutApp _deDataLayoutApp;
 
 	@Reference
 	private DEDataListViewLocalService _deDataListViewLocalService;

@@ -12,45 +12,44 @@
  * details.
  */
 
-package com.liferay.data.engine.model;
+package com.liferay.data.engine;
 
 import java.io.Serializable;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
  * @author Leonardo Barros
  */
-public class DEDataLayoutPage implements Serializable {
+public class DataLayoutPage implements Serializable {
 
-	public List<DEDataLayoutRow> getDEDataLayoutRows() {
-		return _deDataLayoutRows;
+	public List<DataLayoutRow> getDataLayoutRows() {
+		return _dataLayoutRows;
 	}
 
-	public Map<Locale, String> getDescription() {
+	public Map<String, Object> getDescription() {
 		return _description;
 	}
 
-	public Map<Locale, String> getTitle() {
+	public Map<String, Object> getTitle() {
 		return _title;
 	}
 
-	public void setDEDataLayoutRows(List<DEDataLayoutRow> deDataLayoutRows) {
-		_deDataLayoutRows = deDataLayoutRows;
+	public void setDataLayoutRows(List<DataLayoutRow> dataLayoutRows) {
+		_dataLayoutRows = dataLayoutRows;
 	}
 
-	public void setDescription(Map<Locale, String> description) {
+	public void setDescription(Map<String, Object> description) {
 		_description = description;
 	}
 
-	public void setTitle(Map<Locale, String> title) {
+	public void setTitle(Map<String, Object> title) {
 		_title = title;
 	}
 
-	private List<DEDataLayoutRow> _deDataLayoutRows;
-	private Map<Locale, String> _description;
-	private Map<Locale, String> _title;
+	private List<DataLayoutRow> _dataLayoutRows;
+	private Map<String, Object> _description;
+	private Map<String, Object> _title;
 
 }
