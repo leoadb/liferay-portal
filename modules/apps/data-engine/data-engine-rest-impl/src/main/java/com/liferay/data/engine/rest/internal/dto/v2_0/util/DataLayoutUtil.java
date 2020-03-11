@@ -54,7 +54,7 @@ public class DataLayoutUtil {
 				id = dataLayout.getId();
 				name = dataLayout.getName();
 				paginationMode = dataLayout.getPaginationMode();
-				siteId = dataLayout.getGroupId();
+				siteId = dataLayout.getSiteId();
 				userId = dataLayout.getUserId();
 			}
 		};
@@ -72,7 +72,7 @@ public class DataLayoutUtil {
 				setDateCreated(dataLayout.getDateCreated());
 				setDateModified(dataLayout.getDateModified());
 				setDescription(dataLayout.getDescription());
-				setGroupId(dataLayout.getSiteId());
+				setSiteId(dataLayout.getSiteId());
 				setId(dataLayout.getId());
 				setName(dataLayout.getName());
 				setPaginationMode(dataLayout.getPaginationMode());

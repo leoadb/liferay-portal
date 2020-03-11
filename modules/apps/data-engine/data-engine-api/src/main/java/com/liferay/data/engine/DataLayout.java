@@ -49,10 +49,6 @@ public class DataLayout implements Serializable {
 		return _description;
 	}
 
-	public Long getGroupId() {
-		return _groupId;
-	}
-
 	public Long getId() {
 		return _id;
 	}
@@ -63,6 +59,10 @@ public class DataLayout implements Serializable {
 
 	public String getPaginationMode() {
 		return _paginationMode;
+	}
+
+	public Long getSiteId() {
+		return _siteId;
 	}
 
 	public Long getUserId() {
@@ -93,10 +93,6 @@ public class DataLayout implements Serializable {
 		_description = description;
 	}
 
-	public void setGroupId(Long groupId) {
-		_groupId = groupId;
-	}
-
 	public void setId(Long id) {
 		_id = id;
 	}
@@ -109,6 +105,10 @@ public class DataLayout implements Serializable {
 		_paginationMode = paginationMode;
 	}
 
+	public void setSiteId(Long siteId) {
+		_siteId = siteId;
+	}
+
 	public void setUserId(Long userId) {
 		_userId = userId;
 	}
@@ -119,10 +119,10 @@ public class DataLayout implements Serializable {
 	private Date _dateCreated;
 	private Date _dateModified;
 	private Map<String, Object> _description;
-	private Long _groupId;
 	private Long _id;
 	private Map<String, Object> _name;
 	private String _paginationMode;
+	private Long _siteId;
 	private Long _userId;
 
 }

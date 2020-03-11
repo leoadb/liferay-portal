@@ -21,9 +21,12 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Leonardo Barros
  */
+@ProviderType
 @Transactional(isolation = Isolation.PORTAL, rollbackFor = Exception.class)
 public interface DataLayoutManager {
 
@@ -37,12 +40,12 @@ public interface DataLayoutManager {
 	public DataLayout fetchDataLayout(long dataLayoutId);
 
 	public DataLayout fetchDataLayout(
-		long classNameId, String dataLayoutKey, long groupId);
+		long classNameId, String dataLayoutKey, long siteId);
 
 	public DataLayout getDataLayout(long dataLayoutId) throws Exception;
 
 	public DataLayout getDataLayout(
-			long classNameId, String dataLayoutKey, long groupId)
+			long classNameId, String dataLayoutKey, long siteId)
 		throws Exception;
 
 	public List<DataLayout> getDataLayouts(

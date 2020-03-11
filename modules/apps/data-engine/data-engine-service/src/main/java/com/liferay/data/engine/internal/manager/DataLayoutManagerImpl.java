@@ -134,10 +134,10 @@ public class DataLayoutManagerImpl implements DataLayoutManager {
 
 	@Override
 	public DataLayout fetchDataLayout(
-		long classNameId, String dataLayoutKey, long groupId) {
+		long classNameId, String dataLayoutKey, long siteId) {
 
 		try {
-			return getDataLayout(classNameId, dataLayoutKey, groupId);
+			return getDataLayout(classNameId, dataLayoutKey, siteId);
 		}
 		catch (Exception exception) {
 			return null;
@@ -153,12 +153,12 @@ public class DataLayoutManagerImpl implements DataLayoutManager {
 
 	@Override
 	public DataLayout getDataLayout(
-			long classNameId, String dataLayoutKey, long groupId)
+			long classNameId, String dataLayoutKey, long siteId)
 		throws Exception {
 
 		return DataLayoutUtil.toDataLayout(
 			_ddmStructureLayoutLocalService.getStructureLayout(
-				groupId, classNameId, dataLayoutKey));
+				siteId, classNameId, dataLayoutKey));
 	}
 
 	@Override

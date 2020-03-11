@@ -75,7 +75,7 @@ public class DataLayoutUtil {
 				setDescription(
 					LocalizedValueUtil.toStringObjectMap(
 						ddmStructureLayout.getDescriptionMap()));
-				setGroupId(ddmStructureLayout.getGroupId());
+				setSiteId(ddmStructureLayout.getGroupId());
 				setId(ddmStructureLayout.getStructureLayoutId());
 				setName(
 					LocalizedValueUtil.toStringObjectMap(
