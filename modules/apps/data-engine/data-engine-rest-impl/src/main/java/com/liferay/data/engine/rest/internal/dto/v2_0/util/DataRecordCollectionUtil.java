@@ -14,9 +14,7 @@
 
 package com.liferay.data.engine.rest.internal.dto.v2_0.util;
 
-import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataRecordCollection;
-import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 
 /**
  * @author Jeyvison Nascimento
@@ -24,18 +22,33 @@ import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 public class DataRecordCollectionUtil {
 
 	public static DataRecordCollection toDataRecordCollection(
-		DDLRecordSet ddlRecordSet) {
+		com.liferay.data.engine.DataRecordCollection dataRecordCollection) {
 
 		return new DataRecordCollection() {
 			{
-				dataDefinitionId = ddlRecordSet.getDDMStructureId();
-				dataRecordCollectionKey = ddlRecordSet.getRecordSetKey();
-				description = LocalizedValueUtil.toStringObjectMap(
-					ddlRecordSet.getDescriptionMap());
-				id = ddlRecordSet.getRecordSetId();
-				name = LocalizedValueUtil.toStringObjectMap(
-					ddlRecordSet.getNameMap());
-				siteId = ddlRecordSet.getGroupId();
+				dataDefinitionId = dataRecordCollection.getDataDefinitionId();
+				dataRecordCollectionKey =
+					dataRecordCollection.getDataRecordCollectionKey();
+				description = dataRecordCollection.getDescription();
+				id = dataRecordCollection.getId();
+				name = dataRecordCollection.getName();
+				siteId = dataRecordCollection.getSiteId();
+			}
+		};
+	}
+
+	public static com.liferay.data.engine.DataRecordCollection
+		toDataRecordCollection(DataRecordCollection dataRecordCollection) {
+
+		return new com.liferay.data.engine.DataRecordCollection() {
+			{
+				setDataDefinitionId(dataRecordCollection.getDataDefinitionId());
+				setDataRecordCollectionKey(
+					dataRecordCollection.getDataRecordCollectionKey());
+				setDescription(dataRecordCollection.getDescription());
+				setId(dataRecordCollection.getId());
+				setName(dataRecordCollection.getName());
+				setSiteId(dataRecordCollection.getSiteId());
 			}
 		};
 	}

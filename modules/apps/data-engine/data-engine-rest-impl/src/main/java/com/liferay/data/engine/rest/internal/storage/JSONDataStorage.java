@@ -14,12 +14,11 @@
 
 package com.liferay.data.engine.rest.internal.storage;
 
+import com.liferay.data.engine.manager.DataRecordCollectionManager;
 import com.liferay.data.engine.rest.dto.v2_0.DataRecord;
 import com.liferay.data.engine.rest.dto.v2_0.DataRecordCollection;
-import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionUtil;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordValuesUtil;
 import com.liferay.data.engine.storage.DataStorage;
-import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerDeserializeRequest;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesDeserializerDeserializeResponse;
@@ -86,9 +85,9 @@ public class JSONDataStorage implements DataStorage {
 			long siteId)
 		throws Exception {
 
-		DataRecordCollection dataRecordCollection =
-			DataRecordCollectionUtil.toDataRecordCollection(
-				_ddlRecordSetLocalService.getRecordSet(dataRecordCollectionId));
+		com.liferay.data.engine.DataRecordCollection dataRecordCollection =
+			_dataRecordCollectionManager.getDataRecordCollection(
+				dataRecordCollectionId);
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataRecordCollection.getDataDefinitionId());
@@ -137,7 +136,7 @@ public class JSONDataStorage implements DataStorage {
 	}
 
 	@Reference
-	private DDLRecordSetLocalService _ddlRecordSetLocalService;
+	private DataRecordCollectionManager _dataRecordCollectionManager;
 
 	@Reference
 	private DDMContentLocalService _ddmContentLocalService;

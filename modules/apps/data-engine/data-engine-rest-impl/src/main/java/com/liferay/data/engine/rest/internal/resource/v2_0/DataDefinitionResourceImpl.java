@@ -17,6 +17,7 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.manager.DataLayoutManager;
+import com.liferay.data.engine.manager.DataRecordCollectionManager;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
@@ -28,13 +29,11 @@ import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
 import com.liferay.data.engine.rest.internal.content.type.DataDefinitionContentTypeTracker;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataLayoutUtil;
-import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataRecordCollectionUtil;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataDefinitionEntityModel;
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
-import com.liferay.data.engine.spi.resource.SPIDataRecordCollectionResource;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
@@ -417,7 +416,7 @@ public class DataDefinitionResourceImpl
 						DataLayoutUtil.toDataLayout(dataLayout))));
 		}
 
-		dataDefinition = DataDefinitionUtil.toDataDefinition(
+		DataDefinition newDataDefinition = DataDefinitionUtil.toDataDefinition(
 			_ddmFormFieldTypeServicesTracker, ddmStructure);
 
 		_resourceLocalService.addResources(
@@ -427,20 +426,20 @@ public class DataDefinitionResourceImpl
 				_portal.getClassName(
 					dataDefinitionContentType.getClassNameId()),
 				DDMStructure.class.getName()),
-			dataDefinition.getId(), false, false, false);
+			newDataDefinition.getId(), false, false, false);
 
-		SPIDataRecordCollectionResource<DataRecordCollection>
-			spiDataRecordCollectionResource =
-				new SPIDataRecordCollectionResource<>(
-					_ddlRecordSetLocalService, _ddmStructureLocalService,
-					_portal, _resourceLocalService,
-					DataRecordCollectionUtil::toDataRecordCollection);
+		_dataRecordCollectionManager.addDataRecordCollection(
+			new com.liferay.data.engine.DataRecordCollection() {
+				{
+					setDataDefinitionId(newDataDefinition.getId());
+					setDataRecordCollectionKey(
+						newDataDefinition.getDataDefinitionKey());
+					setDescription(newDataDefinition.getDescription());
+					setName(newDataDefinition.getName());
+				}
+			});
 
-		spiDataRecordCollectionResource.addDataRecordCollection(
-			dataDefinition.getId(), dataDefinition.getDataDefinitionKey(),
-			dataDefinition.getDescription(), dataDefinition.getName());
-
-		return dataDefinition;
+		return newDataDefinition;
 	}
 
 	@Override
@@ -910,6 +909,9 @@ public class DataDefinitionResourceImpl
 
 	@Reference
 	private DataLayoutManager _dataLayoutManager;
+
+	@Reference
+	private DataRecordCollectionManager _dataRecordCollectionManager;
 
 	@Reference
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;
