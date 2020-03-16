@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -108,6 +109,21 @@ public class LocalizedValueUtilTest extends PowerMockito {
 		Assert.assertTrue(
 			LocalizedValueUtil.toLocalizedValue(toLocalizedValue) instanceof
 				LocalizedValue);
+	}
+
+	@Test
+	public void testToStringObjectMap() {
+		LocalizedValue toLocalizedValuesMap = new LocalizedValue(
+			LocaleUtil.BRAZIL);
+
+		toLocalizedValuesMap.addString(LocaleUtil.BRAZIL, "Brazil");
+
+		Map<Locale, String> toStringObjectMap =
+			toLocalizedValuesMap.getValues();
+
+		Assert.assertTrue(
+			LocalizedValueUtil.toStringObjectMap(toStringObjectMap) instanceof
+				Map);
 	}
 
 }
