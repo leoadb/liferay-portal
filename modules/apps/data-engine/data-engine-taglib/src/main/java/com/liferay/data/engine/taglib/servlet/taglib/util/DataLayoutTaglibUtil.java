@@ -16,12 +16,12 @@ package com.liferay.data.engine.taglib.servlet.taglib.util;
 
 import com.liferay.data.engine.renderer.DataLayoutRenderer;
 import com.liferay.data.engine.renderer.DataLayoutRendererContext;
-import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
-import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
-import com.liferay.data.engine.rest.client.dto.v2_0.DataRecord;
-import com.liferay.data.engine.rest.client.resource.v2_0.DataDefinitionResource;
-import com.liferay.data.engine.rest.client.resource.v2_0.DataLayoutResource;
-import com.liferay.data.engine.rest.client.resource.v2_0.DataRecordResource;
+import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
+import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
+import com.liferay.data.engine.rest.dto.v2_0.DataRecord;
+import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
+import com.liferay.data.engine.rest.resource.v2_0.DataLayoutResource;
+import com.liferay.data.engine.rest.resource.v2_0.DataRecordResource;
 import com.liferay.data.engine.taglib.servlet.taglib.definition.DataLayoutBuilderDefinition;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormBuilderContextFactory;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
@@ -61,8 +61,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
-import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -163,7 +161,8 @@ public class DataLayoutTaglibUtil {
 	}
 
 	public static JSONArray getFieldTypesJSONArray(
-		HttpServletRequest httpServletRequest, Set<String> scopes) {
+			HttpServletRequest httpServletRequest, Set<String> scopes)
+		throws Exception {
 
 		return _dataLayoutTaglibUtil._getFieldTypesJSONArray(
 			httpServletRequest, scopes);
@@ -280,19 +279,10 @@ public class DataLayoutTaglibUtil {
 			Long dataDefinitionId, HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		String sessionId = CookieKeys.getCookie(
-			httpServletRequest, CookieKeys.JSESSIONID);
-
 		DataDefinitionResource dataDefinitionResource =
 			DataDefinitionResource.builder(
-			).endpoint(
-				_portal.getHost(httpServletRequest),
-				httpServletRequest.getServerPort(),
-				httpServletRequest.getScheme()
-			).header(
-				"Cookie", "JSESSIONID=" + sessionId
-			).parameter(
-				"p_auth", AuthTokenUtil.getToken(httpServletRequest)
+			).user(
+				_portal.getUser(httpServletRequest)
 			).build();
 
 		return dataDefinitionResource.getDataDefinition(dataDefinitionId);
@@ -303,15 +293,8 @@ public class DataLayoutTaglibUtil {
 		throws Exception {
 
 		DataLayoutResource dataLayoutResource = DataLayoutResource.builder(
-		).endpoint(
-			_portal.getHost(httpServletRequest),
-			httpServletRequest.getServerPort(), httpServletRequest.getScheme()
-		).header(
-			"Cookie",
-			"JSESSIONID=" +
-				CookieKeys.getCookie(httpServletRequest, CookieKeys.JSESSIONID)
-		).parameter(
-			"p_auth", AuthTokenUtil.getToken(httpServletRequest)
+		).user(
+			_portal.getUser(httpServletRequest)
 		).build();
 
 		return dataLayoutResource.getDataLayout(dataLayoutId);
@@ -366,15 +349,8 @@ public class DataLayoutTaglibUtil {
 		}
 
 		DataRecordResource dataRecordResource = DataRecordResource.builder(
-		).endpoint(
-			_portal.getHost(httpServletRequest),
-			httpServletRequest.getServerPort(), httpServletRequest.getScheme()
-		).header(
-			"Cookie",
-			"JSESSIONID=" +
-				CookieKeys.getCookie(httpServletRequest, CookieKeys.JSESSIONID)
-		).parameter(
-			"p_auth", AuthTokenUtil.getToken(httpServletRequest)
+		).user(
+			_portal.getUser(httpServletRequest)
 		).build();
 
 		DataRecord dataRecord = dataRecordResource.getDataRecord(dataRecordId);
@@ -383,23 +359,15 @@ public class DataLayoutTaglibUtil {
 	}
 
 	private JSONArray _getFieldTypesJSONArray(
-		HttpServletRequest httpServletRequest, Set<String> scopes) {
+			HttpServletRequest httpServletRequest, Set<String> scopes)
+		throws Exception {
 
 		JSONArray fieldTypesJSONArray = _jsonFactory.createJSONArray();
 
-		String cookie = CookieKeys.getCookie(
-			httpServletRequest, CookieKeys.JSESSIONID);
-
 		DataDefinitionResource dataDefinitionResource =
 			DataDefinitionResource.builder(
-			).endpoint(
-				_portal.getHost(httpServletRequest),
-				httpServletRequest.getServerPort(),
-				httpServletRequest.getScheme()
-			).header(
-				"Cookie", "JSESSIONID=" + cookie
-			).parameter(
-				"p_auth", AuthTokenUtil.getToken(httpServletRequest)
+			).user(
+				_portal.getUser(httpServletRequest)
 			).build();
 
 		try {
