@@ -44,9 +44,10 @@ public class LocalizedValueUtilTest extends PowerMockito {
 				"", ""
 			).build();
 
-		Assert.assertTrue(
-			LocalizedValueUtil.toLocaleStringMap(toLocaleStringMap) instanceof
-				Map);
+		Map<Locale, String> localeStringMap =
+			LocalizedValueUtil.toLocaleStringMap(toLocaleStringMap);
+
+		Assert.assertEquals("", localeStringMap.get(LocaleUtil.US));
 	}
 
 	@Test
@@ -60,21 +61,24 @@ public class LocalizedValueUtilTest extends PowerMockito {
 	public void testToLocaleStringMapValidMap() {
 		Map<String, Object> toLocaleStringMap =
 			HashMapBuilder.<String, Object>put(
-				"en_US", "English"
+				"en_US", "en_US"
 			).build();
 
-		Assert.assertTrue(
-			LocalizedValueUtil.toLocaleStringMap(toLocaleStringMap) instanceof
-				Map);
+		Map<Locale, String> localeStringMap =
+			LocalizedValueUtil.toLocaleStringMap(toLocaleStringMap);
+
+		Assert.assertEquals("en_US", localeStringMap.get(LocaleUtil.US));
 	}
 
 	@Test
 	public void testToLocalizedValueEmptyMap() {
 		Map<String, Object> toLocalizedValue = new HashMap<>();
 
-		Assert.assertTrue(
-			LocalizedValueUtil.toLocalizedValue(toLocalizedValue) instanceof
-				LocalizedValue);
+		LocalizedValue localizedValue = new LocalizedValue(LocaleUtil.US);
+
+		Assert.assertEquals(
+			localizedValue,
+			LocalizedValueUtil.toLocalizedValue(toLocalizedValue));
 	}
 
 	@Test
@@ -91,39 +95,46 @@ public class LocalizedValueUtilTest extends PowerMockito {
 
 	@Test
 	public void testToLocalizedValuesMapValidLocalizedValue() {
-		LocalizedValue toLocalizedValuesMap = new LocalizedValue(
-			LocaleUtil.BRAZIL);
+		LocalizedValue toLocalizedValuesMap = new LocalizedValue();
 
-		Assert.assertTrue(
-			LocalizedValueUtil.toLocalizedValuesMap(
-				toLocalizedValuesMap) instanceof Map);
+		toLocalizedValuesMap.addString(LocaleUtil.US, "en_US");
+
+		Map<String, Object> localizedValuesMap =
+			LocalizedValueUtil.toLocalizedValuesMap(toLocalizedValuesMap);
+
+		Assert.assertEquals("en_US", localizedValuesMap.get(LocaleUtil.US));
 	}
 
 	@Test
 	public void testToLocalizedValueValidMap() {
 		Map<String, Object> toLocalizedValue =
 			HashMapBuilder.<String, Object>put(
-				"en_US", "English"
+				"en_US", "en_US"
 			).build();
 
-		Assert.assertTrue(
-			LocalizedValueUtil.toLocalizedValue(toLocalizedValue) instanceof
-				LocalizedValue);
+		LocalizedValue localizedValue = LocalizedValueUtil.toLocalizedValue(
+			toLocalizedValue);
+
+		Assert.assertEquals("en_US", localizedValue.getString(LocaleUtil.US));
 	}
 
 	@Test
 	public void testToStringObjectMap() {
-		LocalizedValue toLocalizedValuesMap = new LocalizedValue(
-			LocaleUtil.BRAZIL);
+		LocalizedValue toLocalizedValuesMap = new LocalizedValue(LocaleUtil.US);
 
-		toLocalizedValuesMap.addString(LocaleUtil.BRAZIL, "Brazil");
+		toLocalizedValuesMap.addString(LocaleUtil.US, "en_US");
 
 		Map<Locale, String> toStringObjectMap =
 			toLocalizedValuesMap.getValues();
 
-		Assert.assertTrue(
-			LocalizedValueUtil.toStringObjectMap(toStringObjectMap) instanceof
-				Map);
+		Map<String, Object> stringObjectMap =
+			HashMapBuilder.<String, Object>put(
+				"en_US", "en_US"
+			).build();
+
+		Assert.assertEquals(
+			stringObjectMap,
+			LocalizedValueUtil.toStringObjectMap(toStringObjectMap));
 	}
 
 }
