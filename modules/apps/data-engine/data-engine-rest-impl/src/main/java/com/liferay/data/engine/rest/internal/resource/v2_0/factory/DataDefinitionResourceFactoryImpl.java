@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -34,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.annotation.Generated;
 
@@ -140,7 +142,7 @@ public class DataDefinitionResourceFactoryImpl
 			_componentServiceObjects.getService();
 
 		dataDefinitionResource.setContextAcceptLanguage(
-			new AcceptLanguageImpl(user));
+			new AcceptLanguageImpl(httpServletRequest, user));
 
 		Company company = _companyLocalService.getCompany(user.getCompanyId());
 
@@ -182,13 +184,16 @@ public class DataDefinitionResourceFactoryImpl
 
 	private class AcceptLanguageImpl implements AcceptLanguage {
 
-		public AcceptLanguageImpl(User user) {
+		public AcceptLanguageImpl(
+			HttpServletRequest httpServletRequest, User user) {
+
+			_httpServletRequest = httpServletRequest;
 			_user = user;
 		}
 
 		@Override
 		public List<Locale> getLocales() {
-			return Collections.emptyList();
+			return ListUtil.fromArray(getPreferredLocale());
 		}
 
 		@Override
@@ -198,13 +203,11 @@ public class DataDefinitionResourceFactoryImpl
 
 		@Override
 		public Locale getPreferredLocale() {
-			List<Locale> locales = getLocales();
-
-			if (ListUtil.isNotEmpty(locales)) {
-				return locales.get(0);
-			}
-
-			return _user.getLocale();
+			return Optional.ofNullable(
+				_httpServletRequest.getLocale()
+			).orElse(
+				_user.getLocale()
+			);
 		}
 
 		@Override
@@ -212,6 +215,7 @@ public class DataDefinitionResourceFactoryImpl
 			return false;
 		}
 
+		private final HttpServletRequest _httpServletRequest;
 		private final User _user;
 
 	}
