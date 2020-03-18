@@ -15,6 +15,9 @@
 package com.liferay.data.engine.field.type.util;
 
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
+
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
@@ -24,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,6 +40,11 @@ import org.powermock.api.mockito.PowerMockito;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class LocalizedValueUtilTest extends PowerMockito {
+
+	@Before
+	public void setUp() {
+		_setUpLanguageUtil();
+	}
 
 	@Test
 	public void testToLocaleStringMapEmptyKeyValue() {
@@ -98,11 +107,12 @@ public class LocalizedValueUtilTest extends PowerMockito {
 		LocalizedValue toLocalizedValuesMap = new LocalizedValue();
 
 		toLocalizedValuesMap.addString(LocaleUtil.US, "en_US");
+		toLocalizedValuesMap.addString(LocaleUtil.BRAZIL, "pt_BR");
 
 		Map<String, Object> localizedValuesMap =
 			LocalizedValueUtil.toLocalizedValuesMap(toLocalizedValuesMap);
 
-		Assert.assertEquals("en_US", localizedValuesMap.get(LocaleUtil.US));
+		Assert.assertEquals("en_US", localizedValuesMap.get("en_US"));
 	}
 
 	@Test
@@ -135,6 +145,38 @@ public class LocalizedValueUtilTest extends PowerMockito {
 		Assert.assertEquals(
 			stringObjectMap,
 			LocalizedValueUtil.toStringObjectMap(toStringObjectMap));
+	}
+
+	private void _setUpLanguageUtil() {
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		Language language = mock(Language.class);
+
+		when(
+			language.isAvailableLocale(LocaleUtil.BRAZIL)
+		).thenReturn(
+			true
+		);
+
+		when(
+			language.isAvailableLocale(LocaleUtil.US)
+		).thenReturn(
+			true
+		);
+
+		when(
+			language.getLanguageId(LocaleUtil.BRAZIL)
+		).thenReturn(
+			"pt_BR"
+		);
+
+		when(
+			language.getLanguageId(LocaleUtil.US)
+		).thenReturn(
+			"en_US"
+		);
+
+		languageUtil.setLanguage(language);
 	}
 
 }
