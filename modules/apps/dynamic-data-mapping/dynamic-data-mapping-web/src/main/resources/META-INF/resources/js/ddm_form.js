@@ -1161,8 +1161,9 @@ AUI.add(
 						) {
 							localizationMap[locale] = value;
 						}
+
 						for (var key in localizationMap) {
-							if (localizationMap[key] === undefined) {
+							if (!localizationMap[key]) {
 								localizationMap[key] = '';
 							}
 						}
