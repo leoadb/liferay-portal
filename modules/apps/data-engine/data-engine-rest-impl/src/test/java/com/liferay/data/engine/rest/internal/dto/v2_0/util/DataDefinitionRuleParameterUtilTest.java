@@ -47,28 +47,28 @@ public class DataDefinitionRuleParameterUtilTest extends PowerMockito {
 	public void testToDataDefinitionRuleParameters() throws JSONException {
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
-				"en_US", "en_US"
+				"en_US", "value"
 			).build(),
 			DataDefinitionRuleParameterUtil.toDataDefinitionRuleParameters(
-				JSONUtil.put("en_US", "en_US")));
+				JSONUtil.put("en_US", "value")));
 	}
 
 	@Test
 	public void testToJSONObject() throws JSONException {
-		JSONObject toJsonObject = DataDefinitionRuleParameterUtil.toJSONObject(
+		JSONObject jsonObject = DataDefinitionRuleParameterUtil.toJSONObject(
 			HashMapBuilder.<String, Object>put(
-				"en_US", "en_US"
+				"en_US", "value"
 			).build());
 
-		Assert.assertEquals("{\"en_US\":\"en_US\"}", toJsonObject.toString());
+		Assert.assertEquals("{\"en_US\":\"value\"}", jsonObject.toString());
 	}
 
 	@Test
 	public void testToJSONObjectEmptyMap() throws JSONException {
-		JSONObject toJsonObject = DataDefinitionRuleParameterUtil.toJSONObject(
+		JSONObject jsonObject = DataDefinitionRuleParameterUtil.toJSONObject(
 			new HashMap<>());
 
-		Assert.assertEquals("{}", toJsonObject.toString());
+		Assert.assertEquals("{}", jsonObject.toString());
 	}
 
 	private void _setUpJSONFactoryUtil() {
