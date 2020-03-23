@@ -209,17 +209,16 @@ public abstract class BaseDDLExporter implements DDLExporter {
 
 		Stream<DDMFormField> ddmFormFieldStream = ddmFormFields.stream();
 
-		ddmFormFieldStream = ddmFormFieldStream.filter(
+		return ddmFormFieldStream.filter(
 			ddmFormField -> ddmFormFieldValuesMap.containsKey(
-				ddmFormField.getName()));
-
-		Stream<DDMFormFieldRenderedValue> valueStream = ddmFormFieldStream.map(
+				ddmFormField.getName())
+		).map(
 			ddmFormField -> getDDMFormFieldRenderedValue(
-				scope, ddmFormField, ddmFormFieldValuesMap));
-
-		return valueStream.collect(
+				scope, ddmFormField, ddmFormFieldValuesMap)
+		).collect(
 			Collectors.toMap(
-				DDMFormFieldRenderedValue::getFieldName, value -> value));
+				DDMFormFieldRenderedValue::getFieldName, value -> value)
+		);
 	}
 
 	protected String getStatusMessage(int status) {
