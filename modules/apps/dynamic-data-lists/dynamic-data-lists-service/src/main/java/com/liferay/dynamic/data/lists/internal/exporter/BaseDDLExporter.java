@@ -154,8 +154,7 @@ public abstract class BaseDDLExporter implements DDLExporter {
 			com.liferay.dynamic.data.mapping.render.DDMFormFieldValueRenderer
 				ddmFormFieldValueRenderer =
 					ddmFormFieldValueRendererRegistry.
-						getDDMFormFieldValueRenderer(
-							ddmFormFieldValue.getType());
+						getDDMFormFieldValueRenderer(ddmFormField.getType());
 
 			String ddmFormFieldType =
 				ddmFormFieldValueRenderer.getSupportedDDMFormFieldType();
