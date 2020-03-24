@@ -18,10 +18,20 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataListView;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.test.log.CaptureAppender;
+import com.liferay.portal.test.log.Log4JLoggerTestUtil;
 
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.log4j.Level;
+
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,16 +51,79 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 			irrelevantGroup.getGroupId());
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLDeleteDataListView() {
+	public void testGraphQLDeleteDataListView() throws Exception {
+		DataListView dataListView = testGraphQLDataListView_addDataListView();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"mutation",
+			new GraphQLField(
+				"deleteDataListView",
+				new HashMap<String, Object>() {
+					{
+						put("dataListViewId", dataListView.getId());
+					}
+				}));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
+
+		Assert.assertTrue(dataJSONObject.getBoolean("deleteDataListView"));
+
+		try (CaptureAppender captureAppender =
+				Log4JLoggerTestUtil.configureLog4JLogger(
+					"graphql.execution.SimpleDataFetcherExceptionHandler",
+					Level.WARN)) {
+
+			graphQLField = new GraphQLField(
+				"query",
+				new GraphQLField(
+					"dataListView",
+					new HashMap<String, Object>() {
+						{
+							put("dataListViewId", dataListView.getId());
+						}
+					},
+					new GraphQLField("id")));
+
+			jsonObject = JSONFactoryUtil.createJSONObject(
+				invoke(graphQLField.toString()));
+
+			JSONArray errorsJSONArray = jsonObject.getJSONArray("errors");
+
+			Assert.assertTrue(errorsJSONArray.length() > 0);
+		}
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLGetDataListView() {
+	public void testGraphQLGetDataListView() throws Exception {
+		DataListView dataListView = testGraphQLDataListView_addDataListView();
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataListView",
+				new HashMap<String, Object>() {
+					{
+						put("dataListViewId", dataListView.getId());
+					}
+				},
+				new GraphQLField("id")));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
+
+		Assert.assertTrue(
+			equalsJSONObject(
+				dataListView, dataJSONObject.getJSONObject("dataListView")));
 	}
 
 	@Override
@@ -88,6 +161,14 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 
 	@Override
 	protected DataListView testGetDataListView_addDataListView()
+		throws Exception {
+
+		return dataListViewResource.postDataDefinitionDataListView(
+			_dataDefinition.getId(), randomDataListView());
+	}
+
+	@Override
+	protected DataListView testGraphQLDataListView_addDataListView()
 		throws Exception {
 
 		return dataListViewResource.postDataDefinitionDataListView(
