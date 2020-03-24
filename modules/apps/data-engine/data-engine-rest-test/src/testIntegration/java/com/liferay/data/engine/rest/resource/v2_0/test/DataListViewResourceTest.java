@@ -22,13 +22,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.test.log.CaptureAppender;
-import com.liferay.portal.test.log.Log4JLoggerTestUtil;
-
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.log4j.Level;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,45 +51,51 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 		DataListView dataListView = testGraphQLDataListView_addDataListView();
 
 		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataListView",
+				HashMapBuilder.<String, Object>put(
+					"dataListViewId", dataListView.getId()
+				).build(),
+				new GraphQLField("id")));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		JSONArray errorsJSONArray = jsonObject.getJSONArray("errors");
+
+		Assert.assertNull(errorsJSONArray);
+
+		graphQLField = new GraphQLField(
 			"mutation",
 			new GraphQLField(
 				"deleteDataListView",
-				new HashMap<String, Object>() {
-					{
-						put("dataListViewId", dataListView.getId());
-					}
-				}));
+				HashMapBuilder.<String, Object>put(
+					"dataListViewId", dataListView.getId()
+				).build()));
 
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
 		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
 
 		Assert.assertTrue(dataJSONObject.getBoolean("deleteDataListView"));
 
-		try (CaptureAppender captureAppender =
-				Log4JLoggerTestUtil.configureLog4JLogger(
-					"graphql.execution.SimpleDataFetcherExceptionHandler",
-					Level.WARN)) {
+		graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataListView",
+				HashMapBuilder.<String, Object>put(
+					"dataListViewId", dataListView.getId()
+				).build(),
+				new GraphQLField("id")));
 
-			graphQLField = new GraphQLField(
-				"query",
-				new GraphQLField(
-					"dataListView",
-					new HashMap<String, Object>() {
-						{
-							put("dataListViewId", dataListView.getId());
-						}
-					},
-					new GraphQLField("id")));
+		jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
 
-			jsonObject = JSONFactoryUtil.createJSONObject(
-				invoke(graphQLField.toString()));
+		errorsJSONArray = jsonObject.getJSONArray("errors");
 
-			JSONArray errorsJSONArray = jsonObject.getJSONArray("errors");
-
-			Assert.assertTrue(errorsJSONArray.length() > 0);
-		}
+		Assert.assertTrue(errorsJSONArray.length() > 0);
 	}
 
 	@Override
@@ -103,17 +103,13 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 	public void testGraphQLGetDataListView() throws Exception {
 		DataListView dataListView = testGraphQLDataListView_addDataListView();
 
-		List<GraphQLField> graphQLFields = getGraphQLFields();
-
 		GraphQLField graphQLField = new GraphQLField(
 			"query",
 			new GraphQLField(
 				"dataListView",
-				new HashMap<String, Object>() {
-					{
-						put("dataListViewId", dataListView.getId());
-					}
-				},
+				HashMapBuilder.<String, Object>put(
+					"dataListViewId", dataListView.getId()
+				).build(),
 				new GraphQLField("id")));
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
