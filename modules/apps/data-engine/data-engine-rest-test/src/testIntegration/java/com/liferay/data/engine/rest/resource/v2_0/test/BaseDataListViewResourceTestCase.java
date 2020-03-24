@@ -558,7 +558,7 @@ public abstract class BaseDataListViewResourceTestCase {
 						put("dataListViewId", dataListView.getId());
 					}
 				},
-				graphQLFields.toArray(new GraphQLField[0])));
+				new GraphQLField("id")));
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
