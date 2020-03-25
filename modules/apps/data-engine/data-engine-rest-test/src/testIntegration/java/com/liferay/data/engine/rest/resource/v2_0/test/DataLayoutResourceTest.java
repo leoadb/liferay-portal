@@ -19,18 +19,24 @@ import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
+import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataLayoutTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Marcelo Mello
@@ -46,6 +52,18 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			testGroup.getGroupId());
 		_irrelevantDataDefinition = DataDefinitionTestUtil.addDataDefinition(
 			irrelevantGroup.getGroupId());
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		DataDefinitionResource dataDefinitionResource =
+			_getDataDefinitionResource();
+
+		dataDefinitionResource.deleteDataDefinition(_dataDefinition.getId());
+		dataDefinitionResource.deleteDataDefinition(
+			_irrelevantDataDefinition.getId());
+
+		super.tearDown();
 	}
 
 	@Override
@@ -182,6 +200,30 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	protected DataLayout testPutDataLayout_addDataLayout() throws Exception {
 		return dataLayoutResource.postDataDefinitionDataLayout(
 			_dataDefinition.getId(), randomDataLayout());
+	}
+
+	private DataDefinitionResource _getDataDefinitionResource()
+		throws Exception {
+
+		return DataDefinitionResource.builder(
+		).checkPermissions(
+			false
+		).httpServletRequest(
+			new MockHttpServletRequest() {
+
+				@Override
+				public String getHeader(String name) {
+					if (StringUtil.equals(name, "Accept-Language")) {
+						return "en-US";
+					}
+
+					return super.getHeader(name);
+				}
+
+			}
+		).user(
+			UserTestUtil.getAdminUser(testCompany.getCompanyId())
+		).build();
 	}
 
 	private void _testGetDataDefinitionDataLayoutsPage(

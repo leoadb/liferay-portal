@@ -16,19 +16,25 @@ package com.liferay.data.engine.rest.resource.v2_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataRecord;
+import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataRecordCollectionTestUtil;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Jeyvison Nascimento
@@ -38,6 +44,7 @@ import org.junit.runner.RunWith;
 public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -47,6 +54,18 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 			_ddmStructure, testGroup, _resourceLocalService);
 		_irrelevantDDLRecordSet = DataRecordCollectionTestUtil.addRecordSet(
 			_ddmStructure, irrelevantGroup, _resourceLocalService);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		DataDefinitionResource dataDefinitionResource =
+			_getDataDefinitionResource();
+
+		dataDefinitionResource.deleteDataDefinition(
+			_ddmStructure.getStructureId());
+
+		super.tearDown();
 	}
 
 	@Ignore
@@ -172,6 +191,30 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 				).build();
 			}
 		};
+	}
+
+	private DataDefinitionResource _getDataDefinitionResource()
+		throws Exception {
+
+		return DataDefinitionResource.builder(
+		).checkPermissions(
+			false
+		).httpServletRequest(
+			new MockHttpServletRequest() {
+
+				@Override
+				public String getHeader(String name) {
+					if (StringUtil.equals(name, "Accept-Language")) {
+						return "en-US";
+					}
+
+					return super.getHeader(name);
+				}
+
+			}
+		).user(
+			UserTestUtil.getAdminUser(testCompany.getCompanyId())
+		).build();
 	}
 
 	private DDLRecordSet _ddlRecordSet;

@@ -18,19 +18,25 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataRecordCollection;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
+import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Gabriel Albuquerque
@@ -40,12 +46,27 @@ public class DataRecordCollectionResourceTest
 	extends BaseDataRecordCollectionResourceTestCase {
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
 		_ddmStructure = DataDefinitionTestUtil.addDDMStructure(testGroup);
 		_irrelevantDDMStructure = DataDefinitionTestUtil.addDDMStructure(
 			irrelevantGroup);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		DataDefinitionResource dataDefinitionResource =
+			_getDataDefinitionResource();
+
+		dataDefinitionResource.deleteDataDefinition(
+			_ddmStructure.getStructureId());
+		dataDefinitionResource.deleteDataDefinition(
+			_irrelevantDDMStructure.getStructureId());
+
+		super.tearDown();
 	}
 
 	@Override
@@ -237,6 +258,30 @@ public class DataRecordCollectionResourceTest
 			).build());
 
 		return dataRecordCollection;
+	}
+
+	private DataDefinitionResource _getDataDefinitionResource()
+		throws Exception {
+
+		return DataDefinitionResource.builder(
+		).checkPermissions(
+			false
+		).httpServletRequest(
+			new MockHttpServletRequest() {
+
+				@Override
+				public String getHeader(String name) {
+					if (StringUtil.equals(name, "Accept-Language")) {
+						return "en-US";
+					}
+
+					return super.getHeader(name);
+				}
+
+			}
+		).user(
+			UserTestUtil.getAdminUser(testCompany.getCompanyId())
+		).build();
 	}
 
 	private DataRecordCollection _randomDataRecordCollection(

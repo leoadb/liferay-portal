@@ -17,13 +17,19 @@ package com.liferay.data.engine.rest.resource.v2_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataListView;
+import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Jeyvison Nascimento
@@ -32,6 +38,7 @@ import org.junit.runner.RunWith;
 public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -39,6 +46,19 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 			testGroup.getGroupId());
 		_irrelevantDataDefinition = DataDefinitionTestUtil.addDataDefinition(
 			irrelevantGroup.getGroupId());
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		DataDefinitionResource dataDefinitionResource =
+			_getDataDefinitionResource();
+
+		dataDefinitionResource.deleteDataDefinition(_dataDefinition.getId());
+		dataDefinitionResource.deleteDataDefinition(
+			_irrelevantDataDefinition.getId());
+
+		super.tearDown();
 	}
 
 	@Ignore
@@ -100,6 +120,30 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 
 		return dataListViewResource.postDataDefinitionDataListView(
 			_dataDefinition.getId(), randomDataListView());
+	}
+
+	private DataDefinitionResource _getDataDefinitionResource()
+		throws Exception {
+
+		return DataDefinitionResource.builder(
+		).checkPermissions(
+			false
+		).httpServletRequest(
+			new MockHttpServletRequest() {
+
+				@Override
+				public String getHeader(String name) {
+					if (StringUtil.equals(name, "Accept-Language")) {
+						return "en-US";
+					}
+
+					return super.getHeader(name);
+				}
+
+			}
+		).user(
+			UserTestUtil.getAdminUser(testCompany.getCompanyId())
+		).build();
 	}
 
 	private DataDefinition _dataDefinition;

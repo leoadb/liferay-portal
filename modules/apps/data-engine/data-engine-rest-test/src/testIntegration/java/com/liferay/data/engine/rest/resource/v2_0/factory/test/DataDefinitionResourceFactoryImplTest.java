@@ -61,6 +61,7 @@ import java.util.Map;
 
 import javax.ws.rs.ClientErrorException;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -84,6 +85,17 @@ public class DataDefinitionResourceFactoryImplTest {
 	@Before
 	public void setUp() throws Exception {
 		_user = UserTestUtil.addUser();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		if (_dataDefinition != null) {
+			DataDefinitionResource dataDefinitionResource =
+				_getDataDefinitionResource();
+
+			dataDefinitionResource.deleteDataDefinition(
+				_dataDefinition.getId());
+		}
 	}
 
 	@Test
@@ -177,6 +189,8 @@ public class DataDefinitionResourceFactoryImplTest {
 					addString(LocaleUtil.BRAZIL, "Título Página");
 				}
 			});
+
+		_dataDefinition = null;
 
 		DataDefinitionResource dataDefinitionResource =
 			_getDataDefinitionResource();
@@ -590,8 +604,12 @@ public class DataDefinitionResourceFactoryImplTest {
 					name
 				).build());
 
+		_dataDefinition = dataDefinition;
+
 		return dataDefinitionResource.getDataDefinition(dataDefinition.getId());
 	}
+
+	private DataDefinition _dataDefinition;
 
 	@Inject
 	private DataEngineBuilderFactory _dataEngineBuilderFactory;
