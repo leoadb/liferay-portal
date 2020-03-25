@@ -21,6 +21,8 @@ import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataLayoutTestUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -47,6 +49,7 @@ public class DataDefinitionResourceTest
 	extends BaseDataDefinitionResourceTestCase {
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -54,12 +57,21 @@ public class DataDefinitionResourceTest
 	}
 
 	@After
+	@Override
 	public void tearDown() throws Exception {
-		super.tearDown();
-
 		for (DataDefinition dataDefinition : _dataDefinitions) {
-			dataDefinitionResource.deleteDataDefinition(dataDefinition.getId());
+			try {
+				dataDefinitionResource.deleteDataDefinition(
+					dataDefinition.getId());
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception, exception);
+				}
+			}
 		}
+
+		super.tearDown();
 	}
 
 	@Override
@@ -117,10 +129,13 @@ public class DataDefinitionResourceTest
 		_testGetSiteDataDefinitionsPage(
 			"description", "nam", "definition name");
 
-		dataDefinitionResource.postSiteDataDefinitionByContentType(
-			testGroup.getGroupId(),
-			testGetSiteDataDefinitionByContentTypeContentTypePage_getContentType(),
-			randomDataDefinition());
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(),
+				testGetSiteDataDefinitionByContentTypeContentTypePage_getContentType(),
+				randomDataDefinition());
+
+		_dataDefinitions.add(dataDefinition);
 
 		page =
 			dataDefinitionResource.
@@ -231,16 +246,26 @@ public class DataDefinitionResourceTest
 	protected DataDefinition testDeleteDataDefinition_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinitionByContentType(
-			testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+
+		_dataDefinitions.add(dataDefinition);
+
+		return dataDefinition;
 	}
 
 	@Override
 	protected DataDefinition testGetDataDefinition_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinitionByContentType(
-			testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+
+		_dataDefinitions.add(dataDefinition);
+
+		return dataDefinition;
 	}
 
 	@Override
@@ -275,6 +300,8 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postSiteDataDefinitionByContentType(
 				testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
 
+		_dataDefinitions.add(dataDefinition);
+
 		dataDefinition.setContentType(_CONTENT_TYPE);
 
 		return dataDefinition;
@@ -286,8 +313,13 @@ public class DataDefinitionResourceTest
 				Long siteId, String contentType, DataDefinition dataDefinition)
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinitionByContentType(
-			siteId, contentType, dataDefinition);
+		DataDefinition postDataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				siteId, contentType, dataDefinition);
+
+		_dataDefinitions.add(postDataDefinition);
+
+		return postDataDefinition;
 	}
 
 	@Override
@@ -312,8 +344,13 @@ public class DataDefinitionResourceTest
 				DataDefinition dataDefinition)
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinitionByContentType(
-			testGroup.getGroupId(), _CONTENT_TYPE, dataDefinition);
+		DataDefinition postDataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), _CONTENT_TYPE, dataDefinition);
+
+		_dataDefinitions.add(postDataDefinition);
+
+		return postDataDefinition;
 	}
 
 	@Override
@@ -322,16 +359,26 @@ public class DataDefinitionResourceTest
 				DataDefinition dataDefinition)
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinitionByContentType(
-			testGroup.getGroupId(), _CONTENT_TYPE, dataDefinition);
+		DataDefinition postDataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), _CONTENT_TYPE, dataDefinition);
+
+		_dataDefinitions.add(postDataDefinition);
+
+		return postDataDefinition;
 	}
 
 	@Override
 	protected DataDefinition testPutDataDefinition_addDataDefinition()
 		throws Exception {
 
-		return dataDefinitionResource.postSiteDataDefinitionByContentType(
-			testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+
+		_dataDefinitions.add(dataDefinition);
+
+		return dataDefinition;
 	}
 
 	private DataDefinition _createDataDefinition(
@@ -410,6 +457,9 @@ public class DataDefinitionResourceTest
 	}
 
 	private static final String _CONTENT_TYPE = "app-builder";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DataDefinitionResourceTest.class);
 
 	private List<DataDefinition> _dataDefinitions;
 
