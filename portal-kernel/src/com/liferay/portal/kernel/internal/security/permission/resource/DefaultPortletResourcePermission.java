@@ -93,6 +93,10 @@ public class DefaultPortletResourcePermission
 	public boolean contains(
 		PermissionChecker permissionChecker, long groupId, String actionId) {
 
+		if (permissionChecker.isOmniadmin()) {
+			return true;
+		}
+
 		Map<Object, Object> permissionChecksMap =
 			permissionChecker.getPermissionChecksMap();
 
@@ -120,6 +124,10 @@ public class DefaultPortletResourcePermission
 	private boolean _contains(
 		PermissionChecker permissionChecker, Group group, long groupId,
 		String actionId) {
+
+		if (permissionChecker.isOmniadmin()) {
+			return true;
+		}
 
 		for (PortletResourcePermissionLogic portletResourcePermissionLogic :
 				_portletResourcePermissionLogics) {
