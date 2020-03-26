@@ -21,14 +21,18 @@ import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataLayoutTestUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,22 +72,39 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		_testGetDataDefinitionDataLayoutsPage("layo", "form layout");
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLDeleteDataLayout() {
-	}
+	public void testGraphQLGetSiteDataLayoutByContentTypeByDataLayoutKey()
+		throws Exception {
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetDataLayout() {
-	}
+		DataLayout dataLayout =
+			testGraphQLGetSiteDataLayoutByContentTypeByDataLayoutKey_addDataLayout();
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetSiteDataLayoutByContentTypeByDataLayoutKey() {
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataLayoutByContentTypeByDataLayoutKey",
+				HashMapBuilder.<String, Object>put(
+					"contentType", "\"" + dataLayout.getContentType() + "\""
+				).put(
+					"dataLayoutKey", "\"" + dataLayout.getDataLayoutKey() + "\""
+				).put(
+					"siteKey", "\"" + dataLayout.getSiteId() + "\""
+				).build(),
+				graphQLFields.toArray(new GraphQLField[0])));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
+
+		Assert.assertTrue(
+			equalsJSONObject(
+				dataLayout,
+				dataJSONObject.getJSONObject(
+					"dataLayoutByContentTypeByDataLayoutKey")));
 	}
 
 	@Override
@@ -103,6 +124,95 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			assertEquals(randomDataLayout, postDataLayout);
 			assertValid(postDataLayout);
 		}
+	}
+
+	@Override
+	protected boolean equalsJSONObject(
+		DataLayout dataLayout, JSONObject jsonObject) {
+
+		for (String fieldName : getAdditionalAssertFieldNames()) {
+			if (Objects.equals("contentType", fieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout.getContentType(),
+						jsonObject.getString("contentType"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataDefinitionId", fieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout.getDataDefinitionId(),
+						jsonObject.getLong("dataDefinitionId"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataLayoutKey", fieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout.getDataLayoutKey(),
+						jsonObject.getString("dataLayoutKey"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("id", fieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout.getId(), jsonObject.getLong("id"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("name", fieldName)) {
+				Map<String, Object> dataLayoutName = dataLayout.getName();
+
+				if (!Objects.deepEquals(
+						dataLayoutName.get("en_US"),
+						jsonObject.getJSONObject("name").get("en_US"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("paginationMode", fieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout.getPaginationMode(),
+						jsonObject.getString("paginationMode"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("userId", fieldName)) {
+				if (!Objects.deepEquals(
+						dataLayout.getUserId(), jsonObject.getLong("userId"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			throw new IllegalArgumentException(
+				"Invalid field name " + fieldName);
+		}
+
+		return true;
 	}
 
 	@Override
@@ -150,6 +260,26 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	@Override
 	protected DataLayout
 			testGetSiteDataLayoutByContentTypeByDataLayoutKey_addDataLayout()
+		throws Exception {
+
+		DataLayout dataLayout = dataLayoutResource.postDataDefinitionDataLayout(
+			_dataDefinition.getId(), randomDataLayout());
+
+		dataLayout.setContentType("app-builder");
+
+		return dataLayout;
+	}
+
+	@Override
+	protected DataLayout testGraphQLDataLayout_addDataLayout()
+		throws Exception {
+
+		return dataLayoutResource.postDataDefinitionDataLayout(
+			_dataDefinition.getId(), randomDataLayout());
+	}
+
+	protected DataLayout
+			testGraphQLGetSiteDataLayoutByContentTypeByDataLayoutKey_addDataLayout()
 		throws Exception {
 
 		DataLayout dataLayout = dataLayoutResource.postDataDefinitionDataLayout(
