@@ -21,6 +21,8 @@ import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataLayoutTestUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -31,11 +33,12 @@ import com.liferay.portal.test.rule.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -132,22 +135,40 @@ public class DataDefinitionResourceTest
 		Assert.assertEquals(1, page.getTotalCount());
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLDeleteDataDefinition() {
-	}
+	public void testGraphQLGetSiteDataDefinitionByContentTypeByDataDefinitionKey()
+		throws Exception {
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetDataDefinition() {
-	}
+		DataDefinition dataDefinition =
+			testGraphQLGetSiteDataDefinitionByContentTypeByDataDefinitionKey_addDataDefinition();
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetSiteDataDefinitionByContentTypeByDataDefinitionKey() {
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataDefinitionByContentTypeByDataDefinitionKey",
+				HashMapBuilder.<String, Object>put(
+					"contentType", "\"" + dataDefinition.getContentType() + "\""
+				).put(
+					"dataDefinitionKey",
+					"\"" + dataDefinition.getDataDefinitionKey() + "\""
+				).put(
+					"siteKey", "\"" + dataDefinition.getSiteId() + "\""
+				).build(),
+				graphQLFields.toArray(new GraphQLField[0])));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
+
+		Assert.assertTrue(
+			equalsJSONObject(
+				dataDefinition,
+				dataJSONObject.getJSONObject(
+					"dataDefinitionByContentTypeByDataDefinitionKey")));
 	}
 
 	@Override
@@ -182,12 +203,6 @@ public class DataDefinitionResourceTest
 		assertValid(getDataDefinition);
 	}
 
-	@Ignore
-	@Override
-	@Test
-	public void testPutDataDefinitionPermission() throws Exception {
-	}
-
 	@Override
 	protected void assertValid(DataDefinition dataDefinition) {
 		super.assertValid(dataDefinition);
@@ -212,6 +227,110 @@ public class DataDefinitionResourceTest
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	@Override
+	protected boolean equalsJSONObject(
+		DataDefinition dataDefinition, JSONObject jsonObject) {
+
+		for (String fieldName : getAdditionalAssertFieldNames()) {
+			if (Objects.equals("availableLanguageIds", fieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition.getAvailableLanguageIds()[0],
+						jsonObject.getJSONArray(
+							"availableLanguageIds").get(
+								0))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("contentType", fieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition.getContentType(),
+						jsonObject.getString("contentType"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataDefinitionKey", fieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition.getDataDefinitionKey(),
+						jsonObject.getString("dataDefinitionKey"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("defaultLanguageId", fieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition.getDefaultLanguageId(),
+						jsonObject.getString("defaultLanguageId"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("id", fieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition.getId(), jsonObject.getLong("id"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("name", fieldName)) {
+				Map<String, Object> dataDefinitionName =
+					dataDefinition.getName();
+
+				if (!Objects.deepEquals(
+						dataDefinitionName.get("en_US"),
+						jsonObject.getJSONObject("name").get("en_US"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("storageType", fieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition.getStorageType(),
+						jsonObject.getString("storageType"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("userId", fieldName)) {
+				if (!Objects.deepEquals(
+						dataDefinition.getUserId(),
+						jsonObject.getLong("userId"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			throw new IllegalArgumentException(
+				"Invalid field name " + fieldName);
+		}
+
+		return true;
 	}
 
 	@Override
@@ -307,6 +426,27 @@ public class DataDefinitionResourceTest
 	}
 
 	@Override
+	protected DataDefinition testGraphQLDataDefinition_addDataDefinition()
+		throws Exception {
+
+		return dataDefinitionResource.postSiteDataDefinitionByContentType(
+			testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+	}
+
+	protected DataDefinition
+			testGraphQLGetSiteDataDefinitionByContentTypeByDataDefinitionKey_addDataDefinition()
+		throws Exception {
+
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+
+		dataDefinition.setContentType(_CONTENT_TYPE);
+
+		return dataDefinition;
+	}
+
+	@Override
 	protected DataDefinition
 			testPostDataDefinitionByContentType_addDataDefinition(
 				DataDefinition dataDefinition)
@@ -328,6 +468,14 @@ public class DataDefinitionResourceTest
 
 	@Override
 	protected DataDefinition testPutDataDefinition_addDataDefinition()
+		throws Exception {
+
+		return dataDefinitionResource.postSiteDataDefinitionByContentType(
+			testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+	}
+
+	@Override
+	protected DataDefinition testPutDataDefinitionPermission_addDataDefinition()
 		throws Exception {
 
 		return dataDefinitionResource.postSiteDataDefinitionByContentType(
