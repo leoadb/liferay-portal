@@ -75,6 +75,10 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 			String actionId)
 		throws PortalException {
 
+		if (permissionChecker.isOmniadmin()) {
+			return true;
+		}
+
 		Map<Object, Object> permissionChecksMap =
 			permissionChecker.getPermissionChecksMap();
 
@@ -99,6 +103,10 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 	public boolean contains(
 			PermissionChecker permissionChecker, T model, String actionId)
 		throws PortalException {
+
+		if (permissionChecker.isOmniadmin()) {
+			return true;
+		}
 
 		Map<Object, Object> permissionChecksMap =
 			permissionChecker.getPermissionChecksMap();
@@ -132,6 +140,10 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 	private boolean _contains(
 			PermissionChecker permissionChecker, T model, String actionId)
 		throws PortalException {
+
+		if (permissionChecker.isOmniadmin()) {
+			return true;
+		}
 
 		actionId = _modelResourcePermissionDefinition.mapActionId(actionId);
 
