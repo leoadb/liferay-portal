@@ -20,15 +20,18 @@ import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -62,37 +65,88 @@ public class DataRecordCollectionResourceTest
 			"abcdefghijklmnopqrstuvwxyz0123456789");
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testGetDataRecordCollectionPermissionByCurrentUser()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		DataRecordCollection dataRecordCollection =
+			testGetDataRecordCollectionPermission_addDataRecordCollection();
+
+		assertHttpResponseStatusCode(
+			200,
+			dataRecordCollectionResource.
+				getDataRecordCollectionPermissionByCurrentUserHttpResponse(
+					dataRecordCollection.getId()));
+
+		assertValid(dataRecordCollection);
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLDeleteDataRecordCollection() {
+	public void testGraphQLGetDataDefinitionDataRecordCollection()
+		throws Exception {
+
+		DataRecordCollection dataRecordCollection =
+			testGraphQLGetDataDefinitionDataRecordCollection_addDataRecordCollection();
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataDefinitionDataRecordCollection",
+				HashMapBuilder.<String, Object>put(
+					"dataDefinitionId",
+					dataRecordCollection.getDataDefinitionId()
+				).build(),
+				graphQLFields.toArray(new GraphQLField[0])));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
+
+		Assert.assertTrue(
+			equalsJSONObject(
+				dataRecordCollection,
+				dataJSONObject.getJSONObject(
+					"dataDefinitionDataRecordCollection")));
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLGetDataDefinitionDataRecordCollection() {
-	}
+	public void testGraphQLGetSiteDataRecordCollectionByDataRecordCollectionKey()
+		throws Exception {
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetDataRecordCollection() {
-	}
+		DataRecordCollection dataRecordCollection =
+			testGraphQLDataRecordCollection_addDataRecordCollection();
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetSiteDataRecordCollectionByDataRecordCollectionKey() {
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataRecordCollectionByDataRecordCollectionKey",
+				HashMapBuilder.<String, Object>put(
+					"dataRecordCollectionKey",
+					"\"" + dataRecordCollection.getDataRecordCollectionKey() +
+						"\""
+				).put(
+					"siteKey", "\"" + dataRecordCollection.getSiteId() + "\""
+				).build(),
+				graphQLFields.toArray(new GraphQLField[0])));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
+
+		Assert.assertTrue(
+			equalsJSONObject(
+				dataRecordCollection,
+				dataJSONObject.getJSONObject(
+					"dataRecordCollectionByDataRecordCollectionKey")));
 	}
 
 	@Override
@@ -107,10 +161,62 @@ public class DataRecordCollectionResourceTest
 					0L, randomDataRecordCollection()));
 	}
 
-	@Ignore
-	@Override
-	@Test
-	public void testPutDataRecordCollectionPermission() throws Exception {
+	protected boolean equalsJSONObject(
+		DataRecordCollection dataRecordCollection, JSONObject jsonObject) {
+
+		for (String fieldName : getAdditionalAssertFieldNames()) {
+			if (Objects.equals("dataDefinitionId", fieldName)) {
+				if (!Objects.deepEquals(
+						dataRecordCollection.getDataDefinitionId(),
+						jsonObject.getLong("dataDefinitionId"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataRecordCollectionKey", fieldName)) {
+				if (!Objects.deepEquals(
+						dataRecordCollection.getDataRecordCollectionKey(),
+						jsonObject.getString("dataRecordCollectionKey"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("id", fieldName)) {
+				if (!Objects.deepEquals(
+						dataRecordCollection.getId(),
+						jsonObject.getLong("id"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("name", fieldName)) {
+				Map<String, Object> dataRecordCollectionName =
+					dataRecordCollection.getName();
+
+				if (!Objects.deepEquals(
+						dataRecordCollectionName.get("en_US"),
+						jsonObject.getJSONObject("name").get("en_US"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			throw new IllegalArgumentException(
+				"Invalid field name " + fieldName);
+		}
+
+		return true;
 	}
 
 	@Override
@@ -176,6 +282,15 @@ public class DataRecordCollectionResourceTest
 				_ddmStructure.getStructureId(), randomDataRecordCollection());
 	}
 
+	protected DataRecordCollection
+			testGetDataRecordCollectionPermission_addDataRecordCollection()
+		throws Exception {
+
+		return dataRecordCollectionResource.
+			postDataDefinitionDataRecordCollection(
+				_ddmStructure.getStructureId(), randomDataRecordCollection());
+	}
+
 	@Override
 	protected DataRecordCollection
 			testGetSiteDataRecordCollectionByDataRecordCollectionKey_addDataRecordCollection()
@@ -184,6 +299,26 @@ public class DataRecordCollectionResourceTest
 		return dataRecordCollectionResource.
 			postDataDefinitionDataRecordCollection(
 				_ddmStructure.getStructureId(), randomDataRecordCollection());
+	}
+
+	@Override
+	protected DataRecordCollection
+			testGraphQLDataRecordCollection_addDataRecordCollection()
+		throws Exception {
+
+		return dataRecordCollectionResource.
+			postDataDefinitionDataRecordCollection(
+				_ddmStructure.getStructureId(), randomDataRecordCollection());
+	}
+
+	protected DataRecordCollection
+			testGraphQLGetDataDefinitionDataRecordCollection_addDataRecordCollection()
+		throws Exception {
+
+		return dataRecordCollectionResource.
+			postDataDefinitionDataRecordCollection(
+				_ddmStructure.getStructureId(),
+				_randomDataRecordCollection(_ddmStructure.getStructureKey()));
 	}
 
 	@Override
@@ -201,6 +336,16 @@ public class DataRecordCollectionResourceTest
 	@Override
 	protected DataRecordCollection
 			testPutDataRecordCollection_addDataRecordCollection()
+		throws Exception {
+
+		return dataRecordCollectionResource.
+			postDataDefinitionDataRecordCollection(
+				_ddmStructure.getStructureId(), randomDataRecordCollection());
+	}
+
+	@Override
+	protected DataRecordCollection
+			testPutDataRecordCollectionPermission_addDataRecordCollection()
 		throws Exception {
 
 		return dataRecordCollectionResource.
