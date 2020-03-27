@@ -16,17 +16,21 @@ package com.liferay.data.engine.rest.resource.v2_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataRecord;
+import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataRecordCollectionTestUtil;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 
+import java.util.Map;
+import java.util.Objects;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,23 +53,19 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 			_ddmStructure, irrelevantGroup, _resourceLocalService);
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testGetDataRecordCollectionDataRecordExport() throws Exception {
-		super.testGetDataRecordCollectionDataRecordExport();
-	}
+		DataRecord dataRecord = testGetDataRecord_addDataRecord();
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLDeleteDataRecord() {
-	}
+		assertHttpResponseStatusCode(
+			200,
+			dataRecordResource.
+				getDataRecordCollectionDataRecordExportHttpResponse(
+					dataRecord.getDataRecordCollectionId(),
+					Pagination.of(1, 2)));
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetDataRecord() {
+		assertValid(dataRecord);
 	}
 
 	@Override
@@ -85,6 +85,56 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 			400,
 			dataRecordResource.postDataRecordCollectionDataRecordHttpResponse(
 				dataRecord.getDataRecordCollectionId(), dataRecord));
+	}
+
+	@Override
+	protected boolean equalsJSONObject(
+		DataRecord dataRecord, JSONObject jsonObject) {
+
+		for (String fieldName : getAdditionalAssertFieldNames()) {
+			if (Objects.equals("dataRecordCollectionId", fieldName)) {
+				if (!Objects.deepEquals(
+						dataRecord.getDataRecordCollectionId(),
+						jsonObject.getLong("dataRecordCollectionId"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dataRecordValues", fieldName)) {
+				Map<String, Object> dataRecordValues =
+					dataRecord.getDataRecordValues();
+
+				if (!Objects.deepEquals(
+						dataRecordValues.toString(),
+						jsonObject.getString(
+							"dataRecordValues").replaceAll(
+								":", "=").replaceAll(
+									"\"", ""))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("id", fieldName)) {
+				if (!Objects.deepEquals(
+						dataRecord.getId(), jsonObject.getLong("id"))) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			throw new IllegalArgumentException(
+				"Invalid field name " + fieldName);
+		}
+
+		return true;
 	}
 
 	@Override
@@ -143,6 +193,14 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 		throws Exception {
 
 		return _ddlRecordSet.getRecordSetId();
+	}
+
+	@Override
+	protected DataRecord testGraphQLDataRecord_addDataRecord()
+		throws Exception {
+
+		return dataRecordResource.postDataRecordCollectionDataRecord(
+			_ddlRecordSet.getRecordSetId(), randomDataRecord());
 	}
 
 	@Override
