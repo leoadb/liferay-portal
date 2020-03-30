@@ -3,4 +3,5 @@ Bundle-SymbolicName: com.liferay.data.engine.rest.api
 Bundle-Version: 15.6.0
 Export-Package:\
 	com.liferay.data.engine.rest.dto.v2_0,\
+	com.liferay.data.engine.rest.dto.v2_0.io,\
 	com.liferay.data.engine.rest.resource.v2_0
