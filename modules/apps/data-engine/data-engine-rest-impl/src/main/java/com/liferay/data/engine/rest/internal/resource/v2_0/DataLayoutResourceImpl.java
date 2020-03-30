@@ -27,7 +27,6 @@ import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataLayoutEntityM
 import com.liferay.data.engine.rest.internal.security.permission.resource.DataDefinitionModelResourcePermission;
 import com.liferay.data.engine.rest.resource.v2_0.DataLayoutResource;
 import com.liferay.data.engine.service.DEDataDefinitionFieldLinkLocalService;
-import com.liferay.data.engine.spi.resource.SPIDataLayoutResource;
 import com.liferay.dynamic.data.mapping.form.builder.rule.DDMFormRuleDeserializer;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.io.DDMFormLayoutSerializer;
@@ -85,7 +84,134 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class DataLayoutResourceImpl
 	extends BaseDataLayoutResourceImpl implements EntityModelResource {
 
-	public T addDataLayout(
+	@Override
+	public void deleteDataLayout(Long dataLayoutId) throws Exception {
+		DDMStructureLayout ddmStructureLayout =
+			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
+
+		DDMStructure ddmStructure = ddmStructureLayout.getDDMStructure();
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			ddmStructure.getStructureId(), ActionKeys.DELETE);
+
+		_deleteDataLayout(dataLayoutId, ddmStructure);
+	}
+
+	@Override
+	public Page<DataLayout> getDataDefinitionDataLayoutsPage(
+			Long dataDefinitionId, String keywords, Pagination pagination,
+			Sort[] sorts)
+		throws Exception {
+
+		return _getDataLayouts(
+			dataDefinitionId, keywords,
+			contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
+	}
+
+	@Override
+	public DataLayout getDataLayout(Long dataLayoutId) throws Exception {
+		DDMStructureLayout ddmStructureLayout =
+			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			ddmStructureLayout.getDDMStructureId(), ActionKeys.VIEW);
+
+		return _getDataLayout(dataLayoutId);
+	}
+
+	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap)
+		throws Exception {
+
+		return _entityModel;
+	}
+
+	@Override
+	public DataLayout getSiteDataLayoutByContentTypeByDataLayoutKey(
+			Long siteId, String contentType, String dataLayoutKey)
+		throws Exception {
+
+		DDMStructureLayout ddmStructureLayout =
+			_ddmStructureLayoutLocalService.getStructureLayout(
+				siteId,
+				_dataDefinitionContentTypeTracker.getClassNameId(contentType),
+				dataLayoutKey);
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			ddmStructureLayout.getDDMStructureId(), ActionKeys.VIEW);
+
+		return _getDataLayout(
+			_dataDefinitionContentTypeTracker.getClassNameId(contentType),
+			dataLayoutKey, siteId);
+	}
+
+	@Override
+	public DataLayout postDataDefinitionDataLayout(
+			Long dataDefinitionId, DataLayout dataLayout)
+		throws Exception {
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			dataDefinitionId);
+
+		_dataDefinitionModelResourcePermission.checkPortletPermission(
+			PermissionThreadLocal.getPermissionChecker(), ddmStructure,
+			DataActionKeys.ADD_DATA_DEFINITION);
+
+		return _addDataLayout(
+			dataDefinitionId,
+			DataLayoutUtil.serialize(
+				dataLayout,
+				DataDefinitionUtil.toDDMForm(
+					DataDefinitionUtil.toDataDefinition(
+						_ddmFormFieldTypeServicesTracker, ddmStructure,
+						_spiDDMFormRuleConverter),
+					_ddmFormFieldTypeServicesTracker),
+				_ddmFormLayoutSerializer, _ddmFormRuleDeserializer),
+			dataLayout.getDataLayoutKey(), dataLayout.getDescription(),
+			dataLayout.getName());
+	}
+
+	@Override
+	public DataLayout putDataLayout(Long dataLayoutId, DataLayout dataLayout)
+		throws Exception {
+
+		DDMStructureLayout ddmStructureLayout =
+			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			ddmStructureLayout.getDDMStructureId(), ActionKeys.UPDATE);
+
+		return _updateDataLayout(
+			dataLayoutId,
+			DataLayoutUtil.serialize(
+				dataLayout,
+				DataDefinitionUtil.toDDMForm(
+					DataDefinitionUtil.toDataDefinition(
+						_ddmFormFieldTypeServicesTracker,
+						_ddmStructureLocalService.getStructure(
+							ddmStructureLayout.getDDMStructureId()),
+						_spiDDMFormRuleConverter),
+					_ddmFormFieldTypeServicesTracker),
+				_ddmFormLayoutSerializer, _ddmFormRuleDeserializer),
+			dataLayout.getDescription(), dataLayout.getName());
+	}
+
+	private void _addDataDefinitionFieldLinks(
+			long classNameId, long dataDefinitionId, long dataLayoutId,
+			List<String> fieldNames, long siteId)
+		throws PortalException {
+
+		for (String fieldName : fieldNames) {
+			_deDataDefinitionFieldLinkLocalService.addDEDataDefinitionFieldLink(
+				siteId, classNameId, dataLayoutId, dataDefinitionId, fieldName);
+		}
+	}
+
+	private DataLayout _addDataLayout(
 			long dataDefinitionId, String content, String dataLayoutKey,
 			Map<String, Object> description, Map<String, Object> name)
 		throws Exception {
@@ -111,10 +237,11 @@ public class DataLayoutResourceImpl
 			ddmStructureLayout.getStructureLayoutId(), _getFieldNames(content),
 			ddmStructureLayout.getGroupId());
 
-		return _toDataLayoutFunction.apply(ddmStructureLayout);
+		return DataLayoutUtil.toDataLayout(
+			ddmStructureLayout, _spiDDMFormRuleConverter);
 	}
 
-	public void deleteDataLayout(long dataLayoutId, DDMStructure ddmStructure)
+	private void _deleteDataLayout(long dataLayoutId, DDMStructure ddmStructure)
 		throws PortalException {
 
 		_ddmStructureLayoutLocalService.deleteDDMStructureLayout(dataLayoutId);
@@ -123,24 +250,7 @@ public class DataLayoutResourceImpl
 			ddmStructure.getClassNameId(), dataLayoutId);
 	}
 
-	@Override
-	public void deleteDataLayout(Long dataLayoutId) throws Exception {
-		DDMStructureLayout ddmStructureLayout =
-			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
-
-		DDMStructure ddmStructure = ddmStructureLayout.getDDMStructure();
-
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			ddmStructure.getStructureId(), ActionKeys.DELETE);
-
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
-			_getSPIDataLayoutResource();
-
-		spiDataLayoutResource.deleteDataLayout(dataLayoutId, ddmStructure);
-	}
-
-	public void deleteDataLayoutDataDefinition(long dataDefinitionId)
+	private void _deleteDataLayoutDataDefinition(long dataDefinitionId)
 		throws PortalException {
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
@@ -157,58 +267,30 @@ public class DataLayoutResourceImpl
 					ddmStructureVersion.getStructureVersionId());
 
 			for (DDMStructureLayout ddmStructureLayout : ddmStructureLayouts) {
-				deleteDataLayout(
+				_deleteDataLayout(
 					ddmStructureLayout.getStructureLayoutId(), ddmStructure);
 			}
 		}
 	}
 
-	@Override
-	public Page<DataLayout> getDataDefinitionDataLayoutsPage(
-			Long dataDefinitionId, String keywords, Pagination pagination,
-			Sort[] sorts)
-		throws Exception {
-
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
-			_getSPIDataLayoutResource();
-
-		return spiDataLayoutResource.getDataLayouts(
-			dataDefinitionId, keywords,
-			contextAcceptLanguage.getPreferredLocale(), pagination, sorts);
+	private DataLayout _getDataLayout(long dataLayoutId) throws Exception {
+		return DataLayoutUtil.toDataLayout(
+			_ddmStructureLayoutLocalService.getDDMStructureLayout(dataLayoutId),
+			_spiDDMFormRuleConverter);
 	}
 
-	public T getDataLayout(long dataLayoutId) throws Exception {
-		return _toDataLayoutFunction.apply(
-			_ddmStructureLayoutLocalService.getDDMStructureLayout(
-				dataLayoutId));
-	}
-
-	public T getDataLayout(long classNameId, String dataLayoutKey, long siteId)
+	private DataLayout _getDataLayout(
+			long classNameId, String dataLayoutKey, long siteId)
 		throws Exception {
 
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.getStructureLayout(
 				siteId, classNameId, dataLayoutKey);
 
-		return getDataLayout(ddmStructureLayout.getStructureLayoutId());
+		return _getDataLayout(ddmStructureLayout.getStructureLayoutId());
 	}
 
-	@Override
-	public DataLayout getDataLayout(Long dataLayoutId) throws Exception {
-		DDMStructureLayout ddmStructureLayout =
-			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
-
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			ddmStructureLayout.getDDMStructureId(), ActionKeys.VIEW);
-
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
-			_getSPIDataLayoutResource();
-
-		return spiDataLayoutResource.getDataLayout(dataLayoutId);
-	}
-
-	public Page<T> getDataLayouts(
+	private Page<DataLayout> _getDataLayouts(
 			long dataDefinitionId, String keywords, Locale locale,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
@@ -241,7 +323,8 @@ public class DataLayoutResourceImpl
 						pagination.getEndPosition(),
 						_toOrderByComparator(
 							(Sort)ArrayUtil.getValue(sorts, 0))),
-					_toDataLayoutFunction),
+					ddmStructureLayout -> DataLayoutUtil.toDataLayout(
+						ddmStructureLayout, _spiDDMFormRuleConverter)),
 				pagination,
 				_ddmStructureLayoutLocalService.getStructureLayoutsCount(
 					ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
@@ -266,101 +349,48 @@ public class DataLayoutResourceImpl
 				searchContext.setGroupIds(
 					new long[] {ddmStructure.getGroupId()});
 			},
-			document -> _toDataLayoutFunction.apply(
+			document -> DataLayoutUtil.toDataLayout(
 				_ddmStructureLayoutLocalService.getStructureLayout(
-					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))),
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))),
+				_spiDDMFormRuleConverter),
 			sorts);
 	}
 
-	@Override
-	public EntityModel getEntityModel(MultivaluedMap multivaluedMap)
-		throws Exception {
+	private long _getDDMStructureVersionId(long deDataDefinitionId)
+		throws PortalException {
 
-		return _entityModel;
+		DDMStructureVersion ddmStructureVersion =
+			_ddmStructureVersionLocalService.getLatestStructureVersion(
+				deDataDefinitionId);
+
+		return ddmStructureVersion.getStructureVersionId();
 	}
 
-	@Override
-	public DataLayout getSiteDataLayoutByContentTypeByDataLayoutKey(
-			Long siteId, String contentType, String dataLayoutKey)
-		throws Exception {
+	private List<String> _getFieldNames(String content) {
+		DocumentContext documentContext = JsonPath.parse(content);
 
-		DDMStructureLayout ddmStructureLayout =
-			_ddmStructureLayoutLocalService.getStructureLayout(
-				siteId,
-				_dataDefinitionContentTypeTracker.getClassNameId(contentType),
-				dataLayoutKey);
-
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			ddmStructureLayout.getDDMStructureId(), ActionKeys.VIEW);
-
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
-			_getSPIDataLayoutResource();
-
-		return spiDataLayoutResource.getDataLayout(
-			_dataDefinitionContentTypeTracker.getClassNameId(contentType),
-			dataLayoutKey, siteId);
+		return documentContext.read(
+			"$[\"pages\"][*][\"rows\"][*][\"columns\"][*][\"fieldNames\"][*]");
 	}
 
-	@Override
-	public DataLayout postDataDefinitionDataLayout(
-			Long dataDefinitionId, DataLayout dataLayout)
-		throws Exception {
+	private OrderByComparator<DDMStructureLayout> _toOrderByComparator(
+		Sort sort) {
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			dataDefinitionId);
+		boolean ascending = !sort.isReverse();
 
-		_dataDefinitionModelResourcePermission.checkPortletPermission(
-			PermissionThreadLocal.getPermissionChecker(), ddmStructure,
-			DataActionKeys.ADD_DATA_DEFINITION);
+		String sortFieldName = sort.getFieldName();
 
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
-			_getSPIDataLayoutResource();
+		if (StringUtil.startsWith(sortFieldName, "createDate")) {
+			return new StructureLayoutCreateDateComparator(ascending);
+		}
+		else if (StringUtil.startsWith(sortFieldName, "localized_name")) {
+			return new StructureLayoutNameComparator(ascending);
+		}
 
-		return spiDataLayoutResource.addDataLayout(
-			dataDefinitionId,
-			DataLayoutUtil.serialize(
-				dataLayout,
-				DataDefinitionUtil.toDDMForm(
-					DataDefinitionUtil.toDataDefinition(
-						_ddmFormFieldTypeServicesTracker, ddmStructure,
-						_spiDDMFormRuleConverter),
-					_ddmFormFieldTypeServicesTracker),
-				_ddmFormLayoutSerializer, _ddmFormRuleDeserializer),
-			dataLayout.getDataLayoutKey(), dataLayout.getDescription(),
-			dataLayout.getName());
+		return new StructureLayoutModifiedDateComparator(ascending);
 	}
 
-	@Override
-	public DataLayout putDataLayout(Long dataLayoutId, DataLayout dataLayout)
-		throws Exception {
-
-		DDMStructureLayout ddmStructureLayout =
-			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
-
-		_dataDefinitionModelResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			ddmStructureLayout.getDDMStructureId(), ActionKeys.UPDATE);
-
-		SPIDataLayoutResource<DataLayout> spiDataLayoutResource =
-			_getSPIDataLayoutResource();
-
-		return spiDataLayoutResource.updateDataLayout(
-			dataLayoutId,
-			DataLayoutUtil.serialize(
-				dataLayout,
-				DataDefinitionUtil.toDDMForm(
-					DataDefinitionUtil.toDataDefinition(
-						_ddmFormFieldTypeServicesTracker,
-						_ddmStructureLocalService.getStructure(
-							ddmStructureLayout.getDDMStructureId()),
-						_spiDDMFormRuleConverter),
-					_ddmFormFieldTypeServicesTracker),
-				_ddmFormLayoutSerializer, _ddmFormRuleDeserializer),
-			dataLayout.getDescription(), dataLayout.getName());
-	}
-
-	public T updateDataLayout(
+	private DataLayout _updateDataLayout(
 			long dataLayoutId, String content, Map<String, Object> description,
 			Map<String, Object> name)
 		throws Exception {
@@ -387,61 +417,8 @@ public class DataLayoutResourceImpl
 			ddmStructure.getClassNameId(), ddmStructure.getStructureId(),
 			dataLayoutId, _getFieldNames(content), ddmStructure.getGroupId());
 
-		return _toDataLayoutFunction.apply(ddmStructureLayout);
-	}
-
-	private void _addDataDefinitionFieldLinks(
-			long classNameId, long dataDefinitionId, long dataLayoutId,
-			List<String> fieldNames, long siteId)
-		throws PortalException {
-
-		for (String fieldName : fieldNames) {
-			_deDataDefinitionFieldLinkLocalService.addDEDataDefinitionFieldLink(
-				siteId, classNameId, dataLayoutId, dataDefinitionId, fieldName);
-		}
-	}
-
-	private long _getDDMStructureVersionId(long deDataDefinitionId)
-		throws PortalException {
-
-		DDMStructureVersion ddmStructureVersion =
-			_ddmStructureVersionLocalService.getLatestStructureVersion(
-				deDataDefinitionId);
-
-		return ddmStructureVersion.getStructureVersionId();
-	}
-
-	private List<String> _getFieldNames(String content) {
-		DocumentContext documentContext = JsonPath.parse(content);
-
-		return documentContext.read(
-			"$[\"pages\"][*][\"rows\"][*][\"columns\"][*][\"fieldNames\"][*]");
-	}
-
-	private SPIDataLayoutResource _getSPIDataLayoutResource() {
-		return new SPIDataLayoutResource<>(
-			_ddmStructureLayoutLocalService, _ddmStructureLocalService,
-			_ddmStructureVersionLocalService,
-			_deDataDefinitionFieldLinkLocalService,
-			ddmStructureLayout -> DataLayoutUtil.toDataLayout(
-				ddmStructureLayout, _spiDDMFormRuleConverter));
-	}
-
-	private OrderByComparator<DDMStructureLayout> _toOrderByComparator(
-		Sort sort) {
-
-		boolean ascending = !sort.isReverse();
-
-		String sortFieldName = sort.getFieldName();
-
-		if (StringUtil.startsWith(sortFieldName, "createDate")) {
-			return new StructureLayoutCreateDateComparator(ascending);
-		}
-		else if (StringUtil.startsWith(sortFieldName, "localized_name")) {
-			return new StructureLayoutNameComparator(ascending);
-		}
-
-		return new StructureLayoutModifiedDateComparator(ascending);
+		return DataLayoutUtil.toDataLayout(
+			ddmStructureLayout, _spiDDMFormRuleConverter);
 	}
 
 	private void _validate(String content, Map<String, Object> name) {
