@@ -99,6 +99,30 @@ public class DataLayoutResourceImpl
 	}
 
 	@Override
+	public void deleteDataLayoutsDataDefinition(Long dataDefinitionId)
+		throws Exception {
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
+			dataDefinitionId);
+
+		List<DDMStructureVersion> ddmStructureVersions =
+			_ddmStructureVersionLocalService.getStructureVersions(
+				dataDefinitionId);
+
+		for (DDMStructureVersion ddmStructureVersion : ddmStructureVersions) {
+			List<DDMStructureLayout> ddmStructureLayouts =
+				_ddmStructureLayoutLocalService.getStructureLayouts(
+					ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
+					ddmStructureVersion.getStructureVersionId());
+
+			for (DDMStructureLayout ddmStructureLayout : ddmStructureLayouts) {
+				_deleteDataLayout(
+					ddmStructureLayout.getStructureLayoutId(), ddmStructure);
+			}
+		}
+	}
+
+	@Override
 	public Page<DataLayout> getDataDefinitionDataLayoutsPage(
 			Long dataDefinitionId, String keywords, Pagination pagination,
 			Sort[] sorts)
@@ -248,29 +272,6 @@ public class DataLayoutResourceImpl
 
 		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
 			ddmStructure.getClassNameId(), dataLayoutId);
-	}
-
-	private void _deleteDataLayoutDataDefinition(long dataDefinitionId)
-		throws PortalException {
-
-		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
-			dataDefinitionId);
-
-		List<DDMStructureVersion> ddmStructureVersions =
-			_ddmStructureVersionLocalService.getStructureVersions(
-				dataDefinitionId);
-
-		for (DDMStructureVersion ddmStructureVersion : ddmStructureVersions) {
-			List<DDMStructureLayout> ddmStructureLayouts =
-				_ddmStructureLayoutLocalService.getStructureLayouts(
-					ddmStructure.getGroupId(), ddmStructure.getClassNameId(),
-					ddmStructureVersion.getStructureVersionId());
-
-			for (DDMStructureLayout ddmStructureLayout : ddmStructureLayouts) {
-				_deleteDataLayout(
-					ddmStructureLayout.getStructureLayoutId(), ddmStructure);
-			}
-		}
 	}
 
 	private DataLayout _getDataLayout(long dataLayoutId) throws Exception {
