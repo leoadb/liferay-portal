@@ -106,6 +106,7 @@ public abstract class BaseCommentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		commentList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -123,6 +124,15 @@ public abstract class BaseCommentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Comment comment : commentList) {
+			try {
+				deleteComment(comment);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -228,8 +238,12 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, randomComment());
 
+		commentList.add(comment1);
+
 		Comment comment2 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, randomComment());
+
+		commentList.add(comment2);
 
 		page = commentResource.getBlogPostingCommentsPage(
 			blogPostingId, null, null, Pagination.of(1, 2), null);
@@ -263,6 +277,8 @@ public abstract class BaseCommentResourceTestCase {
 		comment1 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, comment1);
 
+		commentList.add(comment1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Comment> page = commentResource.getBlogPostingCommentsPage(
 				blogPostingId, null,
@@ -291,9 +307,13 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, randomComment());
 
+		commentList.add(comment1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Comment comment2 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, randomComment());
+
+		commentList.add(comment2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Comment> page = commentResource.getBlogPostingCommentsPage(
@@ -316,11 +336,17 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, randomComment());
 
+		commentList.add(comment1);
+
 		Comment comment2 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, randomComment());
 
+		commentList.add(comment2);
+
 		Comment comment3 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, randomComment());
+
+		commentList.add(comment3);
 
 		Page<Comment> page1 = commentResource.getBlogPostingCommentsPage(
 			blogPostingId, null, null, Pagination.of(1, 2), null);
@@ -429,8 +455,12 @@ public abstract class BaseCommentResourceTestCase {
 		comment1 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, comment1);
 
+		commentList.add(comment1);
+
 		comment2 = testGetBlogPostingCommentsPage_addComment(
 			blogPostingId, comment2);
+
+		commentList.add(comment2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Comment> ascPage = commentResource.getBlogPostingCommentsPage(
@@ -478,6 +508,8 @@ public abstract class BaseCommentResourceTestCase {
 		Comment postComment = testPostBlogPostingComment_addComment(
 			randomComment);
 
+		commentList.add(postComment);
+
 		assertEquals(randomComment, postComment);
 		assertValid(postComment);
 	}
@@ -493,6 +525,8 @@ public abstract class BaseCommentResourceTestCase {
 	public void testDeleteComment() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Comment comment = testDeleteComment_addComment();
+
+		commentList.add(comment);
 
 		assertHttpResponseStatusCode(
 			204, commentResource.deleteCommentHttpResponse(comment.getId()));
@@ -512,6 +546,8 @@ public abstract class BaseCommentResourceTestCase {
 	@Test
 	public void testGraphQLDeleteComment() throws Exception {
 		Comment comment = testGraphQLComment_addComment();
+
+		commentList.add(comment);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -559,6 +595,8 @@ public abstract class BaseCommentResourceTestCase {
 	public void testGetComment() throws Exception {
 		Comment postComment = testGetComment_addComment();
 
+		commentList.add(postComment);
+
 		Comment getComment = commentResource.getComment(postComment.getId());
 
 		assertEquals(postComment, getComment);
@@ -573,6 +611,8 @@ public abstract class BaseCommentResourceTestCase {
 	@Test
 	public void testGraphQLGetComment() throws Exception {
 		Comment comment = testGraphQLComment_addComment();
+
+		commentList.add(comment);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -599,6 +639,8 @@ public abstract class BaseCommentResourceTestCase {
 	@Test
 	public void testPutComment() throws Exception {
 		Comment postComment = testPutComment_addComment();
+
+		commentList.add(postComment);
 
 		Comment randomComment = randomComment();
 
@@ -650,8 +692,12 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetCommentCommentsPage_addComment(
 			parentCommentId, randomComment());
 
+		commentList.add(comment1);
+
 		Comment comment2 = testGetCommentCommentsPage_addComment(
 			parentCommentId, randomComment());
+
+		commentList.add(comment2);
 
 		page = commentResource.getCommentCommentsPage(
 			parentCommentId, null, null, Pagination.of(1, 2), null);
@@ -685,6 +731,8 @@ public abstract class BaseCommentResourceTestCase {
 		comment1 = testGetCommentCommentsPage_addComment(
 			parentCommentId, comment1);
 
+		commentList.add(comment1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Comment> page = commentResource.getCommentCommentsPage(
 				parentCommentId, null,
@@ -713,9 +761,13 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetCommentCommentsPage_addComment(
 			parentCommentId, randomComment());
 
+		commentList.add(comment1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Comment comment2 = testGetCommentCommentsPage_addComment(
 			parentCommentId, randomComment());
+
+		commentList.add(comment2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Comment> page = commentResource.getCommentCommentsPage(
@@ -736,11 +788,17 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetCommentCommentsPage_addComment(
 			parentCommentId, randomComment());
 
+		commentList.add(comment1);
+
 		Comment comment2 = testGetCommentCommentsPage_addComment(
 			parentCommentId, randomComment());
 
+		commentList.add(comment2);
+
 		Comment comment3 = testGetCommentCommentsPage_addComment(
 			parentCommentId, randomComment());
+
+		commentList.add(comment3);
 
 		Page<Comment> page1 = commentResource.getCommentCommentsPage(
 			parentCommentId, null, null, Pagination.of(1, 2), null);
@@ -843,8 +901,12 @@ public abstract class BaseCommentResourceTestCase {
 		comment1 = testGetCommentCommentsPage_addComment(
 			parentCommentId, comment1);
 
+		commentList.add(comment1);
+
 		comment2 = testGetCommentCommentsPage_addComment(
 			parentCommentId, comment2);
+
+		commentList.add(comment2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Comment> ascPage = commentResource.getCommentCommentsPage(
@@ -891,6 +953,8 @@ public abstract class BaseCommentResourceTestCase {
 
 		Comment postComment = testPostCommentComment_addComment(randomComment);
 
+		commentList.add(postComment);
+
 		assertEquals(randomComment, postComment);
 		assertValid(postComment);
 	}
@@ -932,8 +996,12 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetDocumentCommentsPage_addComment(
 			documentId, randomComment());
 
+		commentList.add(comment1);
+
 		Comment comment2 = testGetDocumentCommentsPage_addComment(
 			documentId, randomComment());
+
+		commentList.add(comment2);
 
 		page = commentResource.getDocumentCommentsPage(
 			documentId, null, null, Pagination.of(1, 2), null);
@@ -966,6 +1034,8 @@ public abstract class BaseCommentResourceTestCase {
 
 		comment1 = testGetDocumentCommentsPage_addComment(documentId, comment1);
 
+		commentList.add(comment1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Comment> page = commentResource.getDocumentCommentsPage(
 				documentId, null,
@@ -994,9 +1064,13 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetDocumentCommentsPage_addComment(
 			documentId, randomComment());
 
+		commentList.add(comment1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Comment comment2 = testGetDocumentCommentsPage_addComment(
 			documentId, randomComment());
+
+		commentList.add(comment2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Comment> page = commentResource.getDocumentCommentsPage(
@@ -1016,11 +1090,17 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetDocumentCommentsPage_addComment(
 			documentId, randomComment());
 
+		commentList.add(comment1);
+
 		Comment comment2 = testGetDocumentCommentsPage_addComment(
 			documentId, randomComment());
 
+		commentList.add(comment2);
+
 		Comment comment3 = testGetDocumentCommentsPage_addComment(
 			documentId, randomComment());
+
+		commentList.add(comment3);
 
 		Page<Comment> page1 = commentResource.getDocumentCommentsPage(
 			documentId, null, null, Pagination.of(1, 2), null);
@@ -1122,7 +1202,11 @@ public abstract class BaseCommentResourceTestCase {
 
 		comment1 = testGetDocumentCommentsPage_addComment(documentId, comment1);
 
+		commentList.add(comment1);
+
 		comment2 = testGetDocumentCommentsPage_addComment(documentId, comment2);
+
+		commentList.add(comment2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Comment> ascPage = commentResource.getDocumentCommentsPage(
@@ -1169,6 +1253,8 @@ public abstract class BaseCommentResourceTestCase {
 
 		Comment postComment = testPostDocumentComment_addComment(randomComment);
 
+		commentList.add(postComment);
+
 		assertEquals(randomComment, postComment);
 		assertValid(postComment);
 	}
@@ -1213,8 +1299,12 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, randomComment());
 
+		commentList.add(comment1);
+
 		Comment comment2 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, randomComment());
+
+		commentList.add(comment2);
 
 		page = commentResource.getStructuredContentCommentsPage(
 			structuredContentId, null, null, Pagination.of(1, 2), null);
@@ -1249,6 +1339,8 @@ public abstract class BaseCommentResourceTestCase {
 		comment1 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, comment1);
 
+		commentList.add(comment1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Comment> page =
 				commentResource.getStructuredContentCommentsPage(
@@ -1279,9 +1371,13 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, randomComment());
 
+		commentList.add(comment1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Comment comment2 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, randomComment());
+
+		commentList.add(comment2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Comment> page =
@@ -1306,11 +1402,17 @@ public abstract class BaseCommentResourceTestCase {
 		Comment comment1 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, randomComment());
 
+		commentList.add(comment1);
+
 		Comment comment2 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, randomComment());
 
+		commentList.add(comment2);
+
 		Comment comment3 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, randomComment());
+
+		commentList.add(comment3);
 
 		Page<Comment> page1 = commentResource.getStructuredContentCommentsPage(
 			structuredContentId, null, null, Pagination.of(1, 2), null);
@@ -1420,8 +1522,12 @@ public abstract class BaseCommentResourceTestCase {
 		comment1 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, comment1);
 
+		commentList.add(comment1);
+
 		comment2 = testGetStructuredContentCommentsPage_addComment(
 			structuredContentId, comment2);
+
+		commentList.add(comment2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Comment> ascPage =
@@ -1472,6 +1578,8 @@ public abstract class BaseCommentResourceTestCase {
 
 		Comment postComment = testPostStructuredContentComment_addComment(
 			randomComment);
+
+		commentList.add(postComment);
 
 		assertEquals(randomComment, postComment);
 		assertValid(postComment);
@@ -1639,6 +1747,10 @@ public abstract class BaseCommentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteComment(Comment comment) throws Exception {
+		commentResource.deleteComment(comment.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1999,6 +2111,7 @@ public abstract class BaseCommentResourceTestCase {
 	}
 
 	protected CommentResource commentResource;
+	protected List<Comment> commentList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -94,6 +94,7 @@ public abstract class BaseSiteResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		siteList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -111,6 +112,15 @@ public abstract class BaseSiteResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Site site : siteList) {
+			try {
+				deleteSite(site);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -202,6 +212,8 @@ public abstract class BaseSiteResourceTestCase {
 	public void testGetSiteByFriendlyUrlPath() throws Exception {
 		Site postSite = testGetSiteByFriendlyUrlPath_addSite();
 
+		siteList.add(postSite);
+
 		Site getSite = siteResource.getSiteByFriendlyUrlPath(
 			postSite.getFriendlyUrlPath());
 
@@ -217,6 +229,8 @@ public abstract class BaseSiteResourceTestCase {
 	@Test
 	public void testGraphQLGetSiteByFriendlyUrlPath() throws Exception {
 		Site site = testGraphQLSite_addSite();
+
+		siteList.add(site);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -245,6 +259,8 @@ public abstract class BaseSiteResourceTestCase {
 	public void testGetSite() throws Exception {
 		Site postSite = testGetSite_addSite();
 
+		siteList.add(postSite);
+
 		Site getSite = siteResource.getSite(postSite.getId());
 
 		assertEquals(postSite, getSite);
@@ -259,6 +275,8 @@ public abstract class BaseSiteResourceTestCase {
 	@Test
 	public void testGraphQLGetSite() throws Exception {
 		Site site = testGraphQLSite_addSite();
+
+		siteList.add(site);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -473,6 +491,9 @@ public abstract class BaseSiteResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteSite(Site site) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -882,6 +903,7 @@ public abstract class BaseSiteResourceTestCase {
 	}
 
 	protected SiteResource siteResource;
+	protected List<Site> siteList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

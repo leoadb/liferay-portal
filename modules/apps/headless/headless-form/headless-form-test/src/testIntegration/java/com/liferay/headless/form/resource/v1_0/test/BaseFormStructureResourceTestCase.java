@@ -97,6 +97,7 @@ public abstract class BaseFormStructureResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		formStructureList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -114,6 +115,15 @@ public abstract class BaseFormStructureResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (FormStructure formStructure : formStructureList) {
+			try {
+				deleteFormStructure(formStructure);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -195,6 +205,8 @@ public abstract class BaseFormStructureResourceTestCase {
 		FormStructure postFormStructure =
 			testGetFormStructure_addFormStructure();
 
+		formStructureList.add(postFormStructure);
+
 		FormStructure getFormStructure = formStructureResource.getFormStructure(
 			postFormStructure.getId());
 
@@ -213,6 +225,8 @@ public abstract class BaseFormStructureResourceTestCase {
 	public void testGraphQLGetFormStructure() throws Exception {
 		FormStructure formStructure =
 			testGraphQLFormStructure_addFormStructure();
+
+		formStructureList.add(formStructure);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -269,9 +283,13 @@ public abstract class BaseFormStructureResourceTestCase {
 			testGetSiteFormStructuresPage_addFormStructure(
 				siteId, randomFormStructure());
 
+		formStructureList.add(formStructure1);
+
 		FormStructure formStructure2 =
 			testGetSiteFormStructuresPage_addFormStructure(
 				siteId, randomFormStructure());
+
+		formStructureList.add(formStructure2);
 
 		page = formStructureResource.getSiteFormStructuresPage(
 			siteId, Pagination.of(1, 2));
@@ -292,13 +310,19 @@ public abstract class BaseFormStructureResourceTestCase {
 			testGetSiteFormStructuresPage_addFormStructure(
 				siteId, randomFormStructure());
 
+		formStructureList.add(formStructure1);
+
 		FormStructure formStructure2 =
 			testGetSiteFormStructuresPage_addFormStructure(
 				siteId, randomFormStructure());
 
+		formStructureList.add(formStructure2);
+
 		FormStructure formStructure3 =
 			testGetSiteFormStructuresPage_addFormStructure(
 				siteId, randomFormStructure());
+
+		formStructureList.add(formStructure3);
 
 		Page<FormStructure> page1 =
 			formStructureResource.getSiteFormStructuresPage(
@@ -389,6 +413,9 @@ public abstract class BaseFormStructureResourceTestCase {
 			testGraphQLFormStructure_addFormStructure();
 		FormStructure formStructure2 =
 			testGraphQLFormStructure_addFormStructure();
+
+		formStructureList.add(formStructure1);
+		formStructureList.add(formStructure2);
 
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
@@ -597,6 +624,10 @@ public abstract class BaseFormStructureResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteFormStructure(FormStructure formStructure)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1026,6 +1057,7 @@ public abstract class BaseFormStructureResourceTestCase {
 	}
 
 	protected FormStructureResource formStructureResource;
+	protected List<FormStructure> formStructureList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

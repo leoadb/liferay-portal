@@ -97,6 +97,7 @@ public abstract class BaseNavigationMenuResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		navigationMenuList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -115,6 +116,15 @@ public abstract class BaseNavigationMenuResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (NavigationMenu navigationMenu : navigationMenuList) {
+			try {
+				deleteNavigationMenu(navigationMenu);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -194,6 +204,8 @@ public abstract class BaseNavigationMenuResourceTestCase {
 		NavigationMenu postNavigationMenu =
 			testGetNavigationMenu_addNavigationMenu();
 
+		navigationMenuList.add(postNavigationMenu);
+
 		NavigationMenu getNavigationMenu =
 			navigationMenuResource.getNavigationMenu(
 				postNavigationMenu.getId());
@@ -213,6 +225,8 @@ public abstract class BaseNavigationMenuResourceTestCase {
 	public void testGraphQLGetNavigationMenu() throws Exception {
 		NavigationMenu navigationMenu =
 			testGraphQLNavigationMenu_addNavigationMenu();
+
+		navigationMenuList.add(navigationMenu);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -271,9 +285,13 @@ public abstract class BaseNavigationMenuResourceTestCase {
 			testGetSiteNavigationMenusPage_addNavigationMenu(
 				siteId, randomNavigationMenu());
 
+		navigationMenuList.add(navigationMenu1);
+
 		NavigationMenu navigationMenu2 =
 			testGetSiteNavigationMenusPage_addNavigationMenu(
 				siteId, randomNavigationMenu());
+
+		navigationMenuList.add(navigationMenu2);
 
 		page = navigationMenuResource.getSiteNavigationMenusPage(
 			siteId, Pagination.of(1, 2));
@@ -296,13 +314,19 @@ public abstract class BaseNavigationMenuResourceTestCase {
 			testGetSiteNavigationMenusPage_addNavigationMenu(
 				siteId, randomNavigationMenu());
 
+		navigationMenuList.add(navigationMenu1);
+
 		NavigationMenu navigationMenu2 =
 			testGetSiteNavigationMenusPage_addNavigationMenu(
 				siteId, randomNavigationMenu());
 
+		navigationMenuList.add(navigationMenu2);
+
 		NavigationMenu navigationMenu3 =
 			testGetSiteNavigationMenusPage_addNavigationMenu(
 				siteId, randomNavigationMenu());
+
+		navigationMenuList.add(navigationMenu3);
 
 		Page<NavigationMenu> page1 =
 			navigationMenuResource.getSiteNavigationMenusPage(
@@ -393,6 +417,9 @@ public abstract class BaseNavigationMenuResourceTestCase {
 			testGraphQLNavigationMenu_addNavigationMenu();
 		NavigationMenu navigationMenu2 =
 			testGraphQLNavigationMenu_addNavigationMenu();
+
+		navigationMenuList.add(navigationMenu1);
+		navigationMenuList.add(navigationMenu2);
 
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
@@ -561,6 +588,10 @@ public abstract class BaseNavigationMenuResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteNavigationMenu(NavigationMenu navigationMenu)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -896,6 +927,7 @@ public abstract class BaseNavigationMenuResourceTestCase {
 	}
 
 	protected NavigationMenuResource navigationMenuResource;
+	protected List<NavigationMenu> navigationMenuList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

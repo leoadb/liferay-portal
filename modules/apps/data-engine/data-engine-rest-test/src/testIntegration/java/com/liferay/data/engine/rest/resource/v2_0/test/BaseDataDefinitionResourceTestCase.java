@@ -107,6 +107,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		dataDefinitionList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -125,6 +126,15 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (DataDefinition dataDefinition : dataDefinitionList) {
+			try {
+				deleteDataDefinition(dataDefinition);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -244,9 +254,13 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testGetDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				contentType, randomDataDefinition());
 
+		dataDefinitionList.add(dataDefinition1);
+
 		DataDefinition dataDefinition2 =
 			testGetDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				contentType, randomDataDefinition());
+
+		dataDefinitionList.add(dataDefinition2);
 
 		page =
 			dataDefinitionResource.
@@ -276,13 +290,19 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testGetDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				contentType, randomDataDefinition());
 
+		dataDefinitionList.add(dataDefinition1);
+
 		DataDefinition dataDefinition2 =
 			testGetDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				contentType, randomDataDefinition());
 
+		dataDefinitionList.add(dataDefinition2);
+
 		DataDefinition dataDefinition3 =
 			testGetDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				contentType, randomDataDefinition());
+
+		dataDefinitionList.add(dataDefinition3);
 
 		Page<DataDefinition> page1 =
 			dataDefinitionResource.
@@ -407,9 +427,13 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testGetDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				contentType, dataDefinition1);
 
+		dataDefinitionList.add(dataDefinition1);
+
 		dataDefinition2 =
 			testGetDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				contentType, dataDefinition2);
+
+		dataDefinitionList.add(dataDefinition2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DataDefinition> ascPage =
@@ -466,6 +490,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testPostDataDefinitionByContentType_addDataDefinition(
 				randomDataDefinition);
 
+		dataDefinitionList.add(postDataDefinition);
+
 		assertEquals(randomDataDefinition, postDataDefinition);
 		assertValid(postDataDefinition);
 	}
@@ -492,6 +518,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		DataDefinition dataDefinition =
 			testDeleteDataDefinition_addDataDefinition();
 
+		dataDefinitionList.add(dataDefinition);
+
 		assertHttpResponseStatusCode(
 			204,
 			dataDefinitionResource.deleteDataDefinitionHttpResponse(
@@ -517,6 +545,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	public void testGraphQLDeleteDataDefinition() throws Exception {
 		DataDefinition dataDefinition =
 			testGraphQLDataDefinition_addDataDefinition();
+
+		dataDefinitionList.add(dataDefinition);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -565,6 +595,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		DataDefinition postDataDefinition =
 			testGetDataDefinition_addDataDefinition();
 
+		dataDefinitionList.add(postDataDefinition);
+
 		DataDefinition getDataDefinition =
 			dataDefinitionResource.getDataDefinition(
 				postDataDefinition.getId());
@@ -584,6 +616,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	public void testGraphQLGetDataDefinition() throws Exception {
 		DataDefinition dataDefinition =
 			testGraphQLDataDefinition_addDataDefinition();
+
+		dataDefinitionList.add(dataDefinition);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -613,6 +647,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	public void testPutDataDefinition() throws Exception {
 		DataDefinition postDataDefinition =
 			testPutDataDefinition_addDataDefinition();
+
+		dataDefinitionList.add(postDataDefinition);
 
 		DataDefinition randomDataDefinition = randomDataDefinition();
 
@@ -649,6 +685,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DataDefinition dataDefinition =
 			testPutDataDefinitionPermission_addDataDefinition();
+
+		dataDefinitionList.add(dataDefinition);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -730,9 +768,13 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testGetSiteDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				siteId, contentType, randomDataDefinition());
 
+		dataDefinitionList.add(dataDefinition1);
+
 		DataDefinition dataDefinition2 =
 			testGetSiteDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				siteId, contentType, randomDataDefinition());
+
+		dataDefinitionList.add(dataDefinition2);
 
 		page =
 			dataDefinitionResource.
@@ -764,13 +806,19 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testGetSiteDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				siteId, contentType, randomDataDefinition());
 
+		dataDefinitionList.add(dataDefinition1);
+
 		DataDefinition dataDefinition2 =
 			testGetSiteDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				siteId, contentType, randomDataDefinition());
 
+		dataDefinitionList.add(dataDefinition2);
+
 		DataDefinition dataDefinition3 =
 			testGetSiteDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				siteId, contentType, randomDataDefinition());
+
+		dataDefinitionList.add(dataDefinition3);
 
 		Page<DataDefinition> page1 =
 			dataDefinitionResource.
@@ -898,9 +946,13 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testGetSiteDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				siteId, contentType, dataDefinition1);
 
+		dataDefinitionList.add(dataDefinition1);
+
 		dataDefinition2 =
 			testGetSiteDataDefinitionByContentTypeContentTypePage_addDataDefinition(
 				siteId, contentType, dataDefinition2);
+
+		dataDefinitionList.add(dataDefinition2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DataDefinition> ascPage =
@@ -971,6 +1023,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testPostSiteDataDefinitionByContentType_addDataDefinition(
 				randomDataDefinition);
 
+		dataDefinitionList.add(postDataDefinition);
+
 		assertEquals(randomDataDefinition, postDataDefinition);
 		assertValid(postDataDefinition);
 	}
@@ -990,6 +1044,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		DataDefinition postDataDefinition =
 			testGetSiteDataDefinitionByContentTypeByDataDefinitionKey_addDataDefinition();
+
+		dataDefinitionList.add(postDataDefinition);
 
 		DataDefinition getDataDefinition =
 			dataDefinitionResource.
@@ -1016,6 +1072,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		DataDefinition dataDefinition =
 			testGraphQLDataDefinition_addDataDefinition();
+
+		dataDefinitionList.add(dataDefinition);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -1270,6 +1328,12 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteDataDefinition(DataDefinition dataDefinition)
+		throws Exception {
+
+		dataDefinitionResource.deleteDataDefinition(dataDefinition.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1798,6 +1862,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	}
 
 	protected DataDefinitionResource dataDefinitionResource;
+	protected List<DataDefinition> dataDefinitionList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -97,6 +97,7 @@ public abstract class BaseSegmentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		segmentList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -114,6 +115,15 @@ public abstract class BaseSegmentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Segment segment : segmentList) {
+			try {
+				deleteSegment(segment);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -220,8 +230,12 @@ public abstract class BaseSegmentResourceTestCase {
 		Segment segment1 = testGetSiteSegmentsPage_addSegment(
 			siteId, randomSegment());
 
+		segmentList.add(segment1);
+
 		Segment segment2 = testGetSiteSegmentsPage_addSegment(
 			siteId, randomSegment());
+
+		segmentList.add(segment2);
 
 		page = segmentResource.getSiteSegmentsPage(siteId, Pagination.of(1, 2));
 
@@ -239,11 +253,17 @@ public abstract class BaseSegmentResourceTestCase {
 		Segment segment1 = testGetSiteSegmentsPage_addSegment(
 			siteId, randomSegment());
 
+		segmentList.add(segment1);
+
 		Segment segment2 = testGetSiteSegmentsPage_addSegment(
 			siteId, randomSegment());
 
+		segmentList.add(segment2);
+
 		Segment segment3 = testGetSiteSegmentsPage_addSegment(
 			siteId, randomSegment());
+
+		segmentList.add(segment3);
 
 		Page<Segment> page1 = segmentResource.getSiteSegmentsPage(
 			siteId, Pagination.of(1, 2));
@@ -326,6 +346,9 @@ public abstract class BaseSegmentResourceTestCase {
 		Segment segment1 = testGraphQLSegment_addSegment();
 		Segment segment2 = testGraphQLSegment_addSegment();
 
+		segmentList.add(segment1);
+		segmentList.add(segment2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -376,8 +399,12 @@ public abstract class BaseSegmentResourceTestCase {
 		Segment segment1 = testGetSiteUserAccountSegmentsPage_addSegment(
 			siteId, userAccountId, randomSegment());
 
+		segmentList.add(segment1);
+
 		Segment segment2 = testGetSiteUserAccountSegmentsPage_addSegment(
 			siteId, userAccountId, randomSegment());
+
+		segmentList.add(segment2);
 
 		page = segmentResource.getSiteUserAccountSegmentsPage(
 			siteId, userAccountId);
@@ -572,6 +599,9 @@ public abstract class BaseSegmentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteSegment(Segment segment) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -943,6 +973,7 @@ public abstract class BaseSegmentResourceTestCase {
 	}
 
 	protected SegmentResource segmentResource;
+	protected List<Segment> segmentList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

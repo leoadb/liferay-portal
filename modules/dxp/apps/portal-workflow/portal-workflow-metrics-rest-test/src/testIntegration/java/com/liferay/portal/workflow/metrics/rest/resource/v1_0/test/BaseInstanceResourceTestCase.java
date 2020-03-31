@@ -97,6 +97,7 @@ public abstract class BaseInstanceResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		instanceList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -114,6 +115,15 @@ public abstract class BaseInstanceResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Instance instance : instanceList) {
+			try {
+				deleteInstance(instance);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -223,8 +233,12 @@ public abstract class BaseInstanceResourceTestCase {
 		Instance instance1 = testGetProcessInstancesPage_addInstance(
 			processId, randomInstance());
 
+		instanceList.add(instance1);
+
 		Instance instance2 = testGetProcessInstancesPage_addInstance(
 			processId, randomInstance());
+
+		instanceList.add(instance2);
 
 		page = instanceResource.getProcessInstancesPage(
 			processId, null, null, null, null, null, null, Pagination.of(1, 2));
@@ -244,11 +258,17 @@ public abstract class BaseInstanceResourceTestCase {
 		Instance instance1 = testGetProcessInstancesPage_addInstance(
 			processId, randomInstance());
 
+		instanceList.add(instance1);
+
 		Instance instance2 = testGetProcessInstancesPage_addInstance(
 			processId, randomInstance());
 
+		instanceList.add(instance2);
+
 		Instance instance3 = testGetProcessInstancesPage_addInstance(
 			processId, randomInstance());
+
+		instanceList.add(instance3);
 
 		Page<Instance> page1 = instanceResource.getProcessInstancesPage(
 			processId, null, null, null, null, null, null, Pagination.of(1, 2));
@@ -297,6 +317,8 @@ public abstract class BaseInstanceResourceTestCase {
 	public void testGetProcessInstance() throws Exception {
 		Instance postInstance = testGetProcessInstance_addInstance();
 
+		instanceList.add(postInstance);
+
 		Instance getInstance = instanceResource.getProcessInstance(
 			postInstance.getProcessId(), postInstance.getId());
 
@@ -312,6 +334,8 @@ public abstract class BaseInstanceResourceTestCase {
 	@Test
 	public void testGraphQLGetProcessInstance() throws Exception {
 		Instance instance = testGraphQLInstance_addInstance();
+
+		instanceList.add(instance);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -534,6 +558,9 @@ public abstract class BaseInstanceResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteInstance(Instance instance) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -978,6 +1005,7 @@ public abstract class BaseInstanceResourceTestCase {
 	}
 
 	protected InstanceResource instanceResource;
+	protected List<Instance> instanceList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

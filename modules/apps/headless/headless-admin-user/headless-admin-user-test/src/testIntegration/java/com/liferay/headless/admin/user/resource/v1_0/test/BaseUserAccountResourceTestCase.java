@@ -103,6 +103,7 @@ public abstract class BaseUserAccountResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		userAccountList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -120,6 +121,15 @@ public abstract class BaseUserAccountResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (UserAccount userAccount : userAccountList) {
+			try {
+				deleteUserAccount(userAccount);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -220,6 +230,8 @@ public abstract class BaseUserAccountResourceTestCase {
 	public void testGetMyUserAccount() throws Exception {
 		UserAccount postUserAccount = testGetMyUserAccount_addUserAccount();
 
+		userAccountList.add(postUserAccount);
+
 		UserAccount getUserAccount = userAccountResource.getMyUserAccount();
 
 		assertEquals(postUserAccount, getUserAccount);
@@ -236,6 +248,8 @@ public abstract class BaseUserAccountResourceTestCase {
 	@Test
 	public void testGraphQLGetMyUserAccount() throws Exception {
 		UserAccount userAccount = testGraphQLUserAccount_addUserAccount();
+
+		userAccountList.add(userAccount);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -294,9 +308,13 @@ public abstract class BaseUserAccountResourceTestCase {
 			testGetOrganizationUserAccountsPage_addUserAccount(
 				organizationId, randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		UserAccount userAccount2 =
 			testGetOrganizationUserAccountsPage_addUserAccount(
 				organizationId, randomUserAccount());
+
+		userAccountList.add(userAccount2);
 
 		page = userAccountResource.getOrganizationUserAccountsPage(
 			organizationId, null, null, Pagination.of(1, 2), null);
@@ -327,6 +345,8 @@ public abstract class BaseUserAccountResourceTestCase {
 
 		userAccount1 = testGetOrganizationUserAccountsPage_addUserAccount(
 			organizationId, userAccount1);
+
+		userAccountList.add(userAccount1);
 
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> page =
@@ -359,10 +379,14 @@ public abstract class BaseUserAccountResourceTestCase {
 			testGetOrganizationUserAccountsPage_addUserAccount(
 				organizationId, randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		UserAccount userAccount2 =
 			testGetOrganizationUserAccountsPage_addUserAccount(
 				organizationId, randomUserAccount());
+
+		userAccountList.add(userAccount2);
 
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> page =
@@ -388,13 +412,19 @@ public abstract class BaseUserAccountResourceTestCase {
 			testGetOrganizationUserAccountsPage_addUserAccount(
 				organizationId, randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		UserAccount userAccount2 =
 			testGetOrganizationUserAccountsPage_addUserAccount(
 				organizationId, randomUserAccount());
 
+		userAccountList.add(userAccount2);
+
 		UserAccount userAccount3 =
 			testGetOrganizationUserAccountsPage_addUserAccount(
 				organizationId, randomUserAccount());
+
+		userAccountList.add(userAccount3);
 
 		Page<UserAccount> page1 =
 			userAccountResource.getOrganizationUserAccountsPage(
@@ -507,8 +537,12 @@ public abstract class BaseUserAccountResourceTestCase {
 		userAccount1 = testGetOrganizationUserAccountsPage_addUserAccount(
 			organizationId, userAccount1);
 
+		userAccountList.add(userAccount1);
+
 		userAccount2 = testGetOrganizationUserAccountsPage_addUserAccount(
 			organizationId, userAccount2);
+
+		userAccountList.add(userAccount2);
 
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> ascPage =
@@ -584,8 +618,12 @@ public abstract class BaseUserAccountResourceTestCase {
 		UserAccount userAccount1 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		UserAccount userAccount2 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, randomUserAccount());
+
+		userAccountList.add(userAccount2);
 
 		page = userAccountResource.getSiteUserAccountsPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -616,6 +654,8 @@ public abstract class BaseUserAccountResourceTestCase {
 		userAccount1 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, userAccount1);
 
+		userAccountList.add(userAccount1);
+
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> page =
 				userAccountResource.getSiteUserAccountsPage(
@@ -645,9 +685,13 @@ public abstract class BaseUserAccountResourceTestCase {
 		UserAccount userAccount1 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		UserAccount userAccount2 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, randomUserAccount());
+
+		userAccountList.add(userAccount2);
 
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> page =
@@ -669,11 +713,17 @@ public abstract class BaseUserAccountResourceTestCase {
 		UserAccount userAccount1 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		UserAccount userAccount2 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, randomUserAccount());
 
+		userAccountList.add(userAccount2);
+
 		UserAccount userAccount3 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, randomUserAccount());
+
+		userAccountList.add(userAccount3);
 
 		Page<UserAccount> page1 = userAccountResource.getSiteUserAccountsPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -776,8 +826,12 @@ public abstract class BaseUserAccountResourceTestCase {
 		userAccount1 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, userAccount1);
 
+		userAccountList.add(userAccount1);
+
 		userAccount2 = testGetSiteUserAccountsPage_addUserAccount(
 			siteId, userAccount2);
+
+		userAccountList.add(userAccount2);
 
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> ascPage =
@@ -828,8 +882,12 @@ public abstract class BaseUserAccountResourceTestCase {
 		UserAccount userAccount1 = testGetUserAccountsPage_addUserAccount(
 			randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		UserAccount userAccount2 = testGetUserAccountsPage_addUserAccount(
 			randomUserAccount());
+
+		userAccountList.add(userAccount2);
 
 		page = userAccountResource.getUserAccountsPage(
 			null, null, Pagination.of(1, 2), null);
@@ -857,6 +915,8 @@ public abstract class BaseUserAccountResourceTestCase {
 
 		userAccount1 = testGetUserAccountsPage_addUserAccount(userAccount1);
 
+		userAccountList.add(userAccount1);
+
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> page = userAccountResource.getUserAccountsPage(
 				null, getFilterString(entityField, "between", userAccount1),
@@ -882,9 +942,13 @@ public abstract class BaseUserAccountResourceTestCase {
 		UserAccount userAccount1 = testGetUserAccountsPage_addUserAccount(
 			randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		UserAccount userAccount2 = testGetUserAccountsPage_addUserAccount(
 			randomUserAccount());
+
+		userAccountList.add(userAccount2);
 
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> page = userAccountResource.getUserAccountsPage(
@@ -902,11 +966,17 @@ public abstract class BaseUserAccountResourceTestCase {
 		UserAccount userAccount1 = testGetUserAccountsPage_addUserAccount(
 			randomUserAccount());
 
+		userAccountList.add(userAccount1);
+
 		UserAccount userAccount2 = testGetUserAccountsPage_addUserAccount(
 			randomUserAccount());
 
+		userAccountList.add(userAccount2);
+
 		UserAccount userAccount3 = testGetUserAccountsPage_addUserAccount(
 			randomUserAccount());
+
+		userAccountList.add(userAccount3);
 
 		Page<UserAccount> page1 = userAccountResource.getUserAccountsPage(
 			null, null, Pagination.of(1, 2), null);
@@ -1006,7 +1076,11 @@ public abstract class BaseUserAccountResourceTestCase {
 
 		userAccount1 = testGetUserAccountsPage_addUserAccount(userAccount1);
 
+		userAccountList.add(userAccount1);
+
 		userAccount2 = testGetUserAccountsPage_addUserAccount(userAccount2);
+
+		userAccountList.add(userAccount2);
 
 		for (EntityField entityField : entityFields) {
 			Page<UserAccount> ascPage = userAccountResource.getUserAccountsPage(
@@ -1074,6 +1148,9 @@ public abstract class BaseUserAccountResourceTestCase {
 		UserAccount userAccount1 = testGraphQLUserAccount_addUserAccount();
 		UserAccount userAccount2 = testGraphQLUserAccount_addUserAccount();
 
+		userAccountList.add(userAccount1);
+		userAccountList.add(userAccount2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -1092,6 +1169,8 @@ public abstract class BaseUserAccountResourceTestCase {
 	public void testGetUserAccount() throws Exception {
 		UserAccount postUserAccount = testGetUserAccount_addUserAccount();
 
+		userAccountList.add(postUserAccount);
+
 		UserAccount getUserAccount = userAccountResource.getUserAccount(
 			postUserAccount.getId());
 
@@ -1107,6 +1186,8 @@ public abstract class BaseUserAccountResourceTestCase {
 	@Test
 	public void testGraphQLGetUserAccount() throws Exception {
 		UserAccount userAccount = testGraphQLUserAccount_addUserAccount();
+
+		userAccountList.add(userAccount);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -1413,6 +1494,9 @@ public abstract class BaseUserAccountResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteUserAccount(UserAccount userAccount) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -2196,6 +2280,7 @@ public abstract class BaseUserAccountResourceTestCase {
 	}
 
 	protected UserAccountResource userAccountResource;
+	protected List<UserAccount> userAccountList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

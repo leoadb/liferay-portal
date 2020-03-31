@@ -93,6 +93,7 @@ public abstract class BaseAssigneeUserResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		assigneeUserList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -110,6 +111,15 @@ public abstract class BaseAssigneeUserResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (AssigneeUser assigneeUser : assigneeUserList) {
+			try {
+				deleteAssigneeUser(assigneeUser);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -349,6 +359,10 @@ public abstract class BaseAssigneeUserResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteAssigneeUser(AssigneeUser assigneeUser)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -686,6 +700,7 @@ public abstract class BaseAssigneeUserResourceTestCase {
 	}
 
 	protected AssigneeUserResource assigneeUserResource;
+	protected List<AssigneeUser> assigneeUserList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

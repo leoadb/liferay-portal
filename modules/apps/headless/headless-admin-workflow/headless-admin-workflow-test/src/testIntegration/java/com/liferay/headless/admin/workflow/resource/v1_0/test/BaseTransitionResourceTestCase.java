@@ -95,6 +95,7 @@ public abstract class BaseTransitionResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		transitionList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -112,6 +113,15 @@ public abstract class BaseTransitionResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Transition transition : transitionList) {
+			try {
+				deleteTransition(transition);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -222,9 +232,13 @@ public abstract class BaseTransitionResourceTestCase {
 			testGetWorkflowInstanceNextTransitionsPage_addTransition(
 				workflowInstanceId, randomTransition());
 
+		transitionList.add(transition1);
+
 		Transition transition2 =
 			testGetWorkflowInstanceNextTransitionsPage_addTransition(
 				workflowInstanceId, randomTransition());
+
+		transitionList.add(transition2);
 
 		page = transitionResource.getWorkflowInstanceNextTransitionsPage(
 			workflowInstanceId, Pagination.of(1, 2));
@@ -248,13 +262,19 @@ public abstract class BaseTransitionResourceTestCase {
 			testGetWorkflowInstanceNextTransitionsPage_addTransition(
 				workflowInstanceId, randomTransition());
 
+		transitionList.add(transition1);
+
 		Transition transition2 =
 			testGetWorkflowInstanceNextTransitionsPage_addTransition(
 				workflowInstanceId, randomTransition());
 
+		transitionList.add(transition2);
+
 		Transition transition3 =
 			testGetWorkflowInstanceNextTransitionsPage_addTransition(
 				workflowInstanceId, randomTransition());
+
+		transitionList.add(transition3);
 
 		Page<Transition> page1 =
 			transitionResource.getWorkflowInstanceNextTransitionsPage(
@@ -341,9 +361,13 @@ public abstract class BaseTransitionResourceTestCase {
 			testGetWorkflowTaskNextTransitionsPage_addTransition(
 				workflowTaskId, randomTransition());
 
+		transitionList.add(transition1);
+
 		Transition transition2 =
 			testGetWorkflowTaskNextTransitionsPage_addTransition(
 				workflowTaskId, randomTransition());
+
+		transitionList.add(transition2);
 
 		page = transitionResource.getWorkflowTaskNextTransitionsPage(
 			workflowTaskId, Pagination.of(1, 2));
@@ -367,13 +391,19 @@ public abstract class BaseTransitionResourceTestCase {
 			testGetWorkflowTaskNextTransitionsPage_addTransition(
 				workflowTaskId, randomTransition());
 
+		transitionList.add(transition1);
+
 		Transition transition2 =
 			testGetWorkflowTaskNextTransitionsPage_addTransition(
 				workflowTaskId, randomTransition());
 
+		transitionList.add(transition2);
+
 		Transition transition3 =
 			testGetWorkflowTaskNextTransitionsPage_addTransition(
 				workflowTaskId, randomTransition());
+
+		transitionList.add(transition3);
 
 		Page<Transition> page1 =
 			transitionResource.getWorkflowTaskNextTransitionsPage(
@@ -538,6 +568,9 @@ public abstract class BaseTransitionResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteTransition(Transition transition) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -734,6 +767,7 @@ public abstract class BaseTransitionResourceTestCase {
 	}
 
 	protected TransitionResource transitionResource;
+	protected List<Transition> transitionList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

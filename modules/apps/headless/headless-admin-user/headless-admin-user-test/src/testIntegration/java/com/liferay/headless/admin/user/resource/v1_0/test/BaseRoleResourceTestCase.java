@@ -96,6 +96,7 @@ public abstract class BaseRoleResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		roleList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -113,6 +114,15 @@ public abstract class BaseRoleResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Role role : roleList) {
+			try {
+				deleteRole(role);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -233,6 +243,9 @@ public abstract class BaseRoleResourceTestCase {
 		Role role1 = testGraphQLRole_addRole();
 		Role role2 = testGraphQLRole_addRole();
 
+		roleList.add(role1);
+		roleList.add(role2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -250,6 +263,8 @@ public abstract class BaseRoleResourceTestCase {
 	public void testGetRole() throws Exception {
 		Role postRole = testGetRole_addRole();
 
+		roleList.add(postRole);
+
 		Role getRole = roleResource.getRole(postRole.getId());
 
 		assertEquals(postRole, getRole);
@@ -264,6 +279,8 @@ public abstract class BaseRoleResourceTestCase {
 	@Test
 	public void testGraphQLGetRole() throws Exception {
 		Role role = testGraphQLRole_addRole();
+
+		roleList.add(role);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -454,6 +471,9 @@ public abstract class BaseRoleResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteRole(Role role) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -848,6 +868,7 @@ public abstract class BaseRoleResourceTestCase {
 	}
 
 	protected RoleResource roleResource;
+	protected List<Role> roleList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

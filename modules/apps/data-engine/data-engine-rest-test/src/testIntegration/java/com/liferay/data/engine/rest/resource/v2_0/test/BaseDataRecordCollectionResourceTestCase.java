@@ -100,6 +100,7 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		dataRecordCollectionList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -118,6 +119,17 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (DataRecordCollection dataRecordCollection :
+				dataRecordCollectionList) {
+
+			try {
+				deleteDataRecordCollection(dataRecordCollection);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -202,6 +214,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		DataRecordCollection postDataRecordCollection =
 			testGetDataDefinitionDataRecordCollection_addDataRecordCollection();
 
+		dataRecordCollectionList.add(postDataRecordCollection);
+
 		DataRecordCollection getDataRecordCollection =
 			dataRecordCollectionResource.getDataDefinitionDataRecordCollection(
 				postDataRecordCollection.getDataDefinitionId());
@@ -224,6 +238,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 
 		DataRecordCollection dataRecordCollection =
 			testGraphQLDataRecordCollection_addDataRecordCollection();
+
+		dataRecordCollectionList.add(dataRecordCollection);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -292,9 +308,13 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 			testGetDataDefinitionDataRecordCollectionsPage_addDataRecordCollection(
 				dataDefinitionId, randomDataRecordCollection());
 
+		dataRecordCollectionList.add(dataRecordCollection1);
+
 		DataRecordCollection dataRecordCollection2 =
 			testGetDataDefinitionDataRecordCollectionsPage_addDataRecordCollection(
 				dataDefinitionId, randomDataRecordCollection());
+
+		dataRecordCollectionList.add(dataRecordCollection2);
 
 		page =
 			dataRecordCollectionResource.
@@ -326,13 +346,19 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 			testGetDataDefinitionDataRecordCollectionsPage_addDataRecordCollection(
 				dataDefinitionId, randomDataRecordCollection());
 
+		dataRecordCollectionList.add(dataRecordCollection1);
+
 		DataRecordCollection dataRecordCollection2 =
 			testGetDataDefinitionDataRecordCollectionsPage_addDataRecordCollection(
 				dataDefinitionId, randomDataRecordCollection());
 
+		dataRecordCollectionList.add(dataRecordCollection2);
+
 		DataRecordCollection dataRecordCollection3 =
 			testGetDataDefinitionDataRecordCollectionsPage_addDataRecordCollection(
 				dataDefinitionId, randomDataRecordCollection());
+
+		dataRecordCollectionList.add(dataRecordCollection3);
 
 		Page<DataRecordCollection> page1 =
 			dataRecordCollectionResource.
@@ -407,6 +433,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 			testPostDataDefinitionDataRecordCollection_addDataRecordCollection(
 				randomDataRecordCollection);
 
+		dataRecordCollectionList.add(postDataRecordCollection);
+
 		assertEquals(randomDataRecordCollection, postDataRecordCollection);
 		assertValid(postDataRecordCollection);
 	}
@@ -427,6 +455,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DataRecordCollection dataRecordCollection =
 			testDeleteDataRecordCollection_addDataRecordCollection();
+
+		dataRecordCollectionList.add(dataRecordCollection);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -456,6 +486,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 	public void testGraphQLDeleteDataRecordCollection() throws Exception {
 		DataRecordCollection dataRecordCollection =
 			testGraphQLDataRecordCollection_addDataRecordCollection();
+
+		dataRecordCollectionList.add(dataRecordCollection);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -509,6 +541,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		DataRecordCollection postDataRecordCollection =
 			testGetDataRecordCollection_addDataRecordCollection();
 
+		dataRecordCollectionList.add(postDataRecordCollection);
+
 		DataRecordCollection getDataRecordCollection =
 			dataRecordCollectionResource.getDataRecordCollection(
 				postDataRecordCollection.getId());
@@ -529,6 +563,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 	public void testGraphQLGetDataRecordCollection() throws Exception {
 		DataRecordCollection dataRecordCollection =
 			testGraphQLDataRecordCollection_addDataRecordCollection();
+
+		dataRecordCollectionList.add(dataRecordCollection);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -561,6 +597,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		DataRecordCollection postDataRecordCollection =
 			testPutDataRecordCollection_addDataRecordCollection();
 
+		dataRecordCollectionList.add(postDataRecordCollection);
+
 		DataRecordCollection randomDataRecordCollection =
 			randomDataRecordCollection();
 
@@ -592,6 +630,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DataRecordCollection dataRecordCollection =
 			testPutDataRecordCollectionPermission_addDataRecordCollection();
+
+		dataRecordCollectionList.add(dataRecordCollection);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -644,6 +684,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		DataRecordCollection postDataRecordCollection =
 			testGetSiteDataRecordCollectionByDataRecordCollectionKey_addDataRecordCollection();
 
+		dataRecordCollectionList.add(postDataRecordCollection);
+
 		DataRecordCollection getDataRecordCollection =
 			dataRecordCollectionResource.
 				getSiteDataRecordCollectionByDataRecordCollectionKey(
@@ -668,6 +710,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 
 		DataRecordCollection dataRecordCollection =
 			testGraphQLDataRecordCollection_addDataRecordCollection();
+
+		dataRecordCollectionList.add(dataRecordCollection);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -866,6 +910,14 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteDataRecordCollection(
+			DataRecordCollection dataRecordCollection)
+		throws Exception {
+
+		dataRecordCollectionResource.deleteDataRecordCollection(
+			dataRecordCollection.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1154,6 +1206,7 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 	}
 
 	protected DataRecordCollectionResource dataRecordCollectionResource;
+	protected List<DataRecordCollection> dataRecordCollectionList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

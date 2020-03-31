@@ -103,6 +103,7 @@ public abstract class BaseAccountRoleResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		accountRoleList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -120,6 +121,15 @@ public abstract class BaseAccountRoleResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (AccountRole accountRole : accountRoleList) {
+			try {
+				deleteAccountRole(accountRole);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -229,8 +239,12 @@ public abstract class BaseAccountRoleResourceTestCase {
 		AccountRole accountRole1 = testGetAccountRolesPage_addAccountRole(
 			accountId, randomAccountRole());
 
+		accountRoleList.add(accountRole1);
+
 		AccountRole accountRole2 = testGetAccountRolesPage_addAccountRole(
 			accountId, randomAccountRole());
+
+		accountRoleList.add(accountRole2);
 
 		page = accountRoleResource.getAccountRolesPage(
 			accountId, null, Pagination.of(1, 2), null);
@@ -250,11 +264,17 @@ public abstract class BaseAccountRoleResourceTestCase {
 		AccountRole accountRole1 = testGetAccountRolesPage_addAccountRole(
 			accountId, randomAccountRole());
 
+		accountRoleList.add(accountRole1);
+
 		AccountRole accountRole2 = testGetAccountRolesPage_addAccountRole(
 			accountId, randomAccountRole());
 
+		accountRoleList.add(accountRole2);
+
 		AccountRole accountRole3 = testGetAccountRolesPage_addAccountRole(
 			accountId, randomAccountRole());
+
+		accountRoleList.add(accountRole3);
 
 		Page<AccountRole> page1 = accountRoleResource.getAccountRolesPage(
 			accountId, null, Pagination.of(1, 2), null);
@@ -357,8 +377,12 @@ public abstract class BaseAccountRoleResourceTestCase {
 		accountRole1 = testGetAccountRolesPage_addAccountRole(
 			accountId, accountRole1);
 
+		accountRoleList.add(accountRole1);
+
 		accountRole2 = testGetAccountRolesPage_addAccountRole(
 			accountId, accountRole2);
+
+		accountRoleList.add(accountRole2);
 
 		for (EntityField entityField : entityFields) {
 			Page<AccountRole> ascPage = accountRoleResource.getAccountRolesPage(
@@ -437,6 +461,9 @@ public abstract class BaseAccountRoleResourceTestCase {
 		AccountRole accountRole1 = testGraphQLAccountRole_addAccountRole();
 		AccountRole accountRole2 = testGraphQLAccountRole_addAccountRole();
 
+		accountRoleList.add(accountRole1);
+		accountRoleList.add(accountRole2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -458,6 +485,8 @@ public abstract class BaseAccountRoleResourceTestCase {
 		AccountRole postAccountRole = testPostAccountRole_addAccountRole(
 			randomAccountRole);
 
+		accountRoleList.add(postAccountRole);
+
 		assertEquals(randomAccountRole, postAccountRole);
 		assertValid(postAccountRole);
 	}
@@ -475,6 +504,8 @@ public abstract class BaseAccountRoleResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		AccountRole accountRole =
 			testDeleteAccountRoleUserAssociation_addAccountRole();
+
+		accountRoleList.add(accountRole);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -494,6 +525,8 @@ public abstract class BaseAccountRoleResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		AccountRole accountRole =
 			testPostAccountRoleUserAssociation_addAccountRole();
+
+		accountRoleList.add(accountRole);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -662,6 +695,9 @@ public abstract class BaseAccountRoleResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteAccountRole(AccountRole accountRole) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -974,6 +1010,7 @@ public abstract class BaseAccountRoleResourceTestCase {
 	}
 
 	protected AccountRoleResource accountRoleResource;
+	protected List<AccountRole> accountRoleList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

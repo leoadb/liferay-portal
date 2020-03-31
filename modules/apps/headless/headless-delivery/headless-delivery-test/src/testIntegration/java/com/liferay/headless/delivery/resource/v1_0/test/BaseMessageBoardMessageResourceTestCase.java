@@ -107,6 +107,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		messageBoardMessageList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -125,6 +126,17 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (MessageBoardMessage messageBoardMessage :
+				messageBoardMessageList) {
+
+			try {
+				deleteMessageBoardMessage(messageBoardMessage);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -212,6 +224,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage messageBoardMessage =
 			testDeleteMessageBoardMessage_addMessageBoardMessage();
 
+		messageBoardMessageList.add(messageBoardMessage);
+
 		assertHttpResponseStatusCode(
 			204,
 			messageBoardMessageResource.deleteMessageBoardMessageHttpResponse(
@@ -239,6 +253,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 	public void testGraphQLDeleteMessageBoardMessage() throws Exception {
 		MessageBoardMessage messageBoardMessage =
 			testGraphQLMessageBoardMessage_addMessageBoardMessage();
+
+		messageBoardMessageList.add(messageBoardMessage);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -292,6 +308,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage postMessageBoardMessage =
 			testGetMessageBoardMessage_addMessageBoardMessage();
 
+		messageBoardMessageList.add(postMessageBoardMessage);
+
 		MessageBoardMessage getMessageBoardMessage =
 			messageBoardMessageResource.getMessageBoardMessage(
 				postMessageBoardMessage.getId());
@@ -312,6 +330,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 	public void testGraphQLGetMessageBoardMessage() throws Exception {
 		MessageBoardMessage messageBoardMessage =
 			testGraphQLMessageBoardMessage_addMessageBoardMessage();
+
+		messageBoardMessageList.add(messageBoardMessage);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -343,6 +363,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 	public void testPatchMessageBoardMessage() throws Exception {
 		MessageBoardMessage postMessageBoardMessage =
 			testPatchMessageBoardMessage_addMessageBoardMessage();
+
+		messageBoardMessageList.add(postMessageBoardMessage);
 
 		MessageBoardMessage randomPatchMessageBoardMessage =
 			randomPatchMessageBoardMessage();
@@ -379,6 +401,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage postMessageBoardMessage =
 			testPutMessageBoardMessage_addMessageBoardMessage();
 
+		messageBoardMessageList.add(postMessageBoardMessage);
+
 		MessageBoardMessage randomMessageBoardMessage =
 			randomMessageBoardMessage();
 
@@ -410,6 +434,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MessageBoardMessage messageBoardMessage =
 			testDeleteMessageBoardMessageMyRating_addMessageBoardMessage();
+
+		messageBoardMessageList.add(messageBoardMessage);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -443,6 +469,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage messageBoardMessage =
 			testPutMessageBoardMessageSubscribe_addMessageBoardMessage();
 
+		messageBoardMessageList.add(messageBoardMessage);
+
 		assertHttpResponseStatusCode(
 			204,
 			messageBoardMessageResource.
@@ -468,6 +496,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MessageBoardMessage messageBoardMessage =
 			testPutMessageBoardMessageUnsubscribe_addMessageBoardMessage();
+
+		messageBoardMessageList.add(messageBoardMessage);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -531,9 +561,13 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		MessageBoardMessage messageBoardMessage2 =
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		page =
 			messageBoardMessageResource.
@@ -575,6 +609,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, messageBoardMessage1);
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> page =
 				messageBoardMessageResource.
@@ -608,10 +644,14 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MessageBoardMessage messageBoardMessage2 =
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> page =
@@ -639,13 +679,19 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		MessageBoardMessage messageBoardMessage2 =
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage2);
+
 		MessageBoardMessage messageBoardMessage3 =
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage3);
 
 		Page<MessageBoardMessage> page1 =
 			messageBoardMessageResource.
@@ -775,9 +821,13 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, messageBoardMessage1);
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		messageBoardMessage2 =
 			testGetMessageBoardMessageMessageBoardMessagesPage_addMessageBoardMessage(
 				parentMessageBoardMessageId, messageBoardMessage2);
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> ascPage =
@@ -839,6 +889,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
 				randomMessageBoardMessage);
 
+		messageBoardMessageList.add(postMessageBoardMessage);
+
 		assertEquals(randomMessageBoardMessage, postMessageBoardMessage);
 		assertValid(postMessageBoardMessage);
 	}
@@ -896,9 +948,13 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		MessageBoardMessage messageBoardMessage2 =
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		page =
 			messageBoardMessageResource.
@@ -940,6 +996,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, messageBoardMessage1);
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> page =
 				messageBoardMessageResource.
@@ -973,10 +1031,14 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MessageBoardMessage messageBoardMessage2 =
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> page =
@@ -1004,13 +1066,19 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		MessageBoardMessage messageBoardMessage2 =
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage2);
+
 		MessageBoardMessage messageBoardMessage3 =
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage3);
 
 		Page<MessageBoardMessage> page1 =
 			messageBoardMessageResource.
@@ -1140,9 +1208,13 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, messageBoardMessage1);
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		messageBoardMessage2 =
 			testGetMessageBoardThreadMessageBoardMessagesPage_addMessageBoardMessage(
 				messageBoardThreadId, messageBoardMessage2);
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> ascPage =
@@ -1204,6 +1276,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPostMessageBoardThreadMessageBoardMessage_addMessageBoardMessage(
 				randomMessageBoardMessage);
 
+		messageBoardMessageList.add(postMessageBoardMessage);
+
 		assertEquals(randomMessageBoardMessage, postMessageBoardMessage);
 		assertValid(postMessageBoardMessage);
 	}
@@ -1252,9 +1326,13 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		MessageBoardMessage messageBoardMessage2 =
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		page = messageBoardMessageResource.getSiteMessageBoardMessagesPage(
 			siteId, null, null, null, Pagination.of(1, 2), null);
@@ -1292,6 +1370,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, messageBoardMessage1);
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> page =
 				messageBoardMessageResource.getSiteMessageBoardMessagesPage(
@@ -1323,10 +1403,14 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MessageBoardMessage messageBoardMessage2 =
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> page =
@@ -1351,13 +1435,19 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		MessageBoardMessage messageBoardMessage2 =
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, randomMessageBoardMessage());
 
+		messageBoardMessageList.add(messageBoardMessage2);
+
 		MessageBoardMessage messageBoardMessage3 =
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, randomMessageBoardMessage());
+
+		messageBoardMessageList.add(messageBoardMessage3);
 
 		Page<MessageBoardMessage> page1 =
 			messageBoardMessageResource.getSiteMessageBoardMessagesPage(
@@ -1480,9 +1570,13 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, messageBoardMessage1);
 
+		messageBoardMessageList.add(messageBoardMessage1);
+
 		messageBoardMessage2 =
 			testGetSiteMessageBoardMessagesPage_addMessageBoardMessage(
 				siteId, messageBoardMessage2);
+
+		messageBoardMessageList.add(messageBoardMessage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<MessageBoardMessage> ascPage =
@@ -1568,6 +1662,9 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage messageBoardMessage2 =
 			testGraphQLMessageBoardMessage_addMessageBoardMessage();
 
+		messageBoardMessageList.add(messageBoardMessage1);
+		messageBoardMessageList.add(messageBoardMessage2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -1590,6 +1687,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 
 		MessageBoardMessage postMessageBoardMessage =
 			testGetSiteMessageBoardMessageByFriendlyUrlPath_addMessageBoardMessage();
+
+		messageBoardMessageList.add(postMessageBoardMessage);
 
 		MessageBoardMessage getMessageBoardMessage =
 			messageBoardMessageResource.
@@ -1615,6 +1714,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 
 		MessageBoardMessage messageBoardMessage =
 			testGraphQLMessageBoardMessage_addMessageBoardMessage();
+
+		messageBoardMessageList.add(messageBoardMessage);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -1649,6 +1750,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage postMessageBoardMessage =
 			testGetMessageBoardMessage_addMessageBoardMessage();
 
+		messageBoardMessageList.add(postMessageBoardMessage);
+
 		Rating postRating = testGetMessageBoardMessageMyRating_addRating(
 			postMessageBoardMessage.getId(), randomRating());
 
@@ -1677,6 +1780,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 	public void testPutMessageBoardMessageMyRating() throws Exception {
 		MessageBoardMessage postMessageBoardMessage =
 			testPutMessageBoardMessage_addMessageBoardMessage();
+
+		messageBoardMessageList.add(postMessageBoardMessage);
 
 		testPutMessageBoardMessageMyRating_addRating(
 			postMessageBoardMessage.getId(), randomRating());
@@ -2087,6 +2192,14 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteMessageBoardMessage(
+			MessageBoardMessage messageBoardMessage)
+		throws Exception {
+
+		messageBoardMessageResource.deleteMessageBoardMessage(
+			messageBoardMessage.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -2976,6 +3089,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 	}
 
 	protected MessageBoardMessageResource messageBoardMessageResource;
+	protected List<MessageBoardMessage> messageBoardMessageList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

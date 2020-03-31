@@ -100,6 +100,7 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		messageBoardAttachmentList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -118,6 +119,17 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (MessageBoardAttachment messageBoardAttachment :
+				messageBoardAttachmentList) {
+
+			try {
+				deleteMessageBoardAttachment(messageBoardAttachment);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -211,6 +223,8 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 		MessageBoardAttachment messageBoardAttachment =
 			testDeleteMessageBoardAttachment_addMessageBoardAttachment();
 
+		messageBoardAttachmentList.add(messageBoardAttachment);
+
 		assertHttpResponseStatusCode(
 			204,
 			messageBoardAttachmentResource.
@@ -241,6 +255,8 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 	public void testGraphQLDeleteMessageBoardAttachment() throws Exception {
 		MessageBoardAttachment messageBoardAttachment =
 			testGraphQLMessageBoardAttachment_addMessageBoardAttachment();
+
+		messageBoardAttachmentList.add(messageBoardAttachment);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -294,6 +310,8 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 		MessageBoardAttachment postMessageBoardAttachment =
 			testGetMessageBoardAttachment_addMessageBoardAttachment();
 
+		messageBoardAttachmentList.add(postMessageBoardAttachment);
+
 		MessageBoardAttachment getMessageBoardAttachment =
 			messageBoardAttachmentResource.getMessageBoardAttachment(
 				postMessageBoardAttachment.getId());
@@ -314,6 +332,8 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 	public void testGraphQLGetMessageBoardAttachment() throws Exception {
 		MessageBoardAttachment messageBoardAttachment =
 			testGraphQLMessageBoardAttachment_addMessageBoardAttachment();
+
+		messageBoardAttachmentList.add(messageBoardAttachment);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -380,9 +400,13 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 			testGetMessageBoardMessageMessageBoardAttachmentsPage_addMessageBoardAttachment(
 				messageBoardMessageId, randomMessageBoardAttachment());
 
+		messageBoardAttachmentList.add(messageBoardAttachment1);
+
 		MessageBoardAttachment messageBoardAttachment2 =
 			testGetMessageBoardMessageMessageBoardAttachmentsPage_addMessageBoardAttachment(
 				messageBoardMessageId, randomMessageBoardAttachment());
+
+		messageBoardAttachmentList.add(messageBoardAttachment2);
 
 		page =
 			messageBoardAttachmentResource.
@@ -443,6 +467,8 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 			testPostMessageBoardMessageMessageBoardAttachment_addMessageBoardAttachment(
 				randomMessageBoardAttachment, multipartFiles);
 
+		messageBoardAttachmentList.add(postMessageBoardAttachment);
+
 		assertEquals(randomMessageBoardAttachment, postMessageBoardAttachment);
 		assertValid(postMessageBoardAttachment);
 
@@ -500,9 +526,13 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 			testGetMessageBoardThreadMessageBoardAttachmentsPage_addMessageBoardAttachment(
 				messageBoardThreadId, randomMessageBoardAttachment());
 
+		messageBoardAttachmentList.add(messageBoardAttachment1);
+
 		MessageBoardAttachment messageBoardAttachment2 =
 			testGetMessageBoardThreadMessageBoardAttachmentsPage_addMessageBoardAttachment(
 				messageBoardThreadId, randomMessageBoardAttachment());
+
+		messageBoardAttachmentList.add(messageBoardAttachment2);
 
 		page =
 			messageBoardAttachmentResource.
@@ -562,6 +592,8 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 		MessageBoardAttachment postMessageBoardAttachment =
 			testPostMessageBoardThreadMessageBoardAttachment_addMessageBoardAttachment(
 				randomMessageBoardAttachment, multipartFiles);
+
+		messageBoardAttachmentList.add(postMessageBoardAttachment);
 
 		assertEquals(randomMessageBoardAttachment, postMessageBoardAttachment);
 		assertValid(postMessageBoardAttachment);
@@ -761,6 +793,14 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteMessageBoardAttachment(
+			MessageBoardAttachment messageBoardAttachment)
+		throws Exception {
+
+		messageBoardAttachmentResource.deleteMessageBoardAttachment(
+			messageBoardAttachment.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1097,6 +1137,7 @@ public abstract class BaseMessageBoardAttachmentResourceTestCase {
 	}
 
 	protected MessageBoardAttachmentResource messageBoardAttachmentResource;
+	protected List<MessageBoardAttachment> messageBoardAttachmentList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;
