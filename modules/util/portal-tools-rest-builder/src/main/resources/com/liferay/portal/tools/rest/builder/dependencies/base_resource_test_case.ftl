@@ -103,6 +103,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		${schemaVarNames} = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -119,6 +120,15 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (${schemaName} ${schemaVarName} : ${schemaVarNames}) {
+			try {
+				delete${schemaName}(${schemaVarName});
+			}
+			catch(Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -221,6 +231,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 				<#if properties?keys?seq_contains("id")>
 					@SuppressWarnings("PMD.UnusedLocalVariable")
 					${schemaName} ${schemaVarName} = test${javaMethodSignature.methodName?cap_first}_add${schemaName}();
+
+					${schemaVarNames}.add(${schemaVarName});
 
 					assertHttpResponseStatusCode(204, ${schemaVarName}Resource.${javaMethodSignature.methodName}HttpResponse(
 
@@ -407,6 +419,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 					random${schemaName}());
 
+					${schemaVarNames}.add(${schemaVarName}1);
+
 					${schemaName} ${schemaVarName}2 = test${javaMethodSignature.methodName?cap_first}_add${schemaName}(
 
 					<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>
@@ -414,6 +428,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 					</#list>
 
 					random${schemaName}());
+
+					${schemaVarNames}.add(${schemaVarName}2);
 
 					page = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
 
@@ -488,6 +504,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 						${schemaVarName}1);
 
+						${schemaVarNames}.add(${schemaVarName}1);
+
 						for (EntityField entityField : entityFields) {
 							Page<${schemaName}> page = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
 
@@ -533,6 +551,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 						random${schemaName}());
 
+						${schemaVarNames}.add(${schemaVarName}1);
+
 						@SuppressWarnings("PMD.UnusedLocalVariable")
 						${schemaName} ${schemaVarName}2 = test${javaMethodSignature.methodName?cap_first}_add${schemaName}(
 
@@ -541,6 +561,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 						</#list>
 
 						random${schemaName}());
+
+						${schemaVarNames}.add(${schemaVarName}2);
 
 						for (EntityField entityField : entityFields) {
 							Page<${schemaName}> page = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
@@ -583,6 +605,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 						random${schemaName}());
 
+						${schemaVarNames}.add(${schemaVarName}1);
+
 						${schemaName} ${schemaVarName}2 = test${javaMethodSignature.methodName?cap_first}_add${schemaName}(
 
 						<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>
@@ -591,6 +615,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 						random${schemaName}());
 
+						${schemaVarNames}.add(${schemaVarName}2);
+
 						${schemaName} ${schemaVarName}3 = test${javaMethodSignature.methodName?cap_first}_add${schemaName}(
 
 						<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>
@@ -598,6 +624,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 						</#list>
 
 						random${schemaName}());
+
+						${schemaVarNames}.add(${schemaVarName}3);
 
 						Page<${schemaName}> page1 = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
 
@@ -736,6 +764,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 						${schemaVarName}1);
 
+						${schemaVarNames}.add(${schemaVarName}1);
+
 						${schemaVarName}2 = test${javaMethodSignature.methodName?cap_first}_add${schemaName}(
 
 						<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>
@@ -743,6 +773,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 						</#list>
 
 						${schemaVarName}2);
+
+						${schemaVarNames}.add(${schemaVarName}2);
 
 						for (EntityField entityField : entityFields) {
 							Page<${schemaName}> ascPage = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
@@ -847,6 +879,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 				<#if properties?keys?seq_contains("id")>
 					${schemaName} post${schemaName} = test${javaMethodSignature.methodName?cap_first}_add${schemaName}();
 
+					${schemaVarNames}.add(post${schemaName});
+
 					${schemaName} get${schemaName} = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
 
 					<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
@@ -904,6 +938,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 					Assert.assertTrue(false);
 				<#else>
 					${schemaName} post${schemaName} = test${javaMethodSignature.methodName?cap_first}_add${schemaName}();
+
+					${schemaVarNames}.add(post${schemaName});
 
 					${schemaName} randomPatch${schemaName} = randomPatch${schemaName}();
 
@@ -972,6 +1008,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 				);
 
+				${schemaVarNames}.add(post${schemaName});
+
 				assertEquals(random${schemaName}, post${schemaName});
 				assertValid(post${schemaName});
 
@@ -1015,6 +1053,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 					Assert.assertTrue(false);
 				<#else>
 					${schemaName} post${schemaName} = test${javaMethodSignature.methodName?cap_first}_add${schemaName}();
+
+					${schemaVarNames}.add(post${schemaName});
 
 					${schemaName} random${schemaName} = random${schemaName}();
 
@@ -1091,6 +1131,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 			public void test${javaMethodSignature.methodName?cap_first}() throws Exception {
 				@SuppressWarnings("PMD.UnusedLocalVariable")
 				${schemaName} ${schemaVarName} = test${javaMethodSignature.methodName?cap_first}_add${schemaName}();
+
+				${schemaVarNames}.add(${schemaVarName});
 
 				assertHttpResponseStatusCode(
 					204,
@@ -1189,6 +1231,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 				<#else>
 					${schemaName} ${schemaVarName} = testGraphQL${schemaName}_add${schemaName}();
 
+					${schemaVarNames}.add(${schemaVarName});
+
 					GraphQLField graphQLField = new GraphQLField(
 						"mutation",
 						new GraphQLField(
@@ -1284,6 +1328,9 @@ public abstract class Base${schemaName}ResourceTestCase {
 					${schemaName} ${schemaVarName}1 = testGraphQL${schemaName}_add${schemaName}();
 					${schemaName} ${schemaVarName}2 = testGraphQL${schemaName}_add${schemaName}();
 
+					${schemaVarNames}.add(${schemaVarName}1);
+					${schemaVarNames}.add(${schemaVarName}2);
+
 					jsonObject = JSONFactoryUtil.createJSONObject(invoke(graphQLField.toString()));
 
 					dataJSONObject = jsonObject.getJSONObject("data");
@@ -1300,6 +1347,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 			public void testGraphQL${javaMethodSignature.methodName?cap_first}() throws Exception {
 				<#if properties?keys?seq_contains("id")>
 					${schemaName} ${schemaVarName} = testGraphQL${schemaName}_add${schemaName}();
+
+					${schemaVarNames}.add(${schemaVarName});
 
 					List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -1346,6 +1395,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 				${schemaName} ${schemaVarName} = testGraphQL${schemaName}_add${schemaName}(random${schemaName});
 
+				${schemaVarNames}.add(${schemaVarName});
+
 				Assert.assertTrue(equalsJSONObject(random${schemaName}, JSONFactoryUtil.createJSONObject(JSONFactoryUtil.serialize(${schemaVarName}))));
 			}
 		</#if>
@@ -1362,6 +1413,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 				@Test
 				public void test${javaMethodSignature.methodName?cap_first}() throws Exception {
 					${schemaName} post${schemaName} = testGet${schemaName}_add${schemaName}();
+
+					${schemaVarNames}.add(post${schemaName});
 
 					${relatedSchemaName} post${relatedSchemaName} = test${javaMethodSignature.methodName?cap_first}_add${relatedSchemaName}(post${schemaName}.getId(), random${relatedSchemaName}());
 
@@ -1383,6 +1436,8 @@ public abstract class Base${schemaName}ResourceTestCase {
 				@Test
 				public void test${javaMethodSignature.methodName?cap_first}() throws Exception {
 					${schemaName} post${schemaName} = testPut${schemaName}_add${schemaName}();
+
+					${schemaVarNames}.add(post${schemaName});
 
 					test${javaMethodSignature.methodName?cap_first}_add${relatedSchemaName}(post${schemaName}.getId(), random${relatedSchemaName}());
 
@@ -1695,6 +1750,24 @@ public abstract class Base${schemaName}ResourceTestCase {
 		}
 	</#list>
 
+	protected void delete${schemaName}(${schemaName} ${schemaVarName}) throws Exception {
+		<#if freeMarkerTool.hasJavaMethodSignature(javaMethodSignatures, "delete" + schemaName)>
+			<#assign deleteJavaMethodSignature = freeMarkerTool.getJavaMethodSignature(javaMethodSignatures, "delete" + schemaName) />
+
+			<#if properties?keys?seq_contains("id")>
+				${schemaVarName}Resource.delete${schemaName}(
+				<#list deleteJavaMethodSignature.javaMethodParameters as javaMethodParameter>
+					<#if freeMarkerTool.isPathParameter(javaMethodParameter, deleteJavaMethodSignature.operation) && stringUtil.equals(javaMethodParameter.parameterName, schemaVarName + "Id")>
+						${schemaVarName}.getId()
+					<#else>
+						null
+					</#if>
+					<#sep>, </#sep>
+				</#list>);
+			</#if>
+		</#if>
+	}
+
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[0];
 	}
@@ -1976,6 +2049,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 	</#list>
 
 	protected ${schemaName}Resource ${schemaVarName}Resource;
+	protected List<${schemaName}> ${schemaVarNames};
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;
