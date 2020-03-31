@@ -95,6 +95,7 @@ public abstract class BasePhoneResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		phoneList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -112,6 +113,15 @@ public abstract class BasePhoneResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Phone phone : phoneList) {
+			try {
+				deletePhone(phone);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -219,8 +229,12 @@ public abstract class BasePhoneResourceTestCase {
 		Phone phone1 = testGetOrganizationPhonesPage_addPhone(
 			organizationId, randomPhone());
 
+		phoneList.add(phone1);
+
 		Phone phone2 = testGetOrganizationPhonesPage_addPhone(
 			organizationId, randomPhone());
+
+		phoneList.add(phone2);
 
 		page = phoneResource.getOrganizationPhonesPage(organizationId);
 
@@ -256,6 +270,8 @@ public abstract class BasePhoneResourceTestCase {
 	public void testGetPhone() throws Exception {
 		Phone postPhone = testGetPhone_addPhone();
 
+		phoneList.add(postPhone);
+
 		Phone getPhone = phoneResource.getPhone(postPhone.getId());
 
 		assertEquals(postPhone, getPhone);
@@ -270,6 +286,8 @@ public abstract class BasePhoneResourceTestCase {
 	@Test
 	public void testGraphQLGetPhone() throws Exception {
 		Phone phone = testGraphQLPhone_addPhone();
+
+		phoneList.add(phone);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -321,8 +339,12 @@ public abstract class BasePhoneResourceTestCase {
 		Phone phone1 = testGetUserAccountPhonesPage_addPhone(
 			userAccountId, randomPhone());
 
+		phoneList.add(phone1);
+
 		Phone phone2 = testGetUserAccountPhonesPage_addPhone(
 			userAccountId, randomPhone());
+
+		phoneList.add(phone2);
 
 		page = phoneResource.getUserAccountPhonesPage(userAccountId);
 
@@ -488,6 +510,9 @@ public abstract class BasePhoneResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deletePhone(Phone phone) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -764,6 +789,7 @@ public abstract class BasePhoneResourceTestCase {
 	}
 
 	protected PhoneResource phoneResource;
+	protected List<Phone> phoneList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

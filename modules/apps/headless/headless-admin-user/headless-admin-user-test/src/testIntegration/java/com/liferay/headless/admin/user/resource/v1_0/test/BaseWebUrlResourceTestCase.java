@@ -95,6 +95,7 @@ public abstract class BaseWebUrlResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		webUrlList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -112,6 +113,15 @@ public abstract class BaseWebUrlResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WebUrl webUrl : webUrlList) {
+			try {
+				deleteWebUrl(webUrl);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -217,8 +227,12 @@ public abstract class BaseWebUrlResourceTestCase {
 		WebUrl webUrl1 = testGetOrganizationWebUrlsPage_addWebUrl(
 			organizationId, randomWebUrl());
 
+		webUrlList.add(webUrl1);
+
 		WebUrl webUrl2 = testGetOrganizationWebUrlsPage_addWebUrl(
 			organizationId, randomWebUrl());
+
+		webUrlList.add(webUrl2);
 
 		page = webUrlResource.getOrganizationWebUrlsPage(organizationId);
 
@@ -279,8 +293,12 @@ public abstract class BaseWebUrlResourceTestCase {
 		WebUrl webUrl1 = testGetUserAccountWebUrlsPage_addWebUrl(
 			userAccountId, randomWebUrl());
 
+		webUrlList.add(webUrl1);
+
 		WebUrl webUrl2 = testGetUserAccountWebUrlsPage_addWebUrl(
 			userAccountId, randomWebUrl());
+
+		webUrlList.add(webUrl2);
 
 		page = webUrlResource.getUserAccountWebUrlsPage(userAccountId);
 
@@ -316,6 +334,8 @@ public abstract class BaseWebUrlResourceTestCase {
 	public void testGetWebUrl() throws Exception {
 		WebUrl postWebUrl = testGetWebUrl_addWebUrl();
 
+		webUrlList.add(postWebUrl);
+
 		WebUrl getWebUrl = webUrlResource.getWebUrl(postWebUrl.getId());
 
 		assertEquals(postWebUrl, getWebUrl);
@@ -330,6 +350,8 @@ public abstract class BaseWebUrlResourceTestCase {
 	@Test
 	public void testGraphQLGetWebUrl() throws Exception {
 		WebUrl webUrl = testGraphQLWebUrl_addWebUrl();
+
+		webUrlList.add(webUrl);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -479,6 +501,9 @@ public abstract class BaseWebUrlResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWebUrl(WebUrl webUrl) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -722,6 +747,7 @@ public abstract class BaseWebUrlResourceTestCase {
 	}
 
 	protected WebUrlResource webUrlResource;
+	protected List<WebUrl> webUrlList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

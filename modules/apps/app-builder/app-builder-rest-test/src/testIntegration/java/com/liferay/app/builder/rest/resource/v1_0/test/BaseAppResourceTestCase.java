@@ -106,6 +106,7 @@ public abstract class BaseAppResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		appList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -123,6 +124,15 @@ public abstract class BaseAppResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (App app : appList) {
+			try {
+				deleteApp(app);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -202,6 +212,8 @@ public abstract class BaseAppResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		App app = testDeleteApp_addApp();
 
+		appList.add(app);
+
 		assertHttpResponseStatusCode(
 			204, appResource.deleteAppHttpResponse(app.getId()));
 
@@ -219,6 +231,8 @@ public abstract class BaseAppResourceTestCase {
 	@Test
 	public void testGraphQLDeleteApp() throws Exception {
 		App app = testGraphQLApp_addApp();
+
+		appList.add(app);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -266,6 +280,8 @@ public abstract class BaseAppResourceTestCase {
 	public void testGetApp() throws Exception {
 		App postApp = testGetApp_addApp();
 
+		appList.add(postApp);
+
 		App getApp = appResource.getApp(postApp.getId());
 
 		assertEquals(postApp, getApp);
@@ -280,6 +296,8 @@ public abstract class BaseAppResourceTestCase {
 	@Test
 	public void testGraphQLGetApp() throws Exception {
 		App app = testGraphQLApp_addApp();
+
+		appList.add(app);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -306,6 +324,8 @@ public abstract class BaseAppResourceTestCase {
 	@Test
 	public void testPutApp() throws Exception {
 		App postApp = testPutApp_addApp();
+
+		appList.add(postApp);
 
 		App randomApp = randomApp();
 
@@ -360,8 +380,12 @@ public abstract class BaseAppResourceTestCase {
 		App app1 = testGetDataDefinitionAppsPage_addApp(
 			dataDefinitionId, randomApp());
 
+		appList.add(app1);
+
 		App app2 = testGetDataDefinitionAppsPage_addApp(
 			dataDefinitionId, randomApp());
+
+		appList.add(app2);
 
 		page = appResource.getDataDefinitionAppsPage(
 			dataDefinitionId, null, Pagination.of(1, 2), null);
@@ -385,11 +409,17 @@ public abstract class BaseAppResourceTestCase {
 		App app1 = testGetDataDefinitionAppsPage_addApp(
 			dataDefinitionId, randomApp());
 
+		appList.add(app1);
+
 		App app2 = testGetDataDefinitionAppsPage_addApp(
 			dataDefinitionId, randomApp());
 
+		appList.add(app2);
+
 		App app3 = testGetDataDefinitionAppsPage_addApp(
 			dataDefinitionId, randomApp());
+
+		appList.add(app3);
 
 		Page<App> page1 = appResource.getDataDefinitionAppsPage(
 			dataDefinitionId, null, Pagination.of(1, 2), null);
@@ -495,7 +525,11 @@ public abstract class BaseAppResourceTestCase {
 
 		app1 = testGetDataDefinitionAppsPage_addApp(dataDefinitionId, app1);
 
+		appList.add(app1);
+
 		app2 = testGetDataDefinitionAppsPage_addApp(dataDefinitionId, app2);
+
+		appList.add(app2);
 
 		for (EntityField entityField : entityFields) {
 			Page<App> ascPage = appResource.getDataDefinitionAppsPage(
@@ -540,6 +574,8 @@ public abstract class BaseAppResourceTestCase {
 
 		App postApp = testPostDataDefinitionApp_addApp(randomApp);
 
+		appList.add(postApp);
+
 		assertEquals(randomApp, postApp);
 		assertValid(postApp);
 	}
@@ -576,7 +612,11 @@ public abstract class BaseAppResourceTestCase {
 
 		App app1 = testGetSiteAppsPage_addApp(siteId, randomApp());
 
+		appList.add(app1);
+
 		App app2 = testGetSiteAppsPage_addApp(siteId, randomApp());
+
+		appList.add(app2);
 
 		page = appResource.getSiteAppsPage(
 			siteId, null, Pagination.of(1, 2), null);
@@ -598,9 +638,15 @@ public abstract class BaseAppResourceTestCase {
 
 		App app1 = testGetSiteAppsPage_addApp(siteId, randomApp());
 
+		appList.add(app1);
+
 		App app2 = testGetSiteAppsPage_addApp(siteId, randomApp());
 
+		appList.add(app2);
+
 		App app3 = testGetSiteAppsPage_addApp(siteId, randomApp());
+
+		appList.add(app3);
 
 		Page<App> page1 = appResource.getSiteAppsPage(
 			siteId, null, Pagination.of(1, 2), null);
@@ -701,7 +747,11 @@ public abstract class BaseAppResourceTestCase {
 
 		app1 = testGetSiteAppsPage_addApp(siteId, app1);
 
+		appList.add(app1);
+
 		app2 = testGetSiteAppsPage_addApp(siteId, app2);
+
+		appList.add(app2);
 
 		for (EntityField entityField : entityFields) {
 			Page<App> ascPage = appResource.getSiteAppsPage(
@@ -772,6 +822,9 @@ public abstract class BaseAppResourceTestCase {
 
 		App app1 = testGraphQLApp_addApp();
 		App app2 = testGraphQLApp_addApp();
+
+		appList.add(app1);
+		appList.add(app2);
 
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
@@ -949,6 +1002,10 @@ public abstract class BaseAppResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteApp(App app) throws Exception {
+		appResource.deleteApp(app.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1366,6 +1423,7 @@ public abstract class BaseAppResourceTestCase {
 	}
 
 	protected AppResource appResource;
+	protected List<App> appList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -106,6 +106,7 @@ public abstract class BaseOrganizationResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		organizationList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -123,6 +124,15 @@ public abstract class BaseOrganizationResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Organization organization : organizationList) {
+			try {
+				deleteOrganization(organization);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -214,8 +224,12 @@ public abstract class BaseOrganizationResourceTestCase {
 		Organization organization1 = testGetOrganizationsPage_addOrganization(
 			randomOrganization());
 
+		organizationList.add(organization1);
+
 		Organization organization2 = testGetOrganizationsPage_addOrganization(
 			randomOrganization());
+
+		organizationList.add(organization2);
 
 		page = organizationResource.getOrganizationsPage(
 			null, null, null, Pagination.of(1, 2), null);
@@ -247,6 +261,8 @@ public abstract class BaseOrganizationResourceTestCase {
 
 		organization1 = testGetOrganizationsPage_addOrganization(organization1);
 
+		organizationList.add(organization1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Organization> page = organizationResource.getOrganizationsPage(
 				null, null,
@@ -273,9 +289,13 @@ public abstract class BaseOrganizationResourceTestCase {
 		Organization organization1 = testGetOrganizationsPage_addOrganization(
 			randomOrganization());
 
+		organizationList.add(organization1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Organization organization2 = testGetOrganizationsPage_addOrganization(
 			randomOrganization());
+
+		organizationList.add(organization2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Organization> page = organizationResource.getOrganizationsPage(
@@ -293,11 +313,17 @@ public abstract class BaseOrganizationResourceTestCase {
 		Organization organization1 = testGetOrganizationsPage_addOrganization(
 			randomOrganization());
 
+		organizationList.add(organization1);
+
 		Organization organization2 = testGetOrganizationsPage_addOrganization(
 			randomOrganization());
 
+		organizationList.add(organization2);
+
 		Organization organization3 = testGetOrganizationsPage_addOrganization(
 			randomOrganization());
+
+		organizationList.add(organization3);
 
 		Page<Organization> page1 = organizationResource.getOrganizationsPage(
 			null, null, null, Pagination.of(1, 2), null);
@@ -402,7 +428,11 @@ public abstract class BaseOrganizationResourceTestCase {
 
 		organization1 = testGetOrganizationsPage_addOrganization(organization1);
 
+		organizationList.add(organization1);
+
 		organization2 = testGetOrganizationsPage_addOrganization(organization2);
+
+		organizationList.add(organization2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Organization> ascPage =
@@ -471,6 +501,9 @@ public abstract class BaseOrganizationResourceTestCase {
 		Organization organization1 = testGraphQLOrganization_addOrganization();
 		Organization organization2 = testGraphQLOrganization_addOrganization();
 
+		organizationList.add(organization1);
+		organizationList.add(organization2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -492,6 +525,8 @@ public abstract class BaseOrganizationResourceTestCase {
 		Organization postOrganization = testPostOrganization_addOrganization(
 			randomOrganization);
 
+		organizationList.add(postOrganization);
+
 		assertEquals(randomOrganization, postOrganization);
 		assertValid(postOrganization);
 	}
@@ -508,6 +543,8 @@ public abstract class BaseOrganizationResourceTestCase {
 	public void testDeleteOrganization() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Organization organization = testDeleteOrganization_addOrganization();
+
+		organizationList.add(organization);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -533,6 +570,8 @@ public abstract class BaseOrganizationResourceTestCase {
 	@Test
 	public void testGraphQLDeleteOrganization() throws Exception {
 		Organization organization = testGraphQLOrganization_addOrganization();
+
+		organizationList.add(organization);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -584,6 +623,8 @@ public abstract class BaseOrganizationResourceTestCase {
 	public void testGetOrganization() throws Exception {
 		Organization postOrganization = testGetOrganization_addOrganization();
 
+		organizationList.add(postOrganization);
+
 		Organization getOrganization = organizationResource.getOrganization(
 			postOrganization.getId());
 
@@ -601,6 +642,8 @@ public abstract class BaseOrganizationResourceTestCase {
 	@Test
 	public void testGraphQLGetOrganization() throws Exception {
 		Organization organization = testGraphQLOrganization_addOrganization();
+
+		organizationList.add(organization);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -631,6 +674,8 @@ public abstract class BaseOrganizationResourceTestCase {
 	public void testPatchOrganization() throws Exception {
 		Organization postOrganization = testPatchOrganization_addOrganization();
 
+		organizationList.add(postOrganization);
+
 		Organization randomPatchOrganization = randomPatchOrganization();
 
 		Organization patchOrganization = organizationResource.patchOrganization(
@@ -658,6 +703,8 @@ public abstract class BaseOrganizationResourceTestCase {
 	@Test
 	public void testPutOrganization() throws Exception {
 		Organization postOrganization = testPutOrganization_addOrganization();
+
+		organizationList.add(postOrganization);
 
 		Organization randomOrganization = randomOrganization();
 
@@ -718,9 +765,13 @@ public abstract class BaseOrganizationResourceTestCase {
 			testGetOrganizationOrganizationsPage_addOrganization(
 				parentOrganizationId, randomOrganization());
 
+		organizationList.add(organization1);
+
 		Organization organization2 =
 			testGetOrganizationOrganizationsPage_addOrganization(
 				parentOrganizationId, randomOrganization());
+
+		organizationList.add(organization2);
 
 		page = organizationResource.getOrganizationOrganizationsPage(
 			parentOrganizationId, null, null, null, Pagination.of(1, 2), null);
@@ -756,6 +807,8 @@ public abstract class BaseOrganizationResourceTestCase {
 		organization1 = testGetOrganizationOrganizationsPage_addOrganization(
 			parentOrganizationId, organization1);
 
+		organizationList.add(organization1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Organization> page =
 				organizationResource.getOrganizationOrganizationsPage(
@@ -787,10 +840,14 @@ public abstract class BaseOrganizationResourceTestCase {
 			testGetOrganizationOrganizationsPage_addOrganization(
 				parentOrganizationId, randomOrganization());
 
+		organizationList.add(organization1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Organization organization2 =
 			testGetOrganizationOrganizationsPage_addOrganization(
 				parentOrganizationId, randomOrganization());
+
+		organizationList.add(organization2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Organization> page =
@@ -816,13 +873,19 @@ public abstract class BaseOrganizationResourceTestCase {
 			testGetOrganizationOrganizationsPage_addOrganization(
 				parentOrganizationId, randomOrganization());
 
+		organizationList.add(organization1);
+
 		Organization organization2 =
 			testGetOrganizationOrganizationsPage_addOrganization(
 				parentOrganizationId, randomOrganization());
 
+		organizationList.add(organization2);
+
 		Organization organization3 =
 			testGetOrganizationOrganizationsPage_addOrganization(
 				parentOrganizationId, randomOrganization());
+
+		organizationList.add(organization3);
 
 		Page<Organization> page1 =
 			organizationResource.getOrganizationOrganizationsPage(
@@ -943,8 +1006,12 @@ public abstract class BaseOrganizationResourceTestCase {
 		organization1 = testGetOrganizationOrganizationsPage_addOrganization(
 			parentOrganizationId, organization1);
 
+		organizationList.add(organization1);
+
 		organization2 = testGetOrganizationOrganizationsPage_addOrganization(
 			parentOrganizationId, organization2);
+
+		organizationList.add(organization2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Organization> ascPage =
@@ -1203,6 +1270,12 @@ public abstract class BaseOrganizationResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteOrganization(Organization organization)
+		throws Exception {
+
+		organizationResource.deleteOrganization(organization.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1699,6 +1772,7 @@ public abstract class BaseOrganizationResourceTestCase {
 	}
 
 	protected OrganizationResource organizationResource;
+	protected List<Organization> organizationList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

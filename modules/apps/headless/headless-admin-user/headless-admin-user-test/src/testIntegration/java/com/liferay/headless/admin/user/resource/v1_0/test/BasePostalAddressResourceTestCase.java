@@ -95,6 +95,7 @@ public abstract class BasePostalAddressResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		postalAddressList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -112,6 +113,15 @@ public abstract class BasePostalAddressResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (PostalAddress postalAddress : postalAddressList) {
+			try {
+				deletePostalAddress(postalAddress);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -233,9 +243,13 @@ public abstract class BasePostalAddressResourceTestCase {
 			testGetOrganizationPostalAddressesPage_addPostalAddress(
 				organizationId, randomPostalAddress());
 
+		postalAddressList.add(postalAddress1);
+
 		PostalAddress postalAddress2 =
 			testGetOrganizationPostalAddressesPage_addPostalAddress(
 				organizationId, randomPostalAddress());
+
+		postalAddressList.add(postalAddress2);
 
 		page = postalAddressResource.getOrganizationPostalAddressesPage(
 			organizationId);
@@ -276,6 +290,8 @@ public abstract class BasePostalAddressResourceTestCase {
 		PostalAddress postPostalAddress =
 			testGetPostalAddress_addPostalAddress();
 
+		postalAddressList.add(postPostalAddress);
+
 		PostalAddress getPostalAddress = postalAddressResource.getPostalAddress(
 			postPostalAddress.getId());
 
@@ -294,6 +310,8 @@ public abstract class BasePostalAddressResourceTestCase {
 	public void testGraphQLGetPostalAddress() throws Exception {
 		PostalAddress postalAddress =
 			testGraphQLPostalAddress_addPostalAddress();
+
+		postalAddressList.add(postalAddress);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -351,9 +369,13 @@ public abstract class BasePostalAddressResourceTestCase {
 			testGetUserAccountPostalAddressesPage_addPostalAddress(
 				userAccountId, randomPostalAddress());
 
+		postalAddressList.add(postalAddress1);
+
 		PostalAddress postalAddress2 =
 			testGetUserAccountPostalAddressesPage_addPostalAddress(
 				userAccountId, randomPostalAddress());
+
+		postalAddressList.add(postalAddress2);
 
 		page = postalAddressResource.getUserAccountPostalAddressesPage(
 			userAccountId);
@@ -589,6 +611,10 @@ public abstract class BasePostalAddressResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deletePostalAddress(PostalAddress postalAddress)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1055,6 +1081,7 @@ public abstract class BasePostalAddressResourceTestCase {
 	}
 
 	protected PostalAddressResource postalAddressResource;
+	protected List<PostalAddress> postalAddressList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

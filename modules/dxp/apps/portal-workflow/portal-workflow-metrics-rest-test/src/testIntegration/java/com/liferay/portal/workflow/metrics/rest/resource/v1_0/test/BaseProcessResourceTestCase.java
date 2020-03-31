@@ -103,6 +103,7 @@ public abstract class BaseProcessResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		processList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -120,6 +121,15 @@ public abstract class BaseProcessResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Process process : processList) {
+			try {
+				deleteProcess(process);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -203,7 +213,11 @@ public abstract class BaseProcessResourceTestCase {
 
 		Process process1 = testGetProcessesPage_addProcess(randomProcess());
 
+		processList.add(process1);
+
 		Process process2 = testGetProcessesPage_addProcess(randomProcess());
+
+		processList.add(process2);
 
 		page = processResource.getProcessesPage(
 			null, Pagination.of(1, 2), null);
@@ -219,9 +233,15 @@ public abstract class BaseProcessResourceTestCase {
 	public void testGetProcessesPageWithPagination() throws Exception {
 		Process process1 = testGetProcessesPage_addProcess(randomProcess());
 
+		processList.add(process1);
+
 		Process process2 = testGetProcessesPage_addProcess(randomProcess());
 
+		processList.add(process2);
+
 		Process process3 = testGetProcessesPage_addProcess(randomProcess());
+
+		processList.add(process3);
 
 		Page<Process> page1 = processResource.getProcessesPage(
 			null, Pagination.of(1, 2), null);
@@ -321,7 +341,11 @@ public abstract class BaseProcessResourceTestCase {
 
 		process1 = testGetProcessesPage_addProcess(process1);
 
+		processList.add(process1);
+
 		process2 = testGetProcessesPage_addProcess(process2);
+
+		processList.add(process2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Process> ascPage = processResource.getProcessesPage(
@@ -385,6 +409,9 @@ public abstract class BaseProcessResourceTestCase {
 		Process process1 = testGraphQLProcess_addProcess();
 		Process process2 = testGraphQLProcess_addProcess();
 
+		processList.add(process1);
+		processList.add(process2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -403,6 +430,8 @@ public abstract class BaseProcessResourceTestCase {
 	public void testGetProcess() throws Exception {
 		Process postProcess = testGetProcess_addProcess();
 
+		processList.add(postProcess);
+
 		Process getProcess = processResource.getProcess(
 			postProcess.getId(), null, null, null);
 
@@ -418,6 +447,8 @@ public abstract class BaseProcessResourceTestCase {
 	@Test
 	public void testGraphQLGetProcess() throws Exception {
 		Process process = testGraphQLProcess_addProcess();
+
+		processList.add(process);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -597,6 +628,9 @@ public abstract class BaseProcessResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteProcess(Process process) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -904,6 +938,7 @@ public abstract class BaseProcessResourceTestCase {
 	}
 
 	protected ProcessResource processResource;
+	protected List<Process> processList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

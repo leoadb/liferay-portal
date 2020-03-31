@@ -109,6 +109,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		structuredContentList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -127,6 +128,15 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (StructuredContent structuredContent : structuredContentList) {
+			try {
+				deleteStructuredContent(structuredContent);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -250,9 +260,13 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		StructuredContent structuredContent2 =
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent2);
 
 		page =
 			structuredContentResource.getContentStructureStructuredContentsPage(
@@ -292,6 +306,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, structuredContent1);
 
+		structuredContentList.add(structuredContent1);
+
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> page =
 				structuredContentResource.
@@ -325,10 +341,14 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContent structuredContent2 =
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> page =
@@ -355,13 +375,19 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		StructuredContent structuredContent2 =
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent2);
+
 		StructuredContent structuredContent3 =
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent3);
 
 		Page<StructuredContent> page1 =
 			structuredContentResource.getContentStructureStructuredContentsPage(
@@ -484,9 +510,13 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, structuredContent1);
 
+		structuredContentList.add(structuredContent1);
+
 		structuredContent2 =
 			testGetContentStructureStructuredContentsPage_addStructuredContent(
 				contentStructureId, structuredContent2);
+
+		structuredContentList.add(structuredContent2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> ascPage =
@@ -568,9 +598,13 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		StructuredContent structuredContent2 =
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent2);
 
 		page = structuredContentResource.getSiteStructuredContentsPage(
 			siteId, null, null, null, Pagination.of(1, 2), null);
@@ -608,6 +642,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, structuredContent1);
 
+		structuredContentList.add(structuredContent1);
+
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> page =
 				structuredContentResource.getSiteStructuredContentsPage(
@@ -638,10 +674,14 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContent structuredContent2 =
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> page =
@@ -666,13 +706,19 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		StructuredContent structuredContent2 =
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent2);
+
 		StructuredContent structuredContent3 =
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent3);
 
 		Page<StructuredContent> page1 =
 			structuredContentResource.getSiteStructuredContentsPage(
@@ -794,9 +840,13 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, structuredContent1);
 
+		structuredContentList.add(structuredContent1);
+
 		structuredContent2 =
 			testGetSiteStructuredContentsPage_addStructuredContent(
 				siteId, structuredContent2);
+
+		structuredContentList.add(structuredContent2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> ascPage =
@@ -881,6 +931,9 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent structuredContent2 =
 			testGraphQLStructuredContent_addStructuredContent();
 
+		structuredContentList.add(structuredContent1);
+		structuredContentList.add(structuredContent2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -904,6 +957,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testPostSiteStructuredContent_addStructuredContent(
 				randomStructuredContent);
 
+		structuredContentList.add(postStructuredContent);
+
 		assertEquals(randomStructuredContent, postStructuredContent);
 		assertValid(postStructuredContent);
 	}
@@ -925,6 +980,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGraphQLStructuredContent_addStructuredContent(
 				randomStructuredContent);
 
+		structuredContentList.add(structuredContent);
+
 		Assert.assertTrue(
 			equalsJSONObject(
 				randomStructuredContent,
@@ -936,6 +993,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testGetSiteStructuredContentByKey() throws Exception {
 		StructuredContent postStructuredContent =
 			testGetSiteStructuredContentByKey_addStructuredContent();
+
+		structuredContentList.add(postStructuredContent);
 
 		StructuredContent getStructuredContent =
 			structuredContentResource.getSiteStructuredContentByKey(
@@ -958,6 +1017,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testGraphQLGetSiteStructuredContentByKey() throws Exception {
 		StructuredContent structuredContent =
 			testGraphQLStructuredContent_addStructuredContent();
+
+		structuredContentList.add(structuredContent);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -989,6 +1050,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent postStructuredContent =
 			testGetSiteStructuredContentByUuid_addStructuredContent();
 
+		structuredContentList.add(postStructuredContent);
+
 		StructuredContent getStructuredContent =
 			structuredContentResource.getSiteStructuredContentByUuid(
 				postStructuredContent.getSiteId(),
@@ -1010,6 +1073,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testGraphQLGetSiteStructuredContentByUuid() throws Exception {
 		StructuredContent structuredContent =
 			testGraphQLStructuredContent_addStructuredContent();
+
+		structuredContentList.add(structuredContent);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -1041,6 +1106,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContent structuredContent =
 			testPutSiteStructuredContentPermission_addStructuredContent();
+
+		structuredContentList.add(structuredContent);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1121,9 +1188,13 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		StructuredContent structuredContent2 =
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent2);
 
 		page =
 			structuredContentResource.
@@ -1165,6 +1236,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, structuredContent1);
 
+		structuredContentList.add(structuredContent1);
+
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> page =
 				structuredContentResource.
@@ -1198,10 +1271,14 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContent structuredContent2 =
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> page =
@@ -1228,13 +1305,19 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent1);
+
 		StructuredContent structuredContent2 =
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, randomStructuredContent());
 
+		structuredContentList.add(structuredContent2);
+
 		StructuredContent structuredContent3 =
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, randomStructuredContent());
+
+		structuredContentList.add(structuredContent3);
 
 		Page<StructuredContent> page1 =
 			structuredContentResource.
@@ -1363,9 +1446,13 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, structuredContent1);
 
+		structuredContentList.add(structuredContent1);
+
 		structuredContent2 =
 			testGetStructuredContentFolderStructuredContentsPage_addStructuredContent(
 				structuredContentFolderId, structuredContent2);
+
+		structuredContentList.add(structuredContent2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContent> ascPage =
@@ -1426,6 +1513,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testPostStructuredContentFolderStructuredContent_addStructuredContent(
 				randomStructuredContent);
 
+		structuredContentList.add(postStructuredContent);
+
 		assertEquals(randomStructuredContent, postStructuredContent);
 		assertValid(postStructuredContent);
 	}
@@ -1446,6 +1535,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContent structuredContent =
 			testDeleteStructuredContent_addStructuredContent();
+
+		structuredContentList.add(structuredContent);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1474,6 +1565,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testGraphQLDeleteStructuredContent() throws Exception {
 		StructuredContent structuredContent =
 			testGraphQLStructuredContent_addStructuredContent();
+
+		structuredContentList.add(structuredContent);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -1524,6 +1617,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent postStructuredContent =
 			testGetStructuredContent_addStructuredContent();
 
+		structuredContentList.add(postStructuredContent);
+
 		StructuredContent getStructuredContent =
 			structuredContentResource.getStructuredContent(
 				postStructuredContent.getId());
@@ -1543,6 +1638,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testGraphQLGetStructuredContent() throws Exception {
 		StructuredContent structuredContent =
 			testGraphQLStructuredContent_addStructuredContent();
+
+		structuredContentList.add(structuredContent);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -1572,6 +1669,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testPatchStructuredContent() throws Exception {
 		StructuredContent postStructuredContent =
 			testPatchStructuredContent_addStructuredContent();
+
+		structuredContentList.add(postStructuredContent);
 
 		StructuredContent randomPatchStructuredContent =
 			randomPatchStructuredContent();
@@ -1607,6 +1706,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent postStructuredContent =
 			testPutStructuredContent_addStructuredContent();
 
+		structuredContentList.add(postStructuredContent);
+
 		StructuredContent randomStructuredContent = randomStructuredContent();
 
 		StructuredContent putStructuredContent =
@@ -1636,6 +1737,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContent structuredContent =
 			testDeleteStructuredContentMyRating_addStructuredContent();
+
+		structuredContentList.add(structuredContent);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1667,6 +1770,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContent structuredContent =
 			testPutStructuredContentPermission_addStructuredContent();
+
+		structuredContentList.add(structuredContent);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1718,6 +1823,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent structuredContent =
 			testPutStructuredContentSubscribe_addStructuredContent();
 
+		structuredContentList.add(structuredContent);
+
 		assertHttpResponseStatusCode(
 			204,
 			structuredContentResource.putStructuredContentSubscribeHttpResponse(
@@ -1743,6 +1850,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent structuredContent =
 			testPutStructuredContentUnsubscribe_addStructuredContent();
 
+		structuredContentList.add(structuredContent);
+
 		assertHttpResponseStatusCode(
 			204,
 			structuredContentResource.
@@ -1767,6 +1876,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testGetStructuredContentMyRating() throws Exception {
 		StructuredContent postStructuredContent =
 			testGetStructuredContent_addStructuredContent();
+
+		structuredContentList.add(postStructuredContent);
 
 		Rating postRating = testGetStructuredContentMyRating_addRating(
 			postStructuredContent.getId(), randomRating());
@@ -1796,6 +1907,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testPutStructuredContentMyRating() throws Exception {
 		StructuredContent postStructuredContent =
 			testPutStructuredContent_addStructuredContent();
+
+		structuredContentList.add(postStructuredContent);
 
 		testPutStructuredContentMyRating_addRating(
 			postStructuredContent.getId(), randomRating());
@@ -2448,6 +2561,13 @@ public abstract class BaseStructuredContentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteStructuredContent(StructuredContent structuredContent)
+		throws Exception {
+
+		structuredContentResource.deleteStructuredContent(
+			structuredContent.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -3376,6 +3496,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 	}
 
 	protected StructuredContentResource structuredContentResource;
+	protected List<StructuredContent> structuredContentList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

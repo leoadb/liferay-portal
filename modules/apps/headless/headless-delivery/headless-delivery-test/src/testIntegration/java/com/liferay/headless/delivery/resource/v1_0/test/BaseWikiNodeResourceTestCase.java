@@ -107,6 +107,7 @@ public abstract class BaseWikiNodeResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		wikiNodeList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -124,6 +125,15 @@ public abstract class BaseWikiNodeResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WikiNode wikiNode : wikiNodeList) {
+			try {
+				deleteWikiNode(wikiNode);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -229,8 +239,12 @@ public abstract class BaseWikiNodeResourceTestCase {
 		WikiNode wikiNode1 = testGetSiteWikiNodesPage_addWikiNode(
 			siteId, randomWikiNode());
 
+		wikiNodeList.add(wikiNode1);
+
 		WikiNode wikiNode2 = testGetSiteWikiNodesPage_addWikiNode(
 			siteId, randomWikiNode());
+
+		wikiNodeList.add(wikiNode2);
 
 		page = wikiNodeResource.getSiteWikiNodesPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -264,6 +278,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 
 		wikiNode1 = testGetSiteWikiNodesPage_addWikiNode(siteId, wikiNode1);
 
+		wikiNodeList.add(wikiNode1);
+
 		for (EntityField entityField : entityFields) {
 			Page<WikiNode> page = wikiNodeResource.getSiteWikiNodesPage(
 				siteId, null,
@@ -292,9 +308,13 @@ public abstract class BaseWikiNodeResourceTestCase {
 		WikiNode wikiNode1 = testGetSiteWikiNodesPage_addWikiNode(
 			siteId, randomWikiNode());
 
+		wikiNodeList.add(wikiNode1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiNode wikiNode2 = testGetSiteWikiNodesPage_addWikiNode(
 			siteId, randomWikiNode());
+
+		wikiNodeList.add(wikiNode2);
 
 		for (EntityField entityField : entityFields) {
 			Page<WikiNode> page = wikiNodeResource.getSiteWikiNodesPage(
@@ -314,11 +334,17 @@ public abstract class BaseWikiNodeResourceTestCase {
 		WikiNode wikiNode1 = testGetSiteWikiNodesPage_addWikiNode(
 			siteId, randomWikiNode());
 
+		wikiNodeList.add(wikiNode1);
+
 		WikiNode wikiNode2 = testGetSiteWikiNodesPage_addWikiNode(
 			siteId, randomWikiNode());
 
+		wikiNodeList.add(wikiNode2);
+
 		WikiNode wikiNode3 = testGetSiteWikiNodesPage_addWikiNode(
 			siteId, randomWikiNode());
+
+		wikiNodeList.add(wikiNode3);
 
 		Page<WikiNode> page1 = wikiNodeResource.getSiteWikiNodesPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -420,7 +446,11 @@ public abstract class BaseWikiNodeResourceTestCase {
 
 		wikiNode1 = testGetSiteWikiNodesPage_addWikiNode(siteId, wikiNode1);
 
+		wikiNodeList.add(wikiNode1);
+
 		wikiNode2 = testGetSiteWikiNodesPage_addWikiNode(siteId, wikiNode2);
+
+		wikiNodeList.add(wikiNode2);
 
 		for (EntityField entityField : entityFields) {
 			Page<WikiNode> ascPage = wikiNodeResource.getSiteWikiNodesPage(
@@ -497,6 +527,9 @@ public abstract class BaseWikiNodeResourceTestCase {
 		WikiNode wikiNode1 = testGraphQLWikiNode_addWikiNode();
 		WikiNode wikiNode2 = testGraphQLWikiNode_addWikiNode();
 
+		wikiNodeList.add(wikiNode1);
+		wikiNodeList.add(wikiNode2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -518,6 +551,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 		WikiNode postWikiNode = testPostSiteWikiNode_addWikiNode(
 			randomWikiNode);
 
+		wikiNodeList.add(postWikiNode);
+
 		assertEquals(randomWikiNode, postWikiNode);
 		assertValid(postWikiNode);
 	}
@@ -535,6 +570,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 
 		WikiNode wikiNode = testGraphQLWikiNode_addWikiNode(randomWikiNode);
 
+		wikiNodeList.add(wikiNode);
+
 		Assert.assertTrue(
 			equalsJSONObject(
 				randomWikiNode,
@@ -546,6 +583,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 	public void testDeleteWikiNode() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiNode wikiNode = testDeleteWikiNode_addWikiNode();
+
+		wikiNodeList.add(wikiNode);
 
 		assertHttpResponseStatusCode(
 			204, wikiNodeResource.deleteWikiNodeHttpResponse(wikiNode.getId()));
@@ -565,6 +604,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 	@Test
 	public void testGraphQLDeleteWikiNode() throws Exception {
 		WikiNode wikiNode = testGraphQLWikiNode_addWikiNode();
+
+		wikiNodeList.add(wikiNode);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -612,6 +653,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 	public void testGetWikiNode() throws Exception {
 		WikiNode postWikiNode = testGetWikiNode_addWikiNode();
 
+		wikiNodeList.add(postWikiNode);
+
 		WikiNode getWikiNode = wikiNodeResource.getWikiNode(
 			postWikiNode.getId());
 
@@ -627,6 +670,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 	@Test
 	public void testGraphQLGetWikiNode() throws Exception {
 		WikiNode wikiNode = testGraphQLWikiNode_addWikiNode();
+
+		wikiNodeList.add(wikiNode);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -655,6 +700,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 	public void testPutWikiNode() throws Exception {
 		WikiNode postWikiNode = testPutWikiNode_addWikiNode();
 
+		wikiNodeList.add(postWikiNode);
+
 		WikiNode randomWikiNode = randomWikiNode();
 
 		WikiNode putWikiNode = wikiNodeResource.putWikiNode(
@@ -680,6 +727,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiNode wikiNode = testPutWikiNodeSubscribe_addWikiNode();
 
+		wikiNodeList.add(wikiNode);
+
 		assertHttpResponseStatusCode(
 			204,
 			wikiNodeResource.putWikiNodeSubscribeHttpResponse(
@@ -698,6 +747,8 @@ public abstract class BaseWikiNodeResourceTestCase {
 	public void testPutWikiNodeUnsubscribe() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiNode wikiNode = testPutWikiNodeUnsubscribe_addWikiNode();
+
+		wikiNodeList.add(wikiNode);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1040,6 +1091,10 @@ public abstract class BaseWikiNodeResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWikiNode(WikiNode wikiNode) throws Exception {
+		wikiNodeResource.deleteWikiNode(wikiNode.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1462,6 +1517,7 @@ public abstract class BaseWikiNodeResourceTestCase {
 	}
 
 	protected WikiNodeResource wikiNodeResource;
+	protected List<WikiNode> wikiNodeList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

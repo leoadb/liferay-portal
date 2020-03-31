@@ -100,6 +100,7 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		wikiPageAttachmentList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -118,6 +119,15 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WikiPageAttachment wikiPageAttachment : wikiPageAttachmentList) {
+			try {
+				deleteWikiPageAttachment(wikiPageAttachment);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -205,6 +215,8 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 		WikiPageAttachment wikiPageAttachment =
 			testDeleteWikiPageAttachment_addWikiPageAttachment();
 
+		wikiPageAttachmentList.add(wikiPageAttachment);
+
 		assertHttpResponseStatusCode(
 			204,
 			wikiPageAttachmentResource.deleteWikiPageAttachmentHttpResponse(
@@ -232,6 +244,8 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 	public void testGraphQLDeleteWikiPageAttachment() throws Exception {
 		WikiPageAttachment wikiPageAttachment =
 			testGraphQLWikiPageAttachment_addWikiPageAttachment();
+
+		wikiPageAttachmentList.add(wikiPageAttachment);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -283,6 +297,8 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 		WikiPageAttachment postWikiPageAttachment =
 			testGetWikiPageAttachment_addWikiPageAttachment();
 
+		wikiPageAttachmentList.add(postWikiPageAttachment);
+
 		WikiPageAttachment getWikiPageAttachment =
 			wikiPageAttachmentResource.getWikiPageAttachment(
 				postWikiPageAttachment.getId());
@@ -303,6 +319,8 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 	public void testGraphQLGetWikiPageAttachment() throws Exception {
 		WikiPageAttachment wikiPageAttachment =
 			testGraphQLWikiPageAttachment_addWikiPageAttachment();
+
+		wikiPageAttachmentList.add(wikiPageAttachment);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -362,9 +380,13 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 			testGetWikiPageWikiPageAttachmentsPage_addWikiPageAttachment(
 				wikiPageId, randomWikiPageAttachment());
 
+		wikiPageAttachmentList.add(wikiPageAttachment1);
+
 		WikiPageAttachment wikiPageAttachment2 =
 			testGetWikiPageWikiPageAttachmentsPage_addWikiPageAttachment(
 				wikiPageId, randomWikiPageAttachment());
+
+		wikiPageAttachmentList.add(wikiPageAttachment2);
 
 		page = wikiPageAttachmentResource.getWikiPageWikiPageAttachmentsPage(
 			wikiPageId);
@@ -416,6 +438,8 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 		WikiPageAttachment postWikiPageAttachment =
 			testPostWikiPageWikiPageAttachment_addWikiPageAttachment(
 				randomWikiPageAttachment, multipartFiles);
+
+		wikiPageAttachmentList.add(postWikiPageAttachment);
 
 		assertEquals(randomWikiPageAttachment, postWikiPageAttachment);
 		assertValid(postWikiPageAttachment);
@@ -606,6 +630,14 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWikiPageAttachment(
+			WikiPageAttachment wikiPageAttachment)
+		throws Exception {
+
+		wikiPageAttachmentResource.deleteWikiPageAttachment(
+			wikiPageAttachment.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -937,6 +969,7 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 	}
 
 	protected WikiPageAttachmentResource wikiPageAttachmentResource;
+	protected List<WikiPageAttachment> wikiPageAttachmentList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

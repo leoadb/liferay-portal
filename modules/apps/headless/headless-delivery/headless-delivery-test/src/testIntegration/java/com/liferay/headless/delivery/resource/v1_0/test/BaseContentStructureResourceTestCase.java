@@ -103,6 +103,7 @@ public abstract class BaseContentStructureResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		contentStructureList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -121,6 +122,15 @@ public abstract class BaseContentStructureResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (ContentStructure contentStructure : contentStructureList) {
+			try {
+				deleteContentStructure(contentStructure);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -202,6 +212,8 @@ public abstract class BaseContentStructureResourceTestCase {
 		ContentStructure postContentStructure =
 			testGetContentStructure_addContentStructure();
 
+		contentStructureList.add(postContentStructure);
+
 		ContentStructure getContentStructure =
 			contentStructureResource.getContentStructure(
 				postContentStructure.getId());
@@ -221,6 +233,8 @@ public abstract class BaseContentStructureResourceTestCase {
 	public void testGraphQLGetContentStructure() throws Exception {
 		ContentStructure contentStructure =
 			testGraphQLContentStructure_addContentStructure();
+
+		contentStructureList.add(contentStructure);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -279,9 +293,13 @@ public abstract class BaseContentStructureResourceTestCase {
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, randomContentStructure());
 
+		contentStructureList.add(contentStructure1);
+
 		ContentStructure contentStructure2 =
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, randomContentStructure());
+
+		contentStructureList.add(contentStructure2);
 
 		page = contentStructureResource.getSiteContentStructuresPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -313,6 +331,8 @@ public abstract class BaseContentStructureResourceTestCase {
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, contentStructure1);
 
+		contentStructureList.add(contentStructure1);
+
 		for (EntityField entityField : entityFields) {
 			Page<ContentStructure> page =
 				contentStructureResource.getSiteContentStructuresPage(
@@ -343,10 +363,14 @@ public abstract class BaseContentStructureResourceTestCase {
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, randomContentStructure());
 
+		contentStructureList.add(contentStructure1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		ContentStructure contentStructure2 =
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, randomContentStructure());
+
+		contentStructureList.add(contentStructure2);
 
 		for (EntityField entityField : entityFields) {
 			Page<ContentStructure> page =
@@ -371,13 +395,19 @@ public abstract class BaseContentStructureResourceTestCase {
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, randomContentStructure());
 
+		contentStructureList.add(contentStructure1);
+
 		ContentStructure contentStructure2 =
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, randomContentStructure());
 
+		contentStructureList.add(contentStructure2);
+
 		ContentStructure contentStructure3 =
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, randomContentStructure());
+
+		contentStructureList.add(contentStructure3);
 
 		Page<ContentStructure> page1 =
 			contentStructureResource.getSiteContentStructuresPage(
@@ -499,9 +529,13 @@ public abstract class BaseContentStructureResourceTestCase {
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, contentStructure1);
 
+		contentStructureList.add(contentStructure1);
+
 		contentStructure2 =
 			testGetSiteContentStructuresPage_addContentStructure(
 				siteId, contentStructure2);
+
+		contentStructureList.add(contentStructure2);
 
 		for (EntityField entityField : entityFields) {
 			Page<ContentStructure> ascPage =
@@ -585,6 +619,9 @@ public abstract class BaseContentStructureResourceTestCase {
 			testGraphQLContentStructure_addContentStructure();
 		ContentStructure contentStructure2 =
 			testGraphQLContentStructure_addContentStructure();
+
+		contentStructureList.add(contentStructure1);
+		contentStructureList.add(contentStructure2);
 
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
@@ -791,6 +828,10 @@ public abstract class BaseContentStructureResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteContentStructure(ContentStructure contentStructure)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1215,6 +1256,7 @@ public abstract class BaseContentStructureResourceTestCase {
 	}
 
 	protected ContentStructureResource contentStructureResource;
+	protected List<ContentStructure> contentStructureList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -93,6 +93,7 @@ public abstract class BaseKeywordResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		keywordList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -110,6 +111,15 @@ public abstract class BaseKeywordResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Keyword keyword : keywordList) {
+			try {
+				deleteKeyword(keyword);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -295,6 +305,9 @@ public abstract class BaseKeywordResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
+	protected void deleteKeyword(Keyword keyword) throws Exception {
+	}
+
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[0];
 	}
@@ -458,6 +471,7 @@ public abstract class BaseKeywordResourceTestCase {
 	}
 
 	protected KeywordResource keywordResource;
+	protected List<Keyword> keywordList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

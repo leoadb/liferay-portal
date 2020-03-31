@@ -108,6 +108,7 @@ public abstract class BaseBlogPostingResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		blogPostingList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -125,6 +126,15 @@ public abstract class BaseBlogPostingResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (BlogPosting blogPosting : blogPostingList) {
+			try {
+				deleteBlogPosting(blogPosting);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -214,6 +224,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		BlogPosting blogPosting = testDeleteBlogPosting_addBlogPosting();
 
+		blogPostingList.add(blogPosting);
+
 		assertHttpResponseStatusCode(
 			204,
 			blogPostingResource.deleteBlogPostingHttpResponse(
@@ -238,6 +250,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 	@Test
 	public void testGraphQLDeleteBlogPosting() throws Exception {
 		BlogPosting blogPosting = testGraphQLBlogPosting_addBlogPosting();
+
+		blogPostingList.add(blogPosting);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -285,6 +299,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 	public void testGetBlogPosting() throws Exception {
 		BlogPosting postBlogPosting = testGetBlogPosting_addBlogPosting();
 
+		blogPostingList.add(postBlogPosting);
+
 		BlogPosting getBlogPosting = blogPostingResource.getBlogPosting(
 			postBlogPosting.getId());
 
@@ -300,6 +316,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 	@Test
 	public void testGraphQLGetBlogPosting() throws Exception {
 		BlogPosting blogPosting = testGraphQLBlogPosting_addBlogPosting();
+
+		blogPostingList.add(blogPosting);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -327,6 +345,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 	@Test
 	public void testPatchBlogPosting() throws Exception {
 		BlogPosting postBlogPosting = testPatchBlogPosting_addBlogPosting();
+
+		blogPostingList.add(postBlogPosting);
 
 		BlogPosting randomPatchBlogPosting = randomPatchBlogPosting();
 
@@ -356,6 +376,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 	public void testPutBlogPosting() throws Exception {
 		BlogPosting postBlogPosting = testPutBlogPosting_addBlogPosting();
 
+		blogPostingList.add(postBlogPosting);
+
 		BlogPosting randomBlogPosting = randomBlogPosting();
 
 		BlogPosting putBlogPosting = blogPostingResource.putBlogPosting(
@@ -381,6 +403,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		BlogPosting blogPosting =
 			testDeleteBlogPostingMyRating_addBlogPosting();
+
+		blogPostingList.add(blogPosting);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -434,8 +458,12 @@ public abstract class BaseBlogPostingResourceTestCase {
 		BlogPosting blogPosting1 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, randomBlogPosting());
 
+		blogPostingList.add(blogPosting1);
+
 		BlogPosting blogPosting2 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, randomBlogPosting());
+
+		blogPostingList.add(blogPosting2);
 
 		page = blogPostingResource.getSiteBlogPostingsPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -470,6 +498,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 		blogPosting1 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, blogPosting1);
 
+		blogPostingList.add(blogPosting1);
+
 		for (EntityField entityField : entityFields) {
 			Page<BlogPosting> page =
 				blogPostingResource.getSiteBlogPostingsPage(
@@ -499,9 +529,13 @@ public abstract class BaseBlogPostingResourceTestCase {
 		BlogPosting blogPosting1 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, randomBlogPosting());
 
+		blogPostingList.add(blogPosting1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		BlogPosting blogPosting2 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, randomBlogPosting());
+
+		blogPostingList.add(blogPosting2);
 
 		for (EntityField entityField : entityFields) {
 			Page<BlogPosting> page =
@@ -523,11 +557,17 @@ public abstract class BaseBlogPostingResourceTestCase {
 		BlogPosting blogPosting1 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, randomBlogPosting());
 
+		blogPostingList.add(blogPosting1);
+
 		BlogPosting blogPosting2 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, randomBlogPosting());
 
+		blogPostingList.add(blogPosting2);
+
 		BlogPosting blogPosting3 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, randomBlogPosting());
+
+		blogPostingList.add(blogPosting3);
 
 		Page<BlogPosting> page1 = blogPostingResource.getSiteBlogPostingsPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -630,8 +670,12 @@ public abstract class BaseBlogPostingResourceTestCase {
 		blogPosting1 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, blogPosting1);
 
+		blogPostingList.add(blogPosting1);
+
 		blogPosting2 = testGetSiteBlogPostingsPage_addBlogPosting(
 			siteId, blogPosting2);
+
+		blogPostingList.add(blogPosting2);
 
 		for (EntityField entityField : entityFields) {
 			Page<BlogPosting> ascPage =
@@ -710,6 +754,9 @@ public abstract class BaseBlogPostingResourceTestCase {
 		BlogPosting blogPosting1 = testGraphQLBlogPosting_addBlogPosting();
 		BlogPosting blogPosting2 = testGraphQLBlogPosting_addBlogPosting();
 
+		blogPostingList.add(blogPosting1);
+		blogPostingList.add(blogPosting2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -731,6 +778,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 		BlogPosting postBlogPosting = testPostSiteBlogPosting_addBlogPosting(
 			randomBlogPosting);
 
+		blogPostingList.add(postBlogPosting);
+
 		assertEquals(randomBlogPosting, postBlogPosting);
 		assertValid(postBlogPosting);
 	}
@@ -750,6 +799,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 		BlogPosting blogPosting = testGraphQLBlogPosting_addBlogPosting(
 			randomBlogPosting);
 
+		blogPostingList.add(blogPosting);
+
 		Assert.assertTrue(
 			equalsJSONObject(
 				randomBlogPosting,
@@ -762,6 +813,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		BlogPosting blogPosting =
 			testPutSiteBlogPostingSubscribe_addBlogPosting();
+
+		blogPostingList.add(blogPosting);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -787,6 +840,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 		BlogPosting blogPosting =
 			testPutSiteBlogPostingUnsubscribe_addBlogPosting();
 
+		blogPostingList.add(blogPosting);
+
 		assertHttpResponseStatusCode(
 			204,
 			blogPostingResource.putSiteBlogPostingUnsubscribeHttpResponse(
@@ -808,6 +863,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 	@Test
 	public void testGetBlogPostingMyRating() throws Exception {
 		BlogPosting postBlogPosting = testGetBlogPosting_addBlogPosting();
+
+		blogPostingList.add(postBlogPosting);
 
 		Rating postRating = testGetBlogPostingMyRating_addRating(
 			postBlogPosting.getId(), randomRating());
@@ -835,6 +892,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 	@Test
 	public void testPutBlogPostingMyRating() throws Exception {
 		BlogPosting postBlogPosting = testPutBlogPosting_addBlogPosting();
+
+		blogPostingList.add(postBlogPosting);
 
 		testPutBlogPostingMyRating_addRating(
 			postBlogPosting.getId(), randomRating());
@@ -1404,6 +1463,10 @@ public abstract class BaseBlogPostingResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteBlogPosting(BlogPosting blogPosting) throws Exception {
+		blogPostingResource.deleteBlogPosting(blogPosting.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -2206,6 +2269,7 @@ public abstract class BaseBlogPostingResourceTestCase {
 	}
 
 	protected BlogPostingResource blogPostingResource;
+	protected List<BlogPosting> blogPostingList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

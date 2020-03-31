@@ -97,6 +97,7 @@ public abstract class BaseSubscriptionResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		subscriptionList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -114,6 +115,15 @@ public abstract class BaseSubscriptionResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Subscription subscription : subscriptionList) {
+			try {
+				deleteSubscription(subscription);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -202,9 +212,13 @@ public abstract class BaseSubscriptionResourceTestCase {
 			testGetMyUserAccountSubscriptionsPage_addSubscription(
 				randomSubscription());
 
+		subscriptionList.add(subscription1);
+
 		Subscription subscription2 =
 			testGetMyUserAccountSubscriptionsPage_addSubscription(
 				randomSubscription());
+
+		subscriptionList.add(subscription2);
 
 		page = subscriptionResource.getMyUserAccountSubscriptionsPage(
 			null, Pagination.of(1, 2));
@@ -225,13 +239,19 @@ public abstract class BaseSubscriptionResourceTestCase {
 			testGetMyUserAccountSubscriptionsPage_addSubscription(
 				randomSubscription());
 
+		subscriptionList.add(subscription1);
+
 		Subscription subscription2 =
 			testGetMyUserAccountSubscriptionsPage_addSubscription(
 				randomSubscription());
 
+		subscriptionList.add(subscription2);
+
 		Subscription subscription3 =
 			testGetMyUserAccountSubscriptionsPage_addSubscription(
 				randomSubscription());
+
+		subscriptionList.add(subscription3);
 
 		Page<Subscription> page1 =
 			subscriptionResource.getMyUserAccountSubscriptionsPage(
@@ -279,6 +299,8 @@ public abstract class BaseSubscriptionResourceTestCase {
 		Subscription subscription =
 			testDeleteMyUserAccountSubscription_addSubscription();
 
+		subscriptionList.add(subscription);
+
 		assertHttpResponseStatusCode(
 			204,
 			subscriptionResource.deleteMyUserAccountSubscriptionHttpResponse(
@@ -306,6 +328,8 @@ public abstract class BaseSubscriptionResourceTestCase {
 		Subscription postSubscription =
 			testGetMyUserAccountSubscription_addSubscription();
 
+		subscriptionList.add(postSubscription);
+
 		Subscription getSubscription =
 			subscriptionResource.getMyUserAccountSubscription(
 				postSubscription.getId());
@@ -324,6 +348,8 @@ public abstract class BaseSubscriptionResourceTestCase {
 	@Test
 	public void testGraphQLGetMyUserAccountSubscription() throws Exception {
 		Subscription subscription = testGraphQLSubscription_addSubscription();
+
+		subscriptionList.add(subscription);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -495,6 +521,10 @@ public abstract class BaseSubscriptionResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteSubscription(Subscription subscription)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -843,6 +873,7 @@ public abstract class BaseSubscriptionResourceTestCase {
 	}
 
 	protected SubscriptionResource subscriptionResource;
+	protected List<Subscription> subscriptionList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -107,6 +107,7 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		taxonomyVocabularyList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -125,6 +126,15 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (TaxonomyVocabulary taxonomyVocabulary : taxonomyVocabularyList) {
+			try {
+				deleteTaxonomyVocabulary(taxonomyVocabulary);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -235,9 +245,13 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, randomTaxonomyVocabulary());
 
+		taxonomyVocabularyList.add(taxonomyVocabulary1);
+
 		TaxonomyVocabulary taxonomyVocabulary2 =
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, randomTaxonomyVocabulary());
+
+		taxonomyVocabularyList.add(taxonomyVocabulary2);
 
 		page = taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -275,6 +289,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, taxonomyVocabulary1);
 
+		taxonomyVocabularyList.add(taxonomyVocabulary1);
+
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyVocabulary> page =
 				taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
@@ -306,10 +322,14 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, randomTaxonomyVocabulary());
 
+		taxonomyVocabularyList.add(taxonomyVocabulary1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		TaxonomyVocabulary taxonomyVocabulary2 =
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, randomTaxonomyVocabulary());
+
+		taxonomyVocabularyList.add(taxonomyVocabulary2);
 
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyVocabulary> page =
@@ -334,13 +354,19 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, randomTaxonomyVocabulary());
 
+		taxonomyVocabularyList.add(taxonomyVocabulary1);
+
 		TaxonomyVocabulary taxonomyVocabulary2 =
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, randomTaxonomyVocabulary());
 
+		taxonomyVocabularyList.add(taxonomyVocabulary2);
+
 		TaxonomyVocabulary taxonomyVocabulary3 =
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, randomTaxonomyVocabulary());
+
+		taxonomyVocabularyList.add(taxonomyVocabulary3);
 
 		Page<TaxonomyVocabulary> page1 =
 			taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
@@ -462,9 +488,13 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, taxonomyVocabulary1);
 
+		taxonomyVocabularyList.add(taxonomyVocabulary1);
+
 		taxonomyVocabulary2 =
 			testGetSiteTaxonomyVocabulariesPage_addTaxonomyVocabulary(
 				siteId, taxonomyVocabulary2);
+
+		taxonomyVocabularyList.add(taxonomyVocabulary2);
 
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyVocabulary> ascPage =
@@ -550,6 +580,9 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 		TaxonomyVocabulary taxonomyVocabulary2 =
 			testGraphQLTaxonomyVocabulary_addTaxonomyVocabulary();
 
+		taxonomyVocabularyList.add(taxonomyVocabulary1);
+		taxonomyVocabularyList.add(taxonomyVocabulary2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -575,6 +608,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			testPostSiteTaxonomyVocabulary_addTaxonomyVocabulary(
 				randomTaxonomyVocabulary);
 
+		taxonomyVocabularyList.add(postTaxonomyVocabulary);
+
 		assertEquals(randomTaxonomyVocabulary, postTaxonomyVocabulary);
 		assertValid(postTaxonomyVocabulary);
 	}
@@ -598,6 +633,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 			testGraphQLTaxonomyVocabulary_addTaxonomyVocabulary(
 				randomTaxonomyVocabulary);
 
+		taxonomyVocabularyList.add(taxonomyVocabulary);
+
 		Assert.assertTrue(
 			equalsJSONObject(
 				randomTaxonomyVocabulary,
@@ -610,6 +647,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		TaxonomyVocabulary taxonomyVocabulary =
 			testDeleteTaxonomyVocabulary_addTaxonomyVocabulary();
+
+		taxonomyVocabularyList.add(taxonomyVocabulary);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -638,6 +677,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 	public void testGraphQLDeleteTaxonomyVocabulary() throws Exception {
 		TaxonomyVocabulary taxonomyVocabulary =
 			testGraphQLTaxonomyVocabulary_addTaxonomyVocabulary();
+
+		taxonomyVocabularyList.add(taxonomyVocabulary);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -689,6 +730,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 		TaxonomyVocabulary postTaxonomyVocabulary =
 			testGetTaxonomyVocabulary_addTaxonomyVocabulary();
 
+		taxonomyVocabularyList.add(postTaxonomyVocabulary);
+
 		TaxonomyVocabulary getTaxonomyVocabulary =
 			taxonomyVocabularyResource.getTaxonomyVocabulary(
 				postTaxonomyVocabulary.getId());
@@ -709,6 +752,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 	public void testGraphQLGetTaxonomyVocabulary() throws Exception {
 		TaxonomyVocabulary taxonomyVocabulary =
 			testGraphQLTaxonomyVocabulary_addTaxonomyVocabulary();
+
+		taxonomyVocabularyList.add(taxonomyVocabulary);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -738,6 +783,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 	public void testPatchTaxonomyVocabulary() throws Exception {
 		TaxonomyVocabulary postTaxonomyVocabulary =
 			testPatchTaxonomyVocabulary_addTaxonomyVocabulary();
+
+		taxonomyVocabularyList.add(postTaxonomyVocabulary);
 
 		TaxonomyVocabulary randomPatchTaxonomyVocabulary =
 			randomPatchTaxonomyVocabulary();
@@ -772,6 +819,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 	public void testPutTaxonomyVocabulary() throws Exception {
 		TaxonomyVocabulary postTaxonomyVocabulary =
 			testPutTaxonomyVocabulary_addTaxonomyVocabulary();
+
+		taxonomyVocabularyList.add(postTaxonomyVocabulary);
 
 		TaxonomyVocabulary randomTaxonomyVocabulary =
 			randomTaxonomyVocabulary();
@@ -1159,6 +1208,14 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteTaxonomyVocabulary(
+			TaxonomyVocabulary taxonomyVocabulary)
+		throws Exception {
+
+		taxonomyVocabularyResource.deleteTaxonomyVocabulary(
+			taxonomyVocabulary.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1647,6 +1704,7 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 	}
 
 	protected TaxonomyVocabularyResource taxonomyVocabularyResource;
+	protected List<TaxonomyVocabulary> taxonomyVocabularyList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

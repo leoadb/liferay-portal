@@ -97,6 +97,7 @@ public abstract class BaseWorkflowLogResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		workflowLogList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -114,6 +115,15 @@ public abstract class BaseWorkflowLogResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WorkflowLog workflowLog : workflowLogList) {
+			try {
+				deleteWorkflowLog(workflowLog);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -227,9 +237,13 @@ public abstract class BaseWorkflowLogResourceTestCase {
 			testGetWorkflowInstanceWorkflowLogsPage_addWorkflowLog(
 				workflowInstanceId, randomWorkflowLog());
 
+		workflowLogList.add(workflowLog1);
+
 		WorkflowLog workflowLog2 =
 			testGetWorkflowInstanceWorkflowLogsPage_addWorkflowLog(
 				workflowInstanceId, randomWorkflowLog());
+
+		workflowLogList.add(workflowLog2);
 
 		page = workflowLogResource.getWorkflowInstanceWorkflowLogsPage(
 			workflowInstanceId, null, Pagination.of(1, 2));
@@ -253,13 +267,19 @@ public abstract class BaseWorkflowLogResourceTestCase {
 			testGetWorkflowInstanceWorkflowLogsPage_addWorkflowLog(
 				workflowInstanceId, randomWorkflowLog());
 
+		workflowLogList.add(workflowLog1);
+
 		WorkflowLog workflowLog2 =
 			testGetWorkflowInstanceWorkflowLogsPage_addWorkflowLog(
 				workflowInstanceId, randomWorkflowLog());
 
+		workflowLogList.add(workflowLog2);
+
 		WorkflowLog workflowLog3 =
 			testGetWorkflowInstanceWorkflowLogsPage_addWorkflowLog(
 				workflowInstanceId, randomWorkflowLog());
+
+		workflowLogList.add(workflowLog3);
 
 		Page<WorkflowLog> page1 =
 			workflowLogResource.getWorkflowInstanceWorkflowLogsPage(
@@ -316,6 +336,8 @@ public abstract class BaseWorkflowLogResourceTestCase {
 	public void testGetWorkflowLog() throws Exception {
 		WorkflowLog postWorkflowLog = testGetWorkflowLog_addWorkflowLog();
 
+		workflowLogList.add(postWorkflowLog);
+
 		WorkflowLog getWorkflowLog = workflowLogResource.getWorkflowLog(
 			postWorkflowLog.getId());
 
@@ -331,6 +353,8 @@ public abstract class BaseWorkflowLogResourceTestCase {
 	@Test
 	public void testGraphQLGetWorkflowLog() throws Exception {
 		WorkflowLog workflowLog = testGraphQLWorkflowLog_addWorkflowLog();
+
+		workflowLogList.add(workflowLog);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -389,9 +413,13 @@ public abstract class BaseWorkflowLogResourceTestCase {
 			testGetWorkflowTaskWorkflowLogsPage_addWorkflowLog(
 				workflowTaskId, randomWorkflowLog());
 
+		workflowLogList.add(workflowLog1);
+
 		WorkflowLog workflowLog2 =
 			testGetWorkflowTaskWorkflowLogsPage_addWorkflowLog(
 				workflowTaskId, randomWorkflowLog());
+
+		workflowLogList.add(workflowLog2);
 
 		page = workflowLogResource.getWorkflowTaskWorkflowLogsPage(
 			workflowTaskId, null, Pagination.of(1, 2));
@@ -415,13 +443,19 @@ public abstract class BaseWorkflowLogResourceTestCase {
 			testGetWorkflowTaskWorkflowLogsPage_addWorkflowLog(
 				workflowTaskId, randomWorkflowLog());
 
+		workflowLogList.add(workflowLog1);
+
 		WorkflowLog workflowLog2 =
 			testGetWorkflowTaskWorkflowLogsPage_addWorkflowLog(
 				workflowTaskId, randomWorkflowLog());
 
+		workflowLogList.add(workflowLog2);
+
 		WorkflowLog workflowLog3 =
 			testGetWorkflowTaskWorkflowLogsPage_addWorkflowLog(
 				workflowTaskId, randomWorkflowLog());
+
+		workflowLogList.add(workflowLog3);
 
 		Page<WorkflowLog> page1 =
 			workflowLogResource.getWorkflowTaskWorkflowLogsPage(
@@ -665,6 +699,9 @@ public abstract class BaseWorkflowLogResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWorkflowLog(WorkflowLog workflowLog) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1088,6 +1125,7 @@ public abstract class BaseWorkflowLogResourceTestCase {
 	}
 
 	protected WorkflowLogResource workflowLogResource;
+	protected List<WorkflowLog> workflowLogList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -93,6 +93,7 @@ public abstract class BaseExperimentRunResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		experimentRunList = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -110,6 +111,15 @@ public abstract class BaseExperimentRunResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (ExperimentRun experimentRun : experimentRunList) {
+			try {
+				deleteExperimentRun(experimentRun);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -190,6 +200,8 @@ public abstract class BaseExperimentRunResourceTestCase {
 
 		ExperimentRun postExperimentRun =
 			testPostExperimentRun_addExperimentRun(randomExperimentRun);
+
+		experimentRunList.add(postExperimentRun);
 
 		assertEquals(randomExperimentRun, postExperimentRun);
 		assertValid(postExperimentRun);
@@ -330,6 +342,10 @@ public abstract class BaseExperimentRunResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteExperimentRun(ExperimentRun experimentRun)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -547,6 +563,7 @@ public abstract class BaseExperimentRunResourceTestCase {
 	}
 
 	protected ExperimentRunResource experimentRunResource;
+	protected List<ExperimentRun> experimentRunList;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;
