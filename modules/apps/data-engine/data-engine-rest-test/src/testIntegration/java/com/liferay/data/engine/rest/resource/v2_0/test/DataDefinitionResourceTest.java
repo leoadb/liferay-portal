@@ -28,13 +28,10 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,22 +42,6 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DataDefinitionResourceTest
 	extends BaseDataDefinitionResourceTestCase {
-
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-
-		_dataDefinitions = new ArrayList<>();
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		super.tearDown();
-
-		for (DataDefinition dataDefinition : _dataDefinitions) {
-			dataDefinitionResource.deleteDataDefinition(dataDefinition.getId());
-		}
-	}
 
 	@Override
 	public void testGetDataDefinitionDataDefinitionFieldFieldTypes()
@@ -79,6 +60,8 @@ public class DataDefinitionResourceTest
 
 		DataDefinition postDataDefinition =
 			testGetDataDefinition_addDataDefinition();
+
+		dataDefinitions.add(postDataDefinition);
 
 		String fieldLinks =
 			dataDefinitionResource.getDataDefinitionDataDefinitionFieldLinks(
@@ -117,10 +100,13 @@ public class DataDefinitionResourceTest
 		_testGetSiteDataDefinitionsPage(
 			"description", "nam", "definition name");
 
-		dataDefinitionResource.postSiteDataDefinitionByContentType(
-			testGroup.getGroupId(),
-			testGetSiteDataDefinitionByContentTypeContentTypePage_getContentType(),
-			randomDataDefinition());
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(),
+				testGetSiteDataDefinitionByContentTypeContentTypePage_getContentType(),
+				randomDataDefinition());
+
+		dataDefinitions.add(dataDefinition);
 
 		page =
 			dataDefinitionResource.
@@ -155,6 +141,8 @@ public class DataDefinitionResourceTest
 	public void testPutDataDefinition() throws Exception {
 		DataDefinition postDataDefinition =
 			testPutDataDefinition_addDataDefinition();
+
+		dataDefinitions.add(postDataDefinition);
 
 		DataLayout dataLayout = postDataDefinition.getDefaultDataLayout();
 
@@ -249,13 +237,8 @@ public class DataDefinitionResourceTest
 				String contentType, DataDefinition dataDefinition)
 		throws Exception {
 
-		DataDefinition postDataDefinition =
-			dataDefinitionResource.postDataDefinitionByContentType(
-				contentType, dataDefinition);
-
-		_dataDefinitions.add(postDataDefinition);
-
-		return postDataDefinition;
+		return dataDefinitionResource.postDataDefinitionByContentType(
+			contentType, dataDefinition);
 	}
 
 	@Override
@@ -410,8 +393,6 @@ public class DataDefinitionResourceTest
 	}
 
 	private static final String _CONTENT_TYPE = "app-builder";
-
-	private List<DataDefinition> _dataDefinitions;
 
 	@Inject(type = Portal.class)
 	private Portal _portal;
