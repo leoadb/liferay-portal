@@ -15,12 +15,13 @@
 package com.liferay.data.engine.rest.resource.v2_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataLayoutTestUtil;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.util.Arrays;
@@ -39,32 +40,42 @@ import org.junit.runner.RunWith;
 public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_dataDefinition = DataDefinitionTestUtil.addDataDefinition(
-			testGroup.getGroupId());
-		_irrelevantDataDefinition = DataDefinitionTestUtil.addDataDefinition(
-			irrelevantGroup.getGroupId());
+		_ddmStructure = DataDefinitionTestUtil.addDDMStructure(testGroup);
+		_irrelevantDDMStructure = DataDefinitionTestUtil.addDDMStructure(
+			irrelevantGroup);
 	}
 
-	@Override
 	@Test
-	public void testGetDataDefinitionDataLayoutsPage() throws Exception {
+	public void testGetDataDefinitionDataLayoutsPage1() throws Exception {
 		super.testGetDataDefinitionDataLayoutsPage();
 
-		Page<DataLayout> page =
-			dataLayoutResource.getDataDefinitionDataLayoutsPage(
-				testGetDataDefinitionDataLayoutsPage_getDataDefinitionId(),
-				"layout", Pagination.of(1, 2), null);
-
-		Assert.assertEquals(0, page.getTotalCount());
-
 		_testGetDataDefinitionDataLayoutsPage("FORM", "FoRmSLaYoUt");
+	}
+
+	@Test
+	public void testGetDataDefinitionDataLayoutsPage2() throws Exception {
+		super.testGetDataDefinitionDataLayoutsPage();
+
 		_testGetDataDefinitionDataLayoutsPage(
 			"abcdefghijklmnopqrstuvwxyz0123456789",
 			"abcdefghijklmnopqrstuvwxyz0123456789");
+	}
+
+	@Test
+	public void testGetDataDefinitionDataLayoutsPage3() throws Exception {
+		super.testGetDataDefinitionDataLayoutsPage();
+
 		_testGetDataDefinitionDataLayoutsPage("form layout", "form layout");
+	}
+
+	@Test
+	public void testGetDataDefinitionDataLayoutsPage4() throws Exception {
+		super.testGetDataDefinitionDataLayoutsPage();
+
 		_testGetDataDefinitionDataLayoutsPage("layo", "form layout");
 	}
 
@@ -113,7 +124,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	@Override
 	protected DataLayout randomDataLayout() {
 		return DataLayoutTestUtil.createDataLayout(
-			_dataDefinition.getId(), RandomTestUtil.randomString(),
+			_ddmStructure.getStructureId(), RandomTestUtil.randomString(),
 			testGroup.getGroupId());
 	}
 
@@ -123,7 +134,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			super.randomIrrelevantDataLayout();
 
 		randomIrrelevantDataLayout.setDataDefinitionId(
-			_irrelevantDataDefinition.getId());
+			_irrelevantDDMStructure.getStructureId());
 
 		return randomIrrelevantDataLayout;
 	}
@@ -131,7 +142,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	@Override
 	protected DataLayout testDeleteDataLayout_addDataLayout() throws Exception {
 		return dataLayoutResource.postDataDefinitionDataLayout(
-			_dataDefinition.getId(), randomDataLayout());
+			_ddmStructure.getStructureId(), randomDataLayout());
 	}
 
 	@Override
@@ -139,20 +150,20 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		throws Exception {
 
 		return dataLayoutResource.postDataDefinitionDataLayout(
-			_dataDefinition.getId(), randomDataLayout());
+			_ddmStructure.getStructureId(), randomDataLayout());
 	}
 
 	@Override
 	protected Long testGetDataDefinitionDataLayoutsPage_getDataDefinitionId()
 		throws Exception {
 
-		return _dataDefinition.getId();
+		return _ddmStructure.getStructureId();
 	}
 
 	@Override
 	protected DataLayout testGetDataLayout_addDataLayout() throws Exception {
 		return dataLayoutResource.postDataDefinitionDataLayout(
-			_dataDefinition.getId(), randomDataLayout());
+			_ddmStructure.getStructureId(), randomDataLayout());
 	}
 
 	@Override
@@ -161,7 +172,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		throws Exception {
 
 		DataLayout dataLayout = dataLayoutResource.postDataDefinitionDataLayout(
-			_dataDefinition.getId(), randomDataLayout());
+			_ddmStructure.getStructureId(), randomDataLayout());
 
 		dataLayout.setContentType("app-builder");
 
@@ -171,7 +182,7 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	@Override
 	protected DataLayout testPutDataLayout_addDataLayout() throws Exception {
 		return dataLayoutResource.postDataDefinitionDataLayout(
-			_dataDefinition.getId(), randomDataLayout());
+			_ddmStructure.getStructureId(), randomDataLayout());
 	}
 
 	private void _testGetDataDefinitionDataLayoutsPage(
@@ -185,7 +196,10 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			testGetDataDefinitionDataLayoutsPage_addDataLayout(
 				dataDefinitionId,
 				DataLayoutTestUtil.createDataLayout(
-					_dataDefinition.getId(), name, testGroup.getGroupId()));
+					_ddmStructure.getStructureId(), name,
+					testGroup.getGroupId()));
+
+		dataLayoutList.add(dataLayout);
 
 		Page<DataLayout> page =
 			dataLayoutResource.getDataDefinitionDataLayoutsPage(
@@ -196,11 +210,12 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		assertEqualsIgnoringOrder(
 			Arrays.asList(dataLayout), (List<DataLayout>)page.getItems());
 		assertValid(page);
-
-		dataLayoutResource.deleteDataLayout(dataLayout.getId());
 	}
 
-	private DataDefinition _dataDefinition;
-	private DataDefinition _irrelevantDataDefinition;
+	@DeleteAfterTestRun
+	private DDMStructure _ddmStructure;
+
+	@DeleteAfterTestRun
+	private DDMStructure _irrelevantDDMStructure;
 
 }
