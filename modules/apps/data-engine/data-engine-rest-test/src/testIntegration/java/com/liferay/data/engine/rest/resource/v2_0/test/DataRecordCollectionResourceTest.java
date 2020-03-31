@@ -20,6 +20,7 @@ import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
@@ -40,6 +41,7 @@ public class DataRecordCollectionResourceTest
 	extends BaseDataRecordCollectionResourceTestCase {
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -48,15 +50,22 @@ public class DataRecordCollectionResourceTest
 			irrelevantGroup);
 	}
 
-	@Override
 	@Test
-	public void testGetDataDefinitionDataRecordCollectionsPage()
+	public void testGetDataDefinitionDataRecordCollectionsPage1()
 		throws Exception {
 
 		super.testGetDataDefinitionDataRecordCollectionsPage();
 
 		_testGetDataDefinitionDataRecordCollectionsPage(
 			"CoLLeCTion dEsCrIpTiOn", "COLLECTION", "name");
+	}
+
+	@Test
+	public void testGetDataDefinitionDataRecordCollectionsPage2()
+		throws Exception {
+
+		super.testGetDataDefinitionDataRecordCollectionsPage();
+
 		_testGetDataDefinitionDataRecordCollectionsPage(
 			"definition", "abcdefghijklmnopqrstuvwxyz0123456789",
 			"abcdefghijklmnopqrstuvwxyz0123456789");
@@ -259,6 +268,8 @@ public class DataRecordCollectionResourceTest
 				dataDefinitionId,
 				_createDataRecordCollection(description, name));
 
+		dataRecordCollectionList.add(dataRecordCollection);
+
 		Page<DataRecordCollection> page =
 			dataRecordCollectionResource.
 				getDataDefinitionDataRecordCollectionsPage(
@@ -270,12 +281,12 @@ public class DataRecordCollectionResourceTest
 			Arrays.asList(dataRecordCollection),
 			(List<DataRecordCollection>)page.getItems());
 		assertValid(page);
-
-		dataRecordCollectionResource.deleteDataRecordCollection(
-			dataRecordCollection.getId());
 	}
 
+	@DeleteAfterTestRun
 	private DDMStructure _ddmStructure;
+
+	@DeleteAfterTestRun
 	private DDMStructure _irrelevantDDMStructure;
 
 }
