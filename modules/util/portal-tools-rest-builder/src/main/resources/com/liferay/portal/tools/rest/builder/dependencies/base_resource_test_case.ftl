@@ -120,6 +120,15 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (${schemaName} ${schemaVarName} : ${schemaVarName}List) {
+			try {
+				delete${schemaName}(${schemaVarName});
+			}
+			catch(Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -1740,6 +1749,24 @@ public abstract class Base${schemaName}ResourceTestCase {
 			Assert.assertTrue(valid);
 		}
 	</#list>
+
+	protected void delete${schemaName}(${schemaName} ${schemaVarName}) throws Exception {
+		<#if freeMarkerTool.hasJavaMethodSignature(javaMethodSignatures, "delete" + schemaName)>
+			<#assign deleteJavaMethodSignature = freeMarkerTool.getJavaMethodSignature(javaMethodSignatures, "delete" + schemaName) />
+
+			<#if properties?keys?seq_contains("id")>
+				${schemaVarName}Resource.delete${schemaName}(
+				<#list deleteJavaMethodSignature.javaMethodParameters as javaMethodParameter>
+					<#if freeMarkerTool.isPathParameter(javaMethodParameter, deleteJavaMethodSignature.operation) && stringUtil.equals(javaMethodParameter.parameterName, schemaVarName + "Id")>
+						${schemaVarName}.getId()
+					<#else>
+						null
+					</#if>
+					<#sep>, </#sep>
+				</#list>);
+			</#if>
+		</#if>
+	}
 
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[0];
