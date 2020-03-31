@@ -106,6 +106,7 @@ public abstract class BaseAccountResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		accounts = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -123,6 +124,15 @@ public abstract class BaseAccountResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Account account : accounts) {
+			try {
+				deleteAccount(account);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -208,7 +218,11 @@ public abstract class BaseAccountResourceTestCase {
 
 		Account account1 = testGetAccountsPage_addAccount(randomAccount());
 
+		accounts.add(account1);
+
 		Account account2 = testGetAccountsPage_addAccount(randomAccount());
+
+		accounts.add(account2);
 
 		page = accountResource.getAccountsPage(
 			null, null, Pagination.of(1, 2), null);
@@ -237,6 +251,8 @@ public abstract class BaseAccountResourceTestCase {
 
 		account1 = testGetAccountsPage_addAccount(account1);
 
+		accounts.add(account1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Account> page = accountResource.getAccountsPage(
 				null, getFilterString(entityField, "between", account1),
@@ -259,8 +275,12 @@ public abstract class BaseAccountResourceTestCase {
 
 		Account account1 = testGetAccountsPage_addAccount(randomAccount());
 
+		accounts.add(account1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Account account2 = testGetAccountsPage_addAccount(randomAccount());
+
+		accounts.add(account2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Account> page = accountResource.getAccountsPage(
@@ -277,9 +297,15 @@ public abstract class BaseAccountResourceTestCase {
 	public void testGetAccountsPageWithPagination() throws Exception {
 		Account account1 = testGetAccountsPage_addAccount(randomAccount());
 
+		accounts.add(account1);
+
 		Account account2 = testGetAccountsPage_addAccount(randomAccount());
 
+		accounts.add(account2);
+
 		Account account3 = testGetAccountsPage_addAccount(randomAccount());
+
+		accounts.add(account3);
 
 		Page<Account> page1 = accountResource.getAccountsPage(
 			null, null, Pagination.of(1, 2), null);
@@ -379,7 +405,11 @@ public abstract class BaseAccountResourceTestCase {
 
 		account1 = testGetAccountsPage_addAccount(account1);
 
+		accounts.add(account1);
+
 		account2 = testGetAccountsPage_addAccount(account2);
+
+		accounts.add(account2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Account> ascPage = accountResource.getAccountsPage(
@@ -445,6 +475,9 @@ public abstract class BaseAccountResourceTestCase {
 		Account account1 = testGraphQLAccount_addAccount();
 		Account account2 = testGraphQLAccount_addAccount();
 
+		accounts.add(account1);
+		accounts.add(account2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -465,6 +498,8 @@ public abstract class BaseAccountResourceTestCase {
 
 		Account postAccount = testPostAccount_addAccount(randomAccount);
 
+		accounts.add(postAccount);
+
 		assertEquals(randomAccount, postAccount);
 		assertValid(postAccount);
 	}
@@ -480,6 +515,8 @@ public abstract class BaseAccountResourceTestCase {
 	public void testDeleteAccount() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Account account = testDeleteAccount_addAccount();
+
+		accounts.add(account);
 
 		assertHttpResponseStatusCode(
 			204, accountResource.deleteAccountHttpResponse(account.getId()));
@@ -499,6 +536,8 @@ public abstract class BaseAccountResourceTestCase {
 	@Test
 	public void testGraphQLDeleteAccount() throws Exception {
 		Account account = testGraphQLAccount_addAccount();
+
+		accounts.add(account);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -546,6 +585,8 @@ public abstract class BaseAccountResourceTestCase {
 	public void testGetAccount() throws Exception {
 		Account postAccount = testGetAccount_addAccount();
 
+		accounts.add(postAccount);
+
 		Account getAccount = accountResource.getAccount(postAccount.getId());
 
 		assertEquals(postAccount, getAccount);
@@ -560,6 +601,8 @@ public abstract class BaseAccountResourceTestCase {
 	@Test
 	public void testGraphQLGetAccount() throws Exception {
 		Account account = testGraphQLAccount_addAccount();
+
+		accounts.add(account);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -587,6 +630,8 @@ public abstract class BaseAccountResourceTestCase {
 	public void testPatchAccount() throws Exception {
 		Account postAccount = testPatchAccount_addAccount();
 
+		accounts.add(postAccount);
+
 		Account randomPatchAccount = randomPatchAccount();
 
 		Account patchAccount = accountResource.patchAccount(
@@ -610,6 +655,8 @@ public abstract class BaseAccountResourceTestCase {
 	@Test
 	public void testPutAccount() throws Exception {
 		Account postAccount = testPutAccount_addAccount();
+
+		accounts.add(postAccount);
 
 		Account randomAccount = randomAccount();
 
@@ -783,6 +830,10 @@ public abstract class BaseAccountResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteAccount(Account account) throws Exception {
+		accountResource.deleteAccount(account.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1087,6 +1138,7 @@ public abstract class BaseAccountResourceTestCase {
 	}
 
 	protected AccountResource accountResource;
+	protected List<Account> accounts;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -93,6 +93,7 @@ public abstract class BaseCalendarResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		calendars = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -110,6 +111,15 @@ public abstract class BaseCalendarResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Calendar calendar : calendars) {
+			try {
+				deleteCalendar(calendar);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -316,6 +326,9 @@ public abstract class BaseCalendarResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteCalendar(Calendar calendar) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -540,6 +553,7 @@ public abstract class BaseCalendarResourceTestCase {
 	}
 
 	protected CalendarResource calendarResource;
+	protected List<Calendar> calendars;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

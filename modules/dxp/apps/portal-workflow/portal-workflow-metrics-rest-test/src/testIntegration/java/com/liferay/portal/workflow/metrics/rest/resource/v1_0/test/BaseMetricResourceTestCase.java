@@ -93,6 +93,7 @@ public abstract class BaseMetricResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		metrics = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -110,6 +111,15 @@ public abstract class BaseMetricResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Metric metric : metrics) {
+			try {
+				deleteMetric(metric);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -309,6 +319,9 @@ public abstract class BaseMetricResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
+	protected void deleteMetric(Metric metric) throws Exception {
+	}
+
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[0];
 	}
@@ -497,6 +510,7 @@ public abstract class BaseMetricResourceTestCase {
 	}
 
 	protected MetricResource metricResource;
+	protected List<Metric> metrics;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

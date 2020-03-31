@@ -100,6 +100,7 @@ public abstract class BaseSLAResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		slas = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -117,6 +118,15 @@ public abstract class BaseSLAResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (SLA sla : slas) {
+			try {
+				deleteSLA(sla);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -222,7 +232,11 @@ public abstract class BaseSLAResourceTestCase {
 
 		SLA sla1 = testGetProcessSLAsPage_addSLA(processId, randomSLA());
 
+		slas.add(sla1);
+
 		SLA sla2 = testGetProcessSLAsPage_addSLA(processId, randomSLA());
+
+		slas.add(sla2);
 
 		page = slaResource.getProcessSLAsPage(
 			processId, null, Pagination.of(1, 2));
@@ -244,9 +258,15 @@ public abstract class BaseSLAResourceTestCase {
 
 		SLA sla1 = testGetProcessSLAsPage_addSLA(processId, randomSLA());
 
+		slas.add(sla1);
+
 		SLA sla2 = testGetProcessSLAsPage_addSLA(processId, randomSLA());
 
+		slas.add(sla2);
+
 		SLA sla3 = testGetProcessSLAsPage_addSLA(processId, randomSLA());
+
+		slas.add(sla3);
 
 		Page<SLA> page1 = slaResource.getProcessSLAsPage(
 			processId, null, Pagination.of(1, 2));
@@ -294,6 +314,8 @@ public abstract class BaseSLAResourceTestCase {
 
 		SLA postSLA = testPostProcessSLA_addSLA(randomSLA);
 
+		slas.add(postSLA);
+
 		assertEquals(randomSLA, postSLA);
 		assertValid(postSLA);
 	}
@@ -307,6 +329,8 @@ public abstract class BaseSLAResourceTestCase {
 	public void testDeleteSLA() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		SLA sla = testDeleteSLA_addSLA();
+
+		slas.add(sla);
 
 		assertHttpResponseStatusCode(
 			204, slaResource.deleteSLAHttpResponse(sla.getId()));
@@ -325,6 +349,8 @@ public abstract class BaseSLAResourceTestCase {
 	@Test
 	public void testGraphQLDeleteSLA() throws Exception {
 		SLA sla = testGraphQLSLA_addSLA();
+
+		slas.add(sla);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -372,6 +398,8 @@ public abstract class BaseSLAResourceTestCase {
 	public void testGetSLA() throws Exception {
 		SLA postSLA = testGetSLA_addSLA();
 
+		slas.add(postSLA);
+
 		SLA getSLA = slaResource.getSLA(postSLA.getId());
 
 		assertEquals(postSLA, getSLA);
@@ -386,6 +414,8 @@ public abstract class BaseSLAResourceTestCase {
 	@Test
 	public void testGraphQLGetSLA() throws Exception {
 		SLA sla = testGraphQLSLA_addSLA();
+
+		slas.add(sla);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -412,6 +442,8 @@ public abstract class BaseSLAResourceTestCase {
 	@Test
 	public void testPutSLA() throws Exception {
 		SLA postSLA = testPutSLA_addSLA();
+
+		slas.add(postSLA);
 
 		SLA randomSLA = randomSLA();
 
@@ -602,6 +634,10 @@ public abstract class BaseSLAResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteSLA(SLA sla) throws Exception {
+		slaResource.deleteSLA(sla.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1012,6 +1048,7 @@ public abstract class BaseSLAResourceTestCase {
 	}
 
 	protected SLAResource slaResource;
+	protected List<SLA> slas;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

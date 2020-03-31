@@ -97,6 +97,7 @@ public abstract class BaseFormDocumentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		formDocuments = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -114,6 +115,15 @@ public abstract class BaseFormDocumentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (FormDocument formDocument : formDocuments) {
+			try {
+				deleteFormDocument(formDocument);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -201,6 +211,8 @@ public abstract class BaseFormDocumentResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		FormDocument formDocument = testDeleteFormDocument_addFormDocument();
 
+		formDocuments.add(formDocument);
+
 		assertHttpResponseStatusCode(
 			204,
 			formDocumentResource.deleteFormDocumentHttpResponse(
@@ -225,6 +237,8 @@ public abstract class BaseFormDocumentResourceTestCase {
 	@Test
 	public void testGraphQLDeleteFormDocument() throws Exception {
 		FormDocument formDocument = testGraphQLFormDocument_addFormDocument();
+
+		formDocuments.add(formDocument);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -272,6 +286,8 @@ public abstract class BaseFormDocumentResourceTestCase {
 	public void testGetFormDocument() throws Exception {
 		FormDocument postFormDocument = testGetFormDocument_addFormDocument();
 
+		formDocuments.add(postFormDocument);
+
 		FormDocument getFormDocument = formDocumentResource.getFormDocument(
 			postFormDocument.getId());
 
@@ -289,6 +305,8 @@ public abstract class BaseFormDocumentResourceTestCase {
 	@Test
 	public void testGraphQLGetFormDocument() throws Exception {
 		FormDocument formDocument = testGraphQLFormDocument_addFormDocument();
+
+		formDocuments.add(formDocument);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -483,6 +501,12 @@ public abstract class BaseFormDocumentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteFormDocument(FormDocument formDocument)
+		throws Exception {
+
+		formDocumentResource.deleteFormDocument(formDocument.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -873,6 +897,7 @@ public abstract class BaseFormDocumentResourceTestCase {
 	}
 
 	protected FormDocumentResource formDocumentResource;
+	protected List<FormDocument> formDocuments;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -106,6 +106,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		dataLayouts = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -123,6 +124,15 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (DataLayout dataLayout : dataLayouts) {
+			try {
+				deleteDataLayout(dataLayout);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -207,6 +217,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 		DataLayout dataLayout =
 			testDeleteDataLayoutsDataDefinition_addDataLayout();
 
+		dataLayouts.add(dataLayout);
+
 		assertHttpResponseStatusCode(
 			204,
 			dataLayoutResource.deleteDataLayoutsDataDefinitionHttpResponse(
@@ -254,9 +266,13 @@ public abstract class BaseDataLayoutResourceTestCase {
 			testGetDataDefinitionDataLayoutsPage_addDataLayout(
 				dataDefinitionId, randomDataLayout());
 
+		dataLayouts.add(dataLayout1);
+
 		DataLayout dataLayout2 =
 			testGetDataDefinitionDataLayoutsPage_addDataLayout(
 				dataDefinitionId, randomDataLayout());
+
+		dataLayouts.add(dataLayout2);
 
 		page = dataLayoutResource.getDataDefinitionDataLayoutsPage(
 			dataDefinitionId, null, Pagination.of(1, 2), null);
@@ -284,13 +300,19 @@ public abstract class BaseDataLayoutResourceTestCase {
 			testGetDataDefinitionDataLayoutsPage_addDataLayout(
 				dataDefinitionId, randomDataLayout());
 
+		dataLayouts.add(dataLayout1);
+
 		DataLayout dataLayout2 =
 			testGetDataDefinitionDataLayoutsPage_addDataLayout(
 				dataDefinitionId, randomDataLayout());
 
+		dataLayouts.add(dataLayout2);
+
 		DataLayout dataLayout3 =
 			testGetDataDefinitionDataLayoutsPage_addDataLayout(
 				dataDefinitionId, randomDataLayout());
+
+		dataLayouts.add(dataLayout3);
 
 		Page<DataLayout> page1 =
 			dataLayoutResource.getDataDefinitionDataLayoutsPage(
@@ -403,8 +425,12 @@ public abstract class BaseDataLayoutResourceTestCase {
 		dataLayout1 = testGetDataDefinitionDataLayoutsPage_addDataLayout(
 			dataDefinitionId, dataLayout1);
 
+		dataLayouts.add(dataLayout1);
+
 		dataLayout2 = testGetDataDefinitionDataLayoutsPage_addDataLayout(
 			dataDefinitionId, dataLayout2);
+
+		dataLayouts.add(dataLayout2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DataLayout> ascPage =
@@ -456,6 +482,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 		DataLayout postDataLayout =
 			testPostDataDefinitionDataLayout_addDataLayout(randomDataLayout);
 
+		dataLayouts.add(postDataLayout);
+
 		assertEquals(randomDataLayout, postDataLayout);
 		assertValid(postDataLayout);
 	}
@@ -473,6 +501,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 	public void testDeleteDataLayout() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DataLayout dataLayout = testDeleteDataLayout_addDataLayout();
+
+		dataLayouts.add(dataLayout);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -495,6 +525,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 	@Test
 	public void testGraphQLDeleteDataLayout() throws Exception {
 		DataLayout dataLayout = testGraphQLDataLayout_addDataLayout();
+
+		dataLayouts.add(dataLayout);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -542,6 +574,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 	public void testGetDataLayout() throws Exception {
 		DataLayout postDataLayout = testGetDataLayout_addDataLayout();
 
+		dataLayouts.add(postDataLayout);
+
 		DataLayout getDataLayout = dataLayoutResource.getDataLayout(
 			postDataLayout.getId());
 
@@ -557,6 +591,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 	@Test
 	public void testGraphQLGetDataLayout() throws Exception {
 		DataLayout dataLayout = testGraphQLDataLayout_addDataLayout();
+
+		dataLayouts.add(dataLayout);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -585,6 +621,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 	public void testPutDataLayout() throws Exception {
 		DataLayout postDataLayout = testPutDataLayout_addDataLayout();
 
+		dataLayouts.add(postDataLayout);
+
 		DataLayout randomDataLayout = randomDataLayout();
 
 		DataLayout putDataLayout = dataLayoutResource.putDataLayout(
@@ -612,6 +650,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 		DataLayout postDataLayout =
 			testGetSiteDataLayoutByContentTypeByDataLayoutKey_addDataLayout();
 
+		dataLayouts.add(postDataLayout);
+
 		DataLayout getDataLayout =
 			dataLayoutResource.getSiteDataLayoutByContentTypeByDataLayoutKey(
 				postDataLayout.getSiteId(), postDataLayout.getContentType(),
@@ -634,6 +674,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 		throws Exception {
 
 		DataLayout dataLayout = testGraphQLDataLayout_addDataLayout();
+
+		dataLayouts.add(dataLayout);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -855,6 +897,10 @@ public abstract class BaseDataLayoutResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteDataLayout(DataLayout dataLayout) throws Exception {
+		dataLayoutResource.deleteDataLayout(dataLayout.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1328,6 +1374,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 	}
 
 	protected DataLayoutResource dataLayoutResource;
+	protected List<DataLayout> dataLayouts;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

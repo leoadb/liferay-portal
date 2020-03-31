@@ -94,6 +94,7 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		workflowDefinitions = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -112,6 +113,15 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WorkflowDefinition workflowDefinition : workflowDefinitions) {
+			try {
+				deleteWorkflowDefinition(workflowDefinition);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -224,6 +234,8 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 			testPostWorkflowDefinitionDeploy_addWorkflowDefinition(
 				randomWorkflowDefinition);
 
+		workflowDefinitions.add(postWorkflowDefinition);
+
 		assertEquals(randomWorkflowDefinition, postWorkflowDefinition);
 		assertValid(postWorkflowDefinition);
 	}
@@ -245,6 +257,8 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 		WorkflowDefinition postWorkflowDefinition =
 			testPostWorkflowDefinitionSave_addWorkflowDefinition(
 				randomWorkflowDefinition);
+
+		workflowDefinitions.add(postWorkflowDefinition);
 
 		assertEquals(randomWorkflowDefinition, postWorkflowDefinition);
 		assertValid(postWorkflowDefinition);
@@ -273,6 +287,8 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 			testPostWorkflowDefinitionUpdateActive_addWorkflowDefinition(
 				randomWorkflowDefinition);
 
+		workflowDefinitions.add(postWorkflowDefinition);
+
 		assertEquals(randomWorkflowDefinition, postWorkflowDefinition);
 		assertValid(postWorkflowDefinition);
 	}
@@ -294,6 +310,8 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 		WorkflowDefinition postWorkflowDefinition =
 			testPostWorkflowDefinitionUpdateTitle_addWorkflowDefinition(
 				randomWorkflowDefinition);
+
+		workflowDefinitions.add(postWorkflowDefinition);
 
 		assertEquals(randomWorkflowDefinition, postWorkflowDefinition);
 		assertValid(postWorkflowDefinition);
@@ -471,6 +489,11 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWorkflowDefinition(
+			WorkflowDefinition workflowDefinition)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -847,6 +870,7 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 	}
 
 	protected WorkflowDefinitionResource workflowDefinitionResource;
+	protected List<WorkflowDefinition> workflowDefinitions;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -99,6 +99,7 @@ public abstract class BaseFormResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		forms = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -116,6 +117,15 @@ public abstract class BaseFormResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Form form : forms) {
+			try {
+				deleteForm(form);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -198,6 +208,8 @@ public abstract class BaseFormResourceTestCase {
 	public void testGetForm() throws Exception {
 		Form postForm = testGetForm_addForm();
 
+		forms.add(postForm);
+
 		Form getForm = formResource.getForm(postForm.getId());
 
 		assertEquals(postForm, getForm);
@@ -212,6 +224,8 @@ public abstract class BaseFormResourceTestCase {
 	@Test
 	public void testGraphQLGetForm() throws Exception {
 		Form form = testGraphQLForm_addForm();
+
+		forms.add(form);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -261,7 +275,11 @@ public abstract class BaseFormResourceTestCase {
 
 		Form form1 = testGetSiteFormsPage_addForm(siteId, randomForm());
 
+		forms.add(form1);
+
 		Form form2 = testGetSiteFormsPage_addForm(siteId, randomForm());
+
+		forms.add(form2);
 
 		page = formResource.getSiteFormsPage(siteId, Pagination.of(1, 2));
 
@@ -278,9 +296,15 @@ public abstract class BaseFormResourceTestCase {
 
 		Form form1 = testGetSiteFormsPage_addForm(siteId, randomForm());
 
+		forms.add(form1);
+
 		Form form2 = testGetSiteFormsPage_addForm(siteId, randomForm());
 
+		forms.add(form2);
+
 		Form form3 = testGetSiteFormsPage_addForm(siteId, randomForm());
+
+		forms.add(form3);
 
 		Page<Form> page1 = formResource.getSiteFormsPage(
 			siteId, Pagination.of(1, 2));
@@ -357,6 +381,9 @@ public abstract class BaseFormResourceTestCase {
 
 		Form form1 = testGraphQLForm_addForm();
 		Form form2 = testGraphQLForm_addForm();
+
+		forms.add(form1);
+		forms.add(form2);
 
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
@@ -742,6 +769,9 @@ public abstract class BaseFormResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteForm(Form form) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1487,6 +1517,7 @@ public abstract class BaseFormResourceTestCase {
 	}
 
 	protected FormResource formResource;
+	protected List<Form> forms;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

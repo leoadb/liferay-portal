@@ -107,6 +107,7 @@ public abstract class BaseDocumentFolderResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		documentFolders = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -125,6 +126,15 @@ public abstract class BaseDocumentFolderResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (DocumentFolder documentFolder : documentFolders) {
+			try {
+				deleteDocumentFolder(documentFolder);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -207,6 +217,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		DocumentFolder documentFolder =
 			testDeleteDocumentFolder_addDocumentFolder();
 
+		documentFolders.add(documentFolder);
+
 		assertHttpResponseStatusCode(
 			204,
 			documentFolderResource.deleteDocumentFolderHttpResponse(
@@ -232,6 +244,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 	public void testGraphQLDeleteDocumentFolder() throws Exception {
 		DocumentFolder documentFolder =
 			testGraphQLDocumentFolder_addDocumentFolder();
+
+		documentFolders.add(documentFolder);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -280,6 +294,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		DocumentFolder postDocumentFolder =
 			testGetDocumentFolder_addDocumentFolder();
 
+		documentFolders.add(postDocumentFolder);
+
 		DocumentFolder getDocumentFolder =
 			documentFolderResource.getDocumentFolder(
 				postDocumentFolder.getId());
@@ -299,6 +315,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 	public void testGraphQLGetDocumentFolder() throws Exception {
 		DocumentFolder documentFolder =
 			testGraphQLDocumentFolder_addDocumentFolder();
+
+		documentFolders.add(documentFolder);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -328,6 +346,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 	public void testPatchDocumentFolder() throws Exception {
 		DocumentFolder postDocumentFolder =
 			testPatchDocumentFolder_addDocumentFolder();
+
+		documentFolders.add(postDocumentFolder);
 
 		DocumentFolder randomPatchDocumentFolder = randomPatchDocumentFolder();
 
@@ -360,6 +380,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		DocumentFolder postDocumentFolder =
 			testPutDocumentFolder_addDocumentFolder();
 
+		documentFolders.add(postDocumentFolder);
+
 		DocumentFolder randomDocumentFolder = randomDocumentFolder();
 
 		DocumentFolder putDocumentFolder =
@@ -389,6 +411,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		DocumentFolder documentFolder =
 			testPutDocumentFolderSubscribe_addDocumentFolder();
 
+		documentFolders.add(documentFolder);
+
 		assertHttpResponseStatusCode(
 			204,
 			documentFolderResource.putDocumentFolderSubscribeHttpResponse(
@@ -411,6 +435,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DocumentFolder documentFolder =
 			testPutDocumentFolderUnsubscribe_addDocumentFolder();
+
+		documentFolders.add(documentFolder);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -468,9 +494,13 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, randomDocumentFolder());
 
+		documentFolders.add(documentFolder1);
+
 		DocumentFolder documentFolder2 =
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, randomDocumentFolder());
+
+		documentFolders.add(documentFolder2);
 
 		page = documentFolderResource.getDocumentFolderDocumentFoldersPage(
 			parentDocumentFolderId, null, null, null, Pagination.of(1, 2),
@@ -508,6 +538,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, documentFolder1);
 
+		documentFolders.add(documentFolder1);
+
 		for (EntityField entityField : entityFields) {
 			Page<DocumentFolder> page =
 				documentFolderResource.getDocumentFolderDocumentFoldersPage(
@@ -539,10 +571,14 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, randomDocumentFolder());
 
+		documentFolders.add(documentFolder1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DocumentFolder documentFolder2 =
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, randomDocumentFolder());
+
+		documentFolders.add(documentFolder2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DocumentFolder> page =
@@ -568,13 +604,19 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, randomDocumentFolder());
 
+		documentFolders.add(documentFolder1);
+
 		DocumentFolder documentFolder2 =
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, randomDocumentFolder());
 
+		documentFolders.add(documentFolder2);
+
 		DocumentFolder documentFolder3 =
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, randomDocumentFolder());
+
+		documentFolders.add(documentFolder3);
 
 		Page<DocumentFolder> page1 =
 			documentFolderResource.getDocumentFolderDocumentFoldersPage(
@@ -699,9 +741,13 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, documentFolder1);
 
+		documentFolders.add(documentFolder1);
+
 		documentFolder2 =
 			testGetDocumentFolderDocumentFoldersPage_addDocumentFolder(
 				parentDocumentFolderId, documentFolder2);
+
+		documentFolders.add(documentFolder2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DocumentFolder> ascPage =
@@ -756,6 +802,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testPostDocumentFolderDocumentFolder_addDocumentFolder(
 				randomDocumentFolder);
 
+		documentFolders.add(postDocumentFolder);
+
 		assertEquals(randomDocumentFolder, postDocumentFolder);
 		assertValid(postDocumentFolder);
 	}
@@ -803,9 +851,13 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testGetSiteDocumentFoldersPage_addDocumentFolder(
 				siteId, randomDocumentFolder());
 
+		documentFolders.add(documentFolder1);
+
 		DocumentFolder documentFolder2 =
 			testGetSiteDocumentFoldersPage_addDocumentFolder(
 				siteId, randomDocumentFolder());
+
+		documentFolders.add(documentFolder2);
 
 		page = documentFolderResource.getSiteDocumentFoldersPage(
 			siteId, null, null, null, Pagination.of(1, 2), null);
@@ -840,6 +892,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		documentFolder1 = testGetSiteDocumentFoldersPage_addDocumentFolder(
 			siteId, documentFolder1);
 
+		documentFolders.add(documentFolder1);
+
 		for (EntityField entityField : entityFields) {
 			Page<DocumentFolder> page =
 				documentFolderResource.getSiteDocumentFoldersPage(
@@ -870,10 +924,14 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testGetSiteDocumentFoldersPage_addDocumentFolder(
 				siteId, randomDocumentFolder());
 
+		documentFolders.add(documentFolder1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DocumentFolder documentFolder2 =
 			testGetSiteDocumentFoldersPage_addDocumentFolder(
 				siteId, randomDocumentFolder());
+
+		documentFolders.add(documentFolder2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DocumentFolder> page =
@@ -898,13 +956,19 @@ public abstract class BaseDocumentFolderResourceTestCase {
 			testGetSiteDocumentFoldersPage_addDocumentFolder(
 				siteId, randomDocumentFolder());
 
+		documentFolders.add(documentFolder1);
+
 		DocumentFolder documentFolder2 =
 			testGetSiteDocumentFoldersPage_addDocumentFolder(
 				siteId, randomDocumentFolder());
 
+		documentFolders.add(documentFolder2);
+
 		DocumentFolder documentFolder3 =
 			testGetSiteDocumentFoldersPage_addDocumentFolder(
 				siteId, randomDocumentFolder());
+
+		documentFolders.add(documentFolder3);
 
 		Page<DocumentFolder> page1 =
 			documentFolderResource.getSiteDocumentFoldersPage(
@@ -1024,8 +1088,12 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		documentFolder1 = testGetSiteDocumentFoldersPage_addDocumentFolder(
 			siteId, documentFolder1);
 
+		documentFolders.add(documentFolder1);
+
 		documentFolder2 = testGetSiteDocumentFoldersPage_addDocumentFolder(
 			siteId, documentFolder2);
+
+		documentFolders.add(documentFolder2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DocumentFolder> ascPage =
@@ -1107,6 +1175,9 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		DocumentFolder documentFolder2 =
 			testGraphQLDocumentFolder_addDocumentFolder();
 
+		documentFolders.add(documentFolder1);
+		documentFolders.add(documentFolder2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -1129,6 +1200,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		DocumentFolder postDocumentFolder =
 			testPostSiteDocumentFolder_addDocumentFolder(randomDocumentFolder);
 
+		documentFolders.add(postDocumentFolder);
+
 		assertEquals(randomDocumentFolder, postDocumentFolder);
 		assertValid(postDocumentFolder);
 	}
@@ -1147,6 +1220,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 
 		DocumentFolder documentFolder =
 			testGraphQLDocumentFolder_addDocumentFolder(randomDocumentFolder);
+
+		documentFolders.add(documentFolder);
 
 		Assert.assertTrue(
 			equalsJSONObject(
@@ -1560,6 +1635,12 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteDocumentFolder(DocumentFolder documentFolder)
+		throws Exception {
+
+		documentFolderResource.deleteDocumentFolder(documentFolder.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -2074,6 +2155,7 @@ public abstract class BaseDocumentFolderResourceTestCase {
 	}
 
 	protected DocumentFolderResource documentFolderResource;
+	protected List<DocumentFolder> documentFolders;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -98,6 +98,7 @@ public abstract class BaseExperimentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		experiments = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -115,6 +116,15 @@ public abstract class BaseExperimentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Experiment experiment : experiments) {
+			try {
+				deleteExperiment(experiment);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -200,6 +210,8 @@ public abstract class BaseExperimentResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Experiment experiment = testDeleteExperiment_addExperiment();
 
+		experiments.add(experiment);
+
 		assertHttpResponseStatusCode(
 			204,
 			experimentResource.deleteExperimentHttpResponse(
@@ -221,6 +233,8 @@ public abstract class BaseExperimentResourceTestCase {
 	@Test
 	public void testGraphQLDeleteExperiment() throws Exception {
 		Experiment experiment = testGraphQLExperiment_addExperiment();
+
+		experiments.add(experiment);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -270,6 +284,8 @@ public abstract class BaseExperimentResourceTestCase {
 	public void testGetExperiment() throws Exception {
 		Experiment postExperiment = testGetExperiment_addExperiment();
 
+		experiments.add(postExperiment);
+
 		Experiment getExperiment = experimentResource.getExperiment(
 			postExperiment.getId());
 
@@ -285,6 +301,8 @@ public abstract class BaseExperimentResourceTestCase {
 	@Test
 	public void testGraphQLGetExperiment() throws Exception {
 		Experiment experiment = testGraphQLExperiment_addExperiment();
+
+		experiments.add(experiment);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -462,6 +480,10 @@ public abstract class BaseExperimentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteExperiment(Experiment experiment) throws Exception {
+		experimentResource.deleteExperiment(experiment.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -846,6 +868,7 @@ public abstract class BaseExperimentResourceTestCase {
 	}
 
 	protected ExperimentResource experimentResource;
+	protected List<Experiment> experiments;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

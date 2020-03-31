@@ -96,6 +96,7 @@ public abstract class BaseTimeRangeResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		timeRanges = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -113,6 +114,15 @@ public abstract class BaseTimeRangeResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (TimeRange timeRange : timeRanges) {
+			try {
+				deleteTimeRange(timeRange);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -227,6 +237,9 @@ public abstract class BaseTimeRangeResourceTestCase {
 
 		TimeRange timeRange1 = testGraphQLTimeRange_addTimeRange();
 		TimeRange timeRange2 = testGraphQLTimeRange_addTimeRange();
+
+		timeRanges.add(timeRange1);
+		timeRanges.add(timeRange2);
 
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
@@ -379,6 +392,9 @@ public abstract class BaseTimeRangeResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteTimeRange(TimeRange timeRange) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -684,6 +700,7 @@ public abstract class BaseTimeRangeResourceTestCase {
 	}
 
 	protected TimeRangeResource timeRangeResource;
+	protected List<TimeRange> timeRanges;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

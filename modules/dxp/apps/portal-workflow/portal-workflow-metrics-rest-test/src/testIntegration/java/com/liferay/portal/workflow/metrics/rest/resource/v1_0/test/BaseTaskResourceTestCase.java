@@ -102,6 +102,7 @@ public abstract class BaseTaskResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		tasks = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -119,6 +120,15 @@ public abstract class BaseTaskResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Task task : tasks) {
+			try {
+				deleteTask(task);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -225,7 +235,11 @@ public abstract class BaseTaskResourceTestCase {
 
 		Task task1 = testGetProcessTasksPage_addTask(processId, randomTask());
 
+		tasks.add(task1);
+
 		Task task2 = testGetProcessTasksPage_addTask(processId, randomTask());
+
+		tasks.add(task2);
 
 		page = taskResource.getProcessTasksPage(
 			processId, null, null, null, null, Pagination.of(1, 2), null);
@@ -243,9 +257,15 @@ public abstract class BaseTaskResourceTestCase {
 
 		Task task1 = testGetProcessTasksPage_addTask(processId, randomTask());
 
+		tasks.add(task1);
+
 		Task task2 = testGetProcessTasksPage_addTask(processId, randomTask());
 
+		tasks.add(task2);
+
 		Task task3 = testGetProcessTasksPage_addTask(processId, randomTask());
+
+		tasks.add(task3);
 
 		Page<Task> page1 = taskResource.getProcessTasksPage(
 			processId, null, null, null, null, Pagination.of(1, 2), null);
@@ -346,7 +366,11 @@ public abstract class BaseTaskResourceTestCase {
 
 		task1 = testGetProcessTasksPage_addTask(processId, task1);
 
+		tasks.add(task1);
+
 		task2 = testGetProcessTasksPage_addTask(processId, task2);
+
+		tasks.add(task2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Task> ascPage = taskResource.getProcessTasksPage(
@@ -547,6 +571,9 @@ public abstract class BaseTaskResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteTask(Task task) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -911,6 +938,7 @@ public abstract class BaseTaskResourceTestCase {
 	}
 
 	protected TaskResource taskResource;
+	protected List<Task> tasks;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

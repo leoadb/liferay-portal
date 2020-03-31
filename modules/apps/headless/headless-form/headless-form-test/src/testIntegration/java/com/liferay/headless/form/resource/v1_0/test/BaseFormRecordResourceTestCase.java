@@ -97,6 +97,7 @@ public abstract class BaseFormRecordResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		formRecords = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -114,6 +115,15 @@ public abstract class BaseFormRecordResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (FormRecord formRecord : formRecords) {
+			try {
+				deleteFormRecord(formRecord);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -188,6 +198,8 @@ public abstract class BaseFormRecordResourceTestCase {
 	public void testGetFormRecord() throws Exception {
 		FormRecord postFormRecord = testGetFormRecord_addFormRecord();
 
+		formRecords.add(postFormRecord);
+
 		FormRecord getFormRecord = formRecordResource.getFormRecord(
 			postFormRecord.getId());
 
@@ -203,6 +215,8 @@ public abstract class BaseFormRecordResourceTestCase {
 	@Test
 	public void testGraphQLGetFormRecord() throws Exception {
 		FormRecord formRecord = testGraphQLFormRecord_addFormRecord();
+
+		formRecords.add(formRecord);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -230,6 +244,8 @@ public abstract class BaseFormRecordResourceTestCase {
 	@Test
 	public void testPutFormRecord() throws Exception {
 		FormRecord postFormRecord = testPutFormRecord_addFormRecord();
+
+		formRecords.add(postFormRecord);
 
 		FormRecord randomFormRecord = randomFormRecord();
 
@@ -281,8 +297,12 @@ public abstract class BaseFormRecordResourceTestCase {
 		FormRecord formRecord1 = testGetFormFormRecordsPage_addFormRecord(
 			formId, randomFormRecord());
 
+		formRecords.add(formRecord1);
+
 		FormRecord formRecord2 = testGetFormFormRecordsPage_addFormRecord(
 			formId, randomFormRecord());
+
+		formRecords.add(formRecord2);
 
 		page = formRecordResource.getFormFormRecordsPage(
 			formId, Pagination.of(1, 2));
@@ -302,11 +322,17 @@ public abstract class BaseFormRecordResourceTestCase {
 		FormRecord formRecord1 = testGetFormFormRecordsPage_addFormRecord(
 			formId, randomFormRecord());
 
+		formRecords.add(formRecord1);
+
 		FormRecord formRecord2 = testGetFormFormRecordsPage_addFormRecord(
 			formId, randomFormRecord());
 
+		formRecords.add(formRecord2);
+
 		FormRecord formRecord3 = testGetFormFormRecordsPage_addFormRecord(
 			formId, randomFormRecord());
+
+		formRecords.add(formRecord3);
 
 		Page<FormRecord> page1 = formRecordResource.getFormFormRecordsPage(
 			formId, Pagination.of(1, 2));
@@ -357,6 +383,8 @@ public abstract class BaseFormRecordResourceTestCase {
 		FormRecord postFormRecord = testPostFormFormRecord_addFormRecord(
 			randomFormRecord);
 
+		formRecords.add(postFormRecord);
+
 		assertEquals(randomFormRecord, postFormRecord);
 		assertValid(postFormRecord);
 	}
@@ -373,6 +401,8 @@ public abstract class BaseFormRecordResourceTestCase {
 	public void testGetFormFormRecordByLatestDraft() throws Exception {
 		FormRecord postFormRecord =
 			testGetFormFormRecordByLatestDraft_addFormRecord();
+
+		formRecords.add(postFormRecord);
 
 		FormRecord getFormRecord =
 			formRecordResource.getFormFormRecordByLatestDraft(
@@ -392,6 +422,8 @@ public abstract class BaseFormRecordResourceTestCase {
 	@Test
 	public void testGraphQLGetFormFormRecordByLatestDraft() throws Exception {
 		FormRecord formRecord = testGraphQLFormRecord_addFormRecord();
+
+		formRecords.add(formRecord);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -574,6 +606,9 @@ public abstract class BaseFormRecordResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteFormRecord(FormRecord formRecord) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -954,6 +989,7 @@ public abstract class BaseFormRecordResourceTestCase {
 	}
 
 	protected FormRecordResource formRecordResource;
+	protected List<FormRecord> formRecords;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -101,6 +101,7 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		knowledgeBaseFolders = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -119,6 +120,15 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (KnowledgeBaseFolder knowledgeBaseFolder : knowledgeBaseFolders) {
+			try {
+				deleteKnowledgeBaseFolder(knowledgeBaseFolder);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -202,6 +212,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 		KnowledgeBaseFolder knowledgeBaseFolder =
 			testDeleteKnowledgeBaseFolder_addKnowledgeBaseFolder();
 
+		knowledgeBaseFolders.add(knowledgeBaseFolder);
+
 		assertHttpResponseStatusCode(
 			204,
 			knowledgeBaseFolderResource.deleteKnowledgeBaseFolderHttpResponse(
@@ -229,6 +241,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 	public void testGraphQLDeleteKnowledgeBaseFolder() throws Exception {
 		KnowledgeBaseFolder knowledgeBaseFolder =
 			testGraphQLKnowledgeBaseFolder_addKnowledgeBaseFolder();
+
+		knowledgeBaseFolders.add(knowledgeBaseFolder);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -282,6 +296,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 		KnowledgeBaseFolder postKnowledgeBaseFolder =
 			testGetKnowledgeBaseFolder_addKnowledgeBaseFolder();
 
+		knowledgeBaseFolders.add(postKnowledgeBaseFolder);
+
 		KnowledgeBaseFolder getKnowledgeBaseFolder =
 			knowledgeBaseFolderResource.getKnowledgeBaseFolder(
 				postKnowledgeBaseFolder.getId());
@@ -302,6 +318,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 	public void testGraphQLGetKnowledgeBaseFolder() throws Exception {
 		KnowledgeBaseFolder knowledgeBaseFolder =
 			testGraphQLKnowledgeBaseFolder_addKnowledgeBaseFolder();
+
+		knowledgeBaseFolders.add(knowledgeBaseFolder);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -333,6 +351,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 	public void testPatchKnowledgeBaseFolder() throws Exception {
 		KnowledgeBaseFolder postKnowledgeBaseFolder =
 			testPatchKnowledgeBaseFolder_addKnowledgeBaseFolder();
+
+		knowledgeBaseFolders.add(postKnowledgeBaseFolder);
 
 		KnowledgeBaseFolder randomPatchKnowledgeBaseFolder =
 			randomPatchKnowledgeBaseFolder();
@@ -368,6 +388,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 	public void testPutKnowledgeBaseFolder() throws Exception {
 		KnowledgeBaseFolder postKnowledgeBaseFolder =
 			testPutKnowledgeBaseFolder_addKnowledgeBaseFolder();
+
+		knowledgeBaseFolders.add(postKnowledgeBaseFolder);
 
 		KnowledgeBaseFolder randomKnowledgeBaseFolder =
 			randomKnowledgeBaseFolder();
@@ -436,9 +458,13 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 			testGetKnowledgeBaseFolderKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				parentKnowledgeBaseFolderId, randomKnowledgeBaseFolder());
 
+		knowledgeBaseFolders.add(knowledgeBaseFolder1);
+
 		KnowledgeBaseFolder knowledgeBaseFolder2 =
 			testGetKnowledgeBaseFolderKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				parentKnowledgeBaseFolderId, randomKnowledgeBaseFolder());
+
+		knowledgeBaseFolders.add(knowledgeBaseFolder2);
 
 		page =
 			knowledgeBaseFolderResource.
@@ -470,13 +496,19 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 			testGetKnowledgeBaseFolderKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				parentKnowledgeBaseFolderId, randomKnowledgeBaseFolder());
 
+		knowledgeBaseFolders.add(knowledgeBaseFolder1);
+
 		KnowledgeBaseFolder knowledgeBaseFolder2 =
 			testGetKnowledgeBaseFolderKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				parentKnowledgeBaseFolderId, randomKnowledgeBaseFolder());
 
+		knowledgeBaseFolders.add(knowledgeBaseFolder2);
+
 		KnowledgeBaseFolder knowledgeBaseFolder3 =
 			testGetKnowledgeBaseFolderKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				parentKnowledgeBaseFolderId, randomKnowledgeBaseFolder());
+
+		knowledgeBaseFolders.add(knowledgeBaseFolder3);
 
 		Page<KnowledgeBaseFolder> page1 =
 			knowledgeBaseFolderResource.
@@ -551,6 +583,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 			testPostKnowledgeBaseFolderKnowledgeBaseFolder_addKnowledgeBaseFolder(
 				randomKnowledgeBaseFolder);
 
+		knowledgeBaseFolders.add(postKnowledgeBaseFolder);
+
 		assertEquals(randomKnowledgeBaseFolder, postKnowledgeBaseFolder);
 		assertValid(postKnowledgeBaseFolder);
 	}
@@ -599,9 +633,13 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 			testGetSiteKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				siteId, randomKnowledgeBaseFolder());
 
+		knowledgeBaseFolders.add(knowledgeBaseFolder1);
+
 		KnowledgeBaseFolder knowledgeBaseFolder2 =
 			testGetSiteKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				siteId, randomKnowledgeBaseFolder());
+
+		knowledgeBaseFolders.add(knowledgeBaseFolder2);
 
 		page = knowledgeBaseFolderResource.getSiteKnowledgeBaseFoldersPage(
 			siteId, Pagination.of(1, 2));
@@ -630,13 +668,19 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 			testGetSiteKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				siteId, randomKnowledgeBaseFolder());
 
+		knowledgeBaseFolders.add(knowledgeBaseFolder1);
+
 		KnowledgeBaseFolder knowledgeBaseFolder2 =
 			testGetSiteKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				siteId, randomKnowledgeBaseFolder());
 
+		knowledgeBaseFolders.add(knowledgeBaseFolder2);
+
 		KnowledgeBaseFolder knowledgeBaseFolder3 =
 			testGetSiteKnowledgeBaseFoldersPage_addKnowledgeBaseFolder(
 				siteId, randomKnowledgeBaseFolder());
+
+		knowledgeBaseFolders.add(knowledgeBaseFolder3);
 
 		Page<KnowledgeBaseFolder> page1 =
 			knowledgeBaseFolderResource.getSiteKnowledgeBaseFoldersPage(
@@ -734,6 +778,9 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 		KnowledgeBaseFolder knowledgeBaseFolder2 =
 			testGraphQLKnowledgeBaseFolder_addKnowledgeBaseFolder();
 
+		knowledgeBaseFolders.add(knowledgeBaseFolder1);
+		knowledgeBaseFolders.add(knowledgeBaseFolder2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -759,6 +806,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 			testPostSiteKnowledgeBaseFolder_addKnowledgeBaseFolder(
 				randomKnowledgeBaseFolder);
 
+		knowledgeBaseFolders.add(postKnowledgeBaseFolder);
+
 		assertEquals(randomKnowledgeBaseFolder, postKnowledgeBaseFolder);
 		assertValid(postKnowledgeBaseFolder);
 	}
@@ -781,6 +830,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 		KnowledgeBaseFolder knowledgeBaseFolder =
 			testGraphQLKnowledgeBaseFolder_addKnowledgeBaseFolder(
 				randomKnowledgeBaseFolder);
+
+		knowledgeBaseFolders.add(knowledgeBaseFolder);
 
 		Assert.assertTrue(
 			equalsJSONObject(
@@ -1205,6 +1256,14 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteKnowledgeBaseFolder(
+			KnowledgeBaseFolder knowledgeBaseFolder)
+		throws Exception {
+
+		knowledgeBaseFolderResource.deleteKnowledgeBaseFolder(
+			knowledgeBaseFolder.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1727,6 +1786,7 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 	}
 
 	protected KnowledgeBaseFolderResource knowledgeBaseFolderResource;
+	protected List<KnowledgeBaseFolder> knowledgeBaseFolders;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

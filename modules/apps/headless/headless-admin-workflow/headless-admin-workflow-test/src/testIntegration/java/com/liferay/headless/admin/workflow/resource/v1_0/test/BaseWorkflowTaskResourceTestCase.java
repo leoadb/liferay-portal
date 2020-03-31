@@ -97,6 +97,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		workflowTasks = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -114,6 +115,15 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WorkflowTask workflowTask : workflowTasks) {
+			try {
+				deleteWorkflowTask(workflowTask);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -231,9 +241,13 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowInstanceWorkflowTasksPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowInstanceWorkflowTasksPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
+
+		workflowTasks.add(workflowTask2);
 
 		page = workflowTaskResource.getWorkflowInstanceWorkflowTasksPage(
 			workflowInstanceId, null, Pagination.of(1, 2));
@@ -257,13 +271,19 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowInstanceWorkflowTasksPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowInstanceWorkflowTasksPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask2);
+
 		WorkflowTask workflowTask3 =
 			testGetWorkflowInstanceWorkflowTasksPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
+
+		workflowTasks.add(workflowTask3);
 
 		Page<WorkflowTask> page1 =
 			workflowTaskResource.getWorkflowInstanceWorkflowTasksPage(
@@ -361,9 +381,13 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowInstanceWorkflowTasksAssignedToMePage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowInstanceWorkflowTasksAssignedToMePage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
+
+		workflowTasks.add(workflowTask2);
 
 		page =
 			workflowTaskResource.
@@ -389,13 +413,19 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowInstanceWorkflowTasksAssignedToMePage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowInstanceWorkflowTasksAssignedToMePage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask2);
+
 		WorkflowTask workflowTask3 =
 			testGetWorkflowInstanceWorkflowTasksAssignedToMePage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
+
+		workflowTasks.add(workflowTask3);
 
 		Page<WorkflowTask> page1 =
 			workflowTaskResource.
@@ -496,9 +526,13 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowInstanceWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowInstanceWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
+
+		workflowTasks.add(workflowTask2);
 
 		page =
 			workflowTaskResource.
@@ -524,13 +558,19 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowInstanceWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowInstanceWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
 
+		workflowTasks.add(workflowTask2);
+
 		WorkflowTask workflowTask3 =
 			testGetWorkflowInstanceWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				workflowInstanceId, randomWorkflowTask());
+
+		workflowTasks.add(workflowTask3);
 
 		Page<WorkflowTask> page1 =
 			workflowTaskResource.
@@ -601,6 +641,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		WorkflowTask workflowTask =
 			testPatchWorkflowTaskAssignToUser_addWorkflowTask();
 
+		workflowTasks.add(workflowTask);
+
 		assertHttpResponseStatusCode(
 			204,
 			workflowTaskResource.patchWorkflowTaskAssignToUserHttpResponse(
@@ -641,9 +683,13 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowTasksAssignedToRolePage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowTasksAssignedToRolePage_addWorkflowTask(
 				randomWorkflowTask());
+
+		workflowTasks.add(workflowTask2);
 
 		page = workflowTaskResource.getWorkflowTasksAssignedToRolePage(
 			null, Pagination.of(1, 2));
@@ -664,13 +710,19 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowTasksAssignedToRolePage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowTasksAssignedToRolePage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask2);
+
 		WorkflowTask workflowTask3 =
 			testGetWorkflowTasksAssignedToRolePage_addWorkflowTask(
 				randomWorkflowTask());
+
+		workflowTasks.add(workflowTask3);
 
 		Page<WorkflowTask> page1 =
 			workflowTaskResource.getWorkflowTasksAssignedToRolePage(
@@ -724,9 +776,13 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				randomWorkflowTask());
+
+		workflowTasks.add(workflowTask2);
 
 		page = workflowTaskResource.getWorkflowTasksAssignedToUserPage(
 			null, Pagination.of(1, 2));
@@ -747,13 +803,19 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask2);
+
 		WorkflowTask workflowTask3 =
 			testGetWorkflowTasksAssignedToUserPage_addWorkflowTask(
 				randomWorkflowTask());
+
+		workflowTasks.add(workflowTask3);
 
 		Page<WorkflowTask> page1 =
 			workflowTaskResource.getWorkflowTasksAssignedToUserPage(
@@ -807,9 +869,13 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowTasksAssignedToUserRolesPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowTasksAssignedToUserRolesPage_addWorkflowTask(
 				randomWorkflowTask());
+
+		workflowTasks.add(workflowTask2);
 
 		page = workflowTaskResource.getWorkflowTasksAssignedToUserRolesPage(
 			null, Pagination.of(1, 2));
@@ -830,13 +896,19 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowTasksAssignedToUserRolesPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowTasksAssignedToUserRolesPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask2);
+
 		WorkflowTask workflowTask3 =
 			testGetWorkflowTasksAssignedToUserRolesPage_addWorkflowTask(
 				randomWorkflowTask());
+
+		workflowTasks.add(workflowTask3);
 
 		Page<WorkflowTask> page1 =
 			workflowTaskResource.getWorkflowTasksAssignedToUserRolesPage(
@@ -884,6 +956,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		WorkflowTask workflowTask =
 			testPatchWorkflowTaskChangeTransition_addWorkflowTask();
 
+		workflowTasks.add(workflowTask);
+
 		assertHttpResponseStatusCode(
 			204,
 			workflowTaskResource.patchWorkflowTaskChangeTransitionHttpResponse(
@@ -915,9 +989,13 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowTasksSubmittingUserPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowTasksSubmittingUserPage_addWorkflowTask(
 				randomWorkflowTask());
+
+		workflowTasks.add(workflowTask2);
 
 		page = workflowTaskResource.getWorkflowTasksSubmittingUserPage(
 			null, Pagination.of(1, 2));
@@ -938,13 +1016,19 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testGetWorkflowTasksSubmittingUserPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask1);
+
 		WorkflowTask workflowTask2 =
 			testGetWorkflowTasksSubmittingUserPage_addWorkflowTask(
 				randomWorkflowTask());
 
+		workflowTasks.add(workflowTask2);
+
 		WorkflowTask workflowTask3 =
 			testGetWorkflowTasksSubmittingUserPage_addWorkflowTask(
 				randomWorkflowTask());
+
+		workflowTasks.add(workflowTask3);
 
 		Page<WorkflowTask> page1 =
 			workflowTaskResource.getWorkflowTasksSubmittingUserPage(
@@ -992,6 +1076,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		WorkflowTask workflowTask =
 			testPatchWorkflowTaskUpdateDueDate_addWorkflowTask();
 
+		workflowTasks.add(workflowTask);
+
 		assertHttpResponseStatusCode(
 			204,
 			workflowTaskResource.patchWorkflowTaskUpdateDueDateHttpResponse(
@@ -1014,6 +1100,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 	public void testGetWorkflowTask() throws Exception {
 		WorkflowTask postWorkflowTask = testGetWorkflowTask_addWorkflowTask();
 
+		workflowTasks.add(postWorkflowTask);
+
 		WorkflowTask getWorkflowTask = workflowTaskResource.getWorkflowTask(
 			postWorkflowTask.getId());
 
@@ -1031,6 +1119,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 	@Test
 	public void testGraphQLGetWorkflowTask() throws Exception {
 		WorkflowTask workflowTask = testGraphQLWorkflowTask_addWorkflowTask();
+
+		workflowTasks.add(workflowTask);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -1062,6 +1152,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		WorkflowTask postWorkflowTask =
 			testPostWorkflowTaskAssignToMe_addWorkflowTask(randomWorkflowTask);
 
+		workflowTasks.add(postWorkflowTask);
+
 		assertEquals(randomWorkflowTask, postWorkflowTask);
 		assertValid(postWorkflowTask);
 	}
@@ -1081,6 +1173,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		WorkflowTask postWorkflowTask =
 			testPostWorkflowTaskAssignToRole_addWorkflowTask(
 				randomWorkflowTask);
+
+		workflowTasks.add(postWorkflowTask);
 
 		assertEquals(randomWorkflowTask, postWorkflowTask);
 		assertValid(postWorkflowTask);
@@ -1102,6 +1196,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 			testPostWorkflowTaskAssignToUser_addWorkflowTask(
 				randomWorkflowTask);
 
+		workflowTasks.add(postWorkflowTask);
+
 		assertEquals(randomWorkflowTask, postWorkflowTask);
 		assertValid(postWorkflowTask);
 	}
@@ -1121,6 +1217,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		WorkflowTask postWorkflowTask =
 			testPostWorkflowTaskChangeTransition_addWorkflowTask(
 				randomWorkflowTask);
+
+		workflowTasks.add(postWorkflowTask);
 
 		assertEquals(randomWorkflowTask, postWorkflowTask);
 		assertValid(postWorkflowTask);
@@ -1146,6 +1244,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		WorkflowTask postWorkflowTask =
 			testPostWorkflowTaskUpdateDueDate_addWorkflowTask(
 				randomWorkflowTask);
+
+		workflowTasks.add(postWorkflowTask);
 
 		assertEquals(randomWorkflowTask, postWorkflowTask);
 		assertValid(postWorkflowTask);
@@ -1385,6 +1485,10 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWorkflowTask(WorkflowTask workflowTask)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1977,6 +2081,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 	}
 
 	protected WorkflowTaskResource workflowTaskResource;
+	protected List<WorkflowTask> workflowTasks;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

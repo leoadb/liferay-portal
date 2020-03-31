@@ -103,6 +103,7 @@ public abstract class BaseAccountUserResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		accountUsers = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -120,6 +121,15 @@ public abstract class BaseAccountUserResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (AccountUser accountUser : accountUsers) {
+			try {
+				deleteAccountUser(accountUser);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -237,8 +247,12 @@ public abstract class BaseAccountUserResourceTestCase {
 		AccountUser accountUser1 = testGetAccountUsersPage_addAccountUser(
 			accountId, randomAccountUser());
 
+		accountUsers.add(accountUser1);
+
 		AccountUser accountUser2 = testGetAccountUsersPage_addAccountUser(
 			accountId, randomAccountUser());
+
+		accountUsers.add(accountUser2);
 
 		page = accountUserResource.getAccountUsersPage(
 			accountId, null, null, Pagination.of(1, 2), null);
@@ -269,6 +283,8 @@ public abstract class BaseAccountUserResourceTestCase {
 		accountUser1 = testGetAccountUsersPage_addAccountUser(
 			accountId, accountUser1);
 
+		accountUsers.add(accountUser1);
+
 		for (EntityField entityField : entityFields) {
 			Page<AccountUser> page = accountUserResource.getAccountUsersPage(
 				accountId, null,
@@ -297,9 +313,13 @@ public abstract class BaseAccountUserResourceTestCase {
 		AccountUser accountUser1 = testGetAccountUsersPage_addAccountUser(
 			accountId, randomAccountUser());
 
+		accountUsers.add(accountUser1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		AccountUser accountUser2 = testGetAccountUsersPage_addAccountUser(
 			accountId, randomAccountUser());
+
+		accountUsers.add(accountUser2);
 
 		for (EntityField entityField : entityFields) {
 			Page<AccountUser> page = accountUserResource.getAccountUsersPage(
@@ -320,11 +340,17 @@ public abstract class BaseAccountUserResourceTestCase {
 		AccountUser accountUser1 = testGetAccountUsersPage_addAccountUser(
 			accountId, randomAccountUser());
 
+		accountUsers.add(accountUser1);
+
 		AccountUser accountUser2 = testGetAccountUsersPage_addAccountUser(
 			accountId, randomAccountUser());
 
+		accountUsers.add(accountUser2);
+
 		AccountUser accountUser3 = testGetAccountUsersPage_addAccountUser(
 			accountId, randomAccountUser());
+
+		accountUsers.add(accountUser3);
 
 		Page<AccountUser> page1 = accountUserResource.getAccountUsersPage(
 			accountId, null, null, Pagination.of(1, 2), null);
@@ -427,8 +453,12 @@ public abstract class BaseAccountUserResourceTestCase {
 		accountUser1 = testGetAccountUsersPage_addAccountUser(
 			accountId, accountUser1);
 
+		accountUsers.add(accountUser1);
+
 		accountUser2 = testGetAccountUsersPage_addAccountUser(
 			accountId, accountUser2);
+
+		accountUsers.add(accountUser2);
 
 		for (EntityField entityField : entityFields) {
 			Page<AccountUser> ascPage = accountUserResource.getAccountUsersPage(
@@ -507,6 +537,9 @@ public abstract class BaseAccountUserResourceTestCase {
 		AccountUser accountUser1 = testGraphQLAccountUser_addAccountUser();
 		AccountUser accountUser2 = testGraphQLAccountUser_addAccountUser();
 
+		accountUsers.add(accountUser1);
+		accountUsers.add(accountUser2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -527,6 +560,8 @@ public abstract class BaseAccountUserResourceTestCase {
 
 		AccountUser postAccountUser = testPostAccountUser_addAccountUser(
 			randomAccountUser);
+
+		accountUsers.add(postAccountUser);
 
 		assertEquals(randomAccountUser, postAccountUser);
 		assertValid(postAccountUser);
@@ -705,6 +740,9 @@ public abstract class BaseAccountUserResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteAccountUser(AccountUser accountUser) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1086,6 +1124,7 @@ public abstract class BaseAccountUserResourceTestCase {
 	}
 
 	protected AccountUserResource accountUserResource;
+	protected List<AccountUser> accountUsers;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

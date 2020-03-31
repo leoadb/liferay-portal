@@ -92,6 +92,7 @@ public abstract class BaseWorkflowTaskAssignableUsersResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		workflowTaskAssignableUserses = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -110,6 +111,17 @@ public abstract class BaseWorkflowTaskAssignableUsersResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WorkflowTaskAssignableUsers workflowTaskAssignableUsers :
+				workflowTaskAssignableUserses) {
+
+			try {
+				deleteWorkflowTaskAssignableUsers(workflowTaskAssignableUsers);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -198,6 +210,8 @@ public abstract class BaseWorkflowTaskAssignableUsersResourceTestCase {
 		WorkflowTaskAssignableUsers postWorkflowTaskAssignableUsers =
 			testPostWorkflowTaskAssignableUser_addWorkflowTaskAssignableUsers(
 				randomWorkflowTaskAssignableUsers);
+
+		workflowTaskAssignableUserses.add(postWorkflowTaskAssignableUsers);
 
 		assertEquals(
 			randomWorkflowTaskAssignableUsers, postWorkflowTaskAssignableUsers);
@@ -352,6 +366,11 @@ public abstract class BaseWorkflowTaskAssignableUsersResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWorkflowTaskAssignableUsers(
+			WorkflowTaskAssignableUsers workflowTaskAssignableUsers)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -528,6 +547,7 @@ public abstract class BaseWorkflowTaskAssignableUsersResourceTestCase {
 
 	protected WorkflowTaskAssignableUsersResource
 		workflowTaskAssignableUsersResource;
+	protected List<WorkflowTaskAssignableUsers> workflowTaskAssignableUserses;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

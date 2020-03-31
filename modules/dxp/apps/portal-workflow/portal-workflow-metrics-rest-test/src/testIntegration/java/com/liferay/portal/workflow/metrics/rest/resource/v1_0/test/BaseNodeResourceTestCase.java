@@ -94,6 +94,7 @@ public abstract class BaseNodeResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		nodes = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -111,6 +112,15 @@ public abstract class BaseNodeResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Node node : nodes) {
+			try {
+				deleteNode(node);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -215,7 +225,11 @@ public abstract class BaseNodeResourceTestCase {
 
 		Node node1 = testGetProcessNodesPage_addNode(processId, randomNode());
 
+		nodes.add(node1);
+
 		Node node2 = testGetProcessNodesPage_addNode(processId, randomNode());
+
+		nodes.add(node2);
 
 		page = nodeResource.getProcessNodesPage(processId);
 
@@ -385,6 +399,9 @@ public abstract class BaseNodeResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteNode(Node node) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -679,6 +696,7 @@ public abstract class BaseNodeResourceTestCase {
 	}
 
 	protected NodeResource nodeResource;
+	protected List<Node> nodes;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

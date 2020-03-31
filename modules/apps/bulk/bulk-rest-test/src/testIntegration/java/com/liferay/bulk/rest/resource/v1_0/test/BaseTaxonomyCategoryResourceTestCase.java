@@ -93,6 +93,7 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		taxonomyCategories = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -111,6 +112,15 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (TaxonomyCategory taxonomyCategory : taxonomyCategories) {
+			try {
+				deleteTaxonomyCategory(taxonomyCategory);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -310,6 +320,10 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteTaxonomyCategory(TaxonomyCategory taxonomyCategory)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -519,6 +533,7 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 	}
 
 	protected TaxonomyCategoryResource taxonomyCategoryResource;
+	protected List<TaxonomyCategory> taxonomyCategories;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

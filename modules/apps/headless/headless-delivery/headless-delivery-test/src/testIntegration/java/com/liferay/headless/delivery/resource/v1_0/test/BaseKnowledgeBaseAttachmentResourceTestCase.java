@@ -100,6 +100,7 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		knowledgeBaseAttachments = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -118,6 +119,17 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (KnowledgeBaseAttachment knowledgeBaseAttachment :
+				knowledgeBaseAttachments) {
+
+			try {
+				deleteKnowledgeBaseAttachment(knowledgeBaseAttachment);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -244,9 +256,13 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 			testGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPage_addKnowledgeBaseAttachment(
 				knowledgeBaseArticleId, randomKnowledgeBaseAttachment());
 
+		knowledgeBaseAttachments.add(knowledgeBaseAttachment1);
+
 		KnowledgeBaseAttachment knowledgeBaseAttachment2 =
 			testGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPage_addKnowledgeBaseAttachment(
 				knowledgeBaseArticleId, randomKnowledgeBaseAttachment());
+
+		knowledgeBaseAttachments.add(knowledgeBaseAttachment2);
 
 		page =
 			knowledgeBaseAttachmentResource.
@@ -307,6 +323,8 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 			testPostKnowledgeBaseArticleKnowledgeBaseAttachment_addKnowledgeBaseAttachment(
 				randomKnowledgeBaseAttachment, multipartFiles);
 
+		knowledgeBaseAttachments.add(postKnowledgeBaseAttachment);
+
 		assertEquals(
 			randomKnowledgeBaseAttachment, postKnowledgeBaseAttachment);
 		assertValid(postKnowledgeBaseAttachment);
@@ -331,6 +349,8 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		KnowledgeBaseAttachment knowledgeBaseAttachment =
 			testDeleteKnowledgeBaseAttachment_addKnowledgeBaseAttachment();
+
+		knowledgeBaseAttachments.add(knowledgeBaseAttachment);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -362,6 +382,8 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 	public void testGraphQLDeleteKnowledgeBaseAttachment() throws Exception {
 		KnowledgeBaseAttachment knowledgeBaseAttachment =
 			testGraphQLKnowledgeBaseAttachment_addKnowledgeBaseAttachment();
+
+		knowledgeBaseAttachments.add(knowledgeBaseAttachment);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -415,6 +437,8 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 		KnowledgeBaseAttachment postKnowledgeBaseAttachment =
 			testGetKnowledgeBaseAttachment_addKnowledgeBaseAttachment();
 
+		knowledgeBaseAttachments.add(postKnowledgeBaseAttachment);
+
 		KnowledgeBaseAttachment getKnowledgeBaseAttachment =
 			knowledgeBaseAttachmentResource.getKnowledgeBaseAttachment(
 				postKnowledgeBaseAttachment.getId());
@@ -435,6 +459,8 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 	public void testGraphQLGetKnowledgeBaseAttachment() throws Exception {
 		KnowledgeBaseAttachment knowledgeBaseAttachment =
 			testGraphQLKnowledgeBaseAttachment_addKnowledgeBaseAttachment();
+
+		knowledgeBaseAttachments.add(knowledgeBaseAttachment);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -646,6 +672,14 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteKnowledgeBaseAttachment(
+			KnowledgeBaseAttachment knowledgeBaseAttachment)
+		throws Exception {
+
+		knowledgeBaseAttachmentResource.deleteKnowledgeBaseAttachment(
+			knowledgeBaseAttachment.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -985,6 +1019,7 @@ public abstract class BaseKnowledgeBaseAttachmentResourceTestCase {
 	}
 
 	protected KnowledgeBaseAttachmentResource knowledgeBaseAttachmentResource;
+	protected List<KnowledgeBaseAttachment> knowledgeBaseAttachments;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -110,6 +110,7 @@ public abstract class BaseDocumentResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		documents = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -127,6 +128,15 @@ public abstract class BaseDocumentResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Document document : documents) {
+			try {
+				deleteDocument(document);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -242,8 +252,12 @@ public abstract class BaseDocumentResourceTestCase {
 		Document document1 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, randomDocument());
 
+		documents.add(document1);
+
 		Document document2 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, randomDocument());
+
+		documents.add(document2);
 
 		page = documentResource.getDocumentFolderDocumentsPage(
 			documentFolderId, null, null, null, Pagination.of(1, 2), null);
@@ -279,6 +293,8 @@ public abstract class BaseDocumentResourceTestCase {
 		document1 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, document1);
 
+		documents.add(document1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Document> page =
 				documentResource.getDocumentFolderDocumentsPage(
@@ -309,9 +325,13 @@ public abstract class BaseDocumentResourceTestCase {
 		Document document1 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, randomDocument());
 
+		documents.add(document1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Document document2 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, randomDocument());
+
+		documents.add(document2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Document> page =
@@ -336,11 +356,17 @@ public abstract class BaseDocumentResourceTestCase {
 		Document document1 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, randomDocument());
 
+		documents.add(document1);
+
 		Document document2 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, randomDocument());
 
+		documents.add(document2);
+
 		Document document3 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, randomDocument());
+
+		documents.add(document3);
 
 		Page<Document> page1 = documentResource.getDocumentFolderDocumentsPage(
 			documentFolderId, null, null, null, Pagination.of(1, 2), null);
@@ -450,8 +476,12 @@ public abstract class BaseDocumentResourceTestCase {
 		document1 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, document1);
 
+		documents.add(document1);
+
 		document2 = testGetDocumentFolderDocumentsPage_addDocument(
 			documentFolderId, document2);
+
+		documents.add(document2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Document> ascPage =
@@ -505,6 +535,8 @@ public abstract class BaseDocumentResourceTestCase {
 		Document postDocument = testPostDocumentFolderDocument_addDocument(
 			randomDocument, multipartFiles);
 
+		documents.add(postDocument);
+
 		assertEquals(randomDocument, postDocument);
 		assertValid(postDocument);
 
@@ -525,6 +557,8 @@ public abstract class BaseDocumentResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Document document = testDeleteDocument_addDocument();
 
+		documents.add(document);
+
 		assertHttpResponseStatusCode(
 			204, documentResource.deleteDocumentHttpResponse(document.getId()));
 
@@ -543,6 +577,8 @@ public abstract class BaseDocumentResourceTestCase {
 	@Test
 	public void testGraphQLDeleteDocument() throws Exception {
 		Document document = testGraphQLDocument_addDocument();
+
+		documents.add(document);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -590,6 +626,8 @@ public abstract class BaseDocumentResourceTestCase {
 	public void testGetDocument() throws Exception {
 		Document postDocument = testGetDocument_addDocument();
 
+		documents.add(postDocument);
+
 		Document getDocument = documentResource.getDocument(
 			postDocument.getId());
 
@@ -605,6 +643,8 @@ public abstract class BaseDocumentResourceTestCase {
 	@Test
 	public void testGraphQLGetDocument() throws Exception {
 		Document document = testGraphQLDocument_addDocument();
+
+		documents.add(document);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -632,6 +672,8 @@ public abstract class BaseDocumentResourceTestCase {
 	@Test
 	public void testPatchDocument() throws Exception {
 		Document postDocument = testPatchDocument_addDocument();
+
+		documents.add(postDocument);
 
 		Document randomPatchDocument = randomPatchDocument();
 
@@ -663,6 +705,8 @@ public abstract class BaseDocumentResourceTestCase {
 	public void testPutDocument() throws Exception {
 		Document postDocument = testPutDocument_addDocument();
 
+		documents.add(postDocument);
+
 		Document randomDocument = randomDocument();
 
 		Map<String, File> multipartFiles = getMultipartFiles();
@@ -691,6 +735,8 @@ public abstract class BaseDocumentResourceTestCase {
 	public void testDeleteDocumentMyRating() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Document document = testDeleteDocumentMyRating_addDocument();
+
+		documents.add(document);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -741,8 +787,12 @@ public abstract class BaseDocumentResourceTestCase {
 		Document document1 = testGetSiteDocumentsPage_addDocument(
 			siteId, randomDocument());
 
+		documents.add(document1);
+
 		Document document2 = testGetSiteDocumentsPage_addDocument(
 			siteId, randomDocument());
+
+		documents.add(document2);
 
 		page = documentResource.getSiteDocumentsPage(
 			siteId, null, null, null, Pagination.of(1, 2), null);
@@ -776,6 +826,8 @@ public abstract class BaseDocumentResourceTestCase {
 
 		document1 = testGetSiteDocumentsPage_addDocument(siteId, document1);
 
+		documents.add(document1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Document> page = documentResource.getSiteDocumentsPage(
 				siteId, null, null,
@@ -804,9 +856,13 @@ public abstract class BaseDocumentResourceTestCase {
 		Document document1 = testGetSiteDocumentsPage_addDocument(
 			siteId, randomDocument());
 
+		documents.add(document1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Document document2 = testGetSiteDocumentsPage_addDocument(
 			siteId, randomDocument());
+
+		documents.add(document2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Document> page = documentResource.getSiteDocumentsPage(
@@ -827,11 +883,17 @@ public abstract class BaseDocumentResourceTestCase {
 		Document document1 = testGetSiteDocumentsPage_addDocument(
 			siteId, randomDocument());
 
+		documents.add(document1);
+
 		Document document2 = testGetSiteDocumentsPage_addDocument(
 			siteId, randomDocument());
 
+		documents.add(document2);
+
 		Document document3 = testGetSiteDocumentsPage_addDocument(
 			siteId, randomDocument());
+
+		documents.add(document3);
 
 		Page<Document> page1 = documentResource.getSiteDocumentsPage(
 			siteId, null, null, null, Pagination.of(1, 2), null);
@@ -933,7 +995,11 @@ public abstract class BaseDocumentResourceTestCase {
 
 		document1 = testGetSiteDocumentsPage_addDocument(siteId, document1);
 
+		documents.add(document1);
+
 		document2 = testGetSiteDocumentsPage_addDocument(siteId, document2);
+
+		documents.add(document2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Document> ascPage = documentResource.getSiteDocumentsPage(
@@ -1011,6 +1077,9 @@ public abstract class BaseDocumentResourceTestCase {
 		Document document1 = testGraphQLDocument_addDocument();
 		Document document2 = testGraphQLDocument_addDocument();
 
+		documents.add(document1);
+		documents.add(document2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -1034,6 +1103,8 @@ public abstract class BaseDocumentResourceTestCase {
 		Document postDocument = testPostSiteDocument_addDocument(
 			randomDocument, multipartFiles);
 
+		documents.add(postDocument);
+
 		assertEquals(randomDocument, postDocument);
 		assertValid(postDocument);
 
@@ -1054,6 +1125,8 @@ public abstract class BaseDocumentResourceTestCase {
 
 		Document document = testGraphQLDocument_addDocument(randomDocument);
 
+		documents.add(document);
+
 		Assert.assertTrue(
 			equalsJSONObject(
 				randomDocument,
@@ -1064,6 +1137,8 @@ public abstract class BaseDocumentResourceTestCase {
 	@Test
 	public void testGetDocumentMyRating() throws Exception {
 		Document postDocument = testGetDocument_addDocument();
+
+		documents.add(postDocument);
 
 		Rating postRating = testGetDocumentMyRating_addRating(
 			postDocument.getId(), randomRating());
@@ -1090,6 +1165,8 @@ public abstract class BaseDocumentResourceTestCase {
 	@Test
 	public void testPutDocumentMyRating() throws Exception {
 		Document postDocument = testPutDocument_addDocument();
+
+		documents.add(postDocument);
 
 		testPutDocumentMyRating_addRating(postDocument.getId(), randomRating());
 
@@ -1651,6 +1728,10 @@ public abstract class BaseDocumentResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteDocument(Document document) throws Exception {
+		documentResource.deleteDocument(document.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -2411,6 +2492,7 @@ public abstract class BaseDocumentResourceTestCase {
 	}
 
 	protected DocumentResource documentResource;
+	protected List<Document> documents;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

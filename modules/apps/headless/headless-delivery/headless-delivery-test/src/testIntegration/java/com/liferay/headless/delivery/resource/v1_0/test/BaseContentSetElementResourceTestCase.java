@@ -95,6 +95,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		contentSetElements = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -113,6 +114,15 @@ public abstract class BaseContentSetElementResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (ContentSetElement contentSetElement : contentSetElements) {
+			try {
+				deleteContentSetElement(contentSetElement);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -226,9 +236,13 @@ public abstract class BaseContentSetElementResourceTestCase {
 			testGetContentSetContentSetElementsPage_addContentSetElement(
 				contentSetId, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement1);
+
 		ContentSetElement contentSetElement2 =
 			testGetContentSetContentSetElementsPage_addContentSetElement(
 				contentSetId, randomContentSetElement());
+
+		contentSetElements.add(contentSetElement2);
 
 		page = contentSetElementResource.getContentSetContentSetElementsPage(
 			contentSetId, Pagination.of(1, 2));
@@ -252,13 +266,19 @@ public abstract class BaseContentSetElementResourceTestCase {
 			testGetContentSetContentSetElementsPage_addContentSetElement(
 				contentSetId, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement1);
+
 		ContentSetElement contentSetElement2 =
 			testGetContentSetContentSetElementsPage_addContentSetElement(
 				contentSetId, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement2);
+
 		ContentSetElement contentSetElement3 =
 			testGetContentSetContentSetElementsPage_addContentSetElement(
 				contentSetId, randomContentSetElement());
+
+		contentSetElements.add(contentSetElement3);
 
 		Page<ContentSetElement> page1 =
 			contentSetElementResource.getContentSetContentSetElementsPage(
@@ -359,9 +379,13 @@ public abstract class BaseContentSetElementResourceTestCase {
 			testGetSiteContentSetByKeyContentSetElementsPage_addContentSetElement(
 				siteId, key, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement1);
+
 		ContentSetElement contentSetElement2 =
 			testGetSiteContentSetByKeyContentSetElementsPage_addContentSetElement(
 				siteId, key, randomContentSetElement());
+
+		contentSetElements.add(contentSetElement2);
 
 		page =
 			contentSetElementResource.
@@ -388,13 +412,19 @@ public abstract class BaseContentSetElementResourceTestCase {
 			testGetSiteContentSetByKeyContentSetElementsPage_addContentSetElement(
 				siteId, key, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement1);
+
 		ContentSetElement contentSetElement2 =
 			testGetSiteContentSetByKeyContentSetElementsPage_addContentSetElement(
 				siteId, key, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement2);
+
 		ContentSetElement contentSetElement3 =
 			testGetSiteContentSetByKeyContentSetElementsPage_addContentSetElement(
 				siteId, key, randomContentSetElement());
+
+		contentSetElements.add(contentSetElement3);
 
 		Page<ContentSetElement> page1 =
 			contentSetElementResource.
@@ -512,9 +542,13 @@ public abstract class BaseContentSetElementResourceTestCase {
 			testGetSiteContentSetByUuidContentSetElementsPage_addContentSetElement(
 				siteId, uuid, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement1);
+
 		ContentSetElement contentSetElement2 =
 			testGetSiteContentSetByUuidContentSetElementsPage_addContentSetElement(
 				siteId, uuid, randomContentSetElement());
+
+		contentSetElements.add(contentSetElement2);
 
 		page =
 			contentSetElementResource.
@@ -542,13 +576,19 @@ public abstract class BaseContentSetElementResourceTestCase {
 			testGetSiteContentSetByUuidContentSetElementsPage_addContentSetElement(
 				siteId, uuid, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement1);
+
 		ContentSetElement contentSetElement2 =
 			testGetSiteContentSetByUuidContentSetElementsPage_addContentSetElement(
 				siteId, uuid, randomContentSetElement());
 
+		contentSetElements.add(contentSetElement2);
+
 		ContentSetElement contentSetElement3 =
 			testGetSiteContentSetByUuidContentSetElementsPage_addContentSetElement(
 				siteId, uuid, randomContentSetElement());
+
+		contentSetElements.add(contentSetElement3);
 
 		Page<ContentSetElement> page1 =
 			contentSetElementResource.
@@ -770,6 +810,10 @@ public abstract class BaseContentSetElementResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteContentSetElement(ContentSetElement contentSetElement)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1038,6 +1082,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 	}
 
 	protected ContentSetElementResource contentSetElementResource;
+	protected List<ContentSetElement> contentSetElements;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -92,6 +92,7 @@ public abstract class BaseWorkflowTaskTransitionsResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		workflowTaskTransitionses = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -110,6 +111,17 @@ public abstract class BaseWorkflowTaskTransitionsResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WorkflowTaskTransitions workflowTaskTransitions :
+				workflowTaskTransitionses) {
+
+			try {
+				deleteWorkflowTaskTransitions(workflowTaskTransitions);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -336,6 +348,11 @@ public abstract class BaseWorkflowTaskTransitionsResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
+	protected void deleteWorkflowTaskTransitions(
+			WorkflowTaskTransitions workflowTaskTransitions)
+		throws Exception {
+	}
+
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[0];
 	}
@@ -505,6 +522,7 @@ public abstract class BaseWorkflowTaskTransitionsResourceTestCase {
 	}
 
 	protected WorkflowTaskTransitionsResource workflowTaskTransitionsResource;
+	protected List<WorkflowTaskTransitions> workflowTaskTransitionses;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

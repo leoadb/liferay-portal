@@ -108,6 +108,7 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		knowledgeBaseArticles = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -126,6 +127,17 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (KnowledgeBaseArticle knowledgeBaseArticle :
+				knowledgeBaseArticles) {
+
+			try {
+				deleteKnowledgeBaseArticle(knowledgeBaseArticle);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -218,6 +230,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		KnowledgeBaseArticle knowledgeBaseArticle =
 			testDeleteKnowledgeBaseArticle_addKnowledgeBaseArticle();
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
+
 		assertHttpResponseStatusCode(
 			204,
 			knowledgeBaseArticleResource.deleteKnowledgeBaseArticleHttpResponse(
@@ -246,6 +260,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 	public void testGraphQLDeleteKnowledgeBaseArticle() throws Exception {
 		KnowledgeBaseArticle knowledgeBaseArticle =
 			testGraphQLKnowledgeBaseArticle_addKnowledgeBaseArticle();
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -299,6 +315,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		KnowledgeBaseArticle postKnowledgeBaseArticle =
 			testGetKnowledgeBaseArticle_addKnowledgeBaseArticle();
 
+		knowledgeBaseArticles.add(postKnowledgeBaseArticle);
+
 		KnowledgeBaseArticle getKnowledgeBaseArticle =
 			knowledgeBaseArticleResource.getKnowledgeBaseArticle(
 				postKnowledgeBaseArticle.getId());
@@ -319,6 +337,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 	public void testGraphQLGetKnowledgeBaseArticle() throws Exception {
 		KnowledgeBaseArticle knowledgeBaseArticle =
 			testGraphQLKnowledgeBaseArticle_addKnowledgeBaseArticle();
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -350,6 +370,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 	public void testPatchKnowledgeBaseArticle() throws Exception {
 		KnowledgeBaseArticle postKnowledgeBaseArticle =
 			testPatchKnowledgeBaseArticle_addKnowledgeBaseArticle();
+
+		knowledgeBaseArticles.add(postKnowledgeBaseArticle);
 
 		KnowledgeBaseArticle randomPatchKnowledgeBaseArticle =
 			randomPatchKnowledgeBaseArticle();
@@ -387,6 +409,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		KnowledgeBaseArticle postKnowledgeBaseArticle =
 			testPutKnowledgeBaseArticle_addKnowledgeBaseArticle();
 
+		knowledgeBaseArticles.add(postKnowledgeBaseArticle);
+
 		KnowledgeBaseArticle randomKnowledgeBaseArticle =
 			randomKnowledgeBaseArticle();
 
@@ -418,6 +442,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		KnowledgeBaseArticle knowledgeBaseArticle =
 			testDeleteKnowledgeBaseArticleMyRating_addKnowledgeBaseArticle();
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -451,6 +477,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		KnowledgeBaseArticle knowledgeBaseArticle =
 			testPutKnowledgeBaseArticleSubscribe_addKnowledgeBaseArticle();
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
+
 		assertHttpResponseStatusCode(
 			204,
 			knowledgeBaseArticleResource.
@@ -476,6 +504,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		KnowledgeBaseArticle knowledgeBaseArticle =
 			testPutKnowledgeBaseArticleUnsubscribe_addKnowledgeBaseArticle();
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -539,9 +569,13 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		page =
 			knowledgeBaseArticleResource.
@@ -584,6 +618,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, knowledgeBaseArticle1);
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> page =
 				knowledgeBaseArticleResource.
@@ -617,10 +653,14 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> page =
@@ -648,13 +688,19 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
+
 		KnowledgeBaseArticle knowledgeBaseArticle3 =
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle3);
 
 		Page<KnowledgeBaseArticle> page1 =
 			knowledgeBaseArticleResource.
@@ -788,9 +834,13 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, knowledgeBaseArticle1);
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		knowledgeBaseArticle2 =
 			testGetKnowledgeBaseArticleKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				parentKnowledgeBaseArticleId, knowledgeBaseArticle2);
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> ascPage =
@@ -852,6 +902,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testPostKnowledgeBaseArticleKnowledgeBaseArticle_addKnowledgeBaseArticle(
 				randomKnowledgeBaseArticle);
 
+		knowledgeBaseArticles.add(postKnowledgeBaseArticle);
+
 		assertEquals(randomKnowledgeBaseArticle, postKnowledgeBaseArticle);
 		assertValid(postKnowledgeBaseArticle);
 	}
@@ -909,9 +961,13 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		page =
 			knowledgeBaseArticleResource.
@@ -954,6 +1010,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, knowledgeBaseArticle1);
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> page =
 				knowledgeBaseArticleResource.
@@ -987,10 +1045,14 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> page =
@@ -1018,13 +1080,19 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
+
 		KnowledgeBaseArticle knowledgeBaseArticle3 =
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle3);
 
 		Page<KnowledgeBaseArticle> page1 =
 			knowledgeBaseArticleResource.
@@ -1158,9 +1226,13 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, knowledgeBaseArticle1);
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		knowledgeBaseArticle2 =
 			testGetKnowledgeBaseFolderKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				knowledgeBaseFolderId, knowledgeBaseArticle2);
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> ascPage =
@@ -1222,6 +1294,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testPostKnowledgeBaseFolderKnowledgeBaseArticle_addKnowledgeBaseArticle(
 				randomKnowledgeBaseArticle);
 
+		knowledgeBaseArticles.add(postKnowledgeBaseArticle);
+
 		assertEquals(randomKnowledgeBaseArticle, postKnowledgeBaseArticle);
 		assertValid(postKnowledgeBaseArticle);
 	}
@@ -1272,9 +1346,13 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		page = knowledgeBaseArticleResource.getSiteKnowledgeBaseArticlesPage(
 			siteId, null, null, null, Pagination.of(1, 2), null);
@@ -1313,6 +1391,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, knowledgeBaseArticle1);
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> page =
 				knowledgeBaseArticleResource.getSiteKnowledgeBaseArticlesPage(
@@ -1344,10 +1424,14 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> page =
@@ -1372,13 +1456,19 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, randomKnowledgeBaseArticle());
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
+
 		KnowledgeBaseArticle knowledgeBaseArticle3 =
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, randomKnowledgeBaseArticle());
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle3);
 
 		Page<KnowledgeBaseArticle> page1 =
 			knowledgeBaseArticleResource.getSiteKnowledgeBaseArticlesPage(
@@ -1505,9 +1595,13 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, knowledgeBaseArticle1);
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+
 		knowledgeBaseArticle2 =
 			testGetSiteKnowledgeBaseArticlesPage_addKnowledgeBaseArticle(
 				siteId, knowledgeBaseArticle2);
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
 
 		for (EntityField entityField : entityFields) {
 			Page<KnowledgeBaseArticle> ascPage =
@@ -1593,6 +1687,9 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		KnowledgeBaseArticle knowledgeBaseArticle2 =
 			testGraphQLKnowledgeBaseArticle_addKnowledgeBaseArticle();
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle1);
+		knowledgeBaseArticles.add(knowledgeBaseArticle2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -1618,6 +1715,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testPostSiteKnowledgeBaseArticle_addKnowledgeBaseArticle(
 				randomKnowledgeBaseArticle);
 
+		knowledgeBaseArticles.add(postKnowledgeBaseArticle);
+
 		assertEquals(randomKnowledgeBaseArticle, postKnowledgeBaseArticle);
 		assertValid(postKnowledgeBaseArticle);
 	}
@@ -1641,6 +1740,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 			testGraphQLKnowledgeBaseArticle_addKnowledgeBaseArticle(
 				randomKnowledgeBaseArticle);
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
+
 		Assert.assertTrue(
 			equalsJSONObject(
 				randomKnowledgeBaseArticle,
@@ -1653,6 +1754,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		KnowledgeBaseArticle knowledgeBaseArticle =
 			testPutSiteKnowledgeBaseArticleSubscribe_addKnowledgeBaseArticle();
+
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1681,6 +1784,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		KnowledgeBaseArticle knowledgeBaseArticle =
 			testPutSiteKnowledgeBaseArticleUnsubscribe_addKnowledgeBaseArticle();
 
+		knowledgeBaseArticles.add(knowledgeBaseArticle);
+
 		assertHttpResponseStatusCode(
 			204,
 			knowledgeBaseArticleResource.
@@ -1706,6 +1811,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 	public void testGetKnowledgeBaseArticleMyRating() throws Exception {
 		KnowledgeBaseArticle postKnowledgeBaseArticle =
 			testGetKnowledgeBaseArticle_addKnowledgeBaseArticle();
+
+		knowledgeBaseArticles.add(postKnowledgeBaseArticle);
 
 		Rating postRating = testGetKnowledgeBaseArticleMyRating_addRating(
 			postKnowledgeBaseArticle.getId(), randomRating());
@@ -1735,6 +1842,8 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 	public void testPutKnowledgeBaseArticleMyRating() throws Exception {
 		KnowledgeBaseArticle postKnowledgeBaseArticle =
 			testPutKnowledgeBaseArticle_addKnowledgeBaseArticle();
+
+		knowledgeBaseArticles.add(postKnowledgeBaseArticle);
 
 		testPutKnowledgeBaseArticleMyRating_addRating(
 			postKnowledgeBaseArticle.getId(), randomRating());
@@ -2393,6 +2502,14 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteKnowledgeBaseArticle(
+			KnowledgeBaseArticle knowledgeBaseArticle)
+		throws Exception {
+
+		knowledgeBaseArticleResource.deleteKnowledgeBaseArticle(
+			knowledgeBaseArticle.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -3233,6 +3350,7 @@ public abstract class BaseKnowledgeBaseArticleResourceTestCase {
 	}
 
 	protected KnowledgeBaseArticleResource knowledgeBaseArticleResource;
+	protected List<KnowledgeBaseArticle> knowledgeBaseArticles;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -107,6 +107,7 @@ public abstract class BaseKeywordResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		keywords = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -124,6 +125,15 @@ public abstract class BaseKeywordResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Keyword keyword : keywords) {
+			try {
+				deleteKeyword(keyword);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -208,8 +218,12 @@ public abstract class BaseKeywordResourceTestCase {
 		Keyword keyword1 = testGetKeywordsRankedPage_addKeyword(
 			randomKeyword());
 
+		keywords.add(keyword1);
+
 		Keyword keyword2 = testGetKeywordsRankedPage_addKeyword(
 			randomKeyword());
+
+		keywords.add(keyword2);
 
 		page = keywordResource.getKeywordsRankedPage(null, Pagination.of(1, 2));
 
@@ -229,11 +243,17 @@ public abstract class BaseKeywordResourceTestCase {
 		Keyword keyword1 = testGetKeywordsRankedPage_addKeyword(
 			randomKeyword());
 
+		keywords.add(keyword1);
+
 		Keyword keyword2 = testGetKeywordsRankedPage_addKeyword(
 			randomKeyword());
 
+		keywords.add(keyword2);
+
 		Keyword keyword3 = testGetKeywordsRankedPage_addKeyword(
 			randomKeyword());
+
+		keywords.add(keyword3);
 
 		Page<Keyword> page1 = keywordResource.getKeywordsRankedPage(
 			null, Pagination.of(1, 2));
@@ -271,6 +291,8 @@ public abstract class BaseKeywordResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Keyword keyword = testDeleteKeyword_addKeyword();
 
+		keywords.add(keyword);
+
 		assertHttpResponseStatusCode(
 			204, keywordResource.deleteKeywordHttpResponse(keyword.getId()));
 
@@ -289,6 +311,8 @@ public abstract class BaseKeywordResourceTestCase {
 	@Test
 	public void testGraphQLDeleteKeyword() throws Exception {
 		Keyword keyword = testGraphQLKeyword_addKeyword();
+
+		keywords.add(keyword);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -336,6 +360,8 @@ public abstract class BaseKeywordResourceTestCase {
 	public void testGetKeyword() throws Exception {
 		Keyword postKeyword = testGetKeyword_addKeyword();
 
+		keywords.add(postKeyword);
+
 		Keyword getKeyword = keywordResource.getKeyword(postKeyword.getId());
 
 		assertEquals(postKeyword, getKeyword);
@@ -350,6 +376,8 @@ public abstract class BaseKeywordResourceTestCase {
 	@Test
 	public void testGraphQLGetKeyword() throws Exception {
 		Keyword keyword = testGraphQLKeyword_addKeyword();
+
+		keywords.add(keyword);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -376,6 +404,8 @@ public abstract class BaseKeywordResourceTestCase {
 	@Test
 	public void testPutKeyword() throws Exception {
 		Keyword postKeyword = testPutKeyword_addKeyword();
+
+		keywords.add(postKeyword);
 
 		Keyword randomKeyword = randomKeyword();
 
@@ -425,8 +455,12 @@ public abstract class BaseKeywordResourceTestCase {
 		Keyword keyword1 = testGetSiteKeywordsPage_addKeyword(
 			siteId, randomKeyword());
 
+		keywords.add(keyword1);
+
 		Keyword keyword2 = testGetSiteKeywordsPage_addKeyword(
 			siteId, randomKeyword());
+
+		keywords.add(keyword2);
 
 		page = keywordResource.getSiteKeywordsPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -459,6 +493,8 @@ public abstract class BaseKeywordResourceTestCase {
 
 		keyword1 = testGetSiteKeywordsPage_addKeyword(siteId, keyword1);
 
+		keywords.add(keyword1);
+
 		for (EntityField entityField : entityFields) {
 			Page<Keyword> page = keywordResource.getSiteKeywordsPage(
 				siteId, null, getFilterString(entityField, "between", keyword1),
@@ -486,9 +522,13 @@ public abstract class BaseKeywordResourceTestCase {
 		Keyword keyword1 = testGetSiteKeywordsPage_addKeyword(
 			siteId, randomKeyword());
 
+		keywords.add(keyword1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Keyword keyword2 = testGetSiteKeywordsPage_addKeyword(
 			siteId, randomKeyword());
+
+		keywords.add(keyword2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Keyword> page = keywordResource.getSiteKeywordsPage(
@@ -508,11 +548,17 @@ public abstract class BaseKeywordResourceTestCase {
 		Keyword keyword1 = testGetSiteKeywordsPage_addKeyword(
 			siteId, randomKeyword());
 
+		keywords.add(keyword1);
+
 		Keyword keyword2 = testGetSiteKeywordsPage_addKeyword(
 			siteId, randomKeyword());
 
+		keywords.add(keyword2);
+
 		Keyword keyword3 = testGetSiteKeywordsPage_addKeyword(
 			siteId, randomKeyword());
+
+		keywords.add(keyword3);
 
 		Page<Keyword> page1 = keywordResource.getSiteKeywordsPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -614,7 +660,11 @@ public abstract class BaseKeywordResourceTestCase {
 
 		keyword1 = testGetSiteKeywordsPage_addKeyword(siteId, keyword1);
 
+		keywords.add(keyword1);
+
 		keyword2 = testGetSiteKeywordsPage_addKeyword(siteId, keyword2);
+
+		keywords.add(keyword2);
 
 		for (EntityField entityField : entityFields) {
 			Page<Keyword> ascPage = keywordResource.getSiteKeywordsPage(
@@ -691,6 +741,9 @@ public abstract class BaseKeywordResourceTestCase {
 		Keyword keyword1 = testGraphQLKeyword_addKeyword();
 		Keyword keyword2 = testGraphQLKeyword_addKeyword();
 
+		keywords.add(keyword1);
+		keywords.add(keyword2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -711,6 +764,8 @@ public abstract class BaseKeywordResourceTestCase {
 
 		Keyword postKeyword = testPostSiteKeyword_addKeyword(randomKeyword);
 
+		keywords.add(postKeyword);
+
 		assertEquals(randomKeyword, postKeyword);
 		assertValid(postKeyword);
 	}
@@ -727,6 +782,8 @@ public abstract class BaseKeywordResourceTestCase {
 		Keyword randomKeyword = randomKeyword();
 
 		Keyword keyword = testGraphQLKeyword_addKeyword(randomKeyword);
+
+		keywords.add(keyword);
 
 		Assert.assertTrue(
 			equalsJSONObject(
@@ -1000,6 +1057,10 @@ public abstract class BaseKeywordResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteKeyword(Keyword keyword) throws Exception {
+		keywordResource.deleteKeyword(keyword.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1346,6 +1407,7 @@ public abstract class BaseKeywordResourceTestCase {
 	}
 
 	protected KeywordResource keywordResource;
+	protected List<Keyword> keywords;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

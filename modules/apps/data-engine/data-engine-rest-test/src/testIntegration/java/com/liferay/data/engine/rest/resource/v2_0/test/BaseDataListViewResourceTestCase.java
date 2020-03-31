@@ -106,6 +106,7 @@ public abstract class BaseDataListViewResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		dataListViews = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -123,6 +124,15 @@ public abstract class BaseDataListViewResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (DataListView dataListView : dataListViews) {
+			try {
+				deleteDataListView(dataListView);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -231,9 +241,13 @@ public abstract class BaseDataListViewResourceTestCase {
 			testGetDataDefinitionDataListViewsPage_addDataListView(
 				dataDefinitionId, randomDataListView());
 
+		dataListViews.add(dataListView1);
+
 		DataListView dataListView2 =
 			testGetDataDefinitionDataListViewsPage_addDataListView(
 				dataDefinitionId, randomDataListView());
+
+		dataListViews.add(dataListView2);
 
 		page = dataListViewResource.getDataDefinitionDataListViewsPage(
 			dataDefinitionId, null, Pagination.of(1, 2), null);
@@ -261,13 +275,19 @@ public abstract class BaseDataListViewResourceTestCase {
 			testGetDataDefinitionDataListViewsPage_addDataListView(
 				dataDefinitionId, randomDataListView());
 
+		dataListViews.add(dataListView1);
+
 		DataListView dataListView2 =
 			testGetDataDefinitionDataListViewsPage_addDataListView(
 				dataDefinitionId, randomDataListView());
 
+		dataListViews.add(dataListView2);
+
 		DataListView dataListView3 =
 			testGetDataDefinitionDataListViewsPage_addDataListView(
 				dataDefinitionId, randomDataListView());
+
+		dataListViews.add(dataListView3);
 
 		Page<DataListView> page1 =
 			dataListViewResource.getDataDefinitionDataListViewsPage(
@@ -385,8 +405,12 @@ public abstract class BaseDataListViewResourceTestCase {
 		dataListView1 = testGetDataDefinitionDataListViewsPage_addDataListView(
 			dataDefinitionId, dataListView1);
 
+		dataListViews.add(dataListView1);
+
 		dataListView2 = testGetDataDefinitionDataListViewsPage_addDataListView(
 			dataDefinitionId, dataListView2);
+
+		dataListViews.add(dataListView2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DataListView> ascPage =
@@ -440,6 +464,8 @@ public abstract class BaseDataListViewResourceTestCase {
 			testPostDataDefinitionDataListView_addDataListView(
 				randomDataListView);
 
+		dataListViews.add(postDataListView);
+
 		assertEquals(randomDataListView, postDataListView);
 		assertValid(postDataListView);
 	}
@@ -457,6 +483,8 @@ public abstract class BaseDataListViewResourceTestCase {
 	public void testDeleteDataListView() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DataListView dataListView = testDeleteDataListView_addDataListView();
+
+		dataListViews.add(dataListView);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -482,6 +510,8 @@ public abstract class BaseDataListViewResourceTestCase {
 	@Test
 	public void testGraphQLDeleteDataListView() throws Exception {
 		DataListView dataListView = testGraphQLDataListView_addDataListView();
+
+		dataListViews.add(dataListView);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -529,6 +559,8 @@ public abstract class BaseDataListViewResourceTestCase {
 	public void testGetDataListView() throws Exception {
 		DataListView postDataListView = testGetDataListView_addDataListView();
 
+		dataListViews.add(postDataListView);
+
 		DataListView getDataListView = dataListViewResource.getDataListView(
 			postDataListView.getId());
 
@@ -546,6 +578,8 @@ public abstract class BaseDataListViewResourceTestCase {
 	@Test
 	public void testGraphQLGetDataListView() throws Exception {
 		DataListView dataListView = testGraphQLDataListView_addDataListView();
+
+		dataListViews.add(dataListView);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -573,6 +607,8 @@ public abstract class BaseDataListViewResourceTestCase {
 	@Test
 	public void testPutDataListView() throws Exception {
 		DataListView postDataListView = testPutDataListView_addDataListView();
+
+		dataListViews.add(postDataListView);
 
 		DataListView randomDataListView = randomDataListView();
 
@@ -766,6 +802,12 @@ public abstract class BaseDataListViewResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteDataListView(DataListView dataListView)
+		throws Exception {
+
+		dataListViewResource.deleteDataListView(dataListView.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1169,6 +1211,7 @@ public abstract class BaseDataListViewResourceTestCase {
 	}
 
 	protected DataListViewResource dataListViewResource;
+	protected List<DataListView> dataListViews;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

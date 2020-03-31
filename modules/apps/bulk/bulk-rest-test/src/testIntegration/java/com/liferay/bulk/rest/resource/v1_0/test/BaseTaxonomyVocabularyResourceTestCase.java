@@ -93,6 +93,7 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		taxonomyVocabularies = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -111,6 +112,15 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (TaxonomyVocabulary taxonomyVocabulary : taxonomyVocabularies) {
+			try {
+				deleteTaxonomyVocabulary(taxonomyVocabulary);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -346,6 +356,11 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteTaxonomyVocabulary(
+			TaxonomyVocabulary taxonomyVocabulary)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -628,6 +643,7 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 	}
 
 	protected TaxonomyVocabularyResource taxonomyVocabularyResource;
+	protected List<TaxonomyVocabulary> taxonomyVocabularies;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

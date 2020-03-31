@@ -106,6 +106,7 @@ public abstract class BaseWikiPageResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		wikiPages = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -123,6 +124,15 @@ public abstract class BaseWikiPageResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WikiPage wikiPage : wikiPages) {
+			try {
+				deleteWikiPage(wikiPage);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -234,8 +244,12 @@ public abstract class BaseWikiPageResourceTestCase {
 		WikiPage wikiPage1 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, randomWikiPage());
 
+		wikiPages.add(wikiPage1);
+
 		WikiPage wikiPage2 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, randomWikiPage());
+
+		wikiPages.add(wikiPage2);
 
 		page = wikiPageResource.getWikiNodeWikiPagesPage(
 			wikiNodeId, null, null, Pagination.of(1, 2), null);
@@ -270,6 +284,8 @@ public abstract class BaseWikiPageResourceTestCase {
 		wikiPage1 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, wikiPage1);
 
+		wikiPages.add(wikiPage1);
+
 		for (EntityField entityField : entityFields) {
 			Page<WikiPage> page = wikiPageResource.getWikiNodeWikiPagesPage(
 				wikiNodeId, null,
@@ -298,9 +314,13 @@ public abstract class BaseWikiPageResourceTestCase {
 		WikiPage wikiPage1 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, randomWikiPage());
 
+		wikiPages.add(wikiPage1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiPage wikiPage2 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, randomWikiPage());
+
+		wikiPages.add(wikiPage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<WikiPage> page = wikiPageResource.getWikiNodeWikiPagesPage(
@@ -320,11 +340,17 @@ public abstract class BaseWikiPageResourceTestCase {
 		WikiPage wikiPage1 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, randomWikiPage());
 
+		wikiPages.add(wikiPage1);
+
 		WikiPage wikiPage2 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, randomWikiPage());
 
+		wikiPages.add(wikiPage2);
+
 		WikiPage wikiPage3 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, randomWikiPage());
+
+		wikiPages.add(wikiPage3);
 
 		Page<WikiPage> page1 = wikiPageResource.getWikiNodeWikiPagesPage(
 			wikiNodeId, null, null, Pagination.of(1, 2), null);
@@ -429,8 +455,12 @@ public abstract class BaseWikiPageResourceTestCase {
 		wikiPage1 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, wikiPage1);
 
+		wikiPages.add(wikiPage1);
+
 		wikiPage2 = testGetWikiNodeWikiPagesPage_addWikiPage(
 			wikiNodeId, wikiPage2);
+
+		wikiPages.add(wikiPage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<WikiPage> ascPage = wikiPageResource.getWikiNodeWikiPagesPage(
@@ -478,6 +508,8 @@ public abstract class BaseWikiPageResourceTestCase {
 		WikiPage postWikiPage = testPostWikiNodeWikiPage_addWikiPage(
 			randomWikiPage);
 
+		wikiPages.add(postWikiPage);
+
 		assertEquals(randomWikiPage, postWikiPage);
 		assertValid(postWikiPage);
 	}
@@ -520,8 +552,12 @@ public abstract class BaseWikiPageResourceTestCase {
 		WikiPage wikiPage1 = testGetWikiPageWikiPagesPage_addWikiPage(
 			parentWikiPageId, randomWikiPage());
 
+		wikiPages.add(wikiPage1);
+
 		WikiPage wikiPage2 = testGetWikiPageWikiPagesPage_addWikiPage(
 			parentWikiPageId, randomWikiPage());
+
+		wikiPages.add(wikiPage2);
 
 		page = wikiPageResource.getWikiPageWikiPagesPage(parentWikiPageId);
 
@@ -565,6 +601,8 @@ public abstract class BaseWikiPageResourceTestCase {
 		WikiPage postWikiPage = testPostWikiPageWikiPage_addWikiPage(
 			randomWikiPage);
 
+		wikiPages.add(postWikiPage);
+
 		assertEquals(randomWikiPage, postWikiPage);
 		assertValid(postWikiPage);
 	}
@@ -580,6 +618,8 @@ public abstract class BaseWikiPageResourceTestCase {
 	public void testDeleteWikiPage() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiPage wikiPage = testDeleteWikiPage_addWikiPage();
+
+		wikiPages.add(wikiPage);
 
 		assertHttpResponseStatusCode(
 			204, wikiPageResource.deleteWikiPageHttpResponse(wikiPage.getId()));
@@ -599,6 +639,8 @@ public abstract class BaseWikiPageResourceTestCase {
 	@Test
 	public void testGraphQLDeleteWikiPage() throws Exception {
 		WikiPage wikiPage = testGraphQLWikiPage_addWikiPage();
+
+		wikiPages.add(wikiPage);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -646,6 +688,8 @@ public abstract class BaseWikiPageResourceTestCase {
 	public void testGetWikiPage() throws Exception {
 		WikiPage postWikiPage = testGetWikiPage_addWikiPage();
 
+		wikiPages.add(postWikiPage);
+
 		WikiPage getWikiPage = wikiPageResource.getWikiPage(
 			postWikiPage.getId());
 
@@ -661,6 +705,8 @@ public abstract class BaseWikiPageResourceTestCase {
 	@Test
 	public void testGraphQLGetWikiPage() throws Exception {
 		WikiPage wikiPage = testGraphQLWikiPage_addWikiPage();
+
+		wikiPages.add(wikiPage);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -689,6 +735,8 @@ public abstract class BaseWikiPageResourceTestCase {
 	public void testPutWikiPage() throws Exception {
 		WikiPage postWikiPage = testPutWikiPage_addWikiPage();
 
+		wikiPages.add(postWikiPage);
+
 		WikiPage randomWikiPage = randomWikiPage();
 
 		WikiPage putWikiPage = wikiPageResource.putWikiPage(
@@ -714,6 +762,8 @@ public abstract class BaseWikiPageResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiPage wikiPage = testPutWikiPageSubscribe_addWikiPage();
 
+		wikiPages.add(wikiPage);
+
 		assertHttpResponseStatusCode(
 			204,
 			wikiPageResource.putWikiPageSubscribeHttpResponse(
@@ -732,6 +782,8 @@ public abstract class BaseWikiPageResourceTestCase {
 	public void testPutWikiPageUnsubscribe() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiPage wikiPage = testPutWikiPageUnsubscribe_addWikiPage();
+
+		wikiPages.add(wikiPage);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1010,6 +1062,10 @@ public abstract class BaseWikiPageResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWikiPage(WikiPage wikiPage) throws Exception {
+		wikiPageResource.deleteWikiPage(wikiPage.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1651,6 +1707,7 @@ public abstract class BaseWikiPageResourceTestCase {
 	}
 
 	protected WikiPageResource wikiPageResource;
+	protected List<WikiPage> wikiPages;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

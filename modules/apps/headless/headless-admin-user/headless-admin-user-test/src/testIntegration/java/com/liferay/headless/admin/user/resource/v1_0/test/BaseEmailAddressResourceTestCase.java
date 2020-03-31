@@ -95,6 +95,7 @@ public abstract class BaseEmailAddressResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		emailAddresses = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -112,6 +113,15 @@ public abstract class BaseEmailAddressResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (EmailAddress emailAddress : emailAddresses) {
+			try {
+				deleteEmailAddress(emailAddress);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -192,6 +202,8 @@ public abstract class BaseEmailAddressResourceTestCase {
 	public void testGetEmailAddress() throws Exception {
 		EmailAddress postEmailAddress = testGetEmailAddress_addEmailAddress();
 
+		emailAddresses.add(postEmailAddress);
+
 		EmailAddress getEmailAddress = emailAddressResource.getEmailAddress(
 			postEmailAddress.getId());
 
@@ -209,6 +221,8 @@ public abstract class BaseEmailAddressResourceTestCase {
 	@Test
 	public void testGraphQLGetEmailAddress() throws Exception {
 		EmailAddress emailAddress = testGraphQLEmailAddress_addEmailAddress();
+
+		emailAddresses.add(emailAddress);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -266,9 +280,13 @@ public abstract class BaseEmailAddressResourceTestCase {
 			testGetOrganizationEmailAddressesPage_addEmailAddress(
 				organizationId, randomEmailAddress());
 
+		emailAddresses.add(emailAddress1);
+
 		EmailAddress emailAddress2 =
 			testGetOrganizationEmailAddressesPage_addEmailAddress(
 				organizationId, randomEmailAddress());
+
+		emailAddresses.add(emailAddress2);
 
 		page = emailAddressResource.getOrganizationEmailAddressesPage(
 			organizationId);
@@ -337,9 +355,13 @@ public abstract class BaseEmailAddressResourceTestCase {
 			testGetUserAccountEmailAddressesPage_addEmailAddress(
 				userAccountId, randomEmailAddress());
 
+		emailAddresses.add(emailAddress1);
+
 		EmailAddress emailAddress2 =
 			testGetUserAccountEmailAddressesPage_addEmailAddress(
 				userAccountId, randomEmailAddress());
+
+		emailAddresses.add(emailAddress2);
 
 		page = emailAddressResource.getUserAccountEmailAddressesPage(
 			userAccountId);
@@ -510,6 +532,10 @@ public abstract class BaseEmailAddressResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteEmailAddress(EmailAddress emailAddress)
+		throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -764,6 +790,7 @@ public abstract class BaseEmailAddressResourceTestCase {
 	}
 
 	protected EmailAddressResource emailAddressResource;
+	protected List<EmailAddress> emailAddresses;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

@@ -106,6 +106,7 @@ public abstract class BaseDataRecordResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		dataRecords = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -123,6 +124,15 @@ public abstract class BaseDataRecordResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (DataRecord dataRecord : dataRecords) {
+			try {
+				deleteDataRecord(dataRecord);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -228,9 +238,13 @@ public abstract class BaseDataRecordResourceTestCase {
 			testGetDataDefinitionDataRecordsPage_addDataRecord(
 				dataDefinitionId, randomDataRecord());
 
+		dataRecords.add(dataRecord1);
+
 		DataRecord dataRecord2 =
 			testGetDataDefinitionDataRecordsPage_addDataRecord(
 				dataDefinitionId, randomDataRecord());
+
+		dataRecords.add(dataRecord2);
 
 		page = dataRecordResource.getDataDefinitionDataRecordsPage(
 			dataDefinitionId, null, null, Pagination.of(1, 2), null);
@@ -258,13 +272,19 @@ public abstract class BaseDataRecordResourceTestCase {
 			testGetDataDefinitionDataRecordsPage_addDataRecord(
 				dataDefinitionId, randomDataRecord());
 
+		dataRecords.add(dataRecord1);
+
 		DataRecord dataRecord2 =
 			testGetDataDefinitionDataRecordsPage_addDataRecord(
 				dataDefinitionId, randomDataRecord());
 
+		dataRecords.add(dataRecord2);
+
 		DataRecord dataRecord3 =
 			testGetDataDefinitionDataRecordsPage_addDataRecord(
 				dataDefinitionId, randomDataRecord());
+
+		dataRecords.add(dataRecord3);
 
 		Page<DataRecord> page1 =
 			dataRecordResource.getDataDefinitionDataRecordsPage(
@@ -377,8 +397,12 @@ public abstract class BaseDataRecordResourceTestCase {
 		dataRecord1 = testGetDataDefinitionDataRecordsPage_addDataRecord(
 			dataDefinitionId, dataRecord1);
 
+		dataRecords.add(dataRecord1);
+
 		dataRecord2 = testGetDataDefinitionDataRecordsPage_addDataRecord(
 			dataDefinitionId, dataRecord2);
+
+		dataRecords.add(dataRecord2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DataRecord> ascPage =
@@ -430,6 +454,8 @@ public abstract class BaseDataRecordResourceTestCase {
 		DataRecord postDataRecord =
 			testPostDataDefinitionDataRecord_addDataRecord(randomDataRecord);
 
+		dataRecords.add(postDataRecord);
+
 		assertEquals(randomDataRecord, postDataRecord);
 		assertValid(postDataRecord);
 	}
@@ -479,9 +505,13 @@ public abstract class BaseDataRecordResourceTestCase {
 			testGetDataRecordCollectionDataRecordsPage_addDataRecord(
 				dataRecordCollectionId, randomDataRecord());
 
+		dataRecords.add(dataRecord1);
+
 		DataRecord dataRecord2 =
 			testGetDataRecordCollectionDataRecordsPage_addDataRecord(
 				dataRecordCollectionId, randomDataRecord());
+
+		dataRecords.add(dataRecord2);
 
 		page = dataRecordResource.getDataRecordCollectionDataRecordsPage(
 			dataRecordCollectionId, null, null, Pagination.of(1, 2), null);
@@ -509,13 +539,19 @@ public abstract class BaseDataRecordResourceTestCase {
 			testGetDataRecordCollectionDataRecordsPage_addDataRecord(
 				dataRecordCollectionId, randomDataRecord());
 
+		dataRecords.add(dataRecord1);
+
 		DataRecord dataRecord2 =
 			testGetDataRecordCollectionDataRecordsPage_addDataRecord(
 				dataRecordCollectionId, randomDataRecord());
 
+		dataRecords.add(dataRecord2);
+
 		DataRecord dataRecord3 =
 			testGetDataRecordCollectionDataRecordsPage_addDataRecord(
 				dataRecordCollectionId, randomDataRecord());
+
+		dataRecords.add(dataRecord3);
 
 		Page<DataRecord> page1 =
 			dataRecordResource.getDataRecordCollectionDataRecordsPage(
@@ -628,8 +664,12 @@ public abstract class BaseDataRecordResourceTestCase {
 		dataRecord1 = testGetDataRecordCollectionDataRecordsPage_addDataRecord(
 			dataRecordCollectionId, dataRecord1);
 
+		dataRecords.add(dataRecord1);
+
 		dataRecord2 = testGetDataRecordCollectionDataRecordsPage_addDataRecord(
 			dataRecordCollectionId, dataRecord2);
+
+		dataRecords.add(dataRecord2);
 
 		for (EntityField entityField : entityFields) {
 			Page<DataRecord> ascPage =
@@ -684,6 +724,8 @@ public abstract class BaseDataRecordResourceTestCase {
 			testPostDataRecordCollectionDataRecord_addDataRecord(
 				randomDataRecord);
 
+		dataRecords.add(postDataRecord);
+
 		assertEquals(randomDataRecord, postDataRecord);
 		assertValid(postDataRecord);
 	}
@@ -707,6 +749,8 @@ public abstract class BaseDataRecordResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DataRecord dataRecord = testDeleteDataRecord_addDataRecord();
 
+		dataRecords.add(dataRecord);
+
 		assertHttpResponseStatusCode(
 			204,
 			dataRecordResource.deleteDataRecordHttpResponse(
@@ -728,6 +772,8 @@ public abstract class BaseDataRecordResourceTestCase {
 	@Test
 	public void testGraphQLDeleteDataRecord() throws Exception {
 		DataRecord dataRecord = testGraphQLDataRecord_addDataRecord();
+
+		dataRecords.add(dataRecord);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -775,6 +821,8 @@ public abstract class BaseDataRecordResourceTestCase {
 	public void testGetDataRecord() throws Exception {
 		DataRecord postDataRecord = testGetDataRecord_addDataRecord();
 
+		dataRecords.add(postDataRecord);
+
 		DataRecord getDataRecord = dataRecordResource.getDataRecord(
 			postDataRecord.getId());
 
@@ -790,6 +838,8 @@ public abstract class BaseDataRecordResourceTestCase {
 	@Test
 	public void testGraphQLGetDataRecord() throws Exception {
 		DataRecord dataRecord = testGraphQLDataRecord_addDataRecord();
+
+		dataRecords.add(dataRecord);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -817,6 +867,8 @@ public abstract class BaseDataRecordResourceTestCase {
 	@Test
 	public void testPutDataRecord() throws Exception {
 		DataRecord postDataRecord = testPutDataRecord_addDataRecord();
+
+		dataRecords.add(postDataRecord);
 
 		DataRecord randomDataRecord = randomDataRecord();
 
@@ -965,6 +1017,10 @@ public abstract class BaseDataRecordResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteDataRecord(DataRecord dataRecord) throws Exception {
+		dataRecordResource.deleteDataRecord(dataRecord.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1175,6 +1231,7 @@ public abstract class BaseDataRecordResourceTestCase {
 	}
 
 	protected DataRecordResource dataRecordResource;
+	protected List<DataRecord> dataRecords;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

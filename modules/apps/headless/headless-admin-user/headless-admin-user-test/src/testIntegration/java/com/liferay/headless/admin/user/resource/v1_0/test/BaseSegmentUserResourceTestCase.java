@@ -95,6 +95,7 @@ public abstract class BaseSegmentUserResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		segmentUsers = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -112,6 +113,15 @@ public abstract class BaseSegmentUserResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (SegmentUser segmentUser : segmentUsers) {
+			try {
+				deleteSegmentUser(segmentUser);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -219,9 +229,13 @@ public abstract class BaseSegmentUserResourceTestCase {
 			testGetSegmentUserAccountsPage_addSegmentUser(
 				segmentId, randomSegmentUser());
 
+		segmentUsers.add(segmentUser1);
+
 		SegmentUser segmentUser2 =
 			testGetSegmentUserAccountsPage_addSegmentUser(
 				segmentId, randomSegmentUser());
+
+		segmentUsers.add(segmentUser2);
 
 		page = segmentUserResource.getSegmentUserAccountsPage(
 			segmentId, Pagination.of(1, 2));
@@ -244,13 +258,19 @@ public abstract class BaseSegmentUserResourceTestCase {
 			testGetSegmentUserAccountsPage_addSegmentUser(
 				segmentId, randomSegmentUser());
 
+		segmentUsers.add(segmentUser1);
+
 		SegmentUser segmentUser2 =
 			testGetSegmentUserAccountsPage_addSegmentUser(
 				segmentId, randomSegmentUser());
 
+		segmentUsers.add(segmentUser2);
+
 		SegmentUser segmentUser3 =
 			testGetSegmentUserAccountsPage_addSegmentUser(
 				segmentId, randomSegmentUser());
+
+		segmentUsers.add(segmentUser3);
 
 		Page<SegmentUser> page1 =
 			segmentUserResource.getSegmentUserAccountsPage(
@@ -425,6 +445,9 @@ public abstract class BaseSegmentUserResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteSegmentUser(SegmentUser segmentUser) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -651,6 +674,7 @@ public abstract class BaseSegmentUserResourceTestCase {
 	}
 
 	protected SegmentUserResource segmentUserResource;
+	protected List<SegmentUser> segmentUsers;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

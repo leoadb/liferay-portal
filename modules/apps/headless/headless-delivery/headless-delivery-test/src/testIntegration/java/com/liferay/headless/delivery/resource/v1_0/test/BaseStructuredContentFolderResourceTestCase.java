@@ -107,6 +107,7 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		structuredContentFolders = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -125,6 +126,17 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (StructuredContentFolder structuredContentFolder :
+				structuredContentFolders) {
+
+			try {
+				deleteStructuredContentFolder(structuredContentFolder);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -245,9 +257,13 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, randomStructuredContentFolder());
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		StructuredContentFolder structuredContentFolder2 =
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, randomStructuredContentFolder());
+
+		structuredContentFolders.add(structuredContentFolder2);
 
 		page =
 			structuredContentFolderResource.getSiteStructuredContentFoldersPage(
@@ -287,6 +303,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, structuredContentFolder1);
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContentFolder> page =
 				structuredContentFolderResource.
@@ -319,10 +337,14 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, randomStructuredContentFolder());
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContentFolder structuredContentFolder2 =
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, randomStructuredContentFolder());
+
+		structuredContentFolders.add(structuredContentFolder2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContentFolder> page =
@@ -349,13 +371,19 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, randomStructuredContentFolder());
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		StructuredContentFolder structuredContentFolder2 =
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, randomStructuredContentFolder());
 
+		structuredContentFolders.add(structuredContentFolder2);
+
 		StructuredContentFolder structuredContentFolder3 =
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, randomStructuredContentFolder());
+
+		structuredContentFolders.add(structuredContentFolder3);
 
 		Page<StructuredContentFolder> page1 =
 			structuredContentFolderResource.getSiteStructuredContentFoldersPage(
@@ -483,9 +511,13 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, structuredContentFolder1);
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		structuredContentFolder2 =
 			testGetSiteStructuredContentFoldersPage_addStructuredContentFolder(
 				siteId, structuredContentFolder2);
+
+		structuredContentFolders.add(structuredContentFolder2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContentFolder> ascPage =
@@ -577,6 +609,9 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		StructuredContentFolder structuredContentFolder2 =
 			testGraphQLStructuredContentFolder_addStructuredContentFolder();
 
+		structuredContentFolders.add(structuredContentFolder1);
+		structuredContentFolders.add(structuredContentFolder2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -602,6 +637,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testPostSiteStructuredContentFolder_addStructuredContentFolder(
 				randomStructuredContentFolder);
 
+		structuredContentFolders.add(postStructuredContentFolder);
+
 		assertEquals(
 			randomStructuredContentFolder, postStructuredContentFolder);
 		assertValid(postStructuredContentFolder);
@@ -625,6 +662,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		StructuredContentFolder structuredContentFolder =
 			testGraphQLStructuredContentFolder_addStructuredContentFolder(
 				randomStructuredContentFolder);
+
+		structuredContentFolders.add(structuredContentFolder);
 
 		Assert.assertTrue(
 			equalsJSONObject(
@@ -676,10 +715,14 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 				parentStructuredContentFolderId,
 				randomStructuredContentFolder());
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		StructuredContentFolder structuredContentFolder2 =
 			testGetStructuredContentFolderStructuredContentFoldersPage_addStructuredContentFolder(
 				parentStructuredContentFolderId,
 				randomStructuredContentFolder());
+
+		structuredContentFolders.add(structuredContentFolder2);
 
 		page =
 			structuredContentFolderResource.
@@ -722,6 +765,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testGetStructuredContentFolderStructuredContentFoldersPage_addStructuredContentFolder(
 				parentStructuredContentFolderId, structuredContentFolder1);
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContentFolder> page =
 				structuredContentFolderResource.
@@ -756,11 +801,15 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 				parentStructuredContentFolderId,
 				randomStructuredContentFolder());
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContentFolder structuredContentFolder2 =
 			testGetStructuredContentFolderStructuredContentFoldersPage_addStructuredContentFolder(
 				parentStructuredContentFolderId,
 				randomStructuredContentFolder());
+
+		structuredContentFolders.add(structuredContentFolder2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContentFolder> page =
@@ -789,15 +838,21 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 				parentStructuredContentFolderId,
 				randomStructuredContentFolder());
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		StructuredContentFolder structuredContentFolder2 =
 			testGetStructuredContentFolderStructuredContentFoldersPage_addStructuredContentFolder(
 				parentStructuredContentFolderId,
 				randomStructuredContentFolder());
 
+		structuredContentFolders.add(structuredContentFolder2);
+
 		StructuredContentFolder structuredContentFolder3 =
 			testGetStructuredContentFolderStructuredContentFoldersPage_addStructuredContentFolder(
 				parentStructuredContentFolderId,
 				randomStructuredContentFolder());
+
+		structuredContentFolders.add(structuredContentFolder3);
 
 		Page<StructuredContentFolder> page1 =
 			structuredContentFolderResource.
@@ -933,9 +988,13 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testGetStructuredContentFolderStructuredContentFoldersPage_addStructuredContentFolder(
 				parentStructuredContentFolderId, structuredContentFolder1);
 
+		structuredContentFolders.add(structuredContentFolder1);
+
 		structuredContentFolder2 =
 			testGetStructuredContentFolderStructuredContentFoldersPage_addStructuredContentFolder(
 				parentStructuredContentFolderId, structuredContentFolder2);
+
+		structuredContentFolders.add(structuredContentFolder2);
 
 		for (EntityField entityField : entityFields) {
 			Page<StructuredContentFolder> ascPage =
@@ -999,6 +1058,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 			testPostStructuredContentFolderStructuredContentFolder_addStructuredContentFolder(
 				randomStructuredContentFolder);
 
+		structuredContentFolders.add(postStructuredContentFolder);
+
 		assertEquals(
 			randomStructuredContentFolder, postStructuredContentFolder);
 		assertValid(postStructuredContentFolder);
@@ -1020,6 +1081,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContentFolder structuredContentFolder =
 			testDeleteStructuredContentFolder_addStructuredContentFolder();
+
+		structuredContentFolders.add(structuredContentFolder);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1051,6 +1114,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 	public void testGraphQLDeleteStructuredContentFolder() throws Exception {
 		StructuredContentFolder structuredContentFolder =
 			testGraphQLStructuredContentFolder_addStructuredContentFolder();
+
+		structuredContentFolders.add(structuredContentFolder);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -1104,6 +1169,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		StructuredContentFolder postStructuredContentFolder =
 			testGetStructuredContentFolder_addStructuredContentFolder();
 
+		structuredContentFolders.add(postStructuredContentFolder);
+
 		StructuredContentFolder getStructuredContentFolder =
 			structuredContentFolderResource.getStructuredContentFolder(
 				postStructuredContentFolder.getId());
@@ -1124,6 +1191,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 	public void testGraphQLGetStructuredContentFolder() throws Exception {
 		StructuredContentFolder structuredContentFolder =
 			testGraphQLStructuredContentFolder_addStructuredContentFolder();
+
+		structuredContentFolders.add(structuredContentFolder);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -1155,6 +1224,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 	public void testPatchStructuredContentFolder() throws Exception {
 		StructuredContentFolder postStructuredContentFolder =
 			testPatchStructuredContentFolder_addStructuredContentFolder();
+
+		structuredContentFolders.add(postStructuredContentFolder);
 
 		StructuredContentFolder randomPatchStructuredContentFolder =
 			randomPatchStructuredContentFolder();
@@ -1193,6 +1264,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		StructuredContentFolder postStructuredContentFolder =
 			testPutStructuredContentFolder_addStructuredContentFolder();
 
+		structuredContentFolders.add(postStructuredContentFolder);
+
 		StructuredContentFolder randomStructuredContentFolder =
 			randomStructuredContentFolder();
 
@@ -1226,6 +1299,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		StructuredContentFolder structuredContentFolder =
 			testPutStructuredContentFolderSubscribe_addStructuredContentFolder();
 
+		structuredContentFolders.add(structuredContentFolder);
+
 		assertHttpResponseStatusCode(
 			204,
 			structuredContentFolderResource.
@@ -1251,6 +1326,8 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContentFolder structuredContentFolder =
 			testPutStructuredContentFolderUnsubscribe_addStructuredContentFolder();
+
+		structuredContentFolders.add(structuredContentFolder);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -1717,6 +1794,14 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteStructuredContentFolder(
+			StructuredContentFolder structuredContentFolder)
+		throws Exception {
+
+		structuredContentFolderResource.deleteStructuredContentFolder(
+			structuredContentFolder.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -2263,6 +2348,7 @@ public abstract class BaseStructuredContentFolderResourceTestCase {
 	}
 
 	protected StructuredContentFolderResource structuredContentFolderResource;
+	protected List<StructuredContentFolder> structuredContentFolders;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

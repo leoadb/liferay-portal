@@ -93,6 +93,7 @@ public abstract class BaseSelectionResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		selections = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -110,6 +111,15 @@ public abstract class BaseSelectionResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Selection selection : selections) {
+			try {
+				deleteSelection(selection);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -186,6 +196,8 @@ public abstract class BaseSelectionResourceTestCase {
 
 		Selection postSelection = testPostBulkSelection_addSelection(
 			randomSelection);
+
+		selections.add(postSelection);
 
 		assertEquals(randomSelection, postSelection);
 		assertValid(postSelection);
@@ -302,6 +314,9 @@ public abstract class BaseSelectionResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteSelection(Selection selection) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -466,6 +481,7 @@ public abstract class BaseSelectionResourceTestCase {
 	}
 
 	protected SelectionResource selectionResource;
+	protected List<Selection> selections;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

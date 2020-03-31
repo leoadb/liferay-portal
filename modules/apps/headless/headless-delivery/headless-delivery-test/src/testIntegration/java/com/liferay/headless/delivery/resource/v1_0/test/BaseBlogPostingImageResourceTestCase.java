@@ -109,6 +109,7 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		blogPostingImages = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -127,6 +128,15 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (BlogPostingImage blogPostingImage : blogPostingImages) {
+			try {
+				deleteBlogPostingImage(blogPostingImage);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -213,6 +223,8 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 		BlogPostingImage blogPostingImage =
 			testDeleteBlogPostingImage_addBlogPostingImage();
 
+		blogPostingImages.add(blogPostingImage);
+
 		assertHttpResponseStatusCode(
 			204,
 			blogPostingImageResource.deleteBlogPostingImageHttpResponse(
@@ -239,6 +251,8 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 	public void testGraphQLDeleteBlogPostingImage() throws Exception {
 		BlogPostingImage blogPostingImage =
 			testGraphQLBlogPostingImage_addBlogPostingImage();
+
+		blogPostingImages.add(blogPostingImage);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -287,6 +301,8 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 		BlogPostingImage postBlogPostingImage =
 			testGetBlogPostingImage_addBlogPostingImage();
 
+		blogPostingImages.add(postBlogPostingImage);
+
 		BlogPostingImage getBlogPostingImage =
 			blogPostingImageResource.getBlogPostingImage(
 				postBlogPostingImage.getId());
@@ -307,6 +323,8 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 	public void testGraphQLGetBlogPostingImage() throws Exception {
 		BlogPostingImage blogPostingImage =
 			testGraphQLBlogPostingImage_addBlogPostingImage();
+
+		blogPostingImages.add(blogPostingImage);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -365,9 +383,13 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, randomBlogPostingImage());
 
+		blogPostingImages.add(blogPostingImage1);
+
 		BlogPostingImage blogPostingImage2 =
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, randomBlogPostingImage());
+
+		blogPostingImages.add(blogPostingImage2);
 
 		page = blogPostingImageResource.getSiteBlogPostingImagesPage(
 			siteId, null, null, Pagination.of(1, 2), null);
@@ -405,6 +427,8 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, blogPostingImage1);
 
+		blogPostingImages.add(blogPostingImage1);
+
 		for (EntityField entityField : entityFields) {
 			Page<BlogPostingImage> page =
 				blogPostingImageResource.getSiteBlogPostingImagesPage(
@@ -435,10 +459,14 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, randomBlogPostingImage());
 
+		blogPostingImages.add(blogPostingImage1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		BlogPostingImage blogPostingImage2 =
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, randomBlogPostingImage());
+
+		blogPostingImages.add(blogPostingImage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<BlogPostingImage> page =
@@ -463,13 +491,19 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, randomBlogPostingImage());
 
+		blogPostingImages.add(blogPostingImage1);
+
 		BlogPostingImage blogPostingImage2 =
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, randomBlogPostingImage());
 
+		blogPostingImages.add(blogPostingImage2);
+
 		BlogPostingImage blogPostingImage3 =
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, randomBlogPostingImage());
+
+		blogPostingImages.add(blogPostingImage3);
 
 		Page<BlogPostingImage> page1 =
 			blogPostingImageResource.getSiteBlogPostingImagesPage(
@@ -591,9 +625,13 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, blogPostingImage1);
 
+		blogPostingImages.add(blogPostingImage1);
+
 		blogPostingImage2 =
 			testGetSiteBlogPostingImagesPage_addBlogPostingImage(
 				siteId, blogPostingImage2);
+
+		blogPostingImages.add(blogPostingImage2);
 
 		for (EntityField entityField : entityFields) {
 			Page<BlogPostingImage> ascPage =
@@ -678,6 +716,9 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 		BlogPostingImage blogPostingImage2 =
 			testGraphQLBlogPostingImage_addBlogPostingImage();
 
+		blogPostingImages.add(blogPostingImage1);
+		blogPostingImages.add(blogPostingImage2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -703,6 +744,8 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 			testPostSiteBlogPostingImage_addBlogPostingImage(
 				randomBlogPostingImage, multipartFiles);
 
+		blogPostingImages.add(postBlogPostingImage);
+
 		assertEquals(randomBlogPostingImage, postBlogPostingImage);
 		assertValid(postBlogPostingImage);
 
@@ -725,6 +768,8 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 		BlogPostingImage blogPostingImage =
 			testGraphQLBlogPostingImage_addBlogPostingImage(
 				randomBlogPostingImage);
+
+		blogPostingImages.add(blogPostingImage);
 
 		Assert.assertTrue(
 			equalsJSONObject(
@@ -1056,6 +1101,13 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteBlogPostingImage(BlogPostingImage blogPostingImage)
+		throws Exception {
+
+		blogPostingImageResource.deleteBlogPostingImage(
+			blogPostingImage.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1400,6 +1452,7 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 	}
 
 	protected BlogPostingImageResource blogPostingImageResource;
+	protected List<BlogPostingImage> blogPostingImages;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

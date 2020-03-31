@@ -95,6 +95,7 @@ public abstract class BaseAssigneeResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		assignees = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -112,6 +113,15 @@ public abstract class BaseAssigneeResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (Assignee assignee : assignees) {
+			try {
+				deleteAssignee(assignee);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -219,8 +229,12 @@ public abstract class BaseAssigneeResourceTestCase {
 		Assignee assignee1 = testGetWorkflowTaskAssignableUsersPage_addAssignee(
 			workflowTaskId, randomAssignee());
 
+		assignees.add(assignee1);
+
 		Assignee assignee2 = testGetWorkflowTaskAssignableUsersPage_addAssignee(
 			workflowTaskId, randomAssignee());
+
+		assignees.add(assignee2);
 
 		page = assigneeResource.getWorkflowTaskAssignableUsersPage(
 			workflowTaskId, Pagination.of(1, 2));
@@ -243,11 +257,17 @@ public abstract class BaseAssigneeResourceTestCase {
 		Assignee assignee1 = testGetWorkflowTaskAssignableUsersPage_addAssignee(
 			workflowTaskId, randomAssignee());
 
+		assignees.add(assignee1);
+
 		Assignee assignee2 = testGetWorkflowTaskAssignableUsersPage_addAssignee(
 			workflowTaskId, randomAssignee());
 
+		assignees.add(assignee2);
+
 		Assignee assignee3 = testGetWorkflowTaskAssignableUsersPage_addAssignee(
 			workflowTaskId, randomAssignee());
+
+		assignees.add(assignee3);
 
 		Page<Assignee> page1 =
 			assigneeResource.getWorkflowTaskAssignableUsersPage(
@@ -411,6 +431,9 @@ public abstract class BaseAssigneeResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteAssignee(Assignee assignee) throws Exception {
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -602,6 +625,7 @@ public abstract class BaseAssigneeResourceTestCase {
 	}
 
 	protected AssigneeResource assigneeResource;
+	protected List<Assignee> assignees;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

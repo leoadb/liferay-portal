@@ -106,6 +106,7 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		taxonomyCategories = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -124,6 +125,15 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (TaxonomyCategory taxonomyCategory : taxonomyCategories) {
+			try {
+				deleteTaxonomyCategory(taxonomyCategory);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -216,9 +226,13 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyCategoryRankedPage_addTaxonomyCategory(
 				randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		TaxonomyCategory taxonomyCategory2 =
 			testGetTaxonomyCategoryRankedPage_addTaxonomyCategory(
 				randomTaxonomyCategory());
+
+		taxonomyCategories.add(taxonomyCategory2);
 
 		page = taxonomyCategoryResource.getTaxonomyCategoryRankedPage(
 			null, Pagination.of(1, 2));
@@ -245,13 +259,19 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyCategoryRankedPage_addTaxonomyCategory(
 				randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		TaxonomyCategory taxonomyCategory2 =
 			testGetTaxonomyCategoryRankedPage_addTaxonomyCategory(
 				randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory2);
+
 		TaxonomyCategory taxonomyCategory3 =
 			testGetTaxonomyCategoryRankedPage_addTaxonomyCategory(
 				randomTaxonomyCategory());
+
+		taxonomyCategories.add(taxonomyCategory3);
 
 		Page<TaxonomyCategory> page1 =
 			taxonomyCategoryResource.getTaxonomyCategoryRankedPage(
@@ -334,9 +354,13 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		TaxonomyCategory taxonomyCategory2 =
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, randomTaxonomyCategory());
+
+		taxonomyCategories.add(taxonomyCategory2);
 
 		page =
 			taxonomyCategoryResource.getTaxonomyCategoryTaxonomyCategoriesPage(
@@ -377,6 +401,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, taxonomyCategory1);
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyCategory> page =
 				taxonomyCategoryResource.
@@ -410,10 +436,14 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		TaxonomyCategory taxonomyCategory2 =
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, randomTaxonomyCategory());
+
+		taxonomyCategories.add(taxonomyCategory2);
 
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyCategory> page =
@@ -440,13 +470,19 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		TaxonomyCategory taxonomyCategory2 =
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory2);
+
 		TaxonomyCategory taxonomyCategory3 =
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, randomTaxonomyCategory());
+
+		taxonomyCategories.add(taxonomyCategory3);
 
 		Page<TaxonomyCategory> page1 =
 			taxonomyCategoryResource.getTaxonomyCategoryTaxonomyCategoriesPage(
@@ -572,9 +608,13 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, taxonomyCategory1);
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		taxonomyCategory2 =
 			testGetTaxonomyCategoryTaxonomyCategoriesPage_addTaxonomyCategory(
 				parentTaxonomyCategoryId, taxonomyCategory2);
+
+		taxonomyCategories.add(taxonomyCategory2);
 
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyCategory> ascPage =
@@ -632,6 +672,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testPostTaxonomyCategoryTaxonomyCategory_addTaxonomyCategory(
 				randomTaxonomyCategory);
 
+		taxonomyCategories.add(postTaxonomyCategory);
+
 		assertEquals(randomTaxonomyCategory, postTaxonomyCategory);
 		assertValid(postTaxonomyCategory);
 	}
@@ -651,6 +693,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		TaxonomyCategory taxonomyCategory =
 			testDeleteTaxonomyCategory_addTaxonomyCategory();
+
+		taxonomyCategories.add(taxonomyCategory);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -677,6 +721,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 	public void testGraphQLDeleteTaxonomyCategory() throws Exception {
 		TaxonomyCategory taxonomyCategory =
 			testGraphQLTaxonomyCategory_addTaxonomyCategory();
+
+		taxonomyCategories.add(taxonomyCategory);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -729,6 +775,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 		TaxonomyCategory postTaxonomyCategory =
 			testGetTaxonomyCategory_addTaxonomyCategory();
 
+		taxonomyCategories.add(postTaxonomyCategory);
+
 		TaxonomyCategory getTaxonomyCategory =
 			taxonomyCategoryResource.getTaxonomyCategory(
 				postTaxonomyCategory.getId());
@@ -748,6 +796,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 	public void testGraphQLGetTaxonomyCategory() throws Exception {
 		TaxonomyCategory taxonomyCategory =
 			testGraphQLTaxonomyCategory_addTaxonomyCategory();
+
+		taxonomyCategories.add(taxonomyCategory);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -779,6 +829,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 	public void testPatchTaxonomyCategory() throws Exception {
 		TaxonomyCategory postTaxonomyCategory =
 			testPatchTaxonomyCategory_addTaxonomyCategory();
+
+		taxonomyCategories.add(postTaxonomyCategory);
 
 		TaxonomyCategory randomPatchTaxonomyCategory =
 			randomPatchTaxonomyCategory();
@@ -812,6 +864,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 	public void testPutTaxonomyCategory() throws Exception {
 		TaxonomyCategory postTaxonomyCategory =
 			testPutTaxonomyCategory_addTaxonomyCategory();
+
+		taxonomyCategories.add(postTaxonomyCategory);
 
 		TaxonomyCategory randomTaxonomyCategory = randomTaxonomyCategory();
 
@@ -879,9 +933,13 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		TaxonomyCategory taxonomyCategory2 =
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, randomTaxonomyCategory());
+
+		taxonomyCategories.add(taxonomyCategory2);
 
 		page =
 			taxonomyCategoryResource.
@@ -923,6 +981,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, taxonomyCategory1);
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyCategory> page =
 				taxonomyCategoryResource.
@@ -956,10 +1016,14 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		TaxonomyCategory taxonomyCategory2 =
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, randomTaxonomyCategory());
+
+		taxonomyCategories.add(taxonomyCategory2);
 
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyCategory> page =
@@ -986,13 +1050,19 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		TaxonomyCategory taxonomyCategory2 =
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, randomTaxonomyCategory());
 
+		taxonomyCategories.add(taxonomyCategory2);
+
 		TaxonomyCategory taxonomyCategory3 =
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, randomTaxonomyCategory());
+
+		taxonomyCategories.add(taxonomyCategory3);
 
 		Page<TaxonomyCategory> page1 =
 			taxonomyCategoryResource.
@@ -1121,9 +1191,13 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, taxonomyCategory1);
 
+		taxonomyCategories.add(taxonomyCategory1);
+
 		taxonomyCategory2 =
 			testGetTaxonomyVocabularyTaxonomyCategoriesPage_addTaxonomyCategory(
 				taxonomyVocabularyId, taxonomyCategory2);
+
+		taxonomyCategories.add(taxonomyCategory2);
 
 		for (EntityField entityField : entityFields) {
 			Page<TaxonomyCategory> ascPage =
@@ -1179,6 +1253,8 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 		TaxonomyCategory postTaxonomyCategory =
 			testPostTaxonomyVocabularyTaxonomyCategory_addTaxonomyCategory(
 				randomTaxonomyCategory);
+
+		taxonomyCategories.add(postTaxonomyCategory);
 
 		assertEquals(randomTaxonomyCategory, postTaxonomyCategory);
 		assertValid(postTaxonomyCategory);
@@ -1434,6 +1510,13 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteTaxonomyCategory(TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		taxonomyCategoryResource.deleteTaxonomyCategory(
+			taxonomyCategory.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1990,6 +2073,7 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 	}
 
 	protected TaxonomyCategoryResource taxonomyCategoryResource;
+	protected List<TaxonomyCategory> taxonomyCategories;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;

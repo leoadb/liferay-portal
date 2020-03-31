@@ -100,6 +100,7 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		workflowInstances = new ArrayList<>();
 		irrelevantGroup = GroupTestUtil.addGroup();
 		testGroup = GroupTestUtil.addGroup();
 
@@ -118,6 +119,15 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		for (WorkflowInstance workflowInstance : workflowInstances) {
+			try {
+				deleteWorkflowInstance(workflowInstance);
+			}
+			catch (Exception exception) {
+				continue;
+			}
+		}
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -208,9 +218,13 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 			testGetWorkflowInstancesPage_addWorkflowInstance(
 				randomWorkflowInstance());
 
+		workflowInstances.add(workflowInstance1);
+
 		WorkflowInstance workflowInstance2 =
 			testGetWorkflowInstancesPage_addWorkflowInstance(
 				randomWorkflowInstance());
+
+		workflowInstances.add(workflowInstance2);
 
 		page = workflowInstanceResource.getWorkflowInstancesPage(
 			null, null, null, Pagination.of(1, 2));
@@ -235,13 +249,19 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 			testGetWorkflowInstancesPage_addWorkflowInstance(
 				randomWorkflowInstance());
 
+		workflowInstances.add(workflowInstance1);
+
 		WorkflowInstance workflowInstance2 =
 			testGetWorkflowInstancesPage_addWorkflowInstance(
 				randomWorkflowInstance());
 
+		workflowInstances.add(workflowInstance2);
+
 		WorkflowInstance workflowInstance3 =
 			testGetWorkflowInstancesPage_addWorkflowInstance(
 				randomWorkflowInstance());
+
+		workflowInstances.add(workflowInstance3);
 
 		Page<WorkflowInstance> page1 =
 			workflowInstanceResource.getWorkflowInstancesPage(
@@ -323,6 +343,9 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 		WorkflowInstance workflowInstance2 =
 			testGraphQLWorkflowInstance_addWorkflowInstance();
 
+		workflowInstances.add(workflowInstance1);
+		workflowInstances.add(workflowInstance2);
+
 		jsonObject = JSONFactoryUtil.createJSONObject(
 			invoke(graphQLField.toString()));
 
@@ -346,6 +369,8 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 			testPostWorkflowInstanceSubmit_addWorkflowInstance(
 				randomWorkflowInstance);
 
+		workflowInstances.add(postWorkflowInstance);
+
 		assertEquals(randomWorkflowInstance, postWorkflowInstance);
 		assertValid(postWorkflowInstance);
 	}
@@ -364,6 +389,8 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WorkflowInstance workflowInstance =
 			testDeleteWorkflowInstance_addWorkflowInstance();
+
+		workflowInstances.add(workflowInstance);
 
 		assertHttpResponseStatusCode(
 			204,
@@ -390,6 +417,8 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 	public void testGraphQLDeleteWorkflowInstance() throws Exception {
 		WorkflowInstance workflowInstance =
 			testGraphQLWorkflowInstance_addWorkflowInstance();
+
+		workflowInstances.add(workflowInstance);
 
 		GraphQLField graphQLField = new GraphQLField(
 			"mutation",
@@ -438,6 +467,8 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 		WorkflowInstance postWorkflowInstance =
 			testGetWorkflowInstance_addWorkflowInstance();
 
+		workflowInstances.add(postWorkflowInstance);
+
 		WorkflowInstance getWorkflowInstance =
 			workflowInstanceResource.getWorkflowInstance(
 				postWorkflowInstance.getId());
@@ -457,6 +488,8 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 	public void testGraphQLGetWorkflowInstance() throws Exception {
 		WorkflowInstance workflowInstance =
 			testGraphQLWorkflowInstance_addWorkflowInstance();
+
+		workflowInstances.add(workflowInstance);
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
 
@@ -489,6 +522,8 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 		WorkflowInstance postWorkflowInstance =
 			testPostWorkflowInstanceChangeTransition_addWorkflowInstance(
 				randomWorkflowInstance);
+
+		workflowInstances.add(postWorkflowInstance);
 
 		assertEquals(randomWorkflowInstance, postWorkflowInstance);
 		assertValid(postWorkflowInstance);
@@ -667,6 +702,13 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 		}
 
 		Assert.assertTrue(valid);
+	}
+
+	protected void deleteWorkflowInstance(WorkflowInstance workflowInstance)
+		throws Exception {
+
+		workflowInstanceResource.deleteWorkflowInstance(
+			workflowInstance.getId());
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
@@ -1043,6 +1085,7 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 	}
 
 	protected WorkflowInstanceResource workflowInstanceResource;
+	protected List<WorkflowInstance> workflowInstances;
 	protected Group irrelevantGroup;
 	protected Company testCompany;
 	protected Group testGroup;
