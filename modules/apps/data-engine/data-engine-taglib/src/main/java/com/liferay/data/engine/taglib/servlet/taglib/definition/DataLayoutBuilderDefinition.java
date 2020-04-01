@@ -15,6 +15,9 @@
 package com.liferay.data.engine.taglib.servlet.taglib.definition;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+
+import java.util.Map;
 
 /**
  * @author Eudaldo Alonso
@@ -43,6 +46,16 @@ public interface DataLayoutBuilderDefinition {
 
 	public default String getPaginationMode() {
 		return DDMFormLayout.WIZARD_MODE;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
+	 */
+	@Deprecated
+	public default Map<String, Object> getSuccessPageSettings() {
+		return HashMapBuilder.<String, Object>put(
+			"enabled", true
+		).build();
 	}
 
 	public default String[] getUnimplementedProperties() {
