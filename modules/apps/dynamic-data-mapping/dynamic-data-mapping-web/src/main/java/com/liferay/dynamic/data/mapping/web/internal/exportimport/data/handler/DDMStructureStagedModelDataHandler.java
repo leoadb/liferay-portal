@@ -345,7 +345,7 @@ public class DDMStructureStagedModelDataHandler
 		long groupId = portletDataContext.getScopeGroupId();
 
 		updateDDMFormFieldsPredefinedValues(
-			groupId, portletDataContext.getSourceGroupId(), ddmForm);
+			ddmForm, groupId, portletDataContext.getSourceGroupId());
 
 		importDDMDataProviderInstances(
 			portletDataContext, structureElement, ddmForm);
@@ -807,7 +807,7 @@ public class DDMStructureStagedModelDataHandler
 	}
 
 	protected void updateDDMFormFieldsPredefinedValues(
-		long groupId, long sourceId, DDMForm ddmForm) {
+		DDMForm ddmForm, long groupId, long sourceId) {
 
 		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
 
