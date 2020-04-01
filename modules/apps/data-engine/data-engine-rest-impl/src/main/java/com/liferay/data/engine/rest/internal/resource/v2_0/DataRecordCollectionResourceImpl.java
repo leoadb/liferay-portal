@@ -89,6 +89,10 @@ public class DataRecordCollectionResourceImpl
 			Long dataDefinitionId)
 		throws Exception {
 
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
+			ActionKeys.VIEW);
+
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
@@ -102,6 +106,10 @@ public class DataRecordCollectionResourceImpl
 			getDataDefinitionDataRecordCollectionsPage(
 				Long dataDefinitionId, String keywords, Pagination pagination)
 		throws Exception {
+
+		_dataDefinitionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), dataDefinitionId,
+			ActionKeys.VIEW);
 
 		return _getDataRecordCollections(
 			dataDefinitionId, keywords,
