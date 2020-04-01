@@ -69,10 +69,10 @@ import com.liferay.portal.kernel.xml.Element;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -811,25 +811,25 @@ public class DDMStructureStagedModelDataHandler
 
 		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
 
-		for (DDMFormField ddmFormField : ddmFormFields) {
-			LocalizedValue predefinedValue = ddmFormField.getPredefinedValue();
+		Stream<DDMFormField> stream = ddmFormFields.stream();
 
-			Map<Locale, String> predefinedValues = predefinedValue.getValues();
-
-			for (Map.Entry<Locale, String> entry :
-					predefinedValues.entrySet()) {
-
-				String sourceGroupId = String.valueOf(sourceId);
-				String value = entry.getValue();
-
-				if (value.contains(sourceGroupId)) {
-					value = StringUtil.replace(
-						value, sourceGroupId, String.valueOf(groupId));
-
-					entry.setValue(value);
-				}
-			}
-		}
+		stream.map(
+			DDMFormField::getPredefinedValue
+		).map(
+			LocalizedValue::getValues
+		).map(
+			Map::entrySet
+		).flatMap(
+			entries -> entries.stream()
+		).filter(
+			entry -> StringUtil.contains(
+				entry.getValue(), String.valueOf(sourceId))
+		).forEach(
+			entry -> entry.setValue(
+				StringUtil.replace(
+					entry.getValue(), String.valueOf(sourceId),
+					String.valueOf(groupId)))
+		);
 	}
 
 	@Reference
