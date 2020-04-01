@@ -190,6 +190,13 @@ public class DataRecordCollectionResourceImpl
 				Long siteId, String dataRecordCollectionKey)
 		throws Exception {
 
+		DDLRecordSet ddlRecordSet = _ddlRecordSetLocalService.getRecordSet(
+			siteId, dataRecordCollectionKey);
+
+		_dataRecordCollectionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			ddlRecordSet.getRecordSetId(), ActionKeys.VIEW);
+
 		return _getSiteDataRecordCollection(dataRecordCollectionKey, siteId);
 	}
 
