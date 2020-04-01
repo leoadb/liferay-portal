@@ -14,6 +14,7 @@
 
 package com.liferay.data.engine.rest.internal.resource.v2_0;
 
+import com.liferay.data.engine.content.type.DataDefinitionContentType;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataRecordCollection;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
@@ -284,10 +285,13 @@ public class DataRecordCollectionResourceImpl
 			LocalizedValueUtil.toLocaleStringMap(description), 0,
 			DDLRecordSetConstants.SCOPE_DATA_ENGINE, serviceContext);
 
-		_resourceLocalService.addModelResources(
-			ddmStructure.getCompanyId(), ddmStructure.getGroupId(),
-			PrincipalThreadLocal.getUserId(), _getResourceName(ddlRecordSet),
-			ddlRecordSet.getPrimaryKey(), serviceContext.getModelPermissions());
+		if (_isDataRecordCollectionPermissionCheckingEnabled(ddmStructure)) {
+			_resourceLocalService.addModelResources(
+				ddmStructure.getCompanyId(), ddmStructure.getGroupId(),
+				PrincipalThreadLocal.getUserId(),
+				_getResourceName(ddlRecordSet), ddlRecordSet.getPrimaryKey(),
+				serviceContext.getModelPermissions());
+		}
 
 		return DataRecordCollectionUtil.toDataRecordCollection(ddlRecordSet);
 	}
@@ -375,6 +379,18 @@ public class DataRecordCollectionResourceImpl
 		return DataRecordCollectionUtil.toDataRecordCollection(
 			_ddlRecordSetLocalService.getRecordSet(
 				siteId, dataRecordCollectionKey));
+	}
+
+	private boolean _isDataRecordCollectionPermissionCheckingEnabled(
+			DDMStructure ddmStructure)
+		throws Exception {
+
+		DataDefinitionContentType dataDefinitionContentType =
+			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
+				ddmStructure.getClassNameId());
+
+		return dataDefinitionContentType.
+			isDataRecordCollectionPermissionCheckingEnabled();
 	}
 
 	private DataRecordCollection _updateDataRecordCollection(
