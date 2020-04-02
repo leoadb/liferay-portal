@@ -51,12 +51,6 @@ public class DataRecordCollectionUtilTest extends PowerMockito {
 		);
 
 		when(
-			_ddlRecordSet.getRecordSetKey()
-		).thenReturn(
-			"RecordSetId"
-		);
-
-		when(
 			_ddlRecordSet.getDescriptionMap()
 		).thenReturn(
 			HashMapBuilder.put(
@@ -67,9 +61,9 @@ public class DataRecordCollectionUtilTest extends PowerMockito {
 		);
 
 		when(
-			_ddlRecordSet.getRecordSetId()
+			_ddlRecordSet.getGroupId()
 		).thenReturn(
-			456L
+			789L
 		);
 
 		when(
@@ -83,9 +77,15 @@ public class DataRecordCollectionUtilTest extends PowerMockito {
 		);
 
 		when(
-			_ddlRecordSet.getGroupId()
+			_ddlRecordSet.getRecordSetId()
 		).thenReturn(
-			789L
+			456L
+		);
+
+		when(
+			_ddlRecordSet.getRecordSetKey()
+		).thenReturn(
+			"RecordSetId"
 		);
 
 		Assert.assertEquals(
