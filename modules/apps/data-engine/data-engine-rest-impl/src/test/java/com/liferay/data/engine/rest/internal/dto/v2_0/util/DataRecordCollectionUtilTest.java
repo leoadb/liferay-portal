@@ -40,43 +40,10 @@ public class DataRecordCollectionUtilTest extends PowerMockito {
 	@Before
 	public void setUp() {
 		_setUpLanguageUtil();
-		_setDDLRecordSet();
 	}
 
 	@Test
 	public void testToDataRecordCollectionEquals() throws Exception {
-		Assert.assertEquals(
-			new DataRecordCollection() {
-				{
-					setDataDefinitionId(123L);
-					setDataRecordCollectionKey("RecordSetId");
-					setDescription(
-						HashMapBuilder.<String, Object>put(
-							"en_US", "Description"
-						).put(
-							"pt_BR", "Descrição"
-						).build());
-					setId(456L);
-					setName(
-						HashMapBuilder.<String, Object>put(
-							"en_US", "Name"
-						).put(
-							"pt_BR", "Nome"
-						).build());
-					setSiteId(789L);
-				}
-			},
-			DataRecordCollectionUtil.toDataRecordCollection(_ddlRecordSet));
-	}
-
-	@Test
-	public void testToDataRecordCollectionNullDDLRecordSet() {
-		Assert.assertEquals(
-			new DataRecordCollection(),
-			DataRecordCollectionUtil.toDataRecordCollection(null));
-	}
-
-	private void _setDDLRecordSet() {
 		when(
 			_ddlRecordSet.getDDMStructureId()
 		).thenReturn(
@@ -120,6 +87,36 @@ public class DataRecordCollectionUtilTest extends PowerMockito {
 		).thenReturn(
 			789L
 		);
+
+		Assert.assertEquals(
+			new DataRecordCollection() {
+				{
+					setDataDefinitionId(123L);
+					setDataRecordCollectionKey("RecordSetId");
+					setDescription(
+						HashMapBuilder.<String, Object>put(
+							"en_US", "Description"
+						).put(
+							"pt_BR", "Descrição"
+						).build());
+					setId(456L);
+					setName(
+						HashMapBuilder.<String, Object>put(
+							"en_US", "Name"
+						).put(
+							"pt_BR", "Nome"
+						).build());
+					setSiteId(789L);
+				}
+			},
+			DataRecordCollectionUtil.toDataRecordCollection(_ddlRecordSet));
+	}
+
+	@Test
+	public void testToDataRecordCollectionNullDDLRecordSet() {
+		Assert.assertEquals(
+			new DataRecordCollection(),
+			DataRecordCollectionUtil.toDataRecordCollection(null));
 	}
 
 	private void _setUpLanguageUtil() {
