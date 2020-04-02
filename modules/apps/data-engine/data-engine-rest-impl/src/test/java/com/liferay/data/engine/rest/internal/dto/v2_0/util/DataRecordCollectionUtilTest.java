@@ -113,6 +113,76 @@ public class DataRecordCollectionUtilTest extends PowerMockito {
 	}
 
 	@Test
+	public void testToDataRecordCollectionNotEquals() throws Exception {
+		when(
+			_ddlRecordSet.getDDMStructureId()
+		).thenReturn(
+			124L
+		);
+
+		when(
+			_ddlRecordSet.getDescriptionMap()
+		).thenReturn(
+			HashMapBuilder.put(
+				LocaleUtil.BRAZIL, "Descrição1"
+			).put(
+				LocaleUtil.US, "Description1"
+			).build()
+		);
+
+		when(
+			_ddlRecordSet.getGroupId()
+		).thenReturn(
+			788L
+		);
+
+		when(
+			_ddlRecordSet.getNameMap()
+		).thenReturn(
+			HashMapBuilder.put(
+				LocaleUtil.BRAZIL, "Nome1"
+			).put(
+				LocaleUtil.US, "Name1"
+			).build()
+		);
+
+		when(
+			_ddlRecordSet.getRecordSetId()
+		).thenReturn(
+			457L
+		);
+
+		when(
+			_ddlRecordSet.getRecordSetKey()
+		).thenReturn(
+			"RecordSetId1"
+		);
+
+		Assert.assertNotEquals(
+			new DataRecordCollection() {
+				{
+					setDataDefinitionId(123L);
+					setDataRecordCollectionKey("RecordSetId");
+					setDescription(
+						HashMapBuilder.<String, Object>put(
+							"en_US", "Description"
+						).put(
+							"pt_BR", "Descrição"
+						).build());
+					setId(456L);
+					setName(
+						HashMapBuilder.<String, Object>put(
+							"en_US", "Name"
+						).put(
+							"pt_BR", "Nome"
+						).build());
+					setSiteId(789L);
+				}
+			},
+			DataRecordCollectionUtil.toDataRecordCollection(_ddlRecordSet));
+	}
+
+	@Test
 	public void testToDataRecordCollectionNullDDLRecordSet() {
 		Assert.assertEquals(
 			new DataRecordCollection(),
