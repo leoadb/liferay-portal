@@ -44,7 +44,7 @@ public class DataRecordCollectionUtilTest extends PowerMockito {
 	}
 
 	@Test
-	public void testToDataRecordCollection() throws Exception {
+	public void testToDataRecordCollectionEquals() throws Exception {
 		Assert.assertEquals(
 			new DataRecordCollection() {
 				{
