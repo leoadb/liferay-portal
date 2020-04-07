@@ -20,6 +20,7 @@ import com.liferay.data.engine.rest.dto.v2_0.DataRecord;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordResource;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
+import com.liferay.dynamic.data.lists.service.DDLRecordLocalService;
 import com.liferay.dynamic.data.lists.service.DDLRecordLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.expando.kernel.model.ExpandoBridge;
@@ -29,8 +30,11 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -58,11 +62,19 @@ import java.util.stream.Stream;
 public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 
 	public DataEngineExpandoBridgeImpl(
-		String className, long classPK, long companyId) {
+		String className, long classPK, long companyId,
+		CompanyLocalService companyLocalService,
+		DDLRecordLocalService ddlRecordLocalService,
+		GroupLocalService groupLocalService,
+		UserLocalService userLocalService) {
 
 		_className = className;
 		_classPK = classPK;
 		_companyId = companyId;
+		_companyLocalService = companyLocalService;
+		_ddlRecordLocalService = ddlRecordLocalService;
+		_groupLocalService = groupLocalService;
+		_userLocalService = userLocalService;
 
 		Group group = GroupLocalServiceUtil.fetchCompanyGroup(companyId);
 
@@ -648,5 +660,9 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 	private long _classPK;
 	private final long _companyGroupId;
 	private long _companyId;
+	private final CompanyLocalService _companyLocalService;
+	private final DDLRecordLocalService _ddlRecordLocalService;
+	private final GroupLocalService _groupLocalService;
+	private final UserLocalService _userLocalService;
 
 }
