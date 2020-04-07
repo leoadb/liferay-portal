@@ -2,6 +2,10 @@ Bundle-Name: Liferay Dynamic Data Mapping Service
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.service
 Bundle-Version: 5.0.19
 Import-Package:\
+	!com.zaxxer.sparsebits.*,\
+	\
+	!org.apache.commons.collections4.*,\
+	!org.apache.commons.math3.*,\
 	!org.apache.poi.hssf.usermodel.*,\
 	!org.apache.poi.ss.usermodel.*,\
 	\
