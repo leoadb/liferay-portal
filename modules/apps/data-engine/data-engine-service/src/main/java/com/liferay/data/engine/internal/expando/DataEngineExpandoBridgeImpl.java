@@ -21,7 +21,6 @@ import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordResource;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.dynamic.data.lists.service.DDLRecordLocalService;
-import com.liferay.dynamic.data.lists.service.DDLRecordLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -29,13 +28,10 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -76,7 +72,7 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 		_groupLocalService = groupLocalService;
 		_userLocalService = userLocalService;
 
-		Group group = GroupLocalServiceUtil.fetchCompanyGroup(companyId);
+		Group group = _groupLocalService.fetchCompanyGroup(companyId);
 
 		if (group == null) {
 			throw new IllegalArgumentException("Invalid company: " + companyId);
@@ -242,7 +238,7 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 
 		try {
 			DDLRecord ddlRecord =
-				DDLRecordLocalServiceUtil.fetchFirstRecordByClassNameAndClassPK(
+				_ddlRecordLocalService.fetchFirstRecordByClassNameAndClassPK(
 					_className, _classPK);
 
 			if (ddlRecord == null) {
@@ -441,7 +437,7 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 			DataRecord dataRecord = null;
 
 			DDLRecord ddlRecord =
-				DDLRecordLocalServiceUtil.fetchFirstRecordByClassNameAndClassPK(
+				_ddlRecordLocalService.fetchFirstRecordByClassNameAndClassPK(
 					_className, _classPK);
 
 			if (ddlRecord == null) {
@@ -457,13 +453,13 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 				dataRecord = dataRecordResource.postDataDefinitionDataRecord(
 					dataDefinition.getId(), dataRecord);
 
-				ddlRecord = DDLRecordLocalServiceUtil.getDDLRecord(
+				ddlRecord = _ddlRecordLocalService.getDDLRecord(
 					dataRecord.getId());
 
 				ddlRecord.setClassName(_className);
 				ddlRecord.setClassPK(_classPK);
 
-				DDLRecordLocalServiceUtil.updateDDLRecord(ddlRecord);
+				_ddlRecordLocalService.updateDDLRecord(ddlRecord);
 
 				return;
 			}
@@ -627,7 +623,7 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 
 		return DataDefinitionResource.builder(
 		).user(
-			UserLocalServiceUtil.getUser(_getUserId())
+			_userLocalService.getUser(_getUserId())
 		).checkPermissions(
 			false
 		).build();
@@ -636,7 +632,7 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 	private DataRecordResource _getDataRecordResource() throws PortalException {
 		return DataRecordResource.builder(
 		).user(
-			UserLocalServiceUtil.getUser(_getUserId())
+			_userLocalService.getUser(_getUserId())
 		).checkPermissions(
 			false
 		).build();
@@ -646,7 +642,7 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 		long userId = PrincipalThreadLocal.getUserId();
 
 		if (userId == 0) {
-			Company company = CompanyLocalServiceUtil.getCompany(_companyId);
+			Company company = _companyLocalService.getCompany(_companyId);
 
 			User user = company.getDefaultUser();
 
