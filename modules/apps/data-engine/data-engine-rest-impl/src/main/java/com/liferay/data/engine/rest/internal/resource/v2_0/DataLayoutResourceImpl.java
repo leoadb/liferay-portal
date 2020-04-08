@@ -184,6 +184,8 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(), ddmStructure,
 			DataActionKeys.ADD_DATA_DEFINITION);
 
+		_validate(dataLayout, ddmStructure);
+
 		return _addDataLayout(
 			dataDefinitionId,
 			DataLayoutUtil.serialize(
@@ -208,6 +210,8 @@ public class DataLayoutResourceImpl
 		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructureLayout.getDDMStructureId(), ActionKeys.UPDATE);
+
+		_validate(dataLayout, ddmStructureLayout.getDDMStructure());
 
 		return _updateDataLayout(
 			dataLayoutId,
@@ -239,8 +243,6 @@ public class DataLayoutResourceImpl
 			long dataDefinitionId, String content, String dataLayoutKey,
 			Map<String, Object> description, Map<String, Object> name)
 		throws Exception {
-
-		_validate(content, name);
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
@@ -396,8 +398,6 @@ public class DataLayoutResourceImpl
 			Map<String, Object> name)
 		throws Exception {
 
-		_validate(content, name);
-
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
 
@@ -422,22 +422,21 @@ public class DataLayoutResourceImpl
 			ddmStructureLayout, _spiDDMFormRuleConverter);
 	}
 
-	private void _validate(String content, Map<String, Object> name) {
-		if (MapUtil.isEmpty(name)) {
-			throw new ValidationException("Name is required");
+	private void _validate(DataLayout dataLayout, DDMStructure ddmStructure) {
+		try {
+			_ddmFormLayoutValidator.validate(
+				DataLayoutUtil.toDDMFormLayout(
+					dataLayout, ddmStructure.getFullHierarchyDDMForm(),
+					_ddmFormRuleDeserializer));
 		}
+		catch (DDMFormLayoutValidationException
+					ddmFormLayoutValidationException) {
 
-		name.forEach(
-			(locale, localizedName) -> {
-				if (Validator.isNull(localizedName)) {
-					throw new ValidationException("Name is required");
-				}
-			});
-
-		List<String> fieldNames = _getFieldNames(content);
-
-		if (ListUtil.isEmpty(fieldNames)) {
-			throw new ValidationException("Layout is empty");
+			throw _toDataLayoutValidationException(
+				ddmFormLayoutValidationException);
+		}
+		catch (Exception exception) {
+			throw new DataLayoutValidationException(exception);
 		}
 	}
 
@@ -455,6 +454,9 @@ public class DataLayoutResourceImpl
 
 	@Reference(target = "(ddm.form.layout.serializer.type=json)")
 	private DDMFormLayoutSerializer _ddmFormLayoutSerializer;
+
+	@Reference
+	private DDMFormLayoutValidator _ddmFormLayoutValidator;
 
 	@Reference
 	private DDMFormRuleDeserializer _ddmFormRuleDeserializer;
