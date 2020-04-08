@@ -17,6 +17,7 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
+import com.liferay.data.engine.exception.DataLayoutValidationException;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
@@ -40,6 +41,8 @@ import com.liferay.dynamic.data.mapping.spi.converter.SPIDDMFormRuleConverter;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutCreateDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutModifiedDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutNameComparator;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.search.Field;
@@ -50,8 +53,6 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -374,6 +375,51 @@ public class DataLayoutResourceImpl
 
 		return documentContext.read(
 			"$[\"pages\"][*][\"rows\"][*][\"columns\"][*][\"fieldNames\"][*]");
+	}
+
+	private DataLayoutValidationException _toDataLayoutValidationException(
+		DDMFormLayoutValidationException ddmFormLayoutValidationException) {
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.InvalidColumnSize) {
+
+			return new DataLayoutValidationException.InvalidColumnSize();
+		}
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.InvalidRowSize) {
+
+			return new DataLayoutValidationException.InvalidRowSize();
+		}
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.MustNotDuplicateFieldName) {
+
+			DDMFormLayoutValidationException.MustNotDuplicateFieldName
+				mustNotDuplicateFieldName =
+					(DDMFormLayoutValidationException.MustNotDuplicateFieldName)
+						ddmFormLayoutValidationException;
+
+			return new DataLayoutValidationException.MustNotDuplicateFieldName(
+				mustNotDuplicateFieldName.getDuplicatedFieldNames());
+		}
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.MustSetDefaultLocale) {
+
+			return new DataLayoutValidationException.MustSetDefaultLocale();
+		}
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.
+					MustSetEqualLocaleForLayoutAndTitle) {
+
+			return new DataLayoutValidationException.
+				MustSetEqualLocaleForLayoutAndTitle();
+		}
+
+		return new DataLayoutValidationException(
+			ddmFormLayoutValidationException.getCause());
 	}
 
 	private OrderByComparator<DDMStructureLayout> _toOrderByComparator(
