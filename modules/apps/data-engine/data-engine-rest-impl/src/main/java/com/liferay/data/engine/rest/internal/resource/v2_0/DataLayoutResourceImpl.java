@@ -17,6 +17,12 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
+import com.liferay.data.engine.exception.DataLayoutColumnSizeException;
+import com.liferay.data.engine.exception.DataLayoutDefaultLocaleException;
+import com.liferay.data.engine.exception.DataLayoutException;
+import com.liferay.data.engine.exception.DataLayoutLocaleForLayoutAndTitleException;
+import com.liferay.data.engine.exception.DataLayoutRowSizeException;
+import com.liferay.data.engine.exception.DuplicateDataLayoutFieldNameException;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.internal.constants.DataActionKeys;
@@ -40,6 +46,8 @@ import com.liferay.dynamic.data.mapping.spi.converter.SPIDDMFormRuleConverter;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutCreateDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutModifiedDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureLayoutNameComparator;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidationException;
+import com.liferay.dynamic.data.mapping.validator.DDMFormLayoutValidator;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.search.Field;
@@ -50,8 +58,6 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -184,6 +190,8 @@ public class DataLayoutResourceImpl
 			PermissionThreadLocal.getPermissionChecker(), ddmStructure,
 			DataActionKeys.ADD_DATA_DEFINITION);
 
+		_validate(dataLayout, ddmStructure);
+
 		return _addDataLayout(
 			dataDefinitionId,
 			DataLayoutUtil.serialize(
@@ -208,6 +216,8 @@ public class DataLayoutResourceImpl
 		_dataDefinitionModelResourcePermission.check(
 			PermissionThreadLocal.getPermissionChecker(),
 			ddmStructureLayout.getDDMStructureId(), ActionKeys.UPDATE);
+
+		_validate(dataLayout, ddmStructureLayout.getDDMStructure());
 
 		return _updateDataLayout(
 			dataLayoutId,
@@ -239,8 +249,6 @@ public class DataLayoutResourceImpl
 			long dataDefinitionId, String content, String dataLayoutKey,
 			Map<String, Object> description, Map<String, Object> name)
 		throws Exception {
-
-		_validate(content, name);
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
@@ -374,6 +382,55 @@ public class DataLayoutResourceImpl
 			"$[\"pages\"][*][\"rows\"][*][\"columns\"][*][\"fieldNames\"][*]");
 	}
 
+	private DataLayoutException _toDataLayoutException(
+		DDMFormLayoutValidationException ddmFormLayoutValidationException) {
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.InvalidColumnSize) {
+
+			return new DataLayoutColumnSizeException(
+				ddmFormLayoutValidationException);
+		}
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.InvalidRowSize) {
+
+			return new DataLayoutRowSizeException(
+				ddmFormLayoutValidationException);
+		}
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.MustNotDuplicateFieldName) {
+
+			DDMFormLayoutValidationException.MustNotDuplicateFieldName
+				mustNotDuplicateFieldName =
+					(DDMFormLayoutValidationException.MustNotDuplicateFieldName)
+						ddmFormLayoutValidationException;
+
+			return new DuplicateDataLayoutFieldNameException(
+				mustNotDuplicateFieldName.getDuplicatedFieldNames(),
+				ddmFormLayoutValidationException);
+		}
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.MustSetDefaultLocale) {
+
+			return new DataLayoutDefaultLocaleException(
+				ddmFormLayoutValidationException);
+		}
+
+		if (ddmFormLayoutValidationException instanceof
+				DDMFormLayoutValidationException.
+					MustSetEqualLocaleForLayoutAndTitle) {
+
+			return new DataLayoutLocaleForLayoutAndTitleException(
+				ddmFormLayoutValidationException);
+		}
+
+		return new DataLayoutException(
+			ddmFormLayoutValidationException.getCause());
+	}
+
 	private OrderByComparator<DDMStructureLayout> _toOrderByComparator(
 		Sort sort) {
 
@@ -395,8 +452,6 @@ public class DataLayoutResourceImpl
 			long dataLayoutId, String content, Map<String, Object> description,
 			Map<String, Object> name)
 		throws Exception {
-
-		_validate(content, name);
 
 		DDMStructureLayout ddmStructureLayout =
 			_ddmStructureLayoutLocalService.getStructureLayout(dataLayoutId);
@@ -422,22 +477,22 @@ public class DataLayoutResourceImpl
 			ddmStructureLayout, _spiDDMFormRuleConverter);
 	}
 
-	private void _validate(String content, Map<String, Object> name) {
-		if (MapUtil.isEmpty(name)) {
-			throw new ValidationException("Name is required");
+	private void _validate(DataLayout dataLayout, DDMStructure ddmStructure)
+		throws DataLayoutException {
+
+		try {
+			_ddmFormLayoutValidator.validate(
+				DataLayoutUtil.toDDMFormLayout(
+					dataLayout, ddmStructure.getFullHierarchyDDMForm(),
+					_ddmFormRuleDeserializer));
 		}
+		catch (DDMFormLayoutValidationException
+					ddmFormLayoutValidationException) {
 
-		name.forEach(
-			(locale, localizedName) -> {
-				if (Validator.isNull(localizedName)) {
-					throw new ValidationException("Name is required");
-				}
-			});
-
-		List<String> fieldNames = _getFieldNames(content);
-
-		if (ListUtil.isEmpty(fieldNames)) {
-			throw new ValidationException("Layout is empty");
+			throw _toDataLayoutException(ddmFormLayoutValidationException);
+		}
+		catch (Exception exception) {
+			throw new DataLayoutException(exception);
 		}
 	}
 
@@ -455,6 +510,9 @@ public class DataLayoutResourceImpl
 
 	@Reference(target = "(ddm.form.layout.serializer.type=json)")
 	private DDMFormLayoutSerializer _ddmFormLayoutSerializer;
+
+	@Reference
+	private DDMFormLayoutValidator _ddmFormLayoutValidator;
 
 	@Reference
 	private DDMFormRuleDeserializer _ddmFormRuleDeserializer;
