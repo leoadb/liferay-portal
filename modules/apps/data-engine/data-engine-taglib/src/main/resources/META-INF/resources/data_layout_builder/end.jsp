@@ -50,6 +50,48 @@ Map<String, Object> data = HashMapBuilder.<String, Object>put(
 ).build();
 %>
 
+<liferay-ui:error exception="<%= DataDefinitionCharactersForFieldNameException.class %>">
+
+	<%
+	DataDefinitionCharactersForFieldNameException ddcffne = (DataDefinitionCharactersForFieldNameException)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= HtmlUtil.escape(ddcffne.getFieldName()) %>" key="invalid-characters-were-defined-for-field-name-x" translateArguments="<%= false %>" />
+</liferay-ui:error>
+
+<liferay-ui:error exception="<%= DataDefinitionException.class %>" message="please-enter-a-valid-form-definition" />
+
+<liferay-ui:error exception="<%= DataDefinitionNameException.class %>" message="please-enter-a-valid-name" />
+
+<liferay-ui:error exception="<%= DataDefinitionOptionsForFieldException.class %>">
+
+	<%
+	DataDefinitionOptionsForFieldException ddoffe = (DataDefinitionOptionsForFieldException)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= HtmlUtil.escape(ddoffe.getFieldName()) %>" key="at-least-one-option-should-be-set-for-field-x" translateArguments="<%= false %>" />
+</liferay-ui:error>
+
+<liferay-ui:error exception="<%= DataLayoutException.class %>" message="please-enter-a-valid-form-layout" />
+
+<liferay-ui:error exception="<%= DuplicateDataDefinitionFieldNameException.class %>">
+
+	<%
+	DuplicateDataDefinitionFieldNameException dddfne = (DuplicateDataDefinitionFieldNameException)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= HtmlUtil.escape(StringUtil.merge(dddfne.getDuplicatedFieldNames(), StringPool.COMMA_AND_SPACE)) %>" key="the-definition-field-name-x-was-defined-more-than-once" translateArguments="<%= false %>" />
+</liferay-ui:error>
+
+<liferay-ui:error exception="<%= DuplicateDataLayoutFieldNameException.class %>">
+
+	<%
+	DuplicateDataLayoutFieldNameException ddlfne = (DuplicateDataLayoutFieldNameException)errorException;
+	%>
+
+	<liferay-ui:message arguments="<%= HtmlUtil.escape(StringUtil.merge(ddlfne.getDuplicatedFieldNames(), StringPool.COMMA_AND_SPACE)) %>" key="the-definition-field-name-x-was-defined-more-than-once" translateArguments="<%= false %>" />
+</liferay-ui:error>
+
 <div id="<%= componentId + "container" %>">
 	<react:component
 		data="<%= data %>"
