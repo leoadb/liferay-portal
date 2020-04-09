@@ -787,6 +787,201 @@ public class DataDefinitionResourceImpl
 			_spiDDMFormRuleConverter);
 	}
 
+	private DataDefinitionValidationException
+		_toDataDefinitionValidationException(
+			DDMFormValidationException ddmFormValidationException) {
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustNotDuplicateFieldName) {
+
+			DDMFormValidationException.MustNotDuplicateFieldName
+				mustNotDuplicateFieldName =
+					(DDMFormValidationException.MustNotDuplicateFieldName)
+						ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustNotDuplicateFieldName(
+					mustNotDuplicateFieldName.getDuplicatedFieldNames());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetAvailableLocales) {
+
+			return new DataDefinitionValidationException.
+				MustSetAvailableLocales();
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetDefaultLocale) {
+
+			return new DataDefinitionValidationException.MustSetDefaultLocale();
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.
+					MustSetDefaultLocaleAsAvailableLocale) {
+
+			DDMFormValidationException.MustSetDefaultLocaleAsAvailableLocale
+				mustSetDefaultLocaleAsAvailableLocale =
+					(DDMFormValidationException.
+						MustSetDefaultLocaleAsAvailableLocale)
+							ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustSetDefaultLocaleAsAvailableLocale(
+					mustSetDefaultLocaleAsAvailableLocale.getDefaultLocale());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetFieldsForForm) {
+
+			return new DataDefinitionValidationException.
+				MustSetFieldsForDataDefinition();
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetFieldType) {
+
+			DDMFormValidationException.MustSetFieldType mustSetFieldType =
+				(DDMFormValidationException.MustSetFieldType)
+					ddmFormValidationException;
+
+			return new DataDefinitionValidationException.MustSetFieldType(
+				mustSetFieldType.getFieldName());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetOptionsForField) {
+
+			DDMFormValidationException.MustSetOptionsForField
+				mustSetOptionsForField =
+					(DDMFormValidationException.MustSetOptionsForField)
+						ddmFormValidationException;
+
+			return new DataDefinitionValidationException.MustSetOptionsForField(
+				mustSetOptionsForField.getFieldName());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.
+					MustSetValidAvailableLocalesForProperty) {
+
+			DDMFormValidationException.MustSetValidAvailableLocalesForProperty
+				mustSetValidAvailableLocalesForProperty =
+					(DDMFormValidationException.
+						MustSetValidAvailableLocalesForProperty)
+							ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustSetValidAvailableLocalesForProperty(
+					mustSetValidAvailableLocalesForProperty.getFieldName(),
+					mustSetValidAvailableLocalesForProperty.getProperty());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetValidCharactersForFieldName) {
+
+			DDMFormValidationException.MustSetValidCharactersForFieldName
+				mustSetValidCharactersForFieldName =
+					(DDMFormValidationException.
+						MustSetValidCharactersForFieldName)
+							ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustSetValidCharactersForFieldName(
+					mustSetValidCharactersForFieldName.getFieldName());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetValidCharactersForFieldType) {
+
+			DDMFormValidationException.MustSetValidCharactersForFieldType
+				mustSetValidCharactersForFieldType =
+					(DDMFormValidationException.
+						MustSetValidCharactersForFieldType)
+							ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustSetValidCharactersForFieldType(
+					mustSetValidCharactersForFieldType.getFieldType());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.
+					MustSetValidDefaultLocaleForProperty) {
+
+			DDMFormValidationException.MustSetValidDefaultLocaleForProperty
+				mustSetValidDefaultLocaleForProperty =
+					(DDMFormValidationException.
+						MustSetValidDefaultLocaleForProperty)
+							ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustSetValidDefaultLocaleForProperty(
+					mustSetValidDefaultLocaleForProperty.getFieldName(),
+					mustSetValidDefaultLocaleForProperty.getProperty());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetValidFormRuleExpression) {
+
+			DDMFormValidationException.MustSetValidFormRuleExpression
+				mustSetValidFormRuleExpression =
+					(DDMFormValidationException.MustSetValidFormRuleExpression)
+						ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustSetValidRuleExpression(
+					mustSetValidFormRuleExpression.getExpression(),
+					mustSetValidFormRuleExpression.getMessage());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetValidIndexType) {
+
+			DDMFormValidationException.MustSetValidIndexType
+				mustSetValidIndexType =
+					(DDMFormValidationException.MustSetValidIndexType)
+						ddmFormValidationException;
+
+			return new DataDefinitionValidationException.MustSetValidIndexType(
+				mustSetValidIndexType.getFieldName());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetValidValidationExpression) {
+
+			DDMFormValidationException.MustSetValidValidationExpression
+				mustSetValidValidationExpression =
+					(DDMFormValidationException.
+						MustSetValidValidationExpression)
+							ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustSetValidValidationExpression(
+					mustSetValidValidationExpression.getFieldName(),
+					mustSetValidValidationExpression.getExpression());
+		}
+
+		if (ddmFormValidationException instanceof
+				DDMFormValidationException.MustSetValidVisibilityExpression) {
+
+			DDMFormValidationException.MustSetValidVisibilityExpression
+				mustSetValidVisibilityExpression =
+					(DDMFormValidationException.
+						MustSetValidVisibilityExpression)
+							ddmFormValidationException;
+
+			return new DataDefinitionValidationException.
+				MustSetValidVisibilityExpression(
+					mustSetValidVisibilityExpression.getFieldName(),
+					mustSetValidVisibilityExpression.getExpression());
+		}
+
+		return new DataDefinitionValidationException(
+			ddmFormValidationException.getCause());
+	}
+
 	private OrderByComparator<DDMStructure> _toOrderByComparator(Sort sort) {
 		boolean ascending = !sort.isReverse();
 
