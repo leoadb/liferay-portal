@@ -15,6 +15,7 @@
 package com.liferay.data.engine.rest.internal.resource.v2_0;
 
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
+import com.liferay.data.engine.exception.DataDefinitionValidationException;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
@@ -65,6 +66,8 @@ import com.liferay.dynamic.data.mapping.util.DDMFormLayoutFactory;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureCreateDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureModifiedDateComparator;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureNameComparator;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidationException;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValidator;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -380,10 +383,13 @@ public class DataDefinitionResourceImpl
 			PermissionThreadLocal.getPermissionChecker(), contentType, siteId,
 			DataActionKeys.ADD_DATA_DEFINITION);
 
+		DDMForm ddmForm = DataDefinitionUtil.toDDMForm(
+			dataDefinition, _ddmFormFieldTypeServicesTracker);
+
+		_validate(ddmForm);
+
 		DDMFormSerializerSerializeRequest.Builder builder =
-			DDMFormSerializerSerializeRequest.Builder.newBuilder(
-				DataDefinitionUtil.toDDMForm(
-					dataDefinition, _ddmFormFieldTypeServicesTracker));
+			DDMFormSerializerSerializeRequest.Builder.newBuilder(ddmForm);
 
 		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
 			_ddmFormSerializer.serialize(builder.build());
@@ -479,10 +485,13 @@ public class DataDefinitionResourceImpl
 
 		_updateFieldNames(dataDefinitionId, dataDefinition);
 
+		DDMForm ddmForm = DataDefinitionUtil.toDDMForm(
+			dataDefinition, _ddmFormFieldTypeServicesTracker);
+
+		_validate(ddmForm);
+
 		DDMFormSerializerSerializeRequest.Builder builder =
-			DDMFormSerializerSerializeRequest.Builder.newBuilder(
-				DataDefinitionUtil.toDDMForm(
-					dataDefinition, _ddmFormFieldTypeServicesTracker));
+			DDMFormSerializerSerializeRequest.Builder.newBuilder(ddmForm);
 
 		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
 			_ddmFormSerializer.serialize(builder.build());
@@ -943,6 +952,19 @@ public class DataDefinitionResourceImpl
 		_updateDataListViews(deDataListViewIds, removedFieldNames);
 	}
 
+	private void _validate(DDMForm ddmForm) {
+		try {
+			_ddmFormValidator.validate(ddmForm);
+		}
+		catch (DDMFormValidationException ddmFormValidationException) {
+			throw _toDataDefinitionValidationException(
+				ddmFormValidationException);
+		}
+		catch (Exception exception) {
+			throw new DataDefinitionValidationException(exception);
+		}
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DataDefinitionResourceImpl.class);
 
@@ -973,6 +995,9 @@ public class DataDefinitionResourceImpl
 
 	@Reference
 	private DDMFormTemplateContextFactory _ddmFormTemplateContextFactory;
+
+	@Reference
+	private DDMFormValidator _ddmFormValidator;
 
 	@Reference
 	private DDMFormValuesFactory _ddmFormValuesFactory;
