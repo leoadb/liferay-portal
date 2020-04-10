@@ -2,6 +2,7 @@
 	"dependencies": {
 		"frontend-js-web": "*",
 		"incremental-dom-string": "0.0.2",
+		"lfr-forms-evaluator": "1.1.1",
 		"metal-component": "2.16.8",
 		"metal-soy": "2.16.8"
 	},
