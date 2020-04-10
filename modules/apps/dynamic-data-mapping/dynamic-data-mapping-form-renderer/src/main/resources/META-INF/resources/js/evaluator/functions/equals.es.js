@@ -12,16 +12,16 @@
  * details.
  */
 
-import evaluator from '../evaluator/evaluator.es';
+import {Callable} from 'lfr-forms-evaluator';
 
-export const evaluate = (fieldName, evaluatorContext) => {
-	console.time('evaluation');
+class EqualsFunction extends Callable {
+	arity() {
+		return 2;
+	}
 
-	return evaluator(evaluatorContext.pages, evaluatorContext.rules).then(
-		pages => {
-			console.timeEnd('evaluation');
+	doCall(interpreter, args) {
+		return Promise.resolve(args[0] == args[1]);
+	}
+}
 
-			return pages;
-		}
-	);
-};
+export default EqualsFunction;

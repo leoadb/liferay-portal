@@ -12,16 +12,26 @@
  * details.
  */
 
-import evaluator from '../evaluator/evaluator.es';
+import {Callable} from 'lfr-forms-evaluator';
 
-export const evaluate = (fieldName, evaluatorContext) => {
-	console.time('evaluation');
+import {PagesVisitor} from '../../util/visitors.es';
 
-	return evaluator(evaluatorContext.pages, evaluatorContext.rules).then(
-		pages => {
-			console.timeEnd('evaluation');
+class CallFunction extends Callable {
+	arity() {
+		return 3;
+	}
 
-			return pages;
-		}
-	);
-};
+	async doCall(interpreter, args) {
+		const {environment} = interpreter;
+		const {pages} = environment.values;
+		const visitor = new PagesVisitor(pages);
+
+		return new Promise(resolve => {
+			setTimeout(() => {
+				resolve(pages);
+			}, 1000);
+		});
+	}
+}
+
+export default CallFunction;
