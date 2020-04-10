@@ -85,9 +85,7 @@ public class NumericDDMFormFieldTemplateContextContributor
 			parameters.put("value", "");
 		}
 		else {
-			parameters.put(
-				"value",
-				getFormattedValue(ddmFormFieldRenderingContext, locale, value));
+			parameters.put("value", GetterUtil.getNumber(value));
 		}
 
 		return parameters;
