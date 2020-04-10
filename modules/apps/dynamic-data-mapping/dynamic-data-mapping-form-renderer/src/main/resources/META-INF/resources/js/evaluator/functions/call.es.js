@@ -14,6 +14,7 @@
 
 import {Callable} from 'lfr-forms-evaluator';
 
+import {makeFetch} from '../../util/fetch.es';
 import {PagesVisitor} from '../../util/visitors.es';
 
 class CallFunction extends Callable {
@@ -24,13 +25,66 @@ class CallFunction extends Callable {
 	async doCall(interpreter, args) {
 		const {environment} = interpreter;
 		const {pages} = environment.values;
+
+		const ddmDataProviderInstanceUUID = args[0];
+		const paramsExpression = args[1];
+		const resultMapExpression = args[2];
+
+		const url = new URL(
+			`${themeDisplay.getPortalURL()}/o/dynamic-data-mapping-form-data-provider`
+		);
+		const params = {
+			ddmDataProviderInstanceUUID,
+			p_auth: Liferay.authToken,
+			paramsExpression: this.prepareParamsExpression(
+				paramsExpression,
+				pages
+			),
+			resultMapExpression,
+		};
+
+		Object.keys(params).forEach(key =>
+			url.searchParams.append(key, params[key])
+		);
+
+		return makeFetch({
+			method: 'GET',
+			url,
+		})
+			.then(result => {
+				console.log(result);
+
+				return pages;
+			})
+			.catch(() => {
+				return pages;
+			});
+	}
+
+	prepareParamsExpression(paramsExpression, pages) {
+		const parameters = paramsExpression.split(';');
+		const newParameters = [];
+
+		parameters.forEach(parameter => {
+			const keyValue = parameter.split('=');
+			const fieldValue = this.getFieldValue(pages, keyValue[1]);
+
+			newParameters.push(`${keyValue[0]}=${fieldValue}`);
+		});
+
+		return newParameters.join(';');
+	}
+
+	getFieldValue(pages, fieldName) {
 		const visitor = new PagesVisitor(pages);
 
-		return new Promise(resolve => {
-			setTimeout(() => {
-				resolve(pages);
-			}, 1000);
-		});
+		const field = visitor.findField(field => field.fieldName === fieldName);
+
+		if (field) {
+			return field.value;
+		}
+
+		return '';
 	}
 }
 
