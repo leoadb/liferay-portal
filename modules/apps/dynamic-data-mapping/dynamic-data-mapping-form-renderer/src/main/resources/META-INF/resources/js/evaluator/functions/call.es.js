@@ -51,14 +51,26 @@ class CallFunction extends Callable {
 			method: 'GET',
 			url,
 		})
-			.then(result => {
-				console.log(result);
+			.then(results => {
+				const newPages = this.setResults(pages, results);
 
-				return pages;
+				environment.define('pages', newPages);
+
+				return newPages;
 			})
-			.catch(() => {
-				return pages;
-			});
+			.catch(() => pages);
+	}
+
+	getFieldValue(pages, fieldName) {
+		const visitor = new PagesVisitor(pages);
+
+		const field = visitor.findField(field => field.fieldName === fieldName);
+
+		if (field) {
+			return field.value;
+		}
+
+		return '';
 	}
 
 	prepareParamsExpression(paramsExpression, pages) {
@@ -75,16 +87,41 @@ class CallFunction extends Callable {
 		return newParameters.join(';');
 	}
 
-	getFieldValue(pages, fieldName) {
+	setResults(pages, results) {
+		return Object.keys(results).reduce((previousPages, fieldName) => {
+			const value = results[fieldName];
+
+			if (Array.isArray(value)) {
+				return this.updateFieldProperty(
+					previousPages,
+					fieldName,
+					'options',
+					value.map(entry => ({label: entry.value, value: entry.key}))
+				);
+			}
+
+			return this.updateFieldProperty(
+				previousPages,
+				fieldName,
+				'value',
+				value
+			);
+		}, pages);
+	}
+
+	updateFieldProperty(pages, fieldName, propertyName, propertyValue) {
 		const visitor = new PagesVisitor(pages);
 
-		const field = visitor.findField(field => field.fieldName === fieldName);
+		return visitor.mapFields(field => {
+			if (field.fieldName === fieldName) {
+				return {
+					...field,
+					[propertyName]: propertyValue,
+				};
+			}
 
-		if (field) {
-			return field.value;
-		}
-
-		return '';
+			return field;
+		});
 	}
 }
 
