@@ -11315,10 +11315,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lfr-forms-evaluator@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/lfr-forms-evaluator/-/lfr-forms-evaluator-1.1.1.tgz#5f637abc83453748fbda8431f7dbbf7d6acb004f"
-  integrity sha512-PSi8bxTJHQss98i1dyUVdzBBlPe5hz0FHZd2uJzTwwnOEzBItT8obpMceRPlj13FB2XGp+LzNVMKz46MKCiUGg==
+lfr-forms-evaluator@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/lfr-forms-evaluator/-/lfr-forms-evaluator-1.1.2.tgz#00020f30adb963183b4aa99d9d8a6520150149a8"
+  integrity sha512-l4J2eyvpj1q2RdNFbYU91PD5VKuDBaqYzpm5jzU6CkrR7t8z2qs0Vy3HYqaOo7WuBXkaQs9xqz/wnHvvbLidIQ==
   dependencies:
     "@babel/runtime" "^7.9.2"
     treeify "^1.1.0"
