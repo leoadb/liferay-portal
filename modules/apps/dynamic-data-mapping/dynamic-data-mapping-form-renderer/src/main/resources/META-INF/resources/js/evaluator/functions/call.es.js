@@ -16,6 +16,8 @@ import {Callable} from 'lfr-forms-evaluator';
 
 import {makeFetch} from '../../util/fetch.es';
 import {PagesVisitor} from '../../util/visitors.es';
+import AbortedException from '../exceptions/AbortedException.es';
+import RuntimeException from '../exceptions/RuntimeException.es';
 
 class CallFunction extends Callable {
 	arity() {
@@ -49,16 +51,27 @@ class CallFunction extends Callable {
 
 		return makeFetch({
 			method: 'GET',
+			signal: interpreter.getSignal(),
 			url,
 		})
 			.then(results => {
-				const newPages = this.setResults(pages, results);
+				const newPages = this.setResults(
+					pages,
+					resultMapExpression,
+					results
+				);
 
 				environment.define('pages', newPages);
 
 				return newPages;
 			})
-			.catch(() => pages);
+			.catch(error => {
+				if (interpreter.isAborted()) {
+					throw new AbortedException('Interpreter aborted.');
+				}
+
+				throw new RuntimeException(error);
+			});
 	}
 
 	getFieldValue(pages, fieldName) {
@@ -87,26 +100,34 @@ class CallFunction extends Callable {
 		return newParameters.join(';');
 	}
 
-	setResults(pages, results) {
-		return Object.keys(results).reduce((previousPages, fieldName) => {
-			const value = results[fieldName];
+	setResults(pages, resultMapExpression, results) {
+		return resultMapExpression
+			.split(';')
+			.reduce((previousPages, parameter) => {
+				const keyValue = parameter.split('=');
 
-			if (Array.isArray(value)) {
+				const fieldName = keyValue[0];
+				const value = results[fieldName];
+
+				if (Array.isArray(value)) {
+					return this.updateFieldProperty(
+						previousPages,
+						fieldName,
+						'options',
+						value.map(entry => ({
+							label: entry.value,
+							value: entry.key,
+						}))
+					);
+				}
+
 				return this.updateFieldProperty(
 					previousPages,
 					fieldName,
-					'options',
-					value.map(entry => ({label: entry.value, value: entry.key}))
+					'value',
+					value
 				);
-			}
-
-			return this.updateFieldProperty(
-				previousPages,
-				fieldName,
-				'value',
-				value
-			);
-		}, pages);
+			}, pages);
 	}
 
 	updateFieldProperty(pages, fieldName, propertyName, propertyValue) {
