@@ -14,7 +14,7 @@
 
 import dom from 'metal-dom';
 
-import {evaluate} from '../util/evaluation.es';
+import Evaluator from '../evaluator/evaluator.es';
 import {PagesVisitor} from '../util/visitors.es';
 import handleActivePageUpdated from './actions/handleActivePageUpdated.es';
 import handleFieldBlurred from './actions/handleFieldBlurred.es';
@@ -26,80 +26,82 @@ import handlePaginationItemClicked from './actions/handlePaginationItemClicked.e
 import handlePaginationNextClicked from './actions/handlePaginationNextClicked.es';
 import handlePaginationPreviousClicked from './actions/handlePaginationPreviousClicked.es';
 
-const _handleFieldEdited = function(properties) {
-	const {fieldInstance} = properties;
-	const {evaluable} = fieldInstance;
-	const evaluatorContext = this.getEvaluatorContext();
+export default Component => {
+	const evaluator = new Evaluator();
 
-	const updateState = editedPages => {
-		this.setState({
-			pages: editedPages,
-		});
+	const _handleFieldEdited = function(properties) {
+		const {fieldInstance} = properties;
+		const {evaluable} = fieldInstance;
+		const evaluatorContext = this.getEvaluatorContext();
+
+		const updateState = editedPages => {
+			this.setState({
+				pages: editedPages,
+			});
+		};
+
+		handleFieldEdited(evaluator, evaluatorContext, properties, updateState)
+			.then(evaluatedPages => {
+				if (fieldInstance.isDisposed()) {
+					return;
+				}
+
+				this.setState(
+					{
+						pages: evaluatedPages,
+					},
+					() => {
+						if (evaluable) {
+							this.emit('evaluated', evaluatedPages);
+						}
+					}
+				);
+			})
+			.catch(error => this.emit('evaluationError', error));
 	};
 
-	handleFieldEdited(evaluatorContext, properties, updateState)
-		.then(evaluatedPages => {
+	const _handleFieldBlurred = function(properties) {
+		const {fieldInstance} = properties;
+		const {pages} = this;
+		const dateNow = new Date();
+
+		handleFieldBlurred(pages, properties).then(blurredFieldPages => {
 			if (fieldInstance.isDisposed()) {
 				return;
 			}
 
-			this.setState(
-				{
-					pages: evaluatedPages,
-				},
-				() => {
-					if (evaluable) {
-						this.emit('evaluated', evaluatedPages);
-					}
-				}
-			);
-		})
-		.catch(error => this.emit('evaluationError', error));
-};
-
-const _handleFieldBlurred = function(properties) {
-	const {fieldInstance} = properties;
-	const {pages} = this;
-	const dateNow = new Date();
-
-	handleFieldBlurred(pages, properties).then(blurredFieldPages => {
-		if (fieldInstance.isDisposed()) {
-			return;
-		}
-
-		this.setState({
-			pages: blurredFieldPages,
+			this.setState({
+				pages: blurredFieldPages,
+			});
 		});
-	});
 
-	Liferay.fire('ddmFieldBlur', {
-		fieldName: fieldInstance.fieldName,
-		focusDuration: dateNow - (this.fieldFocusDate || dateNow),
-		formId: this.getFormId(),
-		page: this.activePage,
-	});
-};
-
-const _handleFieldFocused = function(properties) {
-	const {fieldInstance} = properties;
-	const {pages} = this;
-
-	this.fieldFocusDate = new Date();
-
-	handleFieldFocused(pages, properties).then(focusedFieldPages => {
-		this.setState({
-			pages: focusedFieldPages,
+		Liferay.fire('ddmFieldBlur', {
+			fieldName: fieldInstance.fieldName,
+			focusDuration: dateNow - (this.fieldFocusDate || dateNow),
+			formId: this.getFormId(),
+			page: this.activePage,
 		});
-	});
+	};
 
-	Liferay.fire('ddmFieldFocus', {
-		fieldName: fieldInstance.fieldName,
-		formId: this.getFormId(),
-		page: this.activePage,
-	});
-};
+	const _handleFieldFocused = function(properties) {
+		const {fieldInstance} = properties;
+		const {pages} = this;
 
-export default Component => {
+		this.fieldFocusDate = new Date();
+
+		handleFieldFocused(pages, properties).then(focusedFieldPages => {
+			this.setState({
+				pages: focusedFieldPages,
+			});
+		});
+
+		Liferay.fire('ddmFieldFocus', {
+			fieldName: fieldInstance.fieldName,
+			formId: this.getFormId(),
+			page: this.activePage,
+		});
+	};
+
 	return class withStore extends Component {
 		attached() {
 			super.attached();
@@ -150,7 +152,7 @@ export default Component => {
 		}
 
 		evaluate() {
-			return evaluate(null, this.getEvaluatorContext());
+			return evaluator.evaluate(this.getEvaluatorContext());
 		}
 
 		willReceiveState(changes) {
@@ -312,6 +314,7 @@ export default Component => {
 			const {activePage} = this;
 
 			handlePaginationNextClicked(
+				evaluator,
 				{
 					activePage,
 					formId: this.getFormId(),
@@ -325,6 +328,7 @@ export default Component => {
 			const {activePage} = this;
 
 			handlePaginationPreviousClicked(
+				evaluator,
 				{
 					activePage,
 					formId: this.getFormId(),

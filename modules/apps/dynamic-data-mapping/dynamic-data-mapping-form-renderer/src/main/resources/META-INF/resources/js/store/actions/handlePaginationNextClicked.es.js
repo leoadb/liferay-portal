@@ -12,13 +12,12 @@
  * details.
  */
 
-import {evaluate} from '../../util/evaluation.es';
 import {PagesVisitor} from '../../util/visitors.es';
 
-export default (evaluatorContext, dispatch) => {
+export default (evaluator, evaluatorContext, dispatch) => {
 	const {activePage, formId, pages} = evaluatorContext;
 
-	return evaluate(null, evaluatorContext).then(evaluatedPages => {
+	return evaluator.evaluate(evaluatorContext).then(evaluatedPages => {
 		let validPage = true;
 		const visitor = new PagesVisitor(evaluatedPages);
 

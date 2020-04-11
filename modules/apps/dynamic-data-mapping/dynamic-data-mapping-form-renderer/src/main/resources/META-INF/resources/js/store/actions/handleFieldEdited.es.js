@@ -12,12 +12,11 @@
  * details.
  */
 
-import {evaluate} from '../../util/evaluation.es';
 import {PagesVisitor} from '../../util/visitors.es';
 
-export default (evaluatorContext, properties, updateState) => {
+export default (evaluator, evaluatorContext, properties, updateState) => {
 	const {fieldInstance, value} = properties;
-	const {evaluable, fieldName} = fieldInstance;
+	const {evaluable} = fieldInstance;
 	const {editingLanguageId, pages} = evaluatorContext;
 	const pageVisitor = new PagesVisitor(pages);
 
@@ -45,7 +44,7 @@ export default (evaluatorContext, properties, updateState) => {
 	let promise = Promise.resolve(editedPages);
 
 	if (evaluable) {
-		promise = evaluate(fieldName, {
+		promise = evaluator.evaluate({
 			...evaluatorContext,
 			pages: editedPages,
 		});

@@ -31,108 +31,163 @@ import SetValidationFieldNameFunction from './functions/setValidationFieldName.e
 import SetValueFunction from './functions/setValue.es';
 import SetVisibleFunction from './functions/setVisible.es';
 
-export const buildEnvironment = () => {
-	const environment = new Environment();
+class AbortableInterpreter extends Interpreter {
+	constructor(expression, environment, controller) {
+		super(expression, environment);
 
-	environment.define('call', new CallFunction());
-	environment.define('calculate', new CalculateFunction());
-	environment.define('contains', new ContainsFunction());
-	environment.define('equals', new EqualsFunction());
-	environment.define('getValue', new GetValueFunction());
-	environment.define('isEmpty', new IsEmptyFunction());
-	environment.define('isURL', new IsURLFunction());
-	environment.define('setDataType', new SetDataTypeFunction());
-	environment.define('setMultiple', new SetMultipleFunction());
-	environment.define('setOptions', new SetOptionsFunction());
-	environment.define('setRequired', new SetRequiredFunction());
-	environment.define(
-		'setValidationDataType',
-		new SetValidationDataTypeFunction()
-	);
-	environment.define(
-		'setValidationFieldName',
-		new SetValidationFieldNameFunction()
-	);
-	environment.define('setValue', new SetValueFunction());
-	environment.define('setVisible', new SetVisibleFunction());
+		this.controller = controller;
+	}
 
-	return environment;
-};
+	getSignal() {
+		if (!this.controller) {
+			return null;
+		}
 
-export const evaluateExpression = (source, environment) => {
-	const scanner = new Scanner(source);
-	const tokens = scanner.scanTokens();
+		return this.controller.signal;
+	}
 
-	const parser = new Parser(tokens);
-	const expression = parser.parse();
+	isAborted() {
+		if (!this.controller) {
+			return false;
+		}
 
-	const interpreter = new Interpreter(expression, environment);
+		return this.controller.signal.aborted;
+	}
+}
 
-	return interpreter.interpret();
-};
+class Evaluator {
+	constructor() {
+		if (window.AbortController) {
+			this.abortController = new AbortController();
+		}
 
-export const evaluateRules = (pages, rules) => {
-	const environment = buildEnvironment();
+		this.environment = this.buildEnvironment();
+	}
 
-	return rules.reduce((previousPromise, rule) => {
-		return previousPromise.then(previousPages => {
-			environment.define('pages', previousPages);
+	buildEnvironment() {
+		const environment = new Environment();
 
-			return evaluateExpression(rule.condition, environment).then(
-				conditionMatches => {
+		environment.define('call', new CallFunction());
+		environment.define('calculate', new CalculateFunction());
+		environment.define('contains', new ContainsFunction());
+		environment.define('equals', new EqualsFunction());
+		environment.define('getValue', new GetValueFunction());
+		environment.define('isEmpty', new IsEmptyFunction());
+		environment.define('isURL', new IsURLFunction());
+		environment.define('setDataType', new SetDataTypeFunction());
+		environment.define('setMultiple', new SetMultipleFunction());
+		environment.define('setOptions', new SetOptionsFunction());
+		environment.define('setRequired', new SetRequiredFunction());
+		environment.define(
+			'setValidationDataType',
+			new SetValidationDataTypeFunction()
+		);
+		environment.define(
+			'setValidationFieldName',
+			new SetValidationFieldNameFunction()
+		);
+		environment.define('setValue', new SetValueFunction());
+		environment.define('setVisible', new SetVisibleFunction());
+
+		return environment;
+	}
+
+	evaluate({pages, rules}) {
+		if (this.ongoing) {
+			this.controller.abort();
+		}
+
+		if (window.AbortController) {
+			this.controller = new AbortController();
+		}
+
+		this.ongoing = this.evaluateRules(pages, rules).then(newPages => {
+			return this.evaluateValidations(newPages).then(newPages => {
+				this.ongoing = null;
+
+				return newPages;
+			});
+		});
+
+		return this.ongoing;
+	}
+
+	evaluateExpression(source) {
+		const scanner = new Scanner(source);
+		const tokens = scanner.scanTokens();
+
+		const parser = new Parser(tokens);
+		const expression = parser.parse();
+
+		const interpreter = new AbortableInterpreter(
+			expression,
+			this.environment,
+			this.controller
+		);
+
+		return interpreter.interpret();
+	}
+
+	evaluateRules(pages, rules) {
+		const {environment} = this;
+
+		return rules.reduce((previousPromise, rule) => {
+			return previousPromise.then(previousPages => {
+				environment.define('pages', previousPages);
+
+				return this.evaluateExpression(
+					rule.condition,
+					environment
+				).then(conditionMatches => {
 					let promise = Promise.resolve();
 
 					if (conditionMatches) {
 						rule.actions.forEach(action => {
 							promise = promise.then(() =>
-								evaluateExpression(action, environment)
+								this.evaluateExpression(action)
 							);
 						});
 					}
 
 					return promise.then(() => environment.values.pages);
-				}
-			);
+				});
+			});
+		}, Promise.resolve(pages));
+	}
+
+	evaluateValidations(pages) {
+		const {environment} = this;
+		const visitor = new PagesVisitor(pages);
+
+		environment.define('pages', pages);
+
+		const promises = [];
+		const results = {};
+
+		visitor.visitFields(field => {
+			if (field.validation && field.validation.expression) {
+				const expression = field.validation.expression.value;
+
+				environment.define(field.fieldName, field.value);
+
+				promises.push(
+					this.evaluateExpression(expression).then(valid => {
+						results[field.fieldName] = valid;
+					})
+				);
+			}
+			else {
+				results[field.fieldName] = field.valid;
+			}
 		});
-	}, Promise.resolve(pages));
-};
 
-export const evaluateValidations = pages => {
-	const environment = buildEnvironment();
-	const visitor = new PagesVisitor(pages);
+		return Promise.all(promises).then(() => {
+			return visitor.mapFields(field => ({
+				...field,
+				valid: results[field.fieldName],
+			}));
+		});
+	}
+}
 
-	environment.define('pages', pages);
-
-	const promises = [];
-	const results = {};
-
-	visitor.visitFields(field => {
-		if (field.validation && field.validation.expression) {
-			const expression = field.validation.expression.value;
-
-			environment.define(field.fieldName, field.value);
-
-			promises.push(
-				evaluateExpression(expression, environment).then(valid => {
-					results[field.fieldName] = valid;
-				})
-			);
-		}
-		else {
-			results[field.fieldName] = field.valid;
-		}
-	});
-
-	return Promise.all(promises).then(() => {
-		return visitor.mapFields(field => ({
-			...field,
-			valid: results[field.fieldName],
-		}));
-	});
-};
-
-export default (pages, rules) => {
-	return evaluateRules(pages, rules).then(newPages => {
-		return evaluateValidations(newPages);
-	});
-};
+export default Evaluator;
