@@ -20,6 +20,7 @@ import ContainsFunction from './functions/contains.es';
 import EqualsFunction from './functions/equals.es';
 import GetValueFunction from './functions/getValue.es';
 import IsEmptyFunction from './functions/isEmpty.es';
+import IsURLFunction from './functions/isURL.es';
 import SetDataTypeFunction from './functions/setDataType.es';
 import SetMultipleFunction from './functions/setMultiple.es';
 import SetOptionsFunction from './functions/setOptions.es';
@@ -38,6 +39,7 @@ export const buildEnvironment = () => {
 	environment.define('equals', new EqualsFunction());
 	environment.define('getValue', new GetValueFunction());
 	environment.define('isEmpty', new IsEmptyFunction());
+	environment.define('isURL', new IsURLFunction());
 	environment.define('setDataType', new SetDataTypeFunction());
 	environment.define('setMultiple', new SetMultipleFunction());
 	environment.define('setOptions', new SetOptionsFunction());
