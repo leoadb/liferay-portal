@@ -18,6 +18,8 @@ const defaultHeaders = {
 	Accept: 'application/json',
 };
 
+const cache = {};
+
 export const makeFetch = ({
 	body,
 	headers = defaultHeaders,
@@ -34,9 +36,19 @@ export const makeFetch = ({
 	if (method === 'POST') {
 		fetchData.body = body;
 	}
+	else if (cache[url.toString()]) {
+		return Promise.resolve(cache[url.toString()]);
+	}
 
 	return fetch(url, fetchData)
 		.then(response => response.json())
+		.then(json => {
+			if (method === 'GET') {
+				cache[url.toString()] = json;
+			}
+
+			return json;
+		})
 		.catch(error => {
 			const sessionStatus = Liferay.Session.get('sessionState');
 
