@@ -14,6 +14,7 @@
 
 import {Environment, Interpreter, Parser, Scanner} from 'lfr-forms-evaluator';
 
+import {PagesVisitor} from '../util/visitors.es';
 import CalculateFunction from './functions/calculate.es';
 import CallFunction from './functions/call.es';
 import ContainsFunction from './functions/contains.es';
@@ -70,7 +71,7 @@ export const evaluateExpression = (source, environment) => {
 	return interpreter.interpret();
 };
 
-export default (pages, rules) => {
+export const evaluateRules = (pages, rules) => {
 	const environment = buildEnvironment();
 
 	return rules.reduce((previousPromise, rule) => {
@@ -94,4 +95,44 @@ export default (pages, rules) => {
 			);
 		});
 	}, Promise.resolve(pages));
+};
+
+export const evaluateValidations = pages => {
+	const environment = buildEnvironment();
+	const visitor = new PagesVisitor(pages);
+
+	environment.define('pages', pages);
+
+	const promises = [];
+	const results = {};
+
+	visitor.visitFields(field => {
+		if (field.validation && field.validation.expression) {
+			const expression = field.validation.expression.value;
+
+			environment.define(field.fieldName, field.value);
+
+			promises.push(
+				evaluateExpression(expression, environment).then(valid => {
+					results[field.fieldName] = valid;
+				})
+			);
+		}
+		else {
+			results[field.fieldName] = field.valid;
+		}
+	});
+
+	return Promise.all(promises).then(() => {
+		return visitor.mapFields(field => ({
+			...field,
+			valid: results[field.fieldName],
+		}));
+	});
+};
+
+export default (pages, rules) => {
+	return evaluateRules(pages, rules).then(newPages => {
+		return evaluateValidations(newPages);
+	});
 };
