@@ -12,37 +12,15 @@
  * details.
  */
 
-import {Callable} from 'lfr-forms-evaluator';
+import SetPropertyFunction from './setProperty.es';
 
-import {PagesVisitor} from '../../util/visitors.es';
-
-class SetMultipleFunction extends Callable {
+class SetMultipleFunction extends SetPropertyFunction {
 	arity() {
 		return 2;
 	}
 
 	doCall(interpreter, args) {
-		const {environment} = interpreter;
-		const {pages} = environment.values;
-		const visitor = new PagesVisitor(pages);
-
-		const fieldName = args[0];
-		const multiple = args[1];
-
-		const newPages = visitor.mapFields(field => {
-			if (field.fieldName === fieldName) {
-				return {
-					...field,
-					multiple,
-				};
-			}
-
-			return field;
-		});
-
-		environment.define('pages', newPages);
-
-		return Promise.resolve(newPages);
+		return super.doCall(interpreter, [args[0], 'multiple', args[1]]);
 	}
 }
 

@@ -12,12 +12,13 @@
  * details.
  */
 
-import {PagesVisitor} from '../../util/visitors.es';
-import SetPropertyFunction from './setProperty.es';
+import {Callable} from 'lfr-forms-evaluator';
 
-class SetValidationDataTypeFunction extends SetPropertyFunction {
+import {PagesVisitor} from '../../util/visitors.es';
+
+class SetPropertyFunction extends Callable {
 	arity() {
-		return 2;
+		return 3;
 	}
 
 	doCall(interpreter, args) {
@@ -26,22 +27,24 @@ class SetValidationDataTypeFunction extends SetPropertyFunction {
 		const visitor = new PagesVisitor(pages);
 
 		const fieldName = args[0];
+		const propertyName = args[1];
+		const propertyValue = args[2];
 
-		const field = visitor.findField(field => field.fieldName === fieldName);
+		const newPages = visitor.mapFields(field => {
+			if (field.fieldName === fieldName) {
+				return {
+					...field,
+					[propertyName]: propertyValue,
+				};
+			}
 
-		if (field) {
-			return super.doCall(interpreter, [
-				fieldName,
-				'validation',
-				{
-					...field.validation,
-					dataType: args[1],
-				},
-			]);
-		}
+			return field;
+		});
 
-		return Promise.resolve(pages);
+		environment.define('pages', newPages);
+
+		return Promise.resolve(newPages);
 	}
 }
 
-export default SetValidationDataTypeFunction;
+export default SetPropertyFunction;

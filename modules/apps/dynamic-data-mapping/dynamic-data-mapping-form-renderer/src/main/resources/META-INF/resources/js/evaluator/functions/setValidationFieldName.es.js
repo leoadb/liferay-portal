@@ -12,11 +12,10 @@
  * details.
  */
 
-import {Callable} from 'lfr-forms-evaluator';
-
 import {PagesVisitor} from '../../util/visitors.es';
+import SetPropertyFunction from './setProperty.es';
 
-class SetValidationFieldNameFunction extends Callable {
+class SetValidationFieldNameFunction extends SetPropertyFunction {
 	arity() {
 		return 2;
 	}
@@ -27,25 +26,21 @@ class SetValidationFieldNameFunction extends Callable {
 		const visitor = new PagesVisitor(pages);
 
 		const fieldName = args[0];
-		const validationFieldName = args[1];
 
-		const newPages = visitor.mapFields(field => {
-			if (field.fieldName === fieldName) {
-				return {
-					...field,
-					validation: {
-						...field.validation,
-						fieldName: validationFieldName,
-					},
-				};
-			}
+		const field = visitor.findField(field => field.fieldName === fieldName);
 
-			return field;
-		});
+		if (field) {
+			return super.doCall(interpreter, [
+				fieldName,
+				'validation',
+				{
+					...field.validation,
+					fieldName: args[1],
+				},
+			]);
+		}
 
-		environment.define('pages', newPages);
-
-		return Promise.resolve(newPages);
+		return Promise.resolve(pages);
 	}
 }
 
