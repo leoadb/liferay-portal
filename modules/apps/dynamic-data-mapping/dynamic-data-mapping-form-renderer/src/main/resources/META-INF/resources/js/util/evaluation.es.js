@@ -15,13 +15,5 @@
 import evaluator from '../evaluator/evaluator.es';
 
 export const evaluate = (fieldName, evaluatorContext) => {
-	console.time('evaluation');
-
-	return evaluator(evaluatorContext.pages, evaluatorContext.rules).then(
-		pages => {
-			console.timeEnd('evaluation');
-
-			return pages;
-		}
-	);
+	return evaluator(evaluatorContext.pages, evaluatorContext.rules);
 };
