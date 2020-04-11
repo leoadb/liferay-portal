@@ -18,7 +18,11 @@ const defaultHeaders = {
 	Accept: 'application/json',
 };
 
-const cache = {};
+let cache = {};
+
+Liferay.on('endNavigate', () => {
+	cache = {};
+});
 
 export const makeFetch = ({
 	body,
