@@ -167,24 +167,31 @@ class Evaluator {
 		visitor.visitFields(field => {
 			if (field.validation && field.validation.expression) {
 				const expression = field.validation.expression.value;
+				const {errorMessage} = field.validation;
 
 				environment.define(field.fieldName, field.value);
 
 				promises.push(
 					this.evaluateExpression(expression).then(valid => {
-						results[field.fieldName] = valid;
+						results[field.fieldName] = {
+							errorMessage,
+							valid,
+						};
 					})
 				);
 			}
 			else {
-				results[field.fieldName] = field.valid;
+				results[field.fieldName] = {
+					errorMessage: '',
+					valid: field.valid,
+				};
 			}
 		});
 
 		return Promise.all(promises).then(() => {
 			return visitor.mapFields(field => ({
 				...field,
-				valid: results[field.fieldName],
+				...results[field.fieldName],
 			}));
 		});
 	}
