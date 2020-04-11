@@ -242,7 +242,9 @@ public class DDMFormDataProviderServlet extends HttpServlet {
 					ddmDataProviderResponse.getOutputOptional(
 						outputName, String.class);
 
-				fieldsResultsMap.put(ddmFormFieldName, valueOptional.get());
+				if (valueOptional.isPresent()) {
+					fieldsResultsMap.put(ddmFormFieldName, valueOptional.get());
+				}
 			}
 		}
 
