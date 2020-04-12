@@ -20,6 +20,7 @@ import CallFunction from './functions/call.es';
 import ContainsFunction from './functions/contains.es';
 import EqualsFunction from './functions/equals.es';
 import GetValueFunction from './functions/getValue.es';
+import IsEmailAddressFunction from './functions/isEmailAddress.es';
 import IsEmptyFunction from './functions/isEmpty.es';
 import IsURLFunction from './functions/isURL.es';
 import SetDataTypeFunction from './functions/setDataType.es';
@@ -67,11 +68,12 @@ class Evaluator {
 	buildEnvironment() {
 		const environment = new Environment();
 
-		environment.define('call', new CallFunction());
 		environment.define('calculate', new CalculateFunction());
+		environment.define('call', new CallFunction());
 		environment.define('contains', new ContainsFunction());
 		environment.define('equals', new EqualsFunction());
 		environment.define('getValue', new GetValueFunction());
+		environment.define('isEmailAddress', new IsEmailAddressFunction());
 		environment.define('isEmpty', new IsEmptyFunction());
 		environment.define('isURL', new IsURLFunction());
 		environment.define('setDataType', new SetDataTypeFunction());
