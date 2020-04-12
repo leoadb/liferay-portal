@@ -20,7 +20,7 @@ class ContainsFunction extends Callable {
 	}
 
 	doCall(interpreter, args) {
-		return Promise.resolve(args[0].includes(args[1]));
+		return Promise.resolve(String(args[0] || '').includes(args[1]));
 	}
 }
 
