@@ -194,7 +194,7 @@ class Validation extends Component {
 				name: selectedValidation.name,
 				value: subWords(selectedValidation.template, {
 					name,
-					parameter
+					parameter,
 				}),
 			};
 		}
