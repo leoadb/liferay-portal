@@ -95,7 +95,7 @@ class Evaluator {
 	}
 
 	evaluate({pages, rules}) {
-		if (this.ongoing) {
+		if (this.ongoing && this.controller) {
 			this.controller.abort();
 		}
 
