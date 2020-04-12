@@ -20,10 +20,7 @@ export default (pages, properties) => {
 
 	return Promise.resolve(
 		pageVisitor.mapFields(field => {
-			const matches =
-				field.name === fieldInstance.name &&
-				field.required &&
-				fieldInstance.value == '';
+			const matches = field.name === fieldInstance.name;
 
 			return {
 				...field,
