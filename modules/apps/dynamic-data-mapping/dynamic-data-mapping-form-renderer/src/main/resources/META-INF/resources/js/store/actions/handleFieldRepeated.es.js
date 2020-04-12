@@ -25,11 +25,13 @@ export const createRepeatedField = (sourceField, repeatedIndex) => {
 
 	return {
 		...sourceField,
+		displayErrors: false,
 		instanceId,
 		localizedValue: {},
 		name: generateName(sourceField.name, {instanceId, repeatedIndex}),
 		nestedFields: (sourceField.nestedFields || []).map(nestedField => ({
 			...nestedField,
+			displayErrors: false,
 			localizedValue: {},
 			value: undefined,
 		})),
