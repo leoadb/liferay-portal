@@ -57,7 +57,11 @@ export default Component => {
 					}
 				);
 			})
-			.catch(error => this.emit('evaluationError', error));
+			.catch(error => {
+				console.error(error);
+
+				this.emit('evaluationError', error);
+			});
 	};
 
 	const _handleFieldBlurred = function(properties) {
