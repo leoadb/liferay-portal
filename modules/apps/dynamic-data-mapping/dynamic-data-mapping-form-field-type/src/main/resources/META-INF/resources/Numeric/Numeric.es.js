@@ -125,28 +125,50 @@ const NumericProxy = connectStore(
 		symbols,
 		value,
 		...otherProps
-	}) => (
-		<FieldBaseProxy {...otherProps} id={id} name={name} readOnly={readOnly}>
-			<Numeric
-				dataType={dataType}
-				disabled={readOnly}
+	}) => {
+		const parseNumber = value =>
+			Number(value.replace(symbols.decimalSymbol, '.'));
+
+		return (
+			<FieldBaseProxy
+				{...otherProps}
 				id={id}
 				name={name}
-				onBlur={event =>
-					emit('fieldBlurred', event, event.target.value)
-				}
-				onChange={event =>
-					emit('fieldEdited', event, event.target.value)
-				}
-				onFocus={event =>
-					emit('fieldFocused', event, event.target.value)
-				}
-				placeholder={placeholder}
-				symbols={symbols}
-				value={value ? value : predefinedValue}
-			/>
-		</FieldBaseProxy>
-	)
+				readOnly={readOnly}
+			>
+				<Numeric
+					dataType={dataType}
+					disabled={readOnly}
+					id={id}
+					name={name}
+					onBlur={event =>
+						emit(
+							'fieldBlurred',
+							event,
+							parseNumber(event.target.value)
+						)
+					}
+					onChange={event =>
+						emit(
+							'fieldEdited',
+							event,
+							parseNumber(event.target.value)
+						)
+					}
+					onFocus={event =>
+						emit(
+							'fieldFocused',
+							event,
+							parseNumber(event.target.value)
+						)
+					}
+					placeholder={placeholder}
+					symbols={symbols}
+					value={value ? value : predefinedValue}
+				/>
+			</FieldBaseProxy>
+		);
+	}
 );
 
 const ReactNumericAdapter = getConnectedReactComponentAdapter(
