@@ -114,7 +114,7 @@ class Evaluator {
 		return this.ongoing;
 	}
 
-	evaluateExpression(source) {
+	evaluateExpression(source, environment) {
 		const scanner = new Scanner(source);
 		const tokens = scanner.scanTokens();
 
@@ -123,7 +123,7 @@ class Evaluator {
 
 		const interpreter = new AbortableInterpreter(
 			expression,
-			this.environment,
+			environment,
 			this.controller
 		);
 
@@ -146,7 +146,7 @@ class Evaluator {
 					if (conditionMatches) {
 						rule.actions.forEach(action => {
 							promise = promise.then(() =>
-								this.evaluateExpression(action)
+								this.evaluateExpression(action, environment)
 							);
 						});
 					}
@@ -158,10 +158,7 @@ class Evaluator {
 	}
 
 	evaluateValidations(pages) {
-		const {environment} = this;
 		const visitor = new PagesVisitor(pages);
-
-		environment.define('pages', pages);
 
 		const promises = [];
 		const results = {};
@@ -171,19 +168,24 @@ class Evaluator {
 				const expression = field.validation.expression.value;
 				const {errorMessage} = field.validation;
 
+				const environment = this.buildEnvironment();
+
 				environment.define(field.fieldName, field.value);
+				environment.define('pages', pages);
 
 				promises.push(
-					this.evaluateExpression(expression).then(valid => {
-						results[field.fieldName] = {
-							errorMessage,
-							valid,
-						};
-					})
+					this.evaluateExpression(expression, environment).then(
+						valid => {
+							results[field.name] = {
+								errorMessage,
+								valid,
+							};
+						}
+					)
 				);
 			}
 			else {
-				results[field.fieldName] = {
+				results[field.name] = {
 					errorMessage: '',
 					valid: field.valid,
 				};
@@ -193,7 +195,7 @@ class Evaluator {
 		return Promise.all(promises).then(() => {
 			return visitor.mapFields(field => ({
 				...field,
-				...results[field.fieldName],
+				...results[field.name],
 			}));
 		});
 	}
