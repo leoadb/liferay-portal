@@ -48,11 +48,9 @@ class AbortableInterpreter extends Interpreter {
 	}
 
 	isAborted() {
-		if (!this.controller) {
-			return false;
-		}
+		const signal = this.getSignal();
 
-		return this.controller.signal.aborted;
+		return signal.aborted;
 	}
 }
 
