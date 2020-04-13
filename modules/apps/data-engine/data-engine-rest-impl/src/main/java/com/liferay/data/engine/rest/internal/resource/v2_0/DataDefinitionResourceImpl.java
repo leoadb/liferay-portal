@@ -91,6 +91,7 @@ import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
@@ -386,7 +387,7 @@ public class DataDefinitionResourceImpl
 		DDMForm ddmForm = DataDefinitionUtil.toDDMForm(
 			dataDefinition, _ddmFormFieldTypeServicesTracker);
 
-		_validate(ddmForm);
+		_validate(dataDefinition, ddmForm);
 
 		DDMFormSerializerSerializeRequest.Builder builder =
 			DDMFormSerializerSerializeRequest.Builder.newBuilder(ddmForm);
@@ -488,7 +489,7 @@ public class DataDefinitionResourceImpl
 		DDMForm ddmForm = DataDefinitionUtil.toDDMForm(
 			dataDefinition, _ddmFormFieldTypeServicesTracker);
 
-		_validate(ddmForm);
+		_validate(dataDefinition, ddmForm);
 
 		DDMFormSerializerSerializeRequest.Builder builder =
 			DDMFormSerializerSerializeRequest.Builder.newBuilder(ddmForm);
@@ -1147,13 +1148,28 @@ public class DataDefinitionResourceImpl
 		_updateDataListViews(deDataListViewIds, removedFieldNames);
 	}
 
-	private void _validate(DDMForm ddmForm) {
+	private void _validate(DataDefinition dataDefinition, DDMForm ddmForm) {
 		try {
 			_ddmFormValidator.validate(ddmForm);
+
+			Map<String, Object> name = dataDefinition.getName();
+
+			Locale defaultLocale = ddmForm.getDefaultLocale();
+
+			if (!name.containsKey(LocaleUtil.toLanguageId(defaultLocale))) {
+				throw new DataDefinitionValidationException.MustSetValidName(
+					"Name is null for locale " +
+						defaultLocale.getDisplayName());
+			}
 		}
 		catch (DDMFormValidationException ddmFormValidationException) {
 			throw _toDataDefinitionValidationException(
 				ddmFormValidationException);
+		}
+		catch (DataDefinitionValidationException
+					dataDefinitionValidationException) {
+
+			throw dataDefinitionValidationException;
 		}
 		catch (Exception exception) {
 			throw new DataDefinitionValidationException(exception);
