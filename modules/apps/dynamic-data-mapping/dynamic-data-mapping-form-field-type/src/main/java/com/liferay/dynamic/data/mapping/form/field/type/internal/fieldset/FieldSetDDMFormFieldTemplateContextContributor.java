@@ -106,12 +106,15 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 			"dataDefinitionId",
 			DDMFormFieldTypeUtil.getPropertyValue(
 				ddmFormFieldRenderingContext, "dataDefinitionId")
+			"ddmStructureId", ddmFormField.getProperty("ddmStructureId")
 		).put(
 		).put(
 			"predefinedValue",
 			DDMFormFieldTypeUtil.getPropertyValue(
 				ddmFormField, ddmFormFieldRenderingContext.getLocale(),
 				"predefinedValue")
+			"ddmStructureLayoutId",
+			ddmFormField.getProperty("ddmStructureLayoutId")
 		).put(
 			"nestedFields", nestedFields
 		).put(

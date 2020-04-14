@@ -57,6 +57,11 @@ public interface FieldSetDDMFormFieldTypeSettings
 
 	@DDMFormField(type = "numeric", visibilityExpression = "FALSE")
 	public String dataDefinitionId();
+	@DDMFormField(dataType = "numeric")
+	public long ddmStructureId();
+
+	@DDMFormField(dataType = "numeric")
+	public long ddmStructureLayoutId();
 
 	@DDMFormField(
 		dataType = "json", type = "text", visibilityExpression = "FALSE"
