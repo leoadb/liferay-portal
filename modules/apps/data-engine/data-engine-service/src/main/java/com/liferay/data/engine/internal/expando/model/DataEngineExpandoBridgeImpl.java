@@ -94,6 +94,7 @@ public class DataEngineExpandoBridgeImpl implements ExpandoBridge {
 
 				dataDefinition = new DataDefinition();
 
+				dataDefinition.setAvailableLanguageIds(new String[] {"en_US"});
 				dataDefinition.setDataDefinitionKey(_className);
 				dataDefinition.setName(
 					HashMapBuilder.<String, Object>put(
