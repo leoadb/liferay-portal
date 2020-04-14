@@ -326,6 +326,22 @@ public class DDMFormFieldTemplateContextFactory {
 		return changedProperties;
 	}
 
+	protected DDMForm getDDMForm(Long structureId) {
+		try {
+			DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+				structureId);
+
+			return _ddmStructureLocalService.getStructureDDMForm(ddmStructure);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+		}
+
+		return new DDMForm();
+	}
+
 	protected String getDDMFormFieldParameterName(
 		String ddmFormFieldName, String instanceId, int index,
 		String parentDDMFormFieldParameterName) {
@@ -346,6 +362,47 @@ public class DDMFormFieldTemplateContextFactory {
 		return sb.toString();
 	}
 
+	protected DDMFormLayout getDDMFormLayout(Long structureLayoutId) {
+		try {
+			DDMStructureLayout ddmStructureLayout =
+				_ddmStructureLayoutLocalService.getStructureLayout(
+					structureLayoutId);
+
+			return _ddmStructureLayoutLocalService.
+				getStructureLayoutDDMFormLayout(ddmStructureLayout);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+		}
+
+		return new DDMFormLayout();
+	}
+
+	protected List<Object> getFields(List<Object> pages) {
+		List<Object> fields = new ArrayList<>();
+
+		HashMap<String, Object> page = (HashMap<String, Object>)pages.get(0);
+
+		List<Object> rows = (List<Object>)page.get("rows");
+
+		for (Object row : rows) {
+			HashMap<String, Object> rowItem = (HashMap<String, Object>)row;
+
+			List<Object> columns = (List<Object>)rowItem.get("columns");
+
+			for (Object column : columns) {
+				HashMap<String, Object> columnItem =
+					(HashMap<String, Object>)column;
+
+				fields.addAll((List<Object>)columnItem.get("fields"));
+			}
+		}
+
+		return fields;
+	}
+
 	protected void setDDMFormFieldTemplateContextContributedParameters(
 		Map<String, Object> changedProperties,
 		Map<String, Object> ddmFormFieldTemplateContext,
@@ -364,6 +421,35 @@ public class DDMFormFieldTemplateContextFactory {
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
 			createDDDMFormFieldRenderingContext(
 				changedProperties, ddmFormFieldTemplateContext);
+
+		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId")) &&
+			Validator.isNotNull(
+				ddmFormField.getProperty("ddmStructureLayoutId"))) {
+
+			DDMFormPagesTemplateContextFactory
+				ddmFormPagesTemplateContextFactory =
+					new DDMFormPagesTemplateContextFactory(
+						getDDMForm(
+							GetterUtil.getLong(
+								ddmFormField.getProperty("ddmStructureId"))),
+						getDDMFormLayout(
+							GetterUtil.getLong(
+								ddmFormField.getProperty(
+									"ddmStructureLayoutId"))),
+						_ddmFormRenderingContext,
+						_ddmStructureLayoutLocalService,
+						_ddmStructureLocalService);
+
+			ddmFormPagesTemplateContextFactory.setDDMFormEvaluator(
+				_ddmFormEvaluator);
+			ddmFormPagesTemplateContextFactory.
+				setDDMFormFieldTypeServicesTracker(
+					_ddmFormFieldTypeServicesTracker);
+
+			ddmFormFieldRenderingContext.setProperty(
+				"fields",
+				getFields(ddmFormPagesTemplateContextFactory.create()));
+		}
 
 		Map<String, Object> contributedParameters =
 			ddmFormFieldTemplateContextContributor.getParameters(
