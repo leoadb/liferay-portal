@@ -399,7 +399,9 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 			(LocalizedValue)BeanPropertiesUtil.getObject(
 				ddmFormField, propertyName);
 
-		if (MapUtil.isEmpty(propertyValue.getValues())) {
+		if ((propertyValue == null) ||
+			MapUtil.isEmpty(propertyValue.getValues())) {
+
 			return;
 		}
 
