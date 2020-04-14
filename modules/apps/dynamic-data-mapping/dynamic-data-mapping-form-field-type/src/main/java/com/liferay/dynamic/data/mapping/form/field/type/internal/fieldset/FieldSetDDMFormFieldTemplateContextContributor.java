@@ -15,17 +15,27 @@
 package com.liferay.dynamic.data.mapping.form.field.type.internal.fieldset;
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateContextContributor;
-import com.liferay.dynamic.data.mapping.form.field.type.internal.util.DDMFormFieldTypeUtil;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormLayoutColumn;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -34,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,23 +74,29 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 			(Map<String, List<Object>>)ddmFormFieldRenderingContext.getProperty(
 				"nestedFields");
 
+		List<Object> nestedFields = new ArrayList<>();
+
 		if (nestedFieldsMap == null) {
-			nestedFieldsMap = new HashMap<>();
+			nestedFields.addAll(
+				getNestedFields(
+					(List<Object>)ddmFormFieldRenderingContext.getProperty(
+						"fields")));
+		}
+		else {
+			nestedFields = getNestedFields(
+				nestedFieldsMap,
+				getNestedFieldNames(
+					GetterUtil.getString(
+						ddmFormField.getProperty("nestedFieldNames")),
+					nestedFieldsMap.keySet()));
 		}
 
-		List<Object> nestedFields = getNestedFields(
-			nestedFieldsMap,
-			getNestedFieldNames(
-				GetterUtil.getString(
-					ddmFormField.getProperty("nestedFieldNames")),
-				nestedFieldsMap.keySet()));
 
 		return HashMapBuilder.<String, Object>put(
 			"dataDefinitionId",
 			DDMFormFieldTypeUtil.getPropertyValue(
 				ddmFormFieldRenderingContext, "dataDefinitionId")
 		).put(
-			"nestedFields", nestedFields
 		).put(
 			"predefinedValue",
 			DDMFormFieldTypeUtil.getPropertyValue(
@@ -87,6 +104,7 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 				"predefinedValue")
 		).put(
 			"rows", getRowsJSONArray(ddmFormField, nestedFields)
+			"nestedFields", nestedFields
 		).put(
 			"value",
 			DDMFormFieldTypeUtil.getPropertyValue(
@@ -154,6 +172,24 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 		}
 
 		return defaultNestedFieldNames.toArray(new String[0]);
+	}
+
+	protected List<Object> getNestedFields(List<Object> fields) {
+		List<Object> nestedFields = new ArrayList<>();
+
+		for (int i = 0; i < fields.size(); i++) {
+			HashMap<String, Object> field = (HashMap<String, Object>)fields.get(
+				i);
+
+			if (!Objects.equals(field.get("type"), "fieldset")) {
+				nestedFields.add(field);
+			}
+			else if (Validator.isNotNull(field.get("nestedFields"))) {
+				nestedFields.addAll((List<Object>)field.get("nestedFields"));
+			}
+		}
+
+		return nestedFields;
 	}
 
 	protected List<Object> getNestedFields(
