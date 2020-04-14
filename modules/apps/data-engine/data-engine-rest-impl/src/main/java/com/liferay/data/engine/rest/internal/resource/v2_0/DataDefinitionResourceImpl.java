@@ -834,13 +834,6 @@ public class DataDefinitionResourceImpl
 		}
 
 		if (ddmFormValidationException instanceof
-				DDMFormValidationException.MustSetFieldsForForm) {
-
-			return new DataDefinitionValidationException.
-				MustSetFieldsForDataDefinition();
-		}
-
-		if (ddmFormValidationException instanceof
 				DDMFormValidationException.MustSetFieldType) {
 
 			DDMFormValidationException.MustSetFieldType mustSetFieldType =
@@ -1163,6 +1156,12 @@ public class DataDefinitionResourceImpl
 			}
 		}
 		catch (DDMFormValidationException ddmFormValidationException) {
+			if (ddmFormValidationException instanceof
+					DDMFormValidationException.MustSetFieldsForForm) {
+
+				return;
+			}
+
 			throw _toDataDefinitionValidationException(
 				ddmFormValidationException);
 		}
