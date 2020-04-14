@@ -194,31 +194,43 @@ public class DDMFormFieldTemplateContextFactory {
 
 		List<Object> ddmFormFieldTemplateContexts = new ArrayList<>();
 
-		if (ddmFormFieldValues == null) {
-			return ddmFormFieldTemplateContexts;
-		}
-
 		int index = 0;
 
-		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
-			Map<String, Object> changedProperties = getChangedProperties(
-				ddmFormFieldValue);
-
-			DDMFormField ddmFormField = _ddmFormFieldsMap.get(
-				ddmFormFieldValue.getName());
-
-			if (!_ddmFormRenderingContext.isReturnFullContext() &&
-				changedProperties.isEmpty() && !ddmFormField.isRequired()) {
-
-				continue;
-			}
+		if (ddmFormFieldValues == null) {
+			DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue() {
+				{
+					setName(_ddmFormFieldName);
+				}
+			};
 
 			Object ddmFormFieldTemplateContext =
 				createDDMFormFieldTemplateContext(
-					ddmFormFieldValue, changedProperties, index++,
+					ddmFormFieldValue, new HashMap<>(), index++,
 					parentDDMFormFieldParameterName);
 
 			ddmFormFieldTemplateContexts.add(ddmFormFieldTemplateContext);
+		}
+		else {
+			for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
+				Map<String, Object> changedProperties = getChangedProperties(
+					ddmFormFieldValue);
+
+				DDMFormField ddmFormField = _ddmFormFieldsMap.get(
+					ddmFormFieldValue.getName());
+
+				if (!_ddmFormRenderingContext.isReturnFullContext() &&
+					changedProperties.isEmpty() && !ddmFormField.isRequired()) {
+
+					continue;
+				}
+
+				Object ddmFormFieldTemplateContext =
+					createDDMFormFieldTemplateContext(
+						ddmFormFieldValue, changedProperties, index++,
+						parentDDMFormFieldParameterName);
+
+				ddmFormFieldTemplateContexts.add(ddmFormFieldTemplateContext);
+			}
 		}
 
 		return ddmFormFieldTemplateContexts;
