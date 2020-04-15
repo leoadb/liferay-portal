@@ -27,8 +27,6 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
-import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
@@ -806,10 +804,8 @@ public class DDMFormFieldTemplateContextFactory {
 
 	private DDMForm _getDDMForm(long ddmStructureId) {
 		try {
-			DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-				ddmStructureId);
-
-			return _ddmStructureLocalService.getStructureDDMForm(ddmStructure);
+			return _ddmStructureLocalService.getStructureDDMForm(
+				_ddmStructureLocalService.getStructure(ddmStructureId));
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
@@ -822,12 +818,10 @@ public class DDMFormFieldTemplateContextFactory {
 
 	private DDMFormLayout _getDDMFormLayout(long ddmStructureLayoutId) {
 		try {
-			DDMStructureLayout ddmStructureLayout =
-				_ddmStructureLayoutLocalService.getStructureLayout(
-					ddmStructureLayoutId);
-
 			return _ddmStructureLayoutLocalService.
-				getStructureLayoutDDMFormLayout(ddmStructureLayout);
+				getStructureLayoutDDMFormLayout(
+					_ddmStructureLayoutLocalService.getStructureLayout(
+						ddmStructureLayoutId));
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
