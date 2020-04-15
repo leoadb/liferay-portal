@@ -343,22 +343,6 @@ public class DDMFormFieldTemplateContextFactory {
 		return changedProperties;
 	}
 
-	protected DDMForm getDDMForm(Long structureId) {
-		try {
-			DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-				structureId);
-
-			return _ddmStructureLocalService.getStructureDDMForm(ddmStructure);
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException, portalException);
-			}
-		}
-
-		return new DDMForm();
-	}
-
 	protected String getDDMFormFieldParameterName(
 		String ddmFormFieldName, String instanceId, int index,
 		String parentDDMFormFieldParameterName) {
@@ -377,24 +361,6 @@ public class DDMFormFieldTemplateContextFactory {
 		sb.append(index);
 
 		return sb.toString();
-	}
-
-	protected DDMFormLayout getDDMFormLayout(Long structureLayoutId) {
-		try {
-			DDMStructureLayout ddmStructureLayout =
-				_ddmStructureLayoutLocalService.getStructureLayout(
-					structureLayoutId);
-
-			return _ddmStructureLayoutLocalService.
-				getStructureLayoutDDMFormLayout(ddmStructureLayout);
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException, portalException);
-			}
-		}
-
-		return new DDMFormLayout();
 	}
 
 	protected void setDDMFormFieldTemplateContextContributedParameters(
@@ -838,6 +804,40 @@ public class DDMFormFieldTemplateContextFactory {
 		return columns.stream();
 	}
 
+	private DDMForm _getDDMForm(long ddmStructureId) {
+		try {
+			DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+				ddmStructureId);
+
+			return _ddmStructureLocalService.getStructureDDMForm(ddmStructure);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+		}
+
+		return new DDMForm();
+	}
+
+	private DDMFormLayout _getDDMFormLayout(long ddmStructureLayoutId) {
+		try {
+			DDMStructureLayout ddmStructureLayout =
+				_ddmStructureLayoutLocalService.getStructureLayout(
+					ddmStructureLayoutId);
+
+			return _ddmStructureLayoutLocalService.
+				getStructureLayoutDDMFormLayout(ddmStructureLayout);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+		}
+
+		return new DDMFormLayout();
+	}
+
 	private Stream<Object> _getFieldsStream(Map<String, Object> column) {
 		if (!column.containsKey("fields")) {
 			Stream.empty();
@@ -900,10 +900,10 @@ public class DDMFormFieldTemplateContextFactory {
 			DDMFormPagesTemplateContextFactory
 				ddmFormPagesTemplateContextFactory =
 					new DDMFormPagesTemplateContextFactory(
-						getDDMForm(
+						_getDDMForm(
 							GetterUtil.getLong(
 								ddmFormField.getProperty("ddmStructureId"))),
-						getDDMFormLayout(
+						_getDDMFormLayout(
 							GetterUtil.getLong(
 								ddmFormField.getProperty(
 									"ddmStructureLayoutId"))),
