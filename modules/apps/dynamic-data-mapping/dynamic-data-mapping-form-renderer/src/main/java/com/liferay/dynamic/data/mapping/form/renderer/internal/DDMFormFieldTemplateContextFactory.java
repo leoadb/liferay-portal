@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.KeyValuePair;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -53,10 +54,13 @@ import com.liferay.portal.kernel.util.Validator;
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Marcellus Tavares
@@ -821,27 +825,60 @@ public class DDMFormFieldTemplateContextFactory {
 			ddmFormFieldTemplateContext, changedProperties, true);
 	}
 
-	private List<Object> _getNestedFieldsContext(List<Object> pages) {
-		List<Object> fields = new ArrayList<>();
+	private Stream<Map<String, Object>> _getColumnsStream(
+		Map<String, Object> row) {
 
-		HashMap<String, Object> page = (HashMap<String, Object>)pages.get(0);
-
-		List<Object> rows = (List<Object>)page.get("rows");
-
-		for (Object row : rows) {
-			HashMap<String, Object> rowItem = (HashMap<String, Object>)row;
-
-			List<Object> columns = (List<Object>)rowItem.get("columns");
-
-			for (Object column : columns) {
-				HashMap<String, Object> columnItem =
-					(HashMap<String, Object>)column;
-
-				fields.addAll((List<Object>)columnItem.get("fields"));
-			}
+		if (!row.containsKey("columns")) {
+			Stream.empty();
 		}
 
-		return fields;
+		List<Map<String, Object>> columns = (List<Map<String, Object>>)row.get(
+			"columns");
+
+		return columns.stream();
+	}
+
+	private Stream<Object> _getFieldsStream(Map<String, Object> column) {
+		if (!column.containsKey("fields")) {
+			Stream.empty();
+		}
+
+		List<Object> fields = (List<Object>)column.get("fields");
+
+		return fields.stream();
+	}
+
+	private List<Object> _getNestedFieldsContext(List<Object> pages) {
+		if (ListUtil.isEmpty(pages)) {
+			return Collections.emptyList();
+		}
+
+		Stream<Object> stream = pages.stream();
+
+		return stream.map(
+			Map.class::cast
+		).flatMap(
+			this::_getRowsStream
+		).flatMap(
+			this::_getColumnsStream
+		).flatMap(
+			this::_getFieldsStream
+		).collect(
+			Collectors.toList()
+		);
+	}
+
+	private Stream<Map<String, Object>> _getRowsStream(
+		Map<String, Object> page) {
+
+		if (!page.containsKey("rows")) {
+			Stream.empty();
+		}
+
+		List<Map<String, Object>> rows = (List<Map<String, Object>>)page.get(
+			"rows");
+
+		return rows.stream();
 	}
 
 	private boolean _isFieldSetField(DDMFormField ddmFormField) {
