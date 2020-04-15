@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.math.BigDecimal;
@@ -434,33 +435,9 @@ public class DDMFormFieldTemplateContextFactory {
 			createDDDMFormFieldRenderingContext(
 				changedProperties, ddmFormFieldTemplateContext);
 
-		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId")) &&
-			Validator.isNotNull(
-				ddmFormField.getProperty("ddmStructureLayoutId"))) {
-
-			DDMFormPagesTemplateContextFactory
-				ddmFormPagesTemplateContextFactory =
-					new DDMFormPagesTemplateContextFactory(
-						getDDMForm(
-							GetterUtil.getLong(
-								ddmFormField.getProperty("ddmStructureId"))),
-						getDDMFormLayout(
-							GetterUtil.getLong(
-								ddmFormField.getProperty(
-									"ddmStructureLayoutId"))),
-						_ddmFormRenderingContext,
-						_ddmStructureLayoutLocalService,
-						_ddmStructureLocalService);
-
-			ddmFormPagesTemplateContextFactory.setDDMFormEvaluator(
-				_ddmFormEvaluator);
-			ddmFormPagesTemplateContextFactory.
-				setDDMFormFieldTypeServicesTracker(
-					_ddmFormFieldTypeServicesTracker);
-
-			ddmFormFieldRenderingContext.setProperty(
-				"fields",
-				getFields(ddmFormPagesTemplateContextFactory.create()));
+		if (_isFieldSetField(ddmFormField)) {
+			_setDDMFormFieldFieldSetTemplateContextContributedParameters(
+				ddmFormField, ddmFormFieldRenderingContext);
 		}
 
 		Map<String, Object> contributedParameters =
@@ -865,6 +842,48 @@ public class DDMFormFieldTemplateContextFactory {
 			ddmFormField.getDDMFormFieldValidation());
 		setDDMFormFieldTemplateContextVisible(
 			ddmFormFieldTemplateContext, changedProperties, true);
+	}
+
+	private boolean _isFieldSetField(DDMFormField ddmFormField) {
+		if (StringUtil.equals(ddmFormField.getType(), "fieldset")) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private void _setDDMFormFieldFieldSetTemplateContextContributedParameters(
+		DDMFormField ddmFormField,
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
+
+		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId")) &&
+			Validator.isNotNull(
+				ddmFormField.getProperty("ddmStructureLayoutId"))) {
+
+			DDMFormPagesTemplateContextFactory
+				ddmFormPagesTemplateContextFactory =
+					new DDMFormPagesTemplateContextFactory(
+						getDDMForm(
+							GetterUtil.getLong(
+								ddmFormField.getProperty("ddmStructureId"))),
+						getDDMFormLayout(
+							GetterUtil.getLong(
+								ddmFormField.getProperty(
+									"ddmStructureLayoutId"))),
+						_ddmFormRenderingContext,
+						_ddmStructureLayoutLocalService,
+						_ddmStructureLocalService);
+
+			ddmFormPagesTemplateContextFactory.setDDMFormEvaluator(
+				_ddmFormEvaluator);
+			ddmFormPagesTemplateContextFactory.
+				setDDMFormFieldTypeServicesTracker(
+					_ddmFormFieldTypeServicesTracker);
+
+			ddmFormFieldRenderingContext.setProperty(
+				"fields",
+				getFields(ddmFormPagesTemplateContextFactory.create()));
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
