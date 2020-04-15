@@ -393,29 +393,6 @@ public class DDMFormFieldTemplateContextFactory {
 		return new DDMFormLayout();
 	}
 
-	protected List<Object> getFields(List<Object> pages) {
-		List<Object> fields = new ArrayList<>();
-
-		HashMap<String, Object> page = (HashMap<String, Object>)pages.get(0);
-
-		List<Object> rows = (List<Object>)page.get("rows");
-
-		for (Object row : rows) {
-			HashMap<String, Object> rowItem = (HashMap<String, Object>)row;
-
-			List<Object> columns = (List<Object>)rowItem.get("columns");
-
-			for (Object column : columns) {
-				HashMap<String, Object> columnItem =
-					(HashMap<String, Object>)column;
-
-				fields.addAll((List<Object>)columnItem.get("fields"));
-			}
-		}
-
-		return fields;
-	}
-
 	protected void setDDMFormFieldTemplateContextContributedParameters(
 		Map<String, Object> changedProperties,
 		Map<String, Object> ddmFormFieldTemplateContext,
@@ -844,6 +821,29 @@ public class DDMFormFieldTemplateContextFactory {
 			ddmFormFieldTemplateContext, changedProperties, true);
 	}
 
+	private List<Object> _getNestedFieldsContext(List<Object> pages) {
+		List<Object> fields = new ArrayList<>();
+
+		HashMap<String, Object> page = (HashMap<String, Object>)pages.get(0);
+
+		List<Object> rows = (List<Object>)page.get("rows");
+
+		for (Object row : rows) {
+			HashMap<String, Object> rowItem = (HashMap<String, Object>)row;
+
+			List<Object> columns = (List<Object>)rowItem.get("columns");
+
+			for (Object column : columns) {
+				HashMap<String, Object> columnItem =
+					(HashMap<String, Object>)column;
+
+				fields.addAll((List<Object>)columnItem.get("fields"));
+			}
+		}
+
+		return fields;
+	}
+
 	private boolean _isFieldSetField(DDMFormField ddmFormField) {
 		if (StringUtil.equals(ddmFormField.getType(), "fieldset")) {
 			return true;
@@ -882,7 +882,8 @@ public class DDMFormFieldTemplateContextFactory {
 
 			ddmFormFieldRenderingContext.setProperty(
 				"fields",
-				getFields(ddmFormPagesTemplateContextFactory.create()));
+				_getNestedFieldsContext(
+					ddmFormPagesTemplateContextFactory.create()));
 		}
 	}
 
