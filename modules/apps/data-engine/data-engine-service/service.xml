@@ -89,4 +89,29 @@
 			<finder-column name="ddmStructureId" />
 		</finder>
 	</entity>
+	<exceptions>
+		<exception>DEDataDefinition</exception>
+		<exception>DEDataDefinitionAvailableLocales</exception>
+		<exception>DEDataDefinitionAvailableLocalesForProperty</exception>
+		<exception>DEDataDefinitionCharactersForFieldName</exception>
+		<exception>DEDataDefinitionCharactersForFieldType</exception>
+		<exception>DEDataDefinitionDefaultLocale</exception>
+		<exception>DEDataDefinitionDefaultLocaleAsAvailableLocale</exception>
+		<exception>DEDataDefinitionDefaultLocaleForProperty</exception>
+		<exception>DEDataDefinitionFieldExpression</exception>
+		<exception>DEDataDefinitionFieldType</exception>
+		<exception>DEDataDefinitionIndexType</exception>
+		<exception>DEDataDefinitionName</exception>
+		<exception>DEDataDefinitionOptionsForField</exception>
+		<exception>DEDataDefinitionRuleExpression</exception>
+		<exception>DEDataDefinitionValidationExpression</exception>
+		<exception>DEDataDefinitionVisibilityExpression</exception>
+		<exception>DEDataLayout</exception>
+		<exception>DEDataLayoutColumnSize</exception>
+		<exception>DEDataLayoutDefaultLocale</exception>
+		<exception>DEDataLayoutLocaleForLayoutAndTitle</exception>
+		<exception>DEDataLayoutRowSize</exception>
+		<exception>DuplicateDEDataDefinitionFieldName</exception>
+		<exception>DuplicateDEDataLayoutFieldName</exception>
+	</exceptions>
 </service-builder>
