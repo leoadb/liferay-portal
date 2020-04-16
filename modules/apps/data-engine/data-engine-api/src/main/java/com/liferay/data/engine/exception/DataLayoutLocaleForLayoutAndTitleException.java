@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+
 package com.liferay.data.engine.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -18,7 +19,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Brian Wing Shun Chan
  */
-public class DataLayoutLocaleForLayoutAndTitleException extends PortalException {
+public class DataLayoutLocaleForLayoutAndTitleException
+	extends PortalException {
 
 	public DataLayoutLocaleForLayoutAndTitleException() {
 	}
@@ -27,7 +29,9 @@ public class DataLayoutLocaleForLayoutAndTitleException extends PortalException 
 		super(msg);
 	}
 
-	public DataLayoutLocaleForLayoutAndTitleException(String msg, Throwable cause) {
+	public DataLayoutLocaleForLayoutAndTitleException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 

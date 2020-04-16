@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+
 package com.liferay.data.engine.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -18,7 +19,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Brian Wing Shun Chan
  */
-public class DataDefinitionAvailableLocalesForPropertyException extends PortalException {
+public class DataDefinitionAvailableLocalesForPropertyException
+	extends PortalException {
 
 	public DataDefinitionAvailableLocalesForPropertyException() {
 	}
@@ -27,7 +29,9 @@ public class DataDefinitionAvailableLocalesForPropertyException extends PortalEx
 		super(msg);
 	}
 
-	public DataDefinitionAvailableLocalesForPropertyException(String msg, Throwable cause) {
+	public DataDefinitionAvailableLocalesForPropertyException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
