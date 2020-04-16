@@ -14,12 +14,10 @@
 
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
-
 /**
  * @author Brian Wing Shun Chan
  */
-public class DataLayoutRowSizeException extends PortalException {
+public class DataLayoutRowSizeException extends DataLayoutException {
 
 	public DataLayoutRowSizeException() {
 	}

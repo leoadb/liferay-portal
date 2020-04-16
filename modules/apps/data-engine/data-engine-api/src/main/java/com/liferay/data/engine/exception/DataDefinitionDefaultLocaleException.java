@@ -14,12 +14,11 @@
 
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
-
 /**
  * @author Brian Wing Shun Chan
  */
-public class DataDefinitionDefaultLocaleException extends PortalException {
+public class DataDefinitionDefaultLocaleException
+	extends DataDefinitionException {
 
 	public DataDefinitionDefaultLocaleException() {
 	}

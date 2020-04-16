@@ -14,12 +14,11 @@
 
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
-
 /**
  * @author Brian Wing Shun Chan
  */
-public class DataDefinitionOptionsForFieldException extends PortalException {
+public class DataDefinitionOptionsForFieldException
+	extends DataDefinitionException {
 
 	public DataDefinitionOptionsForFieldException() {
 	}

@@ -14,13 +14,12 @@
 
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DuplicateDataLayoutFieldNameException extends PortalException {
+public class DuplicateDataLayoutFieldNameException extends DataLayoutException {
 
 	public DuplicateDataLayoutFieldNameException() {
 	}
