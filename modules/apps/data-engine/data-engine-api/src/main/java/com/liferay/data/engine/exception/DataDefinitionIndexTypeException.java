@@ -28,12 +28,22 @@ public class DataDefinitionIndexTypeException extends PortalException {
 		super(msg);
 	}
 
-	public DataDefinitionIndexTypeException(String msg, Throwable cause) {
-		super(msg, cause);
+	public DataDefinitionIndexTypeException(String fieldName, Throwable cause) {
+		super(
+			String.format("Invalid index type set for field %s", fieldName),
+			cause);
+
+		_fieldName = fieldName;
 	}
 
 	public DataDefinitionIndexTypeException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	private String _fieldName;
 
 }

@@ -28,12 +28,25 @@ public class DataDefinitionOptionsForFieldException extends PortalException {
 		super(msg);
 	}
 
-	public DataDefinitionOptionsForFieldException(String msg, Throwable cause) {
-		super(msg, cause);
+	public DataDefinitionOptionsForFieldException(
+		String fieldName, Throwable cause) {
+
+		super(
+			String.format(
+				"At least one option must be set for field %s", fieldName),
+			cause);
+
+		_fieldName = fieldName;
 	}
 
 	public DataDefinitionOptionsForFieldException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	private String _fieldName;
 
 }

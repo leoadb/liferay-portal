@@ -30,13 +30,24 @@ public class DataDefinitionCharactersForFieldNameException
 	}
 
 	public DataDefinitionCharactersForFieldNameException(
-		String msg, Throwable cause) {
+		String fieldName, Throwable cause) {
 
-		super(msg, cause);
+		super(
+			String.format(
+				"Invalid characters entered for field name %s", fieldName),
+			cause);
+
+		_fieldName = fieldName;
 	}
 
 	public DataDefinitionCharactersForFieldNameException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	private String _fieldName;
 
 }

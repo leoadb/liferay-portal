@@ -33,7 +33,7 @@ public class DataLayoutDefaultLocaleException extends PortalException {
 	}
 
 	public DataLayoutDefaultLocaleException(Throwable cause) {
-		super(cause);
+		super("Data layout does not have a default locale", cause);
 	}
 
 }

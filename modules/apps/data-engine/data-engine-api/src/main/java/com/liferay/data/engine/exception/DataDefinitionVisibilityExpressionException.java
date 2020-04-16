@@ -14,19 +14,23 @@
 
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
-
 /**
  * @author Brian Wing Shun Chan
  */
 public class DataDefinitionVisibilityExpressionException
-	extends PortalException {
+	extends DataDefinitionFieldExpressionException {
 
 	public DataDefinitionVisibilityExpressionException() {
 	}
 
 	public DataDefinitionVisibilityExpressionException(String msg) {
 		super(msg);
+	}
+
+	public DataDefinitionVisibilityExpressionException(
+		String fieldName, String expression, Throwable cause) {
+
+		super("visibility", fieldName, expression, cause);
 	}
 
 	public DataDefinitionVisibilityExpressionException(
@@ -37,6 +41,10 @@ public class DataDefinitionVisibilityExpressionException
 
 	public DataDefinitionVisibilityExpressionException(Throwable cause) {
 		super(cause);
+	}
+
+	public String getVisibilityExpression() {
+		return expression;
 	}
 
 }

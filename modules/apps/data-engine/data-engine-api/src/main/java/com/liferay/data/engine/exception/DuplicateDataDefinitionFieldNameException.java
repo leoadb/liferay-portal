@@ -15,6 +15,7 @@
 package com.liferay.data.engine.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
@@ -22,6 +23,18 @@ import com.liferay.portal.kernel.exception.PortalException;
 public class DuplicateDataDefinitionFieldNameException extends PortalException {
 
 	public DuplicateDataDefinitionFieldNameException() {
+	}
+
+	public DuplicateDataDefinitionFieldNameException(
+		Set<String> duplicatedFieldNames, Throwable cause) {
+
+		super(
+			String.format(
+				"Field names %s were defined more than once",
+				duplicatedFieldNames),
+			cause);
+
+		_duplicatedFieldNames = duplicatedFieldNames;
 	}
 
 	public DuplicateDataDefinitionFieldNameException(String msg) {
@@ -37,5 +50,11 @@ public class DuplicateDataDefinitionFieldNameException extends PortalException {
 	public DuplicateDataDefinitionFieldNameException(Throwable cause) {
 		super(cause);
 	}
+
+	public Set<String> getDuplicatedFieldNames() {
+		return _duplicatedFieldNames;
+	}
+
+	private Set<String> _duplicatedFieldNames;
 
 }

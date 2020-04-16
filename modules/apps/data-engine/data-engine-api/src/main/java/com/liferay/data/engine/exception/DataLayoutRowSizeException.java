@@ -33,7 +33,10 @@ public class DataLayoutRowSizeException extends PortalException {
 	}
 
 	public DataLayoutRowSizeException(Throwable cause) {
-		super(cause);
+		super(
+			"The sum of all column sizes of a row must be less than the " +
+				"maximum row size of 12",
+			cause);
 	}
 
 }

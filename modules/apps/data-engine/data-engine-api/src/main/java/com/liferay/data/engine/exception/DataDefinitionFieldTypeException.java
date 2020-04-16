@@ -28,12 +28,25 @@ public class DataDefinitionFieldTypeException extends PortalException {
 		super(msg);
 	}
 
-	public DataDefinitionFieldTypeException(String msg, Throwable cause) {
-		super(msg, cause);
+	public DataDefinitionFieldTypeException(String fieldName, Throwable cause) {
+		super(
+			String.format(
+				"The field type was never set for the data definition field " +
+					"with the field name %s",
+				fieldName),
+			cause);
+
+		_fieldName = fieldName;
 	}
 
 	public DataDefinitionFieldTypeException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	private String _fieldName;
 
 }

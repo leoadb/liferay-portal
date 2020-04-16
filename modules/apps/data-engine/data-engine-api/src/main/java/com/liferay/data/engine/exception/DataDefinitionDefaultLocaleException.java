@@ -33,7 +33,9 @@ public class DataDefinitionDefaultLocaleException extends PortalException {
 	}
 
 	public DataDefinitionDefaultLocaleException(Throwable cause) {
-		super(cause);
+		super(
+			"The default locale property was not set for the data definition",
+			cause);
 	}
 
 }

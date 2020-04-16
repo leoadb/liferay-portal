@@ -16,6 +16,8 @@ package com.liferay.data.engine.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.Locale;
+
 /**
  * @author Brian Wing Shun Chan
  */
@@ -23,6 +25,18 @@ public class DataDefinitionDefaultLocaleAsAvailableLocaleException
 	extends PortalException {
 
 	public DataDefinitionDefaultLocaleAsAvailableLocaleException() {
+	}
+
+	public DataDefinitionDefaultLocaleAsAvailableLocaleException(
+		Locale defaultLocale, Throwable cause) {
+
+		super(
+			String.format(
+				"The default locale %s must be set to a valid available locale",
+				defaultLocale),
+			cause);
+
+		_defaultLocale = defaultLocale;
 	}
 
 	public DataDefinitionDefaultLocaleAsAvailableLocaleException(String msg) {
@@ -40,5 +54,11 @@ public class DataDefinitionDefaultLocaleAsAvailableLocaleException
 
 		super(cause);
 	}
+
+	public Locale getDefaultLocale() {
+		return _defaultLocale;
+	}
+
+	private Locale _defaultLocale;
 
 }

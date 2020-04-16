@@ -28,6 +28,15 @@ public class DataDefinitionFieldExpressionException extends PortalException {
 		super(msg);
 	}
 
+	public DataDefinitionFieldExpressionException(
+		String expression, String fieldName, String message, Throwable cause) {
+
+		super(message);
+
+		this.expression = expression;
+		this.fieldName = fieldName;
+	}
+
 	public DataDefinitionFieldExpressionException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
@@ -35,5 +44,16 @@ public class DataDefinitionFieldExpressionException extends PortalException {
 	public DataDefinitionFieldExpressionException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getExpression() {
+		return expression;
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	protected String expression;
+	protected String fieldName;
 
 }

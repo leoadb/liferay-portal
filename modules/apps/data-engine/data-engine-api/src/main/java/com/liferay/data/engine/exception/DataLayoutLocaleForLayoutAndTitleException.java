@@ -36,7 +36,10 @@ public class DataLayoutLocaleForLayoutAndTitleException
 	}
 
 	public DataLayoutLocaleForLayoutAndTitleException(Throwable cause) {
-		super(cause);
+		super(
+			"The default locale for the data layout's page title is not the " +
+				"same as the data layout's default locale",
+			cause);
 	}
 
 }

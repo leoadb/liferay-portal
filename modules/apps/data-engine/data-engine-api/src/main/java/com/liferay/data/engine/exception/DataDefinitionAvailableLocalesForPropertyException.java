@@ -30,6 +30,19 @@ public class DataDefinitionAvailableLocalesForPropertyException
 	}
 
 	public DataDefinitionAvailableLocalesForPropertyException(
+		String fieldName, String property, Throwable cause) {
+
+		super(
+			String.format(
+				"Invalid available locales set for the property '%s' of " +
+					"field name %s",
+				property, fieldName));
+
+		_fieldName = fieldName;
+		_property = property;
+	}
+
+	public DataDefinitionAvailableLocalesForPropertyException(
 		String msg, Throwable cause) {
 
 		super(msg, cause);
@@ -38,5 +51,16 @@ public class DataDefinitionAvailableLocalesForPropertyException
 	public DataDefinitionAvailableLocalesForPropertyException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	public String getProperty() {
+		return _property;
+	}
+
+	private String _fieldName;
+	private String _property;
 
 }

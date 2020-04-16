@@ -14,19 +14,28 @@
 
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.petra.string.StringPool;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class DataDefinitionValidationExpressionException
-	extends PortalException {
+	extends DataDefinitionFieldExpressionException {
 
 	public DataDefinitionValidationExpressionException() {
 	}
 
 	public DataDefinitionValidationExpressionException(String msg) {
 		super(msg);
+	}
+
+	public DataDefinitionValidationExpressionException(
+		String expression, String fieldName, Throwable cause) {
+
+		super("validation", fieldName, expression, cause);
 	}
 
 	public DataDefinitionValidationExpressionException(
@@ -38,5 +47,22 @@ public class DataDefinitionValidationExpressionException
 	public DataDefinitionValidationExpressionException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getValidationExpression() {
+		return expression;
+	}
+
+	public String getValidationExpressionArgument() {
+		Matcher matcher = _validationExpressionPattern.matcher(expression);
+
+		if (matcher.find()) {
+			return matcher.group(3);
+		}
+
+		return StringPool.BLANK;
+	}
+
+	private static final Pattern _validationExpressionPattern = Pattern.compile(
+		"(contains|match)\\((.+), \"(.+)\"\\)");
 
 }

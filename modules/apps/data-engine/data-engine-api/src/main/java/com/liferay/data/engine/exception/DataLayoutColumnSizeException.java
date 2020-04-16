@@ -33,7 +33,9 @@ public class DataLayoutColumnSizeException extends PortalException {
 	}
 
 	public DataLayoutColumnSizeException(Throwable cause) {
-		super(cause);
+		super(
+			"Column size must be positive and less than maximum row size of 12",
+			cause);
 	}
 
 }

@@ -28,6 +28,14 @@ public class DataDefinitionRuleExpressionException extends PortalException {
 		super(msg);
 	}
 
+	public DataDefinitionRuleExpressionException(
+		String expression, String message, Throwable cause) {
+
+		super(message, cause);
+
+		_expression = expression;
+	}
+
 	public DataDefinitionRuleExpressionException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
@@ -35,5 +43,11 @@ public class DataDefinitionRuleExpressionException extends PortalException {
 	public DataDefinitionRuleExpressionException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getExpression() {
+		return _expression;
+	}
+
+	private String _expression;
 
 }

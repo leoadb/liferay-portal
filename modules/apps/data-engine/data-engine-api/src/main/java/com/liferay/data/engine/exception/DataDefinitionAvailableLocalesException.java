@@ -35,7 +35,10 @@ public class DataDefinitionAvailableLocalesException extends PortalException {
 	}
 
 	public DataDefinitionAvailableLocalesException(Throwable cause) {
-		super(cause);
+		super(
+			"The available locales property was not set for the data " +
+				"definition",
+			cause);
 	}
 
 }

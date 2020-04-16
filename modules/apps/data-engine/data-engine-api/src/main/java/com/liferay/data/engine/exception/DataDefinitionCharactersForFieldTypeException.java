@@ -30,13 +30,24 @@ public class DataDefinitionCharactersForFieldTypeException
 	}
 
 	public DataDefinitionCharactersForFieldTypeException(
-		String msg, Throwable cause) {
+		String fieldType, Throwable cause) {
 
-		super(msg, cause);
+		super(
+			String.format(
+				"Invalid characters entered for field type %s", fieldType),
+			cause);
+
+		_fieldType = fieldType;
 	}
 
 	public DataDefinitionCharactersForFieldTypeException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldType() {
+		return _fieldType;
+	}
+
+	private String _fieldType;
 
 }

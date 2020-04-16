@@ -30,6 +30,20 @@ public class DataDefinitionDefaultLocaleForPropertyException
 	}
 
 	public DataDefinitionDefaultLocaleForPropertyException(
+		String fieldName, String property, Throwable cause) {
+
+		super(
+			String.format(
+				"Invalid default locale set for the property '%s' of field " +
+					"name %s",
+				property, fieldName),
+			cause);
+
+		_fieldName = fieldName;
+		_property = property;
+	}
+
+	public DataDefinitionDefaultLocaleForPropertyException(
 		String msg, Throwable cause) {
 
 		super(msg, cause);
@@ -38,5 +52,16 @@ public class DataDefinitionDefaultLocaleForPropertyException
 	public DataDefinitionDefaultLocaleForPropertyException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	public String getProperty() {
+		return _property;
+	}
+
+	private String _fieldName;
+	private String _property;
 
 }
