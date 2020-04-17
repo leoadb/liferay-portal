@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionIndexTypeException extends PortalException {
+public class DEDataDefinitionIndexTypeException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionIndexTypeException() {
 	}
@@ -27,12 +27,24 @@ public class DEDataDefinitionIndexTypeException extends PortalException {
 		super(msg);
 	}
 
-	public DEDataDefinitionIndexTypeException(String msg, Throwable cause) {
-		super(msg, cause);
+	public DEDataDefinitionIndexTypeException(
+		String fieldName, Throwable cause) {
+
+		super(
+			String.format("Invalid index type set for field %s", fieldName),
+			cause);
+
+		_fieldName = fieldName;
 	}
 
 	public DEDataDefinitionIndexTypeException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	private String _fieldName;
 
 }

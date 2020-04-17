@@ -11,14 +11,13 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataLayoutColumnSizeException extends PortalException {
+public class DEDataLayoutColumnSizeException extends DEDataLayoutException {
 
 	public DEDataLayoutColumnSizeException() {
 	}
@@ -32,7 +31,9 @@ public class DEDataLayoutColumnSizeException extends PortalException {
 	}
 
 	public DEDataLayoutColumnSizeException(Throwable cause) {
-		super(cause);
+		super(
+			"Column size must be positive and less than maximum row size of 12",
+			cause);
 	}
 
 }

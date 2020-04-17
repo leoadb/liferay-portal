@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionDefaultLocaleException extends PortalException {
+public class DEDataDefinitionDefaultLocaleException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionDefaultLocaleException() {
 	}
@@ -32,7 +32,9 @@ public class DEDataDefinitionDefaultLocaleException extends PortalException {
 	}
 
 	public DEDataDefinitionDefaultLocaleException(Throwable cause) {
-		super(cause);
+		super(
+			"The default locale property was not set for the data definition",
+			cause);
 	}
 
 }

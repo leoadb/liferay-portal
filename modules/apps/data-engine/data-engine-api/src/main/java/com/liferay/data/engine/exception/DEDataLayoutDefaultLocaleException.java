@@ -11,14 +11,13 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataLayoutDefaultLocaleException extends PortalException {
+public class DEDataLayoutDefaultLocaleException extends DEDataLayoutException {
 
 	public DEDataLayoutDefaultLocaleException() {
 	}
@@ -32,7 +31,7 @@ public class DEDataLayoutDefaultLocaleException extends PortalException {
 	}
 
 	public DEDataLayoutDefaultLocaleException(Throwable cause) {
-		super(cause);
+		super("Data layout does not have a default locale", cause);
 	}
 
 }

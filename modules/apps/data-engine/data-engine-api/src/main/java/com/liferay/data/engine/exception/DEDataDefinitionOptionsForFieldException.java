@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionOptionsForFieldException extends PortalException {
+public class DEDataDefinitionOptionsForFieldException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionOptionsForFieldException() {
 	}
@@ -27,12 +27,25 @@ public class DEDataDefinitionOptionsForFieldException extends PortalException {
 		super(msg);
 	}
 
-	public DEDataDefinitionOptionsForFieldException(String msg, Throwable cause) {
-		super(msg, cause);
+	public DEDataDefinitionOptionsForFieldException(
+		String fieldName, Throwable cause) {
+
+		super(
+			String.format(
+				"At least one option must be set for field %s", fieldName),
+			cause);
+
+		_fieldName = fieldName;
 	}
 
 	public DEDataDefinitionOptionsForFieldException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	private String _fieldName;
 
 }

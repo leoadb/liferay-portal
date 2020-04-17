@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionDefaultLocaleForPropertyException extends PortalException {
+public class DEDataDefinitionDefaultLocaleForPropertyException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionDefaultLocaleForPropertyException() {
 	}
@@ -27,12 +27,39 @@ public class DEDataDefinitionDefaultLocaleForPropertyException extends PortalExc
 		super(msg);
 	}
 
-	public DEDataDefinitionDefaultLocaleForPropertyException(String msg, Throwable cause) {
+	public DEDataDefinitionDefaultLocaleForPropertyException(
+		String fieldName, String property, Throwable cause) {
+
+		super(
+			String.format(
+				"Invalid default locale set for the property '%s' of field " +
+					"name %s",
+				property, fieldName),
+			cause);
+
+		_fieldName = fieldName;
+		_property = property;
+	}
+
+	public DEDataDefinitionDefaultLocaleForPropertyException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
 	public DEDataDefinitionDefaultLocaleForPropertyException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	public String getProperty() {
+		return _property;
+	}
+
+	private String _fieldName;
+	private String _property;
 
 }

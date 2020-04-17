@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionVisibilityExpressionException extends PortalException {
+public class DEDataDefinitionVisibilityExpressionException
+	extends DEDataDefinitionFieldExpressionException {
 
 	public DEDataDefinitionVisibilityExpressionException() {
 	}
@@ -27,12 +27,24 @@ public class DEDataDefinitionVisibilityExpressionException extends PortalExcepti
 		super(msg);
 	}
 
-	public DEDataDefinitionVisibilityExpressionException(String msg, Throwable cause) {
+	public DEDataDefinitionVisibilityExpressionException(
+		String fieldName, String expression, Throwable cause) {
+
+		super("visibility", fieldName, expression, cause);
+	}
+
+	public DEDataDefinitionVisibilityExpressionException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
 	public DEDataDefinitionVisibilityExpressionException(Throwable cause) {
 		super(cause);
+	}
+
+	public String getVisibilityExpression() {
+		return expression;
 	}
 
 }

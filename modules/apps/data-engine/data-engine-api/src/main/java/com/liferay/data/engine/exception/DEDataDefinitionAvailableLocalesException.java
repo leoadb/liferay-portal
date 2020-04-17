@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionAvailableLocalesException extends PortalException {
+public class DEDataDefinitionAvailableLocalesException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionAvailableLocalesException() {
 	}
@@ -27,12 +27,17 @@ public class DEDataDefinitionAvailableLocalesException extends PortalException {
 		super(msg);
 	}
 
-	public DEDataDefinitionAvailableLocalesException(String msg, Throwable cause) {
+	public DEDataDefinitionAvailableLocalesException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
 	public DEDataDefinitionAvailableLocalesException(Throwable cause) {
-		super(cause);
+		super(
+			"The available locales property was not set for the data " +
+				"definition",
+			cause);
 	}
 
 }

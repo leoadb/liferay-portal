@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataLayoutLocaleForLayoutAndTitleException extends PortalException {
+public class DEDataLayoutLocaleForLayoutAndTitleException
+	extends DEDataLayoutException {
 
 	public DEDataLayoutLocaleForLayoutAndTitleException() {
 	}
@@ -27,12 +27,17 @@ public class DEDataLayoutLocaleForLayoutAndTitleException extends PortalExceptio
 		super(msg);
 	}
 
-	public DEDataLayoutLocaleForLayoutAndTitleException(String msg, Throwable cause) {
+	public DEDataLayoutLocaleForLayoutAndTitleException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
 	public DEDataLayoutLocaleForLayoutAndTitleException(Throwable cause) {
-		super(cause);
+		super(
+			"The default locale for the data layout's page title is not the " +
+				"same as the data layout's default locale",
+			cause);
 	}
 
 }

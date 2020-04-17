@@ -11,28 +11,50 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DuplicateDEDataDefinitionFieldNameException extends PortalException {
+public class DuplicateDEDataDefinitionFieldNameException
+	extends DEDataDefinitionException {
 
 	public DuplicateDEDataDefinitionFieldNameException() {
+	}
+
+	public DuplicateDEDataDefinitionFieldNameException(
+		Set<String> duplicatedFieldNames, Throwable cause) {
+
+		super(
+			String.format(
+				"Field names %s were defined more than once",
+				duplicatedFieldNames),
+			cause);
+
+		_duplicatedFieldNames = duplicatedFieldNames;
 	}
 
 	public DuplicateDEDataDefinitionFieldNameException(String msg) {
 		super(msg);
 	}
 
-	public DuplicateDEDataDefinitionFieldNameException(String msg, Throwable cause) {
+	public DuplicateDEDataDefinitionFieldNameException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
 	public DuplicateDEDataDefinitionFieldNameException(Throwable cause) {
 		super(cause);
 	}
+
+	public Set<String> getDuplicatedFieldNames() {
+		return _duplicatedFieldNames;
+	}
+
+	private Set<String> _duplicatedFieldNames;
 
 }

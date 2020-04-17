@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionRuleExpressionException extends PortalException {
+public class DEDataDefinitionRuleExpressionException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionRuleExpressionException() {
 	}
@@ -27,12 +27,28 @@ public class DEDataDefinitionRuleExpressionException extends PortalException {
 		super(msg);
 	}
 
-	public DEDataDefinitionRuleExpressionException(String msg, Throwable cause) {
+	public DEDataDefinitionRuleExpressionException(
+		String expression, String message, Throwable cause) {
+
+		super(message, cause);
+
+		_expression = expression;
+	}
+
+	public DEDataDefinitionRuleExpressionException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
 	public DEDataDefinitionRuleExpressionException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getExpression() {
+		return _expression;
+	}
+
+	private String _expression;
 
 }

@@ -11,14 +11,19 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.petra.string.StringPool;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionValidationExpressionException extends PortalException {
+public class DEDataDefinitionValidationExpressionException
+	extends DEDataDefinitionFieldExpressionException {
 
 	public DEDataDefinitionValidationExpressionException() {
 	}
@@ -27,12 +32,37 @@ public class DEDataDefinitionValidationExpressionException extends PortalExcepti
 		super(msg);
 	}
 
-	public DEDataDefinitionValidationExpressionException(String msg, Throwable cause) {
+	public DEDataDefinitionValidationExpressionException(
+		String expression, String fieldName, Throwable cause) {
+
+		super("validation", fieldName, expression, cause);
+	}
+
+	public DEDataDefinitionValidationExpressionException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
 	public DEDataDefinitionValidationExpressionException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getValidationExpression() {
+		return expression;
+	}
+
+	public String getValidationExpressionArgument() {
+		Matcher matcher = _validationExpressionPattern.matcher(expression);
+
+		if (matcher.find()) {
+			return matcher.group(3);
+		}
+
+		return StringPool.BLANK;
+	}
+
+	private static final Pattern _validationExpressionPattern = Pattern.compile(
+		"(contains|match)\\((.+), \"(.+)\"\\)");
 
 }

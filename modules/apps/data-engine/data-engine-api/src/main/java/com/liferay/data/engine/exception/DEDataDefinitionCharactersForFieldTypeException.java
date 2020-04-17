@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionCharactersForFieldTypeException extends PortalException {
+public class DEDataDefinitionCharactersForFieldTypeException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionCharactersForFieldTypeException() {
 	}
@@ -27,12 +27,25 @@ public class DEDataDefinitionCharactersForFieldTypeException extends PortalExcep
 		super(msg);
 	}
 
-	public DEDataDefinitionCharactersForFieldTypeException(String msg, Throwable cause) {
-		super(msg, cause);
+	public DEDataDefinitionCharactersForFieldTypeException(
+		String fieldType, Throwable cause) {
+
+		super(
+			String.format(
+				"Invalid characters entered for field type %s", fieldType),
+			cause);
+
+		_fieldType = fieldType;
 	}
 
 	public DEDataDefinitionCharactersForFieldTypeException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldType() {
+		return _fieldType;
+	}
+
+	private String _fieldType;
 
 }

@@ -11,14 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+package com.liferay.data.engine.exception;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionFieldTypeException extends PortalException {
+public class DEDataDefinitionFieldTypeException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionFieldTypeException() {
 	}
@@ -27,12 +27,27 @@ public class DEDataDefinitionFieldTypeException extends PortalException {
 		super(msg);
 	}
 
-	public DEDataDefinitionFieldTypeException(String msg, Throwable cause) {
-		super(msg, cause);
+	public DEDataDefinitionFieldTypeException(
+		String fieldName, Throwable cause) {
+
+		super(
+			String.format(
+				"The field type was never set for the data definition field " +
+					"with the field name %s",
+				fieldName),
+			cause);
+
+		_fieldName = fieldName;
 	}
 
 	public DEDataDefinitionFieldTypeException(Throwable cause) {
 		super(cause);
 	}
+
+	public String getFieldName() {
+		return _fieldName;
+	}
+
+	private String _fieldName;
 
 }

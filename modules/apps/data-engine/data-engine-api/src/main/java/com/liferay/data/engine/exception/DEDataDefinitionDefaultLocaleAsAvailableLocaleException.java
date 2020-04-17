@@ -11,28 +11,52 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+
 package com.liferay.data.engine.exception;
 
-import com.liferay.portal.kernel.exception.PortalException;
+import java.util.Locale;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DEDataDefinitionDefaultLocaleAsAvailableLocaleException extends PortalException {
+public class DEDataDefinitionDefaultLocaleAsAvailableLocaleException
+	extends DEDataDefinitionException {
 
 	public DEDataDefinitionDefaultLocaleAsAvailableLocaleException() {
+	}
+
+	public DEDataDefinitionDefaultLocaleAsAvailableLocaleException(
+		Locale defaultLocale, Throwable cause) {
+
+		super(
+			String.format(
+				"The default locale %s must be set to a valid available locale",
+				defaultLocale),
+			cause);
+
+		_defaultLocale = defaultLocale;
 	}
 
 	public DEDataDefinitionDefaultLocaleAsAvailableLocaleException(String msg) {
 		super(msg);
 	}
 
-	public DEDataDefinitionDefaultLocaleAsAvailableLocaleException(String msg, Throwable cause) {
+	public DEDataDefinitionDefaultLocaleAsAvailableLocaleException(
+		String msg, Throwable cause) {
+
 		super(msg, cause);
 	}
 
-	public DEDataDefinitionDefaultLocaleAsAvailableLocaleException(Throwable cause) {
+	public DEDataDefinitionDefaultLocaleAsAvailableLocaleException(
+		Throwable cause) {
+
 		super(cause);
 	}
+
+	public Locale getDefaultLocale() {
+		return _defaultLocale;
+	}
+
+	private Locale _defaultLocale;
 
 }
