@@ -1799,8 +1799,8 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 					for (int i = 0; i < repetitions; i++) {
 						DDMFormFieldValue ddmFormFieldValue =
 							createDDMFormFieldValue(
-								fieldName, ddmFormField, rootElement,
-								ddmFieldsCounter);
+								ddmFormField, ddmFieldsCounter, fieldName,
+								rootElement);
 
 						if (ddmFormFieldValue != null) {
 							ddmFormValues.addDDMFormFieldValue(
@@ -1867,8 +1867,8 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 		}
 
 		protected DDMFormFieldValue createDDMFormFieldValue(
-				String fieldName, DDMFormField ddmFormField,
-				Element rootElement, DDMFieldsCounter ddmFieldsCounter)
+				DDMFormField ddmFormField, DDMFieldsCounter ddmFieldsCounter,
+				String fieldName, Element rootElement)
 			throws PortalException {
 
 			DDMFormFieldValue ddmFormFieldValue = null;
@@ -2267,8 +2267,8 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 				for (int i = 0; i < repetitions; i++) {
 					DDMFormFieldValue nestedDDMFormFieldValue =
 						createDDMFormFieldValue(
-							nestedDDMFormFieldName, nestedDDMFormField,
-							rootElement, ddmFieldsCounter);
+							nestedDDMFormField, ddmFieldsCounter,
+							nestedDDMFormFieldName, rootElement);
 
 					if (nestedDDMFormFieldValue != null) {
 						ddmFormFieldValue.addNestedDDMFormFieldValue(
