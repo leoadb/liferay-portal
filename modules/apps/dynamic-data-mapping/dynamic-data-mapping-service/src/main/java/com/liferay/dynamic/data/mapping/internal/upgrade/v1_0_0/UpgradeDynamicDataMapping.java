@@ -1930,15 +1930,6 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 			return value;
 		}
 
-		protected Value extractDDMFormFieldValueUnlocalizedValue(
-			Element dynamicElement, int index) {
-
-			String valueString = getDDMFormFieldValueValueString(
-				dynamicElement, getDefaultLocale(dynamicElement), index);
-
-			return new UnlocalizedValue(valueString);
-		}
-
 		protected Value extractDDMFormFieldValue(
 			String fieldName, DDMFormField ddmFormField, Element rootElement,
 			DDMFieldsCounter ddmFieldsCounter) {
@@ -1956,8 +1947,10 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 						element, ddmFieldsCounter.get(fieldName));
 				}
 				else {
-					value = extractDDMFormFieldValueUnlocalizedValue(
-						dynamicElement, ddmFieldsCounter.get(fieldName));
+					value = new UnlocalizedValue(
+						getDDMFormFieldValueValueString(
+							element, getDefaultLocale(element),
+							ddmFieldsCounter.get(fieldName)));
 				}
 			}
 
