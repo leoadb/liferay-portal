@@ -104,22 +104,85 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		_testGetDataDefinitionDataLayoutsPage("layo", "form layout");
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLDeleteDataLayout() {
+	public void testGraphQLGetDataLayout() throws Exception {
+		DataLayout dataLayout = testGraphQLDataLayout_addDataLayout();
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataLayout",
+				HashMapBuilder.<String, Object>put(
+					"dataLayoutId", dataLayout.getId()
+				).build(),
+				graphQLFields.toArray(new GraphQLField[0])));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		Assert.assertEquals(
+			GetterUtil.getLong(dataLayout.getDataDefinitionId()),
+			GetterUtil.getLong(
+				JSONUtil.getValue(
+					jsonObject, "JSONObject/data", "JSONObject/dataLayout",
+					"Object/dataDefinitionId")));
+		Assert.assertEquals(
+			MapUtil.getString(dataLayout.getName(), "en_US"),
+			JSONUtil.getValue(
+				jsonObject, "JSONObject/data", "JSONObject/dataLayout",
+				"JSONObject/name", "Object/en_US"));
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLGetDataLayout() {
-	}
+	public void testGraphQLGetSiteDataLayoutByContentTypeByDataLayoutKey()
+		throws Exception {
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetSiteDataLayoutByContentTypeByDataLayoutKey() {
+		DataLayout dataLayout = testGraphQLDataLayout_addDataLayout();
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"dataLayoutByContentTypeByDataLayoutKey",
+				HashMapBuilder.<String, Object>put(
+					"contentType",
+					StringBundler.concat(
+						StringPool.QUOTE, "app-builder", StringPool.QUOTE)
+				).put(
+					"dataLayoutKey",
+					StringBundler.concat(
+						StringPool.QUOTE, dataLayout.getDataLayoutKey(),
+						StringPool.QUOTE)
+				).put(
+					"siteKey",
+					StringBundler.concat(
+						StringPool.QUOTE,
+						String.valueOf(dataLayout.getSiteId()),
+						StringPool.QUOTE)
+				).build(),
+				graphQLFields.toArray(new GraphQLField[0])));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			invoke(graphQLField.toString()));
+
+		Assert.assertEquals(
+			GetterUtil.getLong(dataLayout.getDataDefinitionId()),
+			GetterUtil.getLong(
+				JSONUtil.getValue(
+					jsonObject, "JSONObject/data",
+					"JSONObject/dataLayoutByContentTypeByDataLayoutKey",
+					"Object/dataDefinitionId")));
+		Assert.assertEquals(
+			MapUtil.getString(dataLayout.getName(), "en_US"),
+			JSONUtil.getValue(
+				jsonObject, "JSONObject/data",
+				"JSONObject/dataLayoutByContentTypeByDataLayoutKey",
+				"JSONObject/name", "Object/en_US"));
 	}
 
 	@Override
@@ -202,6 +265,14 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 		dataLayout.setContentType("app-builder");
 
 		return dataLayout;
+	}
+
+	@Override
+	protected DataLayout testGraphQLDataLayout_addDataLayout()
+		throws Exception {
+
+		return dataLayoutResource.postDataDefinitionDataLayout(
+			_dataDefinition.getId(), randomDataLayout());
 	}
 
 	@Override
