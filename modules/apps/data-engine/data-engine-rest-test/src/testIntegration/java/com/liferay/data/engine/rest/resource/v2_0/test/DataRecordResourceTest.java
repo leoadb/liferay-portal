@@ -17,15 +17,22 @@ package com.liferay.data.engine.rest.resource.v2_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataRecord;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
+import com.liferay.data.engine.rest.resource.v2_0.test.util.DataEngineTestHelper;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataRecordCollectionTestUtil;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
+import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +44,20 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_dataEngineTestHelper = new DataEngineTestHelper(
+			_ddlRecordSetLocalService, _ddmStructureLayoutLocalService,
+			_ddmStructureLocalService);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		_dataEngineTestHelper.unregister();
+	}
+
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -47,6 +67,14 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 			_ddmStructure, testGroup, _resourceLocalService);
 		_irrelevantDDLRecordSet = DataRecordCollectionTestUtil.addRecordSet(
 			_ddmStructure, irrelevantGroup, _resourceLocalService);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_dataEngineTestHelper.deletePersistedModels();
+
+		super.tearDown();
 	}
 
 	@Ignore
@@ -173,6 +201,18 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 			}
 		};
 	}
+
+	private static DataEngineTestHelper _dataEngineTestHelper;
+
+	@Inject
+	private static DDLRecordSetLocalService _ddlRecordSetLocalService;
+
+	@Inject
+	private static DDMStructureLayoutLocalService
+		_ddmStructureLayoutLocalService;
+
+	@Inject
+	private static DDMStructureLocalService _ddmStructureLocalService;
 
 	private DDLRecordSet _ddlRecordSet;
 	private DDMStructure _ddmStructure;

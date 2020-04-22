@@ -19,15 +19,23 @@ import com.liferay.data.engine.rest.client.dto.v2_0.DataRecordCollection;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
+import com.liferay.data.engine.rest.resource.v2_0.test.util.DataEngineTestHelper;
+import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,13 +47,34 @@ import org.junit.runner.RunWith;
 public class DataRecordCollectionResourceTest
 	extends BaseDataRecordCollectionResourceTestCase {
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_dataEngineTestHelper = new DataEngineTestHelper(
+			_ddlRecordSetLocalService, _ddmStructureLayoutLocalService,
+			_ddmStructureLocalService);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		_dataEngineTestHelper.unregister();
+	}
+
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
 		_ddmStructure = DataDefinitionTestUtil.addDDMStructure(testGroup);
 		_irrelevantDDMStructure = DataDefinitionTestUtil.addDDMStructure(
 			irrelevantGroup);
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_dataEngineTestHelper.deletePersistedModels();
+
+		super.tearDown();
 	}
 
 	@Override
@@ -274,6 +303,18 @@ public class DataRecordCollectionResourceTest
 		dataRecordCollectionResource.deleteDataRecordCollection(
 			dataRecordCollection.getId());
 	}
+
+	private static DataEngineTestHelper _dataEngineTestHelper;
+
+	@Inject
+	private static DDLRecordSetLocalService _ddlRecordSetLocalService;
+
+	@Inject
+	private static DDMStructureLayoutLocalService
+		_ddmStructureLayoutLocalService;
+
+	@Inject
+	private static DDMStructureLocalService _ddmStructureLocalService;
 
 	private DDMStructure _ddmStructure;
 	private DDMStructure _irrelevantDDMStructure;

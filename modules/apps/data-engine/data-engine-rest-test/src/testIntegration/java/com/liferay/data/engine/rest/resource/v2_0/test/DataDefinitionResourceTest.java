@@ -20,19 +20,17 @@ import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinitionField;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
+import com.liferay.data.engine.rest.resource.v2_0.test.util.DataEngineTestHelper;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataLayoutTestUtil;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -40,22 +38,16 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.test.util.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Jeyvison Nascimento
@@ -66,37 +58,22 @@ public class DataDefinitionResourceTest
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		Bundle bundle = FrameworkUtil.getBundle(
-			DataDefinitionResourceTest.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		_serviceRegistration = bundleContext.registerService(
-			ModelListener.class,
-			new BaseModelListener<DDMStructure>() {
-
-				@Override
-				public void onAfterCreate(DDMStructure ddmStructure)
-					throws ModelListenerException {
-
-					_ddmStructures.add(ddmStructure);
-				}
-
-			},
-			new HashMapDictionary<>());
+		_dataEngineTestHelper = new DataEngineTestHelper(
+			_ddlRecordSetLocalService, _ddmStructureLayoutLocalService,
+			_ddmStructureLocalService);
 	}
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-		_serviceRegistration.unregister();
+		_dataEngineTestHelper.unregister();
 	}
 
-	@Before
+	@After
 	@Override
-	public void setUp() throws Exception {
-		super.setUp();
+	public void tearDown() throws Exception {
+		_dataEngineTestHelper.deletePersistedModels();
 
-		_ddmStructures = new ArrayList<>();
+		super.tearDown();
 	}
 
 	@Override
@@ -505,10 +482,17 @@ public class DataDefinitionResourceTest
 
 	private static final String _CONTENT_TYPE = "app-builder";
 
-	@DeleteAfterTestRun
-	private static List<DDMStructure> _ddmStructures;
+	private static DataEngineTestHelper _dataEngineTestHelper;
 
-	private static ServiceRegistration _serviceRegistration;
+	@Inject
+	private static DDLRecordSetLocalService _ddlRecordSetLocalService;
+
+	@Inject
+	private static DDMStructureLayoutLocalService
+		_ddmStructureLayoutLocalService;
+
+	@Inject
+	private static DDMStructureLocalService _ddmStructureLocalService;
 
 	@Inject(type = Portal.class)
 	private Portal _portal;

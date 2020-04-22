@@ -18,9 +18,17 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataListView;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
+import com.liferay.data.engine.rest.resource.v2_0.test.util.DataEngineTestHelper;
+import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.test.rule.Inject;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +39,20 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_dataEngineTestHelper = new DataEngineTestHelper(
+			_ddlRecordSetLocalService, _ddmStructureLayoutLocalService,
+			_ddmStructureLocalService);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		_dataEngineTestHelper.unregister();
+	}
+
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -39,6 +60,14 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 			testGroup.getGroupId());
 		_irrelevantDataDefinition = DataDefinitionTestUtil.addDataDefinition(
 			irrelevantGroup.getGroupId());
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_dataEngineTestHelper.deletePersistedModels();
+
+		super.tearDown();
 	}
 
 	@Ignore
@@ -101,6 +130,18 @@ public class DataListViewResourceTest extends BaseDataListViewResourceTestCase {
 		return dataListViewResource.postDataDefinitionDataListView(
 			_dataDefinition.getId(), randomDataListView());
 	}
+
+	private static DataEngineTestHelper _dataEngineTestHelper;
+
+	@Inject
+	private static DDLRecordSetLocalService _ddlRecordSetLocalService;
+
+	@Inject
+	private static DDMStructureLayoutLocalService
+		_ddmStructureLayoutLocalService;
+
+	@Inject
+	private static DDMStructureLocalService _ddmStructureLocalService;
 
 	private DataDefinition _dataDefinition;
 	private DataDefinition _irrelevantDataDefinition;
