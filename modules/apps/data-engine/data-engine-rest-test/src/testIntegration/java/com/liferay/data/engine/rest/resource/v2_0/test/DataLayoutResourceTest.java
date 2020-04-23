@@ -16,9 +16,15 @@ package com.liferay.data.engine.rest.resource.v2_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
+import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinitionField;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
+import com.liferay.data.engine.rest.client.dto.v2_0.DataLayoutColumn;
+import com.liferay.data.engine.rest.client.dto.v2_0.DataLayoutPage;
+import com.liferay.data.engine.rest.client.dto.v2_0.DataLayoutRow;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
+import com.liferay.data.engine.rest.client.problem.Problem;
+import com.liferay.data.engine.rest.client.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataLayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
@@ -53,6 +59,114 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			testGroup.getGroupId());
 		_irrelevantDataDefinition = DataDefinitionTestUtil.addDataDefinition(
 			irrelevantGroup.getGroupId());
+	}
+
+	@Test
+	public void testDuplicatedFieldName() throws Exception {
+		DataDefinition dataDefinition = new DataDefinition() {
+			{
+				availableLanguageIds = new String[] {"en_US", "pt_BR"};
+				dataDefinitionFields = new DataDefinitionField[] {
+					new DataDefinitionField() {
+						{
+							fieldType = "text";
+							label = HashMapBuilder.<String, Object>put(
+								"en_US", RandomTestUtil.randomString()
+							).put(
+								"pt_BR", RandomTestUtil.randomString()
+							).build();
+							name = "text1";
+						}
+					},
+					new DataDefinitionField() {
+						{
+							fieldType = "text";
+							label = HashMapBuilder.<String, Object>put(
+								"en_US", RandomTestUtil.randomString()
+							).put(
+								"pt_BR", RandomTestUtil.randomString()
+							).build();
+							name = "text2";
+						}
+					}
+				};
+				dataDefinitionKey = RandomTestUtil.randomString();
+				defaultLanguageId = "en_US";
+				name = HashMapBuilder.<String, Object>put(
+					"en_US", RandomTestUtil.randomString()
+				).build();
+			}
+		};
+
+		DataDefinitionResource dataDefinitionResource =
+			DataDefinitionResource.builder(
+			).build();
+
+		dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), "app-builder", dataDefinition);
+
+		try {
+			DataLayout dataLayout = new DataLayout() {
+				{
+					dataLayoutKey = RandomTestUtil.randomString();
+					paginationMode = "wizard";
+				}
+			};
+
+			dataLayout.setDataDefinitionId(dataDefinition.getId());
+			dataLayout.setDataLayoutPages(
+				new DataLayoutPage[] {
+					new DataLayoutPage() {
+						{
+							dataLayoutRows = new DataLayoutRow[] {
+								new DataLayoutRow() {
+									{
+										dataLayoutColumns =
+											new DataLayoutColumn[] {
+												new DataLayoutColumn() {
+													{
+														columnSize = 12;
+														fieldNames =
+															new String[] {
+																"text1",
+																"text2", "text1"
+															};
+													}
+												}
+											};
+									}
+								}
+							};
+							description = HashMapBuilder.<String, Object>put(
+								"en_US", "Page Description"
+							).build();
+							title = HashMapBuilder.<String, Object>put(
+								"en_US", "Page Title"
+							).build();
+						}
+					}
+				});
+			dataLayout.setName(
+				HashMapBuilder.<String, Object>put(
+					"en_US", RandomTestUtil.randomString()
+				).build());
+
+			dataLayoutResource.postDataDefinitionDataLayout(
+				dataDefinition.getId(), dataLayout);
+
+			Assert.fail("An exception must be thrown");
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("text1", problem.getDetail());
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals("MustNotDuplicateFieldName", problem.getType());
+		}
+		finally {
+			dataDefinitionResource.deleteDataDefinition(dataDefinition.getId());
+		}
 	}
 
 	@Override
