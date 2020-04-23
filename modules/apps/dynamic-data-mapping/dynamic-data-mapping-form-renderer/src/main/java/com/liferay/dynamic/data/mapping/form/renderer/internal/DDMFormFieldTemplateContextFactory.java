@@ -200,16 +200,14 @@ public class DDMFormFieldTemplateContextFactory {
 		int index = 0;
 
 		if (ddmFormFieldValues == null) {
-			Object ddmFormFieldTemplateContext =
+			ddmFormFieldTemplateContexts.add(
 				createDDMFormFieldTemplateContext(
 					new DDMFormFieldValue() {
 						{
 							setName(_ddmFormFieldName);
 						}
 					},
-					new HashMap<>(), index++, parentDDMFormFieldParameterName);
-
-			ddmFormFieldTemplateContexts.add(ddmFormFieldTemplateContext);
+					new HashMap<>(), index++, parentDDMFormFieldParameterName));
 		}
 		else if (_ddmFormRenderingContext.isReturnFullContext()) {
 			for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
@@ -826,12 +824,6 @@ public class DDMFormFieldTemplateContextFactory {
 		return new DDMFormLayout();
 	}
 
-	private String _getFieldName(Object field) {
-		Map<String, Object> fieldMap = (Map<String, Object>)field;
-
-		return (String)fieldMap.get("fieldName");
-	}
-
 	private Stream<Map<String, Object>> _getFieldsStream(
 		Map<String, Object> column) {
 
@@ -859,7 +851,10 @@ public class DDMFormFieldTemplateContextFactory {
 		).flatMap(
 			this::_getFieldsStream
 		).collect(
-			Collectors.toMap(this::_getFieldName, Function.identity())
+			Collectors.toMap(
+				field -> MapUtil.getString(
+					(Map<String, Object>)field, "fieldName"),
+				Function.identity())
 		);
 	}
 
