@@ -33,11 +33,12 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -68,17 +69,14 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 			nestedFields = new HashMap<>();
 		}
 
-		JSONArray rows;
+		JSONArray rows = getJSONArray(
+			GetterUtil.getString(ddmFormField.getProperty("rows")));
 
 		if (_needsLoadLayout(ddmFormField)) {
 			rows = getRows(
 				getDDMStructureLayoutDefinition(
 					GetterUtil.getLong(
 						ddmFormField.getProperty("ddmStructureLayoutId"))));
-		}
-		else {
-			rows = getJSONArray(
-				GetterUtil.getString(ddmFormField.getProperty("rows")));
 		}
 
 		return HashMapBuilder.<String, Object>put(
@@ -140,15 +138,15 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 	}
 
 	protected List<Object> getNestedFields(
-		Map<String, Object> nestedFieldsMap, String[] nestedFieldNames) {
+		Map<String, Object> nestedFields, String[] nestedFieldNames) {
 
-		List<Object> nestedFields = new ArrayList<>();
-
-		for (String nestedFieldName : nestedFieldNames) {
-			nestedFields.add(nestedFieldsMap.get(nestedFieldName));
-		}
-
-		return nestedFields;
+		return Stream.of(
+			nestedFieldNames
+		).map(
+			nestedFields::get
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	protected JSONArray getRows(String definition) {
@@ -171,6 +169,12 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 		return jsonFactory.createJSONArray();
 	}
 
+	@Reference
+	protected DDMStructureLayoutLocalService ddmStructureLayoutLocalService;
+
+	@Reference
+	protected JSONFactory jsonFactory;
+
 	private boolean _needsLoadLayout(DDMFormField ddmFormField) {
 		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId")) &&
 			Validator.isNotNull(
@@ -181,12 +185,6 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 
 		return false;
 	}
-
-	@Reference
-	protected DDMStructureLayoutLocalService ddmStructureLayoutLocalService;
-
-	@Reference
-	protected JSONFactory jsonFactory;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FieldSetDDMFormFieldTemplateContextContributor.class);
