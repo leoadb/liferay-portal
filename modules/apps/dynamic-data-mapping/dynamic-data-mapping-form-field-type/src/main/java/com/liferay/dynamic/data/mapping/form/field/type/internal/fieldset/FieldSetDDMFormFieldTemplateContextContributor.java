@@ -60,17 +60,17 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
-		Map<String, Object> nestedFieldsMap =
+		Map<String, Object> nestedFields =
 			(Map<String, Object>)ddmFormFieldRenderingContext.getProperty(
 				"nestedFields");
 
-		if (nestedFieldsMap == null) {
-			nestedFieldsMap = new HashMap<>();
+		if (nestedFields == null) {
+			nestedFields = new HashMap<>();
 		}
 
 		JSONArray rows;
 
-		if (isFieldSetField(ddmFormField)) {
+		if (_needsLoadLayout(ddmFormField)) {
 			rows = getRows(
 				getDDMStructureLayoutDefinition(
 					GetterUtil.getLong(
@@ -89,11 +89,11 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 		).put(
 			"nestedFields",
 			getNestedFields(
-				nestedFieldsMap,
+				nestedFields,
 				getNestedFieldNames(
 					GetterUtil.getString(
 						ddmFormField.getProperty("nestedFieldNames")),
-					nestedFieldsMap.keySet()))
+					nestedFields.keySet()))
 		).put(
 			"rows", rows
 		).build();
@@ -151,15 +151,12 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 		return nestedFields;
 	}
 
-	protected JSONArray getRows(String layoutDefinition) {
+	protected JSONArray getRows(String definition) {
 		try {
-			JSONObject layoutDefinitionJSONObject =
-				JSONFactoryUtil.createJSONObject(
-					StringUtil.replace(
-						layoutDefinition, "fieldNames", "fields"));
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+				StringUtil.replace(definition, "fieldNames", "fields"));
 
-			JSONArray pagesJSONArray = layoutDefinitionJSONObject.getJSONArray(
-				"pages");
+			JSONArray pagesJSONArray = jsonObject.getJSONArray("pages");
 
 			JSONObject pageJSONObject = pagesJSONArray.getJSONObject(0);
 
@@ -174,9 +171,8 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 		return jsonFactory.createJSONArray();
 	}
 
-	protected boolean isFieldSetField(DDMFormField ddmFormField) {
-		if (StringUtil.equals(ddmFormField.getType(), "fieldset") &&
-			Validator.isNotNull(ddmFormField.getProperty("ddmStructureId")) &&
+	private boolean _needsLoadLayout(DDMFormField ddmFormField) {
+		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId")) &&
 			Validator.isNotNull(
 				ddmFormField.getProperty("ddmStructureLayoutId"))) {
 
