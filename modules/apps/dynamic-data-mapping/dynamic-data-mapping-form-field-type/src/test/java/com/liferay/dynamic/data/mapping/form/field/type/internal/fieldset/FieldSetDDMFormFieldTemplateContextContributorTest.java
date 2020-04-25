@@ -47,7 +47,7 @@ public class FieldSetDDMFormFieldTemplateContextContributorTest
 		String ddmFormLayoutDefinition = read("ddm-structure-layout.json");
 
 		JSONArray rowsJSONArray =
-			_fieldSetDDMFormFieldTemplateContextContributor.getRows(
+			_fieldSetDDMFormFieldTemplateContextContributor.getRowsJSONArray(
 				ddmFormLayoutDefinition);
 
 		Assert.assertEquals(2, rowsJSONArray.length());

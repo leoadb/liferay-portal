@@ -69,11 +69,11 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 			nestedFields = new HashMap<>();
 		}
 
-		JSONArray rows = getJSONArray(
+		JSONArray rowsJSONArray = getJSONArray(
 			GetterUtil.getString(ddmFormField.getProperty("rows")));
 
 		if (_needsLoadLayout(ddmFormField)) {
-			rows = getRows(
+			rowsJSONArray = getRowsJSONArray(
 				getDDMStructureLayoutDefinition(
 					GetterUtil.getLong(
 						ddmFormField.getProperty("ddmStructureLayoutId"))));
@@ -93,7 +93,7 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 						ddmFormField.getProperty("nestedFieldNames")),
 					nestedFields.keySet()))
 		).put(
-			"rows", rows
+			"rows", rowsJSONArray
 		).build();
 	}
 
@@ -149,7 +149,7 @@ public class FieldSetDDMFormFieldTemplateContextContributor
 		);
 	}
 
-	protected JSONArray getRows(String definition) {
+	protected JSONArray getRowsJSONArray(String definition) {
 		try {
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 				StringUtil.replace(definition, "fieldNames", "fields"));
