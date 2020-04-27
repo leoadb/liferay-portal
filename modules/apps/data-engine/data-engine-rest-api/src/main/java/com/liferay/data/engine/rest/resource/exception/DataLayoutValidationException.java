@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.data.engine.rest.exception;
+package com.liferay.data.engine.rest.resource.exception;
 
 import java.util.Set;
 
