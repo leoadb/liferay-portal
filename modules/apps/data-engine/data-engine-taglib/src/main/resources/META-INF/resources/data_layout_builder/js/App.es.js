@@ -91,6 +91,7 @@ const App = (props) => {
 	const {
 		config,
 		contentType,
+		contentTypeFieldSet,
 		dataDefinitionId,
 		dataLayoutId,
 		fieldTypesModules,
@@ -115,6 +116,7 @@ const App = (props) => {
 					<AppContextProvider
 						config={config}
 						contentType={contentType}
+						contentTypeFieldSet={contentTypeFieldSet}
 						dataDefinitionId={dataDefinitionId}
 						dataLayoutBuilder={dataLayoutBuilder}
 						dataLayoutId={dataLayoutId}
