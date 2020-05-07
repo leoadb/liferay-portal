@@ -84,7 +84,7 @@ public class DDLRecordSetStagedModelDataHandler
 		DDMStructure ddmStructure = recordSet.getDDMStructure();
 
 		exportReferencedDDMStructureStagedModel(
-			portletDataContext, recordSet, ddmStructure);
+			ddmStructure, portletDataContext, recordSet);
 
 		List<DDMTemplate> ddmTemplates = ddmStructure.getTemplates();
 
@@ -193,8 +193,8 @@ public class DDLRecordSetStagedModelDataHandler
 	}
 
 	protected void exportReferencedDDMStructureStagedModel(
-			PortletDataContext portletDataContext, DDLRecordSet recordSet,
-			DDMStructure ddmStructure)
+			DDMStructure ddmStructure, PortletDataContext portletDataContext,
+			DDLRecordSet recordSet)
 		throws PortletDataException {
 
 		Element referrerStagedModelElement =
