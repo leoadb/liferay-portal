@@ -109,6 +109,9 @@ public class OrganizationResourceDTOConverter
 			return null;
 		}
 
+		Organization parentOrganizationDTO = toDTO(
+			dtoConverterContext, organization.getParentOrganization());
+
 		return new Organization() {
 			{
 				actions = dtoConverterContext.getActions();
@@ -210,8 +213,7 @@ public class OrganizationResourceDTOConverter
 								WebUrlUtil::toWebUrl, WebUrl.class);
 						}
 					};
-				parentOrganization = toDTO(
-					dtoConverterContext, organization.getParentOrganization());
+				parentOrganization = parentOrganizationDTO;
 				services = transformToArray(
 					_orgLaborService.getOrgLabors(
 						organization.getOrganizationId()),
