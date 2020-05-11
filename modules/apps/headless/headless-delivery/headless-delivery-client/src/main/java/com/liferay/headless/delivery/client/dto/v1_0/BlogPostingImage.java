@@ -59,6 +59,10 @@ public class BlogPostingImage implements Cloneable {
 
 	}
 
+	public static BlogPostingImage toDTO(String json) {
+		return BlogPostingImageSerDes.toDTO(json);
+	}
+
 	public String getContentUrl() {
 		return contentUrl;
 	}

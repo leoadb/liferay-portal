@@ -61,6 +61,10 @@ public class MessageBoardMessage implements Cloneable {
 
 	}
 
+	public static MessageBoardMessage toDTO(String json) {
+		return MessageBoardMessageSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

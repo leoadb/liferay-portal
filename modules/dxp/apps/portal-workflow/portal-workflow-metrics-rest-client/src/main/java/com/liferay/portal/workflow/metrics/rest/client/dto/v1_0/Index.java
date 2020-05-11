@@ -59,6 +59,10 @@ public class Index implements Cloneable {
 
 	}
 
+	public static Index toDTO(String json) {
+		return IndexSerDes.toDTO(json);
+	}
+
 	public Group getGroup() {
 		return group;
 	}

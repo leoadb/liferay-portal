@@ -61,6 +61,10 @@ public class BlogPosting implements Cloneable {
 
 	}
 
+	public static BlogPosting toDTO(String json) {
+		return BlogPostingSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

@@ -60,6 +60,10 @@ public class HistogramMetric implements Cloneable {
 
 	}
 
+	public static HistogramMetric toDTO(String json) {
+		return HistogramMetricSerDes.toDTO(json);
+	}
+
 	public Histogram[] getHistograms() {
 		return histograms;
 	}

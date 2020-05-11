@@ -61,6 +61,10 @@ public class TaxonomyCategory implements Cloneable {
 
 	}
 
+	public static TaxonomyCategory toDTO(String json) {
+		return TaxonomyCategorySerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

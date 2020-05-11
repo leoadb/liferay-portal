@@ -24,6 +24,7 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
+import com.liferay.portal.vulcan.util.DTOUtil;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -86,6 +87,10 @@ public class ExportTask {
 
 		private final String _value;
 
+	}
+
+	public static ExportTask toDTO(String json) {
+		return DTOUtil.toDTO(ExportTask.class, json);
 	}
 
 	@Schema(

@@ -59,6 +59,10 @@ public class Layout implements Cloneable {
 
 	}
 
+	public static Layout toDTO(String json) {
+		return LayoutSerDes.toDTO(json);
+	}
+
 	public ContainerType getContainerType() {
 		return containerType;
 	}

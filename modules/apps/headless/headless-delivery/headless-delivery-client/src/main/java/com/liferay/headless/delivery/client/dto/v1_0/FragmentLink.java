@@ -59,6 +59,10 @@ public class FragmentLink implements Cloneable {
 
 	}
 
+	public static FragmentLink toDTO(String json) {
+		return FragmentLinkSerDes.toDTO(json);
+	}
+
 	public Object getHref() {
 		return href;
 	}

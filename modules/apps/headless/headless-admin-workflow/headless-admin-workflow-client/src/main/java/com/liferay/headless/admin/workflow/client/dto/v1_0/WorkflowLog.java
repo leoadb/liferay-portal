@@ -61,6 +61,10 @@ public class WorkflowLog implements Cloneable {
 
 	}
 
+	public static WorkflowLog toDTO(String json) {
+		return WorkflowLogSerDes.toDTO(json);
+	}
+
 	public Creator getAuditPerson() {
 		return auditPerson;
 	}

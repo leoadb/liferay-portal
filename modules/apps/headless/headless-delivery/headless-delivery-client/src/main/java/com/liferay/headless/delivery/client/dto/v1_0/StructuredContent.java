@@ -61,6 +61,10 @@ public class StructuredContent implements Cloneable {
 
 	}
 
+	public static StructuredContent toDTO(String json) {
+		return StructuredContentSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

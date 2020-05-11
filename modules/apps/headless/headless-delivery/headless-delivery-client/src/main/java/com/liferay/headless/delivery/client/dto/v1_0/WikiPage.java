@@ -61,6 +61,10 @@ public class WikiPage implements Cloneable {
 
 	}
 
+	public static WikiPage toDTO(String json) {
+		return WikiPageSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

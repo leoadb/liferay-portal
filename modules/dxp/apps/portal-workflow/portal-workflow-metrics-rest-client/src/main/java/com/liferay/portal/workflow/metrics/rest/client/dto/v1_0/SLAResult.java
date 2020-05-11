@@ -60,6 +60,10 @@ public class SLAResult implements Cloneable {
 
 	}
 
+	public static SLAResult toDTO(String json) {
+		return SLAResultSerDes.toDTO(json);
+	}
+
 	public Date getDateOverdue() {
 		return dateOverdue;
 	}

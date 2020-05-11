@@ -61,6 +61,10 @@ public class DocumentFolder implements Cloneable {
 
 	}
 
+	public static DocumentFolder toDTO(String json) {
+		return DocumentFolderSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

@@ -61,6 +61,10 @@ public class KnowledgeBaseArticle implements Cloneable {
 
 	}
 
+	public static KnowledgeBaseArticle toDTO(String json) {
+		return KnowledgeBaseArticleSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

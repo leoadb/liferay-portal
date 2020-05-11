@@ -61,6 +61,10 @@ public class TaxonomyVocabulary implements Cloneable {
 
 	}
 
+	public static TaxonomyVocabulary toDTO(String json) {
+		return TaxonomyVocabularySerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

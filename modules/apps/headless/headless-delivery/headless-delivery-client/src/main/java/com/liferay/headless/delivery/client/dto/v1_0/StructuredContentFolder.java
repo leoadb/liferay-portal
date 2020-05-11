@@ -61,6 +61,10 @@ public class StructuredContentFolder implements Cloneable {
 
 	}
 
+	public static StructuredContentFolder toDTO(String json) {
+		return StructuredContentFolderSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

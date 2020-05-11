@@ -61,6 +61,10 @@ public class MessageBoardThread implements Cloneable {
 
 	}
 
+	public static MessageBoardThread toDTO(String json) {
+		return MessageBoardThreadSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

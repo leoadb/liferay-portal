@@ -61,6 +61,10 @@ public class Document implements Cloneable {
 
 	}
 
+	public static Document toDTO(String json) {
+		return DocumentSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

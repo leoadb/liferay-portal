@@ -62,6 +62,10 @@ public class PageElement implements Cloneable {
 
 	}
 
+	public static PageElement toDTO(String json) {
+		return PageElementSerDes.toDTO(json);
+	}
+
 	public Object getDefinition() {
 		return definition;
 	}

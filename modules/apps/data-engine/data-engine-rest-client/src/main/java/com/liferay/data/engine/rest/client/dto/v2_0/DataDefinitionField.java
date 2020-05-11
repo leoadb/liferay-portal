@@ -60,6 +60,10 @@ public class DataDefinitionField implements Cloneable {
 
 	}
 
+	public static DataDefinitionField toDTO(String json) {
+		return DataDefinitionFieldSerDes.toDTO(json);
+	}
+
 	public Map<String, Object> getCustomProperties() {
 		return customProperties;
 	}

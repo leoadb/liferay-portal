@@ -61,6 +61,10 @@ public class KnowledgeBaseFolder implements Cloneable {
 
 	}
 
+	public static KnowledgeBaseFolder toDTO(String json) {
+		return KnowledgeBaseFolderSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

@@ -61,6 +61,10 @@ public class Instance implements Cloneable {
 
 	}
 
+	public static Instance toDTO(String json) {
+		return InstanceSerDes.toDTO(json);
+	}
+
 	public String getAssetTitle() {
 		return assetTitle;
 	}

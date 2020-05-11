@@ -61,6 +61,10 @@ public class WikiNode implements Cloneable {
 
 	}
 
+	public static WikiNode toDTO(String json) {
+		return WikiNodeSerDes.toDTO(json);
+	}
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}

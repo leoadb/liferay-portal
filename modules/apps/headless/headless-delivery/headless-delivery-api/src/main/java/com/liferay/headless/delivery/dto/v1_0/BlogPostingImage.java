@@ -24,6 +24,7 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
+import com.liferay.portal.vulcan.util.DTOUtil;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -80,6 +81,10 @@ public class BlogPostingImage {
 
 		private final String _value;
 
+	}
+
+	public static BlogPostingImage toDTO(String json) {
+		return DTOUtil.toDTO(BlogPostingImage.class, json);
 	}
 
 	@Schema(description = "The image's relative URL.")
