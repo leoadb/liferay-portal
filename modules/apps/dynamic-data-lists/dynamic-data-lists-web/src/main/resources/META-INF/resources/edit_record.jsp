@@ -1,4 +1,6 @@
-<%--
+<%@ page import="java.util.Locale" %>
+<%@ page import="com.liferay.portal.kernel.theme.ThemeDisplay" %>
+<%@ page import="java.util.Arrays" %><%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -18,6 +20,8 @@
 
 <%
 String redirect = ParamUtil.getString(request, "redirect");
+
+User userDisplay = themeDisplay.getUser();
 
 String portletResource = ParamUtil.getString(request, "portletResource");
 
@@ -55,6 +59,15 @@ else if (Validator.isNull(defaultLanguageId)) {
 }
 
 String languageId = ParamUtil.getString(request, "languageId", defaultLanguageId);
+
+	Locale defaultEditLocale = LocaleUtil.fromLanguageId( ddmStructure.getDefaultLanguageId());
+
+	if(Arrays.asList(ddmStructure.getAvailableLanguageIds()).contains((themeDisplay.getLanguageId()))){
+		defaultEditLocale = themeDisplay.getLocale();
+	}
+	else if(Arrays.asList(ddmStructure.getAvailableLanguageIds()).contains(userDisplay.getLanguageId() )){
+		defaultEditLocale = userDisplay.getLocale();
+	}
 
 boolean translating = false;
 
@@ -190,11 +203,12 @@ else {
 							classNameId="<%= classNameId %>"
 							classPK="<%= classPK %>"
 							ddmFormValues="<%= ddmFormValues %>"
-							defaultEditLocale="<%= LocaleUtil.fromLanguageId(themeDisplay.getLanguageId()) %>"
+							defaultEditLocale="<%= defaultEditLocale %>"
 							defaultLocale="<%= LocaleUtil.fromLanguageId(defaultLanguageId) %>"
 							groupId="<%= recordSet.getGroupId() %>"
 							repeatable="<%= translating ? false : true %>"
 							requestedLocale="<%= locale %>"
+							showLanguageSelector = "<%= false %>"
 						/>
 					</c:when>
 					<c:otherwise>

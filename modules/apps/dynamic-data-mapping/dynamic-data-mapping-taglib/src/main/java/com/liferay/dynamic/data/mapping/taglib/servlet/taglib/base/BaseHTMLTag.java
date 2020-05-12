@@ -61,6 +61,12 @@ public abstract class BaseHTMLTag extends com.liferay.taglib.util.IncludeTag {
 		return _documentLibrarySelectorURL;
 	}
 
+	public boolean getShowLanguageSelector() { return _showLanguageSelector; }
+
+	public void setShowLanguageSelector(boolean showLanguageSelector) {
+		_showLanguageSelector = showLanguageSelector;
+	}
+
 	public java.lang.String getFieldsNamespace() {
 		return _fieldsNamespace;
 	}
@@ -197,6 +203,7 @@ public abstract class BaseHTMLTag extends com.liferay.taglib.util.IncludeTag {
 		_requestedLocale = null;
 		_showEmptyFieldLabel = true;
 		_synchronousFormSubmission = true;
+		_showLanguageSelector = true;
 	}
 
 	@Override
@@ -223,6 +230,7 @@ public abstract class BaseHTMLTag extends com.liferay.taglib.util.IncludeTag {
 		setNamespacedAttribute(request, "requestedLocale", _requestedLocale);
 		setNamespacedAttribute(request, "showEmptyFieldLabel", _showEmptyFieldLabel);
 		setNamespacedAttribute(request, "synchronousFormSubmission", _synchronousFormSubmission);
+		setNamespacedAttribute(request, "showLanguageSelector", _showLanguageSelector);
 	}
 
 	protected static final String _ATTRIBUTE_NAMESPACE = "liferay-ddm:html:";
@@ -247,5 +255,6 @@ public abstract class BaseHTMLTag extends com.liferay.taglib.util.IncludeTag {
 	private java.util.Locale _requestedLocale = null;
 	private boolean _showEmptyFieldLabel = true;
 	private boolean _synchronousFormSubmission = true;
+	private boolean _showLanguageSelector = true;
 
 }

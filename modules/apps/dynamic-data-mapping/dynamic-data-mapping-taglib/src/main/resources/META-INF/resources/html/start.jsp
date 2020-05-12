@@ -89,22 +89,25 @@
 							).put(
 								"value", curLanguageId
 							).build();
-							%>
 
-							<liferay-ui:icon
-								alt="<%= title %>"
-								data="<%= iconData %>"
-								icon="<%= StringUtil.toLowerCase(StringUtil.replace(curLanguageId, '_', '-')) %>"
-								iconCssClass="inline-item inline-item-before"
-								linkCssClass="<%= linkCssClass %>"
-								markupView="lexicon"
-								message="<%= StringUtil.replace(curLanguageId, '_', '-') %>"
-								onClick="event.preventDefault(); fireLocaleChanged(event);"
-								url="javascript:;"
-							>
-							</liferay-ui:icon>
+							System.out.println("start jsp: "+showLanguageSelector);
+							if (showLanguageSelector) {
+						%>
+								<liferay-ui:icon
+									alt="<%= title %>"
+									data="<%= iconData %>"
+									icon="<%= StringUtil.toLowerCase(StringUtil.replace(curLanguageId, '_', '-')) %>"
+									iconCssClass="inline-item inline-item-before"
+									linkCssClass="<%= linkCssClass %>"
+									markupView="lexicon"
+									message="<%= StringUtil.replace(curLanguageId, '_', '-') %>"
+									onClick="event.preventDefault(); fireLocaleChanged(event);"
+									url="javascript:;"
+								>
+								</liferay-ui:icon>
 
 						<%
+							}
 						}
 						%>
 
