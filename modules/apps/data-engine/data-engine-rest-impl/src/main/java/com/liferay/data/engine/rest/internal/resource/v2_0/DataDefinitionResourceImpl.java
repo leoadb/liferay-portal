@@ -539,7 +539,9 @@ public class DataDefinitionResourceImpl
 
 		_validate(dataDefinition, ddmForm);
 
-		_updateFieldNames(dataDefinitionId, dataDefinition);
+		_removeFields(
+			dataDefinition, dataDefinitionId,
+			_getRemovedFieldNames(dataDefinition, dataDefinitionId));
 
 		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
 			_portal.getClassNameId(DDMStructure.class), dataDefinitionId);
@@ -683,6 +685,14 @@ public class DataDefinitionResourceImpl
 		return null;
 	}
 
+	private String[] _filterFieldNames(
+		String[] currentFieldNames, String[] fieldNames) {
+
+		return ArrayUtil.filter(
+			currentFieldNames,
+			fieldName -> !ArrayUtil.contains(fieldNames, fieldName));
+	}
+
 	private DataLayoutResource _getDataLayoutResource(boolean checkPermission) {
 		DataLayoutResource.Builder builder = DataLayoutResource.builder();
 
@@ -797,23 +807,22 @@ public class DataDefinitionResourceImpl
 	}
 
 	private String[] _getRemovedFieldNames(
-			DataDefinition dataDefinition, DDMStructure ddmStructure)
+			DataDefinition dataDefinition, long dataDefinitionId)
 		throws Exception {
 
 		DataDefinition existingDataDefinition =
 			DataDefinitionUtil.toDataDefinition(
-				_ddmFormFieldTypeServicesTracker, ddmStructure,
+				_ddmFormFieldTypeServicesTracker,
+				_ddmStructureLocalService.getStructure(dataDefinitionId),
 				_spiDDMFormRuleConverter);
 
-		return _removeFieldNames(
+		return _filterFieldNames(
 			transform(
 				existingDataDefinition.getDataDefinitionFields(),
-				dataDefinitionField -> dataDefinitionField.getName(),
-				String.class),
+				DataDefinitionField::getName, String.class),
 			transform(
 				dataDefinition.getDataDefinitionFields(),
-				dataDefinitionField -> dataDefinitionField.getName(),
-				String.class));
+				DataDefinitionField::getName, String.class));
 	}
 
 	private ResourceBundle _getResourceBundle(
@@ -831,12 +840,139 @@ public class DataDefinitionResourceImpl
 			_portal.getResourceBundle(locale));
 	}
 
-	private String[] _removeFieldNames(
-		String[] currentFieldNames, String[] removedFieldNames) {
+	private void _removeFields(
+			DataDefinition dataDefinition, long dataDefinitionId,
+			String[] fieldNames)
+		throws Exception {
 
-		return ArrayUtil.filter(
-			currentFieldNames,
-			fieldName -> !ArrayUtil.contains(removedFieldNames, fieldName));
+		Set<Long> ddmStructureLayoutIds = new HashSet<>();
+		Set<Long> deDataListViewIds = new HashSet<>();
+
+		for (String fieldName : fieldNames) {
+			ddmStructureLayoutIds.addAll(
+				transform(
+					_deDataDefinitionFieldLinkLocalService.
+						getDEDataDefinitionFieldLinks(
+							_portal.getClassNameId(DDMStructureLayout.class),
+							dataDefinitionId, fieldName),
+					DEDataDefinitionFieldLink::getClassPK));
+
+			deDataListViewIds.addAll(
+				transform(
+					_deDataDefinitionFieldLinkLocalService.
+						getDEDataDefinitionFieldLinks(
+							_portal.getClassNameId(DEDataListView.class),
+							dataDefinitionId, fieldName),
+					DEDataDefinitionFieldLink::getClassPK));
+
+			_deDataDefinitionFieldLinkLocalService.
+				deleteDEDataDefinitionFieldLinks(
+					_portal.getClassNameId(DDMStructureLayout.class),
+					dataDefinitionId, fieldName);
+
+			_deDataDefinitionFieldLinkLocalService.
+				deleteDEDataDefinitionFieldLinks(
+					_portal.getClassNameId(DEDataListView.class),
+					dataDefinitionId, fieldName);
+		}
+
+		_removeFieldsDataLayouts(
+			dataDefinition, ddmStructureLayoutIds, fieldNames);
+		_removeFieldsDataListViews(deDataListViewIds, fieldNames);
+	}
+
+	private void _removeFieldsDataLayout(
+		DataLayout dataLayout, String[] fieldNames) {
+
+		Stream<DataLayoutPage> dataLayoutPages = Arrays.stream(
+			dataLayout.getDataLayoutPages());
+
+		dataLayoutPages.forEach(
+			dataLayoutPage -> {
+				Stream<DataLayoutRow> dataLayoutRows = Arrays.stream(
+					dataLayoutPage.getDataLayoutRows());
+
+				dataLayoutRows.forEach(
+					dataLayoutRow -> {
+						Stream<DataLayoutColumn> dataLayoutColumns =
+							Arrays.stream(dataLayoutRow.getDataLayoutColumns());
+
+						dataLayoutColumns.forEach(
+							dataLayoutColumn -> dataLayoutColumn.setFieldNames(
+								_filterFieldNames(
+									dataLayoutColumn.getFieldNames(),
+									fieldNames)));
+
+						dataLayoutRow.setDataLayoutColumns(
+							ArrayUtil.filter(
+								dataLayoutRow.getDataLayoutColumns(),
+								column -> !ArrayUtil.isEmpty(
+									column.getFieldNames())));
+					});
+
+				dataLayoutPage.setDataLayoutRows(
+					ArrayUtil.filter(
+						dataLayoutPage.getDataLayoutRows(),
+						row -> !ArrayUtil.isEmpty(row.getDataLayoutColumns())));
+			});
+	}
+
+	private void _removeFieldsDataLayouts(
+			DataDefinition dataDefinition, Set<Long> ddmStructureLayoutIds,
+			String[] fieldNames)
+		throws Exception {
+
+		for (Long ddmStructureLayoutId : ddmStructureLayoutIds) {
+			DDMStructureLayout ddmStructureLayout =
+				_ddmStructureLayoutLocalService.getStructureLayout(
+					ddmStructureLayoutId);
+
+			DataLayout dataLayout = DataLayoutUtil.toDataLayout(
+				ddmStructureLayout.getDDMFormLayout(),
+				_spiDDMFormRuleConverter);
+
+			_removeFieldsDataLayout(dataLayout, fieldNames);
+
+			DDMFormLayout ddmFormLayout = DataLayoutUtil.toDDMFormLayout(
+				dataLayout,
+				DataDefinitionUtil.toDDMForm(
+					dataDefinition, _ddmFormFieldTypeServicesTracker),
+				_ddmFormRuleDeserializer);
+
+			DDMFormLayoutSerializerSerializeRequest.Builder builder =
+				DDMFormLayoutSerializerSerializeRequest.Builder.newBuilder(
+					ddmFormLayout);
+
+			DDMFormLayoutSerializerSerializeResponse
+				ddmFormLayoutSerializerSerializeResponse =
+					_ddmFormLayoutSerializer.serialize(builder.build());
+
+			ddmStructureLayout.setDefinition(
+				ddmFormLayoutSerializerSerializeResponse.getContent());
+
+			_ddmStructureLayoutLocalService.updateDDMStructureLayout(
+				ddmStructureLayout);
+		}
+	}
+
+	private void _removeFieldsDataListViews(
+			Set<Long> deDataListViewIds, String[] removedFieldNames)
+		throws Exception {
+
+		for (Long deDataListViewId : deDataListViewIds) {
+			DEDataListView deDataListView =
+				_deDataListViewLocalService.getDEDataListView(deDataListViewId);
+
+			deDataListView.setFieldNames(
+				Arrays.toString(
+					_filterFieldNames(
+						JSONUtil.toStringArray(
+							_jsonFactory.createJSONArray(
+								deDataListView.getFieldNames())),
+						removedFieldNames)));
+
+			_deDataListViewLocalService.updateDEDataListView(deDataListView);
+		}
 	}
 
 	private String _resolveModuleName(DDMFormFieldType ddmFormFieldType) {
@@ -1111,147 +1247,6 @@ public class DataDefinitionResourceImpl
 
 		return GetterUtil.getString(
 			ResourceBundleUtil.getString(resourceBundle, key), key);
-	}
-
-	private void _updateDataLayoutFieldNames(
-		DataLayout dataLayout, String[] removedFieldNames) {
-
-		Stream<DataLayoutPage> dataLayoutPages = Arrays.stream(
-			dataLayout.getDataLayoutPages());
-
-		dataLayoutPages.forEach(
-			dataLayoutPage -> {
-				Stream<DataLayoutRow> dataLayoutRows = Arrays.stream(
-					dataLayoutPage.getDataLayoutRows());
-
-				dataLayoutRows.forEach(
-					dataLayoutRow -> {
-						Stream<DataLayoutColumn> dataLayoutColumns =
-							Arrays.stream(dataLayoutRow.getDataLayoutColumns());
-
-						dataLayoutColumns.forEach(
-							dataLayoutColumn -> dataLayoutColumn.setFieldNames(
-								_removeFieldNames(
-									dataLayoutColumn.getFieldNames(),
-									removedFieldNames)));
-
-						dataLayoutRow.setDataLayoutColumns(
-							ArrayUtil.filter(
-								dataLayoutRow.getDataLayoutColumns(),
-								column -> !ArrayUtil.isEmpty(
-									column.getFieldNames())));
-					});
-
-				dataLayoutPage.setDataLayoutRows(
-					ArrayUtil.filter(
-						dataLayoutPage.getDataLayoutRows(),
-						row -> !ArrayUtil.isEmpty(row.getDataLayoutColumns())));
-			});
-	}
-
-	private void _updateDataLayouts(
-			DataDefinition dataDefinition, Set<Long> ddmStructureLayoutIds,
-			String[] removedFieldNames)
-		throws Exception {
-
-		for (Long ddmStructureLayoutId : ddmStructureLayoutIds) {
-			DDMStructureLayout ddmStructureLayout =
-				_ddmStructureLayoutLocalService.getStructureLayout(
-					ddmStructureLayoutId);
-
-			DataLayout dataLayout = DataLayoutUtil.toDataLayout(
-				ddmStructureLayout.getDDMFormLayout(),
-				_spiDDMFormRuleConverter);
-
-			_updateDataLayoutFieldNames(dataLayout, removedFieldNames);
-
-			DDMFormLayout ddmFormLayout = DataLayoutUtil.toDDMFormLayout(
-				dataLayout,
-				DataDefinitionUtil.toDDMForm(
-					dataDefinition, _ddmFormFieldTypeServicesTracker),
-				_ddmFormRuleDeserializer);
-
-			DDMFormLayoutSerializerSerializeRequest.Builder builder =
-				DDMFormLayoutSerializerSerializeRequest.Builder.newBuilder(
-					ddmFormLayout);
-
-			DDMFormLayoutSerializerSerializeResponse
-				ddmFormLayoutSerializerSerializeResponse =
-					_ddmFormLayoutSerializer.serialize(builder.build());
-
-			ddmStructureLayout.setDefinition(
-				ddmFormLayoutSerializerSerializeResponse.getContent());
-
-			_ddmStructureLayoutLocalService.updateDDMStructureLayout(
-				ddmStructureLayout);
-		}
-	}
-
-	private void _updateDataListViews(
-			Set<Long> deDataListViewIds, String[] removedFieldNames)
-		throws Exception {
-
-		for (Long deDataListViewId : deDataListViewIds) {
-			DEDataListView deDataListView =
-				_deDataListViewLocalService.getDEDataListView(deDataListViewId);
-
-			String[] fieldNames = JSONUtil.toStringArray(
-				_jsonFactory.createJSONArray(deDataListView.getFieldNames()));
-
-			deDataListView.setFieldNames(
-				Arrays.toString(
-					_removeFieldNames(fieldNames, removedFieldNames)));
-
-			_deDataListViewLocalService.updateDEDataListView(deDataListView);
-		}
-	}
-
-	private void _updateFieldNames(
-			Long dataDefinitionId, DataDefinition dataDefinition)
-		throws Exception {
-
-		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
-			dataDefinitionId);
-
-		String[] removedFieldNames = _getRemovedFieldNames(
-			dataDefinition, ddmStructure);
-
-		Set<Long> ddmStructureLayoutIds = new HashSet<>();
-		Set<Long> deDataListViewIds = new HashSet<>();
-
-		for (String removedFieldName : removedFieldNames) {
-			ddmStructureLayoutIds.addAll(
-				transform(
-					_deDataDefinitionFieldLinkLocalService.
-						getDEDataDefinitionFieldLinks(
-							_portal.getClassNameId(DDMStructureLayout.class),
-							ddmStructure.getStructureId(), removedFieldName),
-					deDataDefinitionFieldLink ->
-						deDataDefinitionFieldLink.getClassPK()));
-
-			deDataListViewIds.addAll(
-				transform(
-					_deDataDefinitionFieldLinkLocalService.
-						getDEDataDefinitionFieldLinks(
-							_portal.getClassNameId(DEDataListView.class),
-							ddmStructure.getStructureId(), removedFieldName),
-					deDataDefinitionFieldLink ->
-						deDataDefinitionFieldLink.getClassPK()));
-
-			_deDataDefinitionFieldLinkLocalService.
-				deleteDEDataDefinitionFieldLinks(
-					_portal.getClassNameId(DDMStructureLayout.class),
-					ddmStructure.getStructureId(), removedFieldName);
-
-			_deDataDefinitionFieldLinkLocalService.
-				deleteDEDataDefinitionFieldLinks(
-					_portal.getClassNameId(DEDataListView.class),
-					ddmStructure.getStructureId(), removedFieldName);
-		}
-
-		_updateDataLayouts(
-			dataDefinition, ddmStructureLayoutIds, removedFieldNames);
-		_updateDataListViews(deDataListViewIds, removedFieldNames);
 	}
 
 	private void _validate(DataDefinition dataDefinition, DDMForm ddmForm) {
