@@ -94,6 +94,7 @@ import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -116,6 +117,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -318,9 +320,10 @@ public class DataDefinitionResourceImpl
 				DataDefinition dataDefinition = null;
 
 				try {
-					getSiteDataDefinitionByContentTypeByDataDefinitionKey(
-						siteId, "native-object",
-						dataEngineNativeObject.getClassName());
+					dataDefinition =
+						getSiteDataDefinitionByContentTypeByDataDefinitionKey(
+							siteId, "native-object",
+							dataEngineNativeObject.getClassName());
 				}
 				catch (Exception exception) {
 					if (!(exception instanceof NoSuchStructureException) &&
@@ -335,22 +338,44 @@ public class DataDefinitionResourceImpl
 							availableLanguageIds = new String[] {
 								contextAcceptLanguage.getPreferredLanguageId()
 							};
-							dataDefinitionFields = _toDataDefinitionFields(
-								dataEngineNativeObject);
 							dataDefinitionKey =
 								dataEngineNativeObject.getClassName();
-							name = HashMapBuilder.<String, Object>put(
-								contextAcceptLanguage.getPreferredLanguageId(),
-								dataEngineNativeObject.getName()
-							).build();
 							storageType = "json";
 						}
 					};
 				}
 
-				if (dataDefinition != null) {
+				DataDefinitionField[] dataDefinitionFields =
+					dataDefinition.getDataDefinitionFields();
+
+				if (ArrayUtil.isEmpty(dataDefinitionFields)) {
+					dataDefinitionFields = new DataDefinitionField[0];
+				}
+
+				dataDefinition.setDataDefinitionFields(
+					_toDataDefinitionFields(
+						dataDefinitionFields,
+						dataEngineNativeObject.
+							getDataEngineNativeObjectFields()));
+
+				Map<String, Object> name = dataDefinition.getName();
+
+				if (MapUtil.isEmpty(name)) {
+					name = new HashMap<>();
+				}
+
+				name.put(
+					contextAcceptLanguage.getPreferredLanguageId(),
+					dataEngineNativeObject.getName());
+
+				dataDefinition.setName(name);
+
+				if (Validator.isNull(dataDefinition.getId())) {
 					postDataDefinitionByContentType(
 						"native-object", dataDefinition);
+				}
+				else {
+					putDataDefinition(dataDefinition.getId(), dataDefinition);
 				}
 			}
 		}
@@ -696,16 +721,31 @@ public class DataDefinitionResourceImpl
 		return dataLayout.getId();
 	}
 
-	private String _getFieldType(int sqlType) {
-		if ((sqlType == Types.BIGINT) || (sqlType == Types.DECIMAL) ||
-			(sqlType == Types.DOUBLE) || (sqlType == Types.FLOAT) ||
-			(sqlType == Types.INTEGER) || (sqlType == Types.NUMERIC) ||
-			(sqlType == Types.TINYINT)) {
-
-			return "number";
+	private String _getFieldType(String customType, int sqlType) {
+		if (ArrayUtil.contains(_BASIC_FIELD_TYPES, customType)) {
+			return customType;
 		}
 
-		return "text";
+		String type = "text";
+
+		if (sqlType == Types.DATE) {
+			type = "date";
+		}
+		else if (sqlType == Types.BOOLEAN) {
+			type = "radio";
+		}
+		else if ((sqlType == Types.BIGINT) || (sqlType == Types.DECIMAL) ||
+				 (sqlType == Types.DOUBLE) || (sqlType == Types.FLOAT) ||
+				 (sqlType == Types.INTEGER) || (sqlType == Types.NUMERIC) ||
+				 (sqlType == Types.TINYINT)) {
+
+			type = "numeric";
+		}
+		else if (sqlType == Types.ARRAY) {
+			type = "select";
+		}
+
+		return type;
 	}
 
 	private JSONObject _getFieldTypeMetadataJSONObject(
@@ -843,31 +883,62 @@ public class DataDefinitionResourceImpl
 	}
 
 	private DataDefinitionField[] _toDataDefinitionFields(
-		DataEngineNativeObject dataEngineNativeObject) {
+			DataDefinitionField[] dataDefinitionFields,
+			List<DataEngineNativeObjectField> dataEngineNativeObjectFields)
+		throws Exception {
 
-		List<DataDefinitionField> dataDefinitionFields = new ArrayList<>();
+		if (ListUtil.isEmpty(dataEngineNativeObjectFields)) {
+			return new DataDefinitionField[0];
+		}
+
+		List<DataDefinitionField> list = new ArrayList<>();
 
 		for (DataEngineNativeObjectField dataEngineNativeObjectField :
-				dataEngineNativeObject.getDataEngineNativeObjectFields()) {
+				dataEngineNativeObjectFields) {
 
 			Column column = dataEngineNativeObjectField.getColumn();
 
-			dataDefinitionFields.add(
-				new DataDefinitionField() {
+			DataDefinitionField dataDefinitionField = null;
+
+			for (DataDefinitionField existingDataDefinitionField :
+					dataDefinitionFields) {
+
+				if (Objects.equals(
+						column.getName(),
+						existingDataDefinitionField.getName())) {
+
+					dataDefinitionField = existingDataDefinitionField;
+
+					break;
+				}
+			}
+
+			if (dataDefinitionField == null) {
+				dataDefinitionField = new DataDefinitionField() {
 					{
 						customProperties = HashMapBuilder.<String, Object>put(
 							"native-field", "native-field"
 						).build();
-						fieldType = GetterUtil.getString(
-							dataEngineNativeObjectField.getCustomType(),
-							_getFieldType(column.getSQLType()));
+						label = HashMapBuilder.<String, Object>put(
+							contextAcceptLanguage.getPreferredLanguageId(),
+							column.getName()
+						).build();
 						name = column.getName();
-						required = !column.isNullAllowed();
 					}
-				});
+				};
+			}
+
+			dataDefinitionField.setFieldType(
+				_getFieldType(
+					dataEngineNativeObjectField.getCustomType(),
+					column.getSQLType()));
+
+			dataDefinitionField.setRequired(!column.isNullAllowed());
+
+			list.add(dataDefinitionField);
 		}
 
-		return dataDefinitionFields.toArray(new DataDefinitionField[0]);
+		return list.toArray(new DataDefinitionField[0]);
 	}
 
 	private DataDefinitionValidationException
@@ -1258,6 +1329,10 @@ public class DataDefinitionResourceImpl
 			throw new DataDefinitionValidationException(exception);
 		}
 	}
+
+	private static final String[] _BASIC_FIELD_TYPES = {
+		"date", "numeric", "radio", "select", "text"
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DataDefinitionResourceImpl.class);
