@@ -89,10 +89,9 @@
 							).put(
 								"value", curLanguageId
 							).build();
-
-							System.out.println("start jsp: "+showLanguageSelector);
-							if (showLanguageSelector) {
+							if(showLanguageSelector) {
 						%>
+
 								<liferay-ui:icon
 									alt="<%= title %>"
 									data="<%= iconData %>"

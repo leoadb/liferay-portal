@@ -358,16 +358,6 @@ AUI.add(
 				if (instance.get('readOnly')) {
 					retVal = true;
 				}
-				else {
-					var form = instance.getForm();
-
-					if (
-						!instance.get('localizable') &&
-						form.getDefaultLocale() != instance.get('displayLocale')
-					) {
-						retVal = true;
-					}
-				}
 
 				return retVal;
 			},
