@@ -16,6 +16,7 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 
 import com.liferay.data.engine.content.type.DataDefinitionContentType;
 import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
+import com.liferay.data.engine.model.DEDataDefinitionFieldLink;
 import com.liferay.data.engine.model.DEDataListView;
 import com.liferay.data.engine.nativeobject.DataEngineNativeObject;
 import com.liferay.data.engine.nativeobject.DataEngineNativeObjectField;
@@ -154,11 +155,39 @@ public class DataDefinitionResourceImpl
 		_ddlRecordSetLocalService.deleteDDMStructureRecordSets(
 			dataDefinitionId);
 
-		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			dataDefinitionId);
+		for (DEDataDefinitionFieldLink deDataDefinitionFieldLink :
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(dataDefinitionId)) {
 
-		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			_portal.getClassNameId(DDMStructure.class), dataDefinitionId);
+			_deDataDefinitionFieldLinkLocalService.
+				deleteDEDataDefinitionFieldLink(deDataDefinitionFieldLink);
+
+			if (deDataDefinitionFieldLink.getClassNameId() !=
+					_portal.getClassNameId(DDMStructure.class)) {
+
+				continue;
+			}
+
+			DataDefinition dataDefinition = _toDataDefinition(
+				_ddmStructureLocalService.getStructure(
+					deDataDefinitionFieldLink.getClassPK()));
+
+			_removeFields(
+				dataDefinition, deDataDefinitionFieldLink.getClassPK(),
+				new String[] {deDataDefinitionFieldLink.getFieldName()});
+
+			dataDefinition.setDataDefinitionFields(
+				ArrayUtil.filter(
+					dataDefinition.getDataDefinitionFields(),
+					dataDefinitionField -> !StringUtil.equals(
+						dataDefinitionField.getName(),
+						deDataDefinitionFieldLink.getFieldName())));
+
+			_updateDataDefinition(
+				dataDefinition, dataDefinition.getId(),
+				DataDefinitionUtil.toDDMForm(
+					dataDefinition, _ddmFormFieldTypeServicesTracker));
+		}
 
 		_deDataListViewLocalService.deleteDEDataListViews(dataDefinitionId);
 
@@ -554,23 +583,7 @@ public class DataDefinitionResourceImpl
 				getPermissionCheckerGroupId(dataDefinitionId)
 			));
 
-		DDMFormSerializerSerializeRequest.Builder builder =
-			DDMFormSerializerSerializeRequest.Builder.newBuilder(ddmForm);
-
-		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
-			_ddmFormSerializer.serialize(builder.build());
-
-		return DataDefinitionUtil.toDataDefinition(
-			_ddmFormFieldTypeServicesTracker,
-			_ddmStructureLocalService.updateStructure(
-				PrincipalThreadLocal.getUserId(), dataDefinitionId,
-				DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID,
-				LocalizedValueUtil.toLocaleStringMap(dataDefinition.getName()),
-				LocalizedValueUtil.toLocaleStringMap(
-					dataDefinition.getDescription()),
-				ddmFormSerializerSerializeResponse.getContent(),
-				new ServiceContext()),
-			_spiDDMFormRuleConverter);
+		return _updateDataDefinition(dataDefinition, dataDefinitionId, ddmForm);
 	}
 
 	@Override
@@ -1247,6 +1260,30 @@ public class DataDefinitionResourceImpl
 
 		return GetterUtil.getString(
 			ResourceBundleUtil.getString(resourceBundle, key), key);
+	}
+
+	private DataDefinition _updateDataDefinition(
+			DataDefinition dataDefinition, Long dataDefinitionId,
+			DDMForm ddmForm)
+		throws Exception {
+
+		DDMFormSerializerSerializeRequest.Builder builder =
+			DDMFormSerializerSerializeRequest.Builder.newBuilder(ddmForm);
+
+		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
+			_ddmFormSerializer.serialize(builder.build());
+
+		return DataDefinitionUtil.toDataDefinition(
+			_ddmFormFieldTypeServicesTracker,
+			_ddmStructureLocalService.updateStructure(
+				PrincipalThreadLocal.getUserId(), dataDefinitionId,
+				DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID,
+				LocalizedValueUtil.toLocaleStringMap(dataDefinition.getName()),
+				LocalizedValueUtil.toLocaleStringMap(
+					dataDefinition.getDescription()),
+				ddmFormSerializerSerializeResponse.getContent(),
+				new ServiceContext()),
+			_spiDDMFormRuleConverter);
 	}
 
 	private void _validate(DataDefinition dataDefinition, DDMForm ddmForm) {
