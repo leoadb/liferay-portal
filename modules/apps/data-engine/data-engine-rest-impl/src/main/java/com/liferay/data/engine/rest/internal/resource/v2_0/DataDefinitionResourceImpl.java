@@ -172,7 +172,7 @@ public class DataDefinitionResourceImpl
 				_ddmStructureLocalService.getStructure(
 					deDataDefinitionFieldLink.getClassPK()));
 
-			_removeFields(
+			_removeFieldsFromDataLayoutsAndDataListViews(
 				dataDefinition, deDataDefinitionFieldLink.getClassPK(),
 				new String[] {deDataDefinitionFieldLink.getFieldName()});
 
@@ -568,7 +568,7 @@ public class DataDefinitionResourceImpl
 
 		_validate(dataDefinition, ddmForm);
 
-		_removeFields(
+		_removeFieldsFromDataLayoutsAndDataListViews(
 			dataDefinition, dataDefinitionId,
 			_getRemovedFieldNames(dataDefinition, dataDefinitionId));
 
@@ -853,42 +853,7 @@ public class DataDefinitionResourceImpl
 			_portal.getResourceBundle(locale));
 	}
 
-	private void _removeFields(
-			DataDefinition dataDefinition, long dataDefinitionId,
-			String[] fieldNames)
-		throws Exception {
-
-		Set<Long> ddmStructureLayoutIds = new HashSet<>();
-		Set<Long> deDataListViewIds = new HashSet<>();
-
-		ddmStructureLayoutIds.addAll(
-			transform(
-				_deDataDefinitionFieldLinkLocalService.
-					getDEDataDefinitionFieldLinks(
-						_portal.getClassNameId(DDMStructureLayout.class),
-						dataDefinitionId, fieldNames),
-				DEDataDefinitionFieldLink::getClassPK));
-		deDataListViewIds.addAll(
-			transform(
-				_deDataDefinitionFieldLinkLocalService.
-					getDEDataDefinitionFieldLinks(
-						_portal.getClassNameId(DEDataListView.class),
-						dataDefinitionId, fieldNames),
-				DEDataDefinitionFieldLink::getClassPK));
-
-		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			_portal.getClassNameId(DDMStructureLayout.class), dataDefinitionId,
-			fieldNames);
-		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			_portal.getClassNameId(DEDataListView.class), dataDefinitionId,
-			fieldNames);
-
-		_removeFieldsDataLayouts(
-			dataDefinition, ddmStructureLayoutIds, fieldNames);
-		_removeFieldsDataListViews(deDataListViewIds, fieldNames);
-	}
-
-	private void _removeFieldsDataLayout(
+	private void _removeFieldsFromDataLayout(
 		DataLayout dataLayout, String[] fieldNames) {
 
 		Stream<DataLayoutPage> dataLayoutPages = Arrays.stream(
@@ -924,7 +889,7 @@ public class DataDefinitionResourceImpl
 			});
 	}
 
-	private void _removeFieldsDataLayouts(
+	private void _removeFieldsFromDataLayouts(
 			DataDefinition dataDefinition, Set<Long> ddmStructureLayoutIds,
 			String[] fieldNames)
 		throws Exception {
@@ -938,7 +903,7 @@ public class DataDefinitionResourceImpl
 				ddmStructureLayout.getDDMFormLayout(),
 				_spiDDMFormRuleConverter);
 
-			_removeFieldsDataLayout(dataLayout, fieldNames);
+			_removeFieldsFromDataLayout(dataLayout, fieldNames);
 
 			DDMFormLayout ddmFormLayout = DataLayoutUtil.toDDMFormLayout(
 				dataLayout,
@@ -962,7 +927,42 @@ public class DataDefinitionResourceImpl
 		}
 	}
 
-	private void _removeFieldsDataListViews(
+	private void _removeFieldsFromDataLayoutsAndDataListViews(
+			DataDefinition dataDefinition, long dataDefinitionId,
+			String[] fieldNames)
+		throws Exception {
+
+		Set<Long> ddmStructureLayoutIds = new HashSet<>();
+		Set<Long> deDataListViewIds = new HashSet<>();
+
+		ddmStructureLayoutIds.addAll(
+			transform(
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(
+						_portal.getClassNameId(DDMStructureLayout.class),
+						dataDefinitionId, fieldNames),
+				DEDataDefinitionFieldLink::getClassPK));
+		deDataListViewIds.addAll(
+			transform(
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(
+						_portal.getClassNameId(DEDataListView.class),
+						dataDefinitionId, fieldNames),
+				DEDataDefinitionFieldLink::getClassPK));
+
+		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
+			_portal.getClassNameId(DDMStructureLayout.class), dataDefinitionId,
+			fieldNames);
+		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
+			_portal.getClassNameId(DEDataListView.class), dataDefinitionId,
+			fieldNames);
+
+		_removeFieldsFromDataLayouts(
+			dataDefinition, ddmStructureLayoutIds, fieldNames);
+		_removeFieldsFromDataListViews(deDataListViewIds, fieldNames);
+	}
+
+	private void _removeFieldsFromDataListViews(
 			Set<Long> deDataListViewIds, String[] removedFieldNames)
 		throws Exception {
 
