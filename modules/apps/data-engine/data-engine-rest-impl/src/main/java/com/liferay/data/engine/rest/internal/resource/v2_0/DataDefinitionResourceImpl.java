@@ -925,23 +925,13 @@ public class DataDefinitionResourceImpl
 
 			Column column = dataEngineNativeObjectField.getColumn();
 
-			DataDefinitionField dataDefinitionField = null;
-
-			for (DataDefinitionField existingDataDefinitionField :
-					dataDefinitionFields) {
-
-				if (Objects.equals(
-						column.getName(),
-						existingDataDefinitionField.getName())) {
-
-					dataDefinitionField = existingDataDefinitionField;
-
-					break;
-				}
-			}
-
-			if (dataDefinitionField == null) {
-				dataDefinitionField = new DataDefinitionField() {
+			DataDefinitionField dataDefinitionField = Stream.of(
+				dataDefinitionFields
+			).filter(
+				field -> Objects.equals(column.getName(), field.getName())
+			).findFirst(
+			).orElse(
+				new DataDefinitionField() {
 					{
 						customProperties = HashMapBuilder.<String, Object>put(
 							"native-field", "native-field"
@@ -952,14 +942,13 @@ public class DataDefinitionResourceImpl
 						).build();
 						name = column.getName();
 					}
-				};
-			}
+				}
+			);
 
 			dataDefinitionField.setFieldType(
 				_getFieldType(
 					dataEngineNativeObjectField.getCustomType(),
 					column.getSQLType()));
-
 			dataDefinitionField.setRequired(!column.isNullAllowed());
 
 			list.add(dataDefinitionField);
