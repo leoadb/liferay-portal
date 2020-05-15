@@ -93,20 +93,27 @@ public class DEDataDefinitionFieldLinkLocalServiceImpl
 		deDataDefinitionFieldLinkPersistence.removeByC_C(classNameId, classPK);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 * DEDataDefinitionFieldLinkLocalServiceImpl#deleteDEDataDefinitionFieldLinks(long, long, String[])}
+	 */
+	@Deprecated
 	@Override
 	public void deleteDEDataDefinitionFieldLinks(
 		long classNameId, long ddmStructureId, String fieldName) {
 
-		deDataDefinitionFieldLinkPersistence.removeByC_DDMSI_F(
-			classNameId, ddmStructureId, fieldName);
+		deleteDEDataDefinitionFieldLinks(
+			classNameId, ddmStructureId, new String[] {fieldName});
 	}
 
 	@Override
 	public void deleteDEDataDefinitionFieldLinks(
 		long classNameId, long ddmStructureId, String[] fieldNames) {
 
-		deDataDefinitionFieldLinkPersistence.removeByC_DDMSI_F(
-			classNameId, ddmStructureId, fieldNames);
+		for (String fieldName : fieldNames) {
+			deDataDefinitionFieldLinkPersistence.removeByC_DDMSI_F(
+				classNameId, ddmStructureId, fieldName);
+		}
 	}
 
 	@Override
@@ -117,12 +124,17 @@ public class DEDataDefinitionFieldLinkLocalServiceImpl
 			ddmStructureId);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 * DEDataDefinitionFieldLinkLocalServiceImpl#getDEDataDefinitionFieldLinks(long, long, String[])}
+	 */
+	@Deprecated
 	@Override
 	public List<DEDataDefinitionFieldLink> getDEDataDefinitionFieldLinks(
 		long classNameId, long ddmStructureId, String fieldName) {
 
-		return deDataDefinitionFieldLinkPersistence.findByC_DDMSI_F(
-			classNameId, ddmStructureId, fieldName);
+		return getDEDataDefinitionFieldLinks(
+			classNameId, ddmStructureId, new String[] {fieldName});
 	}
 
 	@Override
