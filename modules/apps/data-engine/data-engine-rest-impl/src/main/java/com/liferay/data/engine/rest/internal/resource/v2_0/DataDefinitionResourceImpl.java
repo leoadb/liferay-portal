@@ -349,30 +349,26 @@ public class DataDefinitionResourceImpl
 					};
 				}
 
-				DataDefinitionField[] dataDefinitionFields =
-					dataDefinition.getDataDefinitionFields();
-
-				if (ArrayUtil.isEmpty(dataDefinitionFields)) {
-					dataDefinitionFields = new DataDefinitionField[0];
-				}
-
 				dataDefinition.setDataDefinitionFields(
 					_toDataDefinitionFields(
-						dataDefinitionFields,
+						Optional.ofNullable(
+							dataDefinition.getDataDefinitionFields()
+						).orElse(
+							new DataDefinitionField[0]
+						),
 						dataEngineNativeObject.
 							getDataEngineNativeObjectFields()));
-
-				Map<String, Object> name = dataDefinition.getName();
-
-				if (MapUtil.isEmpty(name)) {
-					name = new HashMap<>();
-				}
-
-				name.put(
-					contextAcceptLanguage.getPreferredLanguageId(),
-					dataEngineNativeObject.getName());
-
-				dataDefinition.setName(name);
+				dataDefinition.setName(
+					HashMapBuilder.<String, Object>putAll(
+						Optional.ofNullable(
+							dataDefinition.getName()
+						).orElse(
+							new HashMap<>()
+						)
+					).put(
+						contextAcceptLanguage.getPreferredLanguageId(),
+						dataEngineNativeObject.getName()
+					).build());
 
 				if (Validator.isNull(dataDefinition.getId())) {
 					postDataDefinitionByContentType(
