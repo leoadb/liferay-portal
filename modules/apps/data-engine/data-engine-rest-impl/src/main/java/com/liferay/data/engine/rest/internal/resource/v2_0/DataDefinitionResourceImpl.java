@@ -861,33 +861,27 @@ public class DataDefinitionResourceImpl
 		Set<Long> ddmStructureLayoutIds = new HashSet<>();
 		Set<Long> deDataListViewIds = new HashSet<>();
 
-		for (String fieldName : fieldNames) {
-			ddmStructureLayoutIds.addAll(
-				transform(
-					_deDataDefinitionFieldLinkLocalService.
-						getDEDataDefinitionFieldLinks(
-							_portal.getClassNameId(DDMStructureLayout.class),
-							dataDefinitionId, fieldName),
-					DEDataDefinitionFieldLink::getClassPK));
+		ddmStructureLayoutIds.addAll(
+			transform(
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(
+						_portal.getClassNameId(DDMStructureLayout.class),
+						dataDefinitionId, fieldNames),
+				DEDataDefinitionFieldLink::getClassPK));
+		deDataListViewIds.addAll(
+			transform(
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(
+						_portal.getClassNameId(DEDataListView.class),
+						dataDefinitionId, fieldNames),
+				DEDataDefinitionFieldLink::getClassPK));
 
-			deDataListViewIds.addAll(
-				transform(
-					_deDataDefinitionFieldLinkLocalService.
-						getDEDataDefinitionFieldLinks(
-							_portal.getClassNameId(DEDataListView.class),
-							dataDefinitionId, fieldName),
-					DEDataDefinitionFieldLink::getClassPK));
-
-			_deDataDefinitionFieldLinkLocalService.
-				deleteDEDataDefinitionFieldLinks(
-					_portal.getClassNameId(DDMStructureLayout.class),
-					dataDefinitionId, fieldName);
-
-			_deDataDefinitionFieldLinkLocalService.
-				deleteDEDataDefinitionFieldLinks(
-					_portal.getClassNameId(DEDataListView.class),
-					dataDefinitionId, fieldName);
-		}
+		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
+			_portal.getClassNameId(DDMStructureLayout.class), dataDefinitionId,
+			fieldNames);
+		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
+			_portal.getClassNameId(DEDataListView.class), dataDefinitionId,
+			fieldNames);
 
 		_removeFieldsDataLayouts(
 			dataDefinition, ddmStructureLayoutIds, fieldNames);
