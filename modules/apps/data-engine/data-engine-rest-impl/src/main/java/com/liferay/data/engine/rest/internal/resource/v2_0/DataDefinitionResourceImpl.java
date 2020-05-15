@@ -205,7 +205,7 @@ public class DataDefinitionResourceImpl
 			ActionKeys.VIEW);
 
 		return DataDefinitionUtil.toDataDefinition(
-			_ddmFormFieldTypeServicesTracker,
+			_dataDefinitionContentTypeTracker, _ddmFormFieldTypeServicesTracker,
 			_ddmStructureLocalService.getStructure(dataDefinitionId),
 			_spiDDMFormRuleConverter);
 	}
@@ -321,7 +321,7 @@ public class DataDefinitionResourceImpl
 		throws Exception {
 
 		return DataDefinitionUtil.toDataDefinition(
-			_ddmFormFieldTypeServicesTracker,
+			_dataDefinitionContentTypeTracker, _ddmFormFieldTypeServicesTracker,
 			_ddmStructureLocalService.getStructure(
 				siteId,
 				_dataDefinitionContentTypeTracker.getClassNameId(contentType),
@@ -455,6 +455,7 @@ public class DataDefinitionResourceImpl
 			},
 			sorts,
 			document -> DataDefinitionUtil.toDataDefinition(
+				_dataDefinitionContentTypeTracker,
 				_ddmFormFieldTypeServicesTracker,
 				_ddmStructureLocalService.getStructure(
 					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))),
@@ -525,8 +526,8 @@ public class DataDefinitionResourceImpl
 		}
 
 		dataDefinition = DataDefinitionUtil.toDataDefinition(
-			_ddmFormFieldTypeServicesTracker, ddmStructure,
-			_spiDDMFormRuleConverter);
+			_dataDefinitionContentTypeTracker, _ddmFormFieldTypeServicesTracker,
+			ddmStructure, _spiDDMFormRuleConverter);
 
 		_resourceLocalService.addResources(
 			contextCompany.getCompanyId(), siteId,
@@ -853,6 +854,7 @@ public class DataDefinitionResourceImpl
 
 		DataDefinition existingDataDefinition =
 			DataDefinitionUtil.toDataDefinition(
+				_dataDefinitionContentTypeTracker,
 				_ddmFormFieldTypeServicesTracker,
 				_ddmStructureLocalService.getStructure(dataDefinitionId),
 				_spiDDMFormRuleConverter);
@@ -1044,8 +1046,8 @@ public class DataDefinitionResourceImpl
 		throws Exception {
 
 		return DataDefinitionUtil.toDataDefinition(
-			_ddmFormFieldTypeServicesTracker, ddmStructure,
-			_spiDDMFormRuleConverter);
+			_dataDefinitionContentTypeTracker, _ddmFormFieldTypeServicesTracker,
+			ddmStructure, _spiDDMFormRuleConverter);
 	}
 
 	private DataDefinitionField[] _toDataDefinitionFields(
@@ -1320,7 +1322,7 @@ public class DataDefinitionResourceImpl
 			_ddmFormSerializer.serialize(builder.build());
 
 		return DataDefinitionUtil.toDataDefinition(
-			_ddmFormFieldTypeServicesTracker,
+			_dataDefinitionContentTypeTracker, _ddmFormFieldTypeServicesTracker,
 			_ddmStructureLocalService.updateStructure(
 				PrincipalThreadLocal.getUserId(), dataDefinitionId,
 				DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID,
