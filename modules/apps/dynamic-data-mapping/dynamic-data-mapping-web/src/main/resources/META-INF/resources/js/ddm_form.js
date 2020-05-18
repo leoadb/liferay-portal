@@ -358,7 +358,7 @@ AUI.add(
 				if (instance.get('readOnly')) {
 					retVal = true;
 				}
-				
+
 				return retVal;
 			},
 		};
@@ -4170,7 +4170,7 @@ AUI.add(
 				fillEmptyLocales(instance, fields, availableLanguageIds) {
 					var defaultLocale = instance.getDefaultLocale();
 
-					if (availableLanguageIds.indexOf(defaultLocale) === -1){
+					if (availableLanguageIds.indexOf(defaultLocale) === -1) {
 						availableLanguageIds.push(defaultLocale);
 					}
 
