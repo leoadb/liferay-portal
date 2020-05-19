@@ -253,47 +253,37 @@ public class DataDefinitionResourceImpl
 		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
 			dataDefinitionId);
 
+		DataDefinitionContentType dataDefinitionContentType =
+			_dataDefinitionContentTypeTracker.getDataDefinitionContentType(
+				ddmStructure.getClassNameId());
+
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-		return jsonArray.put(
-			JSONUtil.put(
-				"dataDefinition",
-				ddmStructure.getName(ddmStructure.getDefaultLanguageId())
-			).put(
-				"dataLayouts",
-				transformToArray(
+		if (StringUtil.equals(
+				dataDefinitionContentType.getContentType(),
+				"app-builder-fieldset")) {
+
+			for (DEDataDefinitionFieldLink deDataDefinitionFieldLink :
 					_deDataDefinitionFieldLinkLocalService.
 						getDEDataDefinitionFieldLinks(
-							_portal.getClassNameId(DDMStructureLayout.class),
-							dataDefinitionId, fieldName),
-					deDataDefinitionFieldLink -> {
-						DDMStructureLayout ddmStructureLayout =
-							_ddmStructureLayoutLocalService.
-								getDDMStructureLayout(
-									deDataDefinitionFieldLink.getClassPK());
+							_portal.getClassNameId(DDMStructure.class),
+							dataDefinitionId)) {
 
-						return ddmStructureLayout.getName(
-							ddmStructureLayout.getDefaultLanguageId());
-					},
-					String.class)
-			).put(
-				"dataListViews",
-				transformToArray(
-					_deDataDefinitionFieldLinkLocalService.
-						getDEDataDefinitionFieldLinks(
-							_portal.getClassNameId(DEDataListView.class),
-							dataDefinitionId, fieldName),
-					deDataDefinitionFieldLink -> {
-						DEDataListView deDataListView =
-							_deDataListViewLocalService.getDEDataListView(
-								deDataDefinitionFieldLink.getClassPK());
+				jsonArray.put(
+					_getDataDefinitionFieldLinksJSONObject(
+						deDataDefinitionFieldLink.getClassPK(),
+						deDataDefinitionFieldLink.getFieldName(),
+						_ddmStructureLocalService.getStructure(
+							deDataDefinitionFieldLink.getClassPK())));
+			}
+		}
+		else {
+			jsonArray.put(
+				_getDataDefinitionFieldLinksJSONObject(
+					dataDefinitionId, fieldName, ddmStructure));
+		}
 
-						return deDataListView.getName(
-							deDataListView.getDefaultLanguageId());
-					},
-					String.class)
-			)
-		).toString();
+		return jsonArray.toString();
 	}
 
 	@Override
@@ -729,6 +719,47 @@ public class DataDefinitionResourceImpl
 		}
 
 		return null;
+	}
+
+	private JSONObject _getDataDefinitionFieldLinksJSONObject(
+		Long dataDefinitionId, String fieldName, DDMStructure ddmStructure) {
+
+		return JSONUtil.put(
+			"dataDefinition",
+			ddmStructure.getName(ddmStructure.getDefaultLanguageId())
+		).put(
+			"dataLayouts",
+			transformToArray(
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(
+						_portal.getClassNameId(DDMStructureLayout.class),
+						dataDefinitionId, fieldName),
+				deDataDefinitionFieldLink -> {
+					DDMStructureLayout ddmStructureLayout =
+						_ddmStructureLayoutLocalService.getDDMStructureLayout(
+							deDataDefinitionFieldLink.getClassPK());
+
+					return ddmStructureLayout.getName(
+						ddmStructureLayout.getDefaultLanguageId());
+				},
+				String.class)
+		).put(
+			"dataListViews",
+			transformToArray(
+				_deDataDefinitionFieldLinkLocalService.
+					getDEDataDefinitionFieldLinks(
+						_portal.getClassNameId(DEDataListView.class),
+						dataDefinitionId, fieldName),
+				deDataDefinitionFieldLink -> {
+					DEDataListView deDataListView =
+						_deDataListViewLocalService.getDEDataListView(
+							deDataDefinitionFieldLink.getClassPK());
+
+					return deDataListView.getName(
+						deDataListView.getDefaultLanguageId());
+				},
+				String.class)
+		);
 	}
 
 	private DataLayoutResource _getDataLayoutResource(boolean checkPermission) {
