@@ -21,8 +21,6 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 String portletResource = ParamUtil.getString(request, "portletResource");
 
-User userDisplay = themeDisplay.getUser();
-
 DDLRecord record = (DDLRecord)request.getAttribute(DDLWebKeys.DYNAMIC_DATA_LISTS_RECORD);
 
 long recordId = BeanParamUtil.getLong(record, request, "recordId");
@@ -63,8 +61,8 @@ Locale defaultEditLocale = LocaleUtil.fromLanguageId(ddmStructure.getDefaultLang
 if (ArrayUtil.contains(ddmStructure.getAvailableLanguageIds(), themeDisplay.getLanguageId())) {
 	defaultEditLocale = themeDisplay.getLocale();
 }
-else if (ArrayUtil.contains(ddmStructure.getAvailableLanguageIds(), userDisplay.getLanguageId())) {
-	defaultEditLocale = userDisplay.getLocale();
+else if (ArrayUtil.contains(ddmStructure.getAvailableLanguageIds(), user.getLanguageId())) {
+	defaultEditLocale = user.getLocale();
 }
 
 boolean translating = false;
