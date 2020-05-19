@@ -193,6 +193,12 @@ public class DataDefinitionResourceImpl
 
 		_deDataListViewLocalService.deleteDEDataListViews(dataDefinitionId);
 
+		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
+			dataDefinitionId);
+
+		_ddmStructureLayoutLocalService.deleteDDMStructureLayouts(
+			ddmStructure.getClassNameId(), ddmStructure.getStructureVersion());
+
 		_ddmStructureLocalService.deleteStructure(dataDefinitionId);
 	}
 
