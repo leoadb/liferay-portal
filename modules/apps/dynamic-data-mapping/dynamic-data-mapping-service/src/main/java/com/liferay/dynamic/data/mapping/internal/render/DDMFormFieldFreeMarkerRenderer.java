@@ -224,6 +224,36 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		DDMFormFieldOptions ddmFormFieldOptions =
 			ddmFormField.getDDMFormFieldOptions();
 
+		DDMForm ddmForm = ddmFormField.getDDMForm();
+
+		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
+
+		Locale structureLocale;
+
+		Locale ddmFormDefaultLocale = ddmForm.getDefaultLocale();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
+
+		if (availableLocales.contains(locale)) {
+			structureLocale = locale;
+		}
+		else if (availableLocales.contains(ddmFormDefaultLocale)) {
+			structureLocale = ddmFormDefaultLocale;
+		}
+		else if (availableLocales.contains(siteDefaultLocale)) {
+			structureLocale = siteDefaultLocale;
+		}
+		else {
+			Stream<Locale> stream = availableLocales.stream();
+
+			structureLocale = stream.findFirst(
+			).get();
+		}
+
 		for (String value : ddmFormFieldOptions.getOptionsValues()) {
 			if (value.equals(StringPool.BLANK)) {
 				continue;
@@ -233,8 +263,8 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 
 			addDDMFormFieldOptionHTML(
 				httpServletRequest, httpServletResponse, ddmFormField, mode,
-				readOnly, freeMarkerContext, sb, label.getString(locale),
-				value);
+				readOnly, freeMarkerContext, sb,
+				label.getString(structureLocale), value);
 		}
 
 		return sb.toString();
