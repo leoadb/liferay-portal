@@ -224,7 +224,7 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		DDMFormFieldOptions ddmFormFieldOptions =
 			ddmFormField.getDDMFormFieldOptions();
 
-		Locale structureLocale = _getStructureLocale(
+		Locale favoredLocale = _getFavoredLocale(
 			httpServletRequest, ddmFormField, locale);
 
 		for (String value : ddmFormFieldOptions.getOptionsValues()) {
@@ -237,7 +237,7 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 			addDDMFormFieldOptionHTML(
 				httpServletRequest, httpServletResponse, ddmFormField, mode,
 				readOnly, freeMarkerContext, sb,
-				label.getString(structureLocale), value);
+				label.getString(favoredLocale), value);
 		}
 
 		return sb.toString();
@@ -260,7 +260,7 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 			return fieldContext;
 		}
 
-		Locale structureLocale = _getStructureLocale(
+		Locale structureLocale = _getFavoredLocale(
 			httpServletRequest, ddmFormField, locale);
 
 		fieldContext = new HashMap<>();
@@ -696,7 +696,7 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		return writer.toString();
 	}
 
-	private Locale _getStructureLocale(
+	private Locale _getFavoredLocale(
 		HttpServletRequest httpServletRequest, DDMFormField ddmFormField,
 		Locale locale) {
 
