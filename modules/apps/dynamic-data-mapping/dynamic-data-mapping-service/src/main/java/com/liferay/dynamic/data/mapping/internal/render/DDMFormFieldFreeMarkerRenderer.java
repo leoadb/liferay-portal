@@ -67,6 +67,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -260,10 +261,30 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 
 		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
 
-		Locale structureLocale = locale;
+		Locale structureLocale;
 
-		if (!availableLocales.contains(locale)) {
-			structureLocale = ddmForm.getDefaultLocale();
+		Locale ddmFormDefaultLocale = ddmForm.getDefaultLocale();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
+
+		if (availableLocales.contains(locale)) {
+			structureLocale = locale;
+		}
+		else if (availableLocales.contains(ddmFormDefaultLocale)) {
+			structureLocale = ddmFormDefaultLocale;
+		}
+		else if (availableLocales.contains(siteDefaultLocale)) {
+			structureLocale = siteDefaultLocale;
+		}
+		else {
+			Stream<Locale> stream = availableLocales.stream();
+
+			structureLocale = stream.findFirst(
+			).get();
 		}
 
 		fieldContext = new HashMap<>();
