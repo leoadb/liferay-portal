@@ -67,6 +67,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -223,6 +224,9 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		DDMFormFieldOptions ddmFormFieldOptions =
 			ddmFormField.getDDMFormFieldOptions();
 
+		Locale favoredLocale = _getFavoredLocale(
+			httpServletRequest, ddmFormField, locale);
+
 		for (String value : ddmFormFieldOptions.getOptionsValues()) {
 			if (value.equals(StringPool.BLANK)) {
 				continue;
@@ -232,8 +236,8 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 
 			addDDMFormFieldOptionHTML(
 				httpServletRequest, httpServletResponse, ddmFormField, mode,
-				readOnly, freeMarkerContext, sb, label.getString(locale),
-				value);
+				readOnly, freeMarkerContext, sb,
+				label.getString(favoredLocale), value);
 		}
 
 		return sb.toString();
@@ -256,15 +260,8 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 			return fieldContext;
 		}
 
-		DDMForm ddmForm = ddmFormField.getDDMForm();
-
-		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
-
-		Locale structureLocale = locale;
-
-		if (!availableLocales.contains(locale)) {
-			structureLocale = ddmForm.getDefaultLocale();
-		}
+		Locale structureLocale = _getFavoredLocale(
+			httpServletRequest, ddmFormField, locale);
 
 		fieldContext = new HashMap<>();
 
@@ -697,6 +694,40 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		template.processTemplate(writer);
 
 		return writer.toString();
+	}
+
+	private Locale _getFavoredLocale(
+		HttpServletRequest httpServletRequest, DDMFormField ddmFormField,
+		Locale locale) {
+
+		DDMForm ddmForm = ddmFormField.getDDMForm();
+
+		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
+
+		if (availableLocales.contains(locale)) {
+			return locale;
+		}
+
+		Locale ddmFormDefaultLocale = ddmForm.getDefaultLocale();
+
+		if (availableLocales.contains(ddmFormDefaultLocale)) {
+			return ddmFormDefaultLocale;
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
+
+		if (availableLocales.contains(siteDefaultLocale)) {
+			return siteDefaultLocale;
+		}
+
+		Stream<Locale> stream = availableLocales.stream();
+
+		return stream.findFirst(
+		).get();
 	}
 
 	private static final String _DEFAULT_NAMESPACE = "alloy";
