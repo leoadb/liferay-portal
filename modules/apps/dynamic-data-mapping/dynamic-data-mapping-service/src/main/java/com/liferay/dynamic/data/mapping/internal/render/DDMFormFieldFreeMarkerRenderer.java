@@ -704,9 +704,15 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 
 		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
 
-		Locale structureLocale;
+		if (availableLocales.contains(locale)) {
+			return locale;
+		}
 
 		Locale ddmFormDefaultLocale = ddmForm.getDefaultLocale();
+
+		if (availableLocales.contains(ddmFormDefaultLocale)) {
+			return ddmFormDefaultLocale;
+		}
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -714,23 +720,14 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 
 		Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
 
-		if (availableLocales.contains(locale)) {
-			structureLocale = locale;
-		}
-		else if (availableLocales.contains(ddmFormDefaultLocale)) {
-			structureLocale = ddmFormDefaultLocale;
-		}
-		else if (availableLocales.contains(siteDefaultLocale)) {
-			structureLocale = siteDefaultLocale;
-		}
-		else {
-			Stream<Locale> stream = availableLocales.stream();
-
-			structureLocale = stream.findFirst(
-			).get();
+		if (availableLocales.contains(siteDefaultLocale)) {
+			return siteDefaultLocale;
 		}
 
-		return structureLocale;
+		Stream<Locale> stream = availableLocales.stream();
+
+		return stream.findFirst(
+		).get();
 	}
 
 	private static final String _DEFAULT_NAMESPACE = "alloy";
