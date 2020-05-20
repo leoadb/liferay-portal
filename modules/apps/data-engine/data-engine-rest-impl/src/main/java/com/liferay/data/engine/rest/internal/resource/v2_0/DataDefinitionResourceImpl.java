@@ -191,13 +191,11 @@ public class DataDefinitionResourceImpl
 					dataDefinition, _ddmFormFieldTypeServicesTracker));
 		}
 
+		DataLayoutResource dataLayoutResource = _getDataLayoutResource(false);
+
+		dataLayoutResource.deleteDataLayoutsDataDefinition(dataDefinitionId);
+
 		_deDataListViewLocalService.deleteDEDataListViews(dataDefinitionId);
-
-		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
-			dataDefinitionId);
-
-		_ddmStructureLayoutLocalService.deleteDDMStructureLayouts(
-			ddmStructure.getClassNameId(), ddmStructure.getStructureVersion());
 
 		_ddmStructureLocalService.deleteStructure(dataDefinitionId);
 	}
