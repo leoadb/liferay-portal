@@ -224,9 +224,6 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		DDMFormFieldOptions ddmFormFieldOptions =
 			ddmFormField.getDDMFormFieldOptions();
 
-		Locale preferredLocale = _getPreferredLocale(
-			httpServletRequest, ddmFormField, locale);
-
 		for (String value : ddmFormFieldOptions.getOptionsValues()) {
 			if (value.equals(StringPool.BLANK)) {
 				continue;
@@ -237,7 +234,10 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 			addDDMFormFieldOptionHTML(
 				httpServletRequest, httpServletResponse, ddmFormField, mode,
 				readOnly, freeMarkerContext, sb,
-				label.getString(preferredLocale), value);
+				label.getString(
+					_getPreferredLocale(
+						httpServletRequest, ddmFormField, locale)),
+				value);
 		}
 
 		return sb.toString();
