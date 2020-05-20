@@ -73,18 +73,15 @@ public class DataDefinitionUtil {
 
 		DDMForm ddmForm = ddmStructure.getDDMForm();
 
+		DataDefinitionContentType dataDefinitionContentType =
+			dataDefinitionContentTypeTracker.getDataDefinitionContentType(
+				ddmStructure.getClassNameId());
+
 		return new DataDefinition() {
 			{
 				availableLanguageIds = _toLanguageIds(
 					ddmForm.getAvailableLocales());
-
-				DataDefinitionContentType dataDefinitionContentType =
-					dataDefinitionContentTypeTracker.
-						getDataDefinitionContentType(
-							ddmStructure.getClassNameId());
-
 				contentType = dataDefinitionContentType.getContentType();
-
 				dataDefinitionFields = _toDataDefinitionFields(
 					ddmForm.getDDMFormFields(),
 					ddmFormFieldTypeServicesTracker);
