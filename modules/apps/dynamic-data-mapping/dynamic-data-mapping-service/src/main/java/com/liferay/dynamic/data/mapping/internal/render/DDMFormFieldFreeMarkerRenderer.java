@@ -62,12 +62,12 @@ import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -708,26 +708,21 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 			return locale;
 		}
 
-		Locale ddmFormDefaultLocale = ddmForm.getDefaultLocale();
-
-		if (availableLocales.contains(ddmFormDefaultLocale)) {
-			return ddmFormDefaultLocale;
+		if (availableLocales.contains(ddmForm.getDefaultLocale())) {
+			return ddmForm.getDefaultLocale();
 		}
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
-
-		if (availableLocales.contains(siteDefaultLocale)) {
-			return siteDefaultLocale;
+		if (availableLocales.contains(themeDisplay.getSiteDefaultLocale())) {
+			return themeDisplay.getSiteDefaultLocale();
 		}
 
-		Stream<Locale> stream = availableLocales.stream();
+		Iterator<Locale> iterator = availableLocales.iterator();
 
-		return stream.findFirst(
-		).get();
+		return iterator.next();
 	}
 
 	private static final String _DEFAULT_NAMESPACE = "alloy";
