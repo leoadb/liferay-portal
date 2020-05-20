@@ -224,35 +224,8 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		DDMFormFieldOptions ddmFormFieldOptions =
 			ddmFormField.getDDMFormFieldOptions();
 
-		DDMForm ddmForm = ddmFormField.getDDMForm();
-
-		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
-
-		Locale structureLocale;
-
-		Locale ddmFormDefaultLocale = ddmForm.getDefaultLocale();
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
-
-		if (availableLocales.contains(locale)) {
-			structureLocale = locale;
-		}
-		else if (availableLocales.contains(ddmFormDefaultLocale)) {
-			structureLocale = ddmFormDefaultLocale;
-		}
-		else if (availableLocales.contains(siteDefaultLocale)) {
-			structureLocale = siteDefaultLocale;
-		}
-		else {
-			Stream<Locale> stream = availableLocales.stream();
-
-			structureLocale = stream.findFirst(
-			).get();
-		}
+		Locale structureLocale = _getStructureLocale(
+			httpServletRequest, ddmFormField, locale);
 
 		for (String value : ddmFormFieldOptions.getOptionsValues()) {
 			if (value.equals(StringPool.BLANK)) {
@@ -287,35 +260,8 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 			return fieldContext;
 		}
 
-		DDMForm ddmForm = ddmFormField.getDDMForm();
-
-		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
-
-		Locale structureLocale;
-
-		Locale ddmFormDefaultLocale = ddmForm.getDefaultLocale();
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
-
-		if (availableLocales.contains(locale)) {
-			structureLocale = locale;
-		}
-		else if (availableLocales.contains(ddmFormDefaultLocale)) {
-			structureLocale = ddmFormDefaultLocale;
-		}
-		else if (availableLocales.contains(siteDefaultLocale)) {
-			structureLocale = siteDefaultLocale;
-		}
-		else {
-			Stream<Locale> stream = availableLocales.stream();
-
-			structureLocale = stream.findFirst(
-			).get();
-		}
+		Locale structureLocale = _getStructureLocale(
+			httpServletRequest, ddmFormField, locale);
 
 		fieldContext = new HashMap<>();
 
@@ -748,6 +694,43 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 		template.processTemplate(writer);
 
 		return writer.toString();
+	}
+
+	private Locale _getStructureLocale(
+		HttpServletRequest httpServletRequest, DDMFormField ddmFormField,
+		Locale locale) {
+
+		DDMForm ddmForm = ddmFormField.getDDMForm();
+
+		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
+
+		Locale structureLocale;
+
+		Locale ddmFormDefaultLocale = ddmForm.getDefaultLocale();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
+
+		if (availableLocales.contains(locale)) {
+			structureLocale = locale;
+		}
+		else if (availableLocales.contains(ddmFormDefaultLocale)) {
+			structureLocale = ddmFormDefaultLocale;
+		}
+		else if (availableLocales.contains(siteDefaultLocale)) {
+			structureLocale = siteDefaultLocale;
+		}
+		else {
+			Stream<Locale> stream = availableLocales.stream();
+
+			structureLocale = stream.findFirst(
+			).get();
+		}
+
+		return structureLocale;
 	}
 
 	private static final String _DEFAULT_NAMESPACE = "alloy";
