@@ -30,9 +30,9 @@ import java.sql.ResultSet;
 /**
  * @author Lino Alves
  */
-public class UpgradeMetadataDDMIndexType extends UpgradeProcess {
+public class UpgradeDDMStructureIndexType extends UpgradeProcess {
 
-	public UpgradeMetadataDDMIndexType(JSONFactory jsonFactory) {
+	public UpgradeDDMStructureIndexType(JSONFactory jsonFactory) {
 		_jsonFactory = jsonFactory;
 	}
 
