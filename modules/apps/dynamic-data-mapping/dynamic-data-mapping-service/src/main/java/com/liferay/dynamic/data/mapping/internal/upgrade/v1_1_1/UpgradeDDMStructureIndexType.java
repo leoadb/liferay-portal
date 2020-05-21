@@ -63,20 +63,17 @@ public class UpgradeDDMStructureIndexType extends UpgradeProcess {
 
 			try (ResultSet rs = ps1.executeQuery()) {
 				while (rs.next()) {
-					String definition = rs.getString(1);
-					long structureId = rs.getLong(2);
-
-					String newDefinition = _upgradeIndexType(definition);
+					String newDefinition = _upgradeIndexType(rs.getString(1));
 
 					ps2.setString(1, newDefinition);
 
-					ps2.setLong(2, structureId);
+					ps2.setLong(2, rs.getLong(2));
 
 					ps2.addBatch();
 
 					ps3.setString(1, newDefinition);
 
-					ps3.setLong(2, structureId);
+					ps3.setLong(2, rs.getLong(2));
 
 					ps3.addBatch();
 				}
