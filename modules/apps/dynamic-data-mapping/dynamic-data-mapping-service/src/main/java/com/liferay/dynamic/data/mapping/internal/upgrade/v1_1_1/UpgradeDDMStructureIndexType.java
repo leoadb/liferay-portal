@@ -41,30 +41,6 @@ public class UpgradeDDMStructureIndexType extends UpgradeProcess {
 		upgradeDDMStructureDefinition();
 	}
 
-	protected String updateDefinition(String definition)
-		throws PortalException {
-
-		try {
-			JSONObject definitionJSONObject = _jsonFactory.createJSONObject(
-				definition);
-
-			JSONArray fields = definitionJSONObject.getJSONArray("fields");
-
-			for (int i = 0; i < fields.length(); i++) {
-				JSONObject field = fields.getJSONObject(i);
-
-				if (!field.has("indexType")) {
-					field.put("indexType", "text");
-				}
-			}
-
-			return definitionJSONObject.toString();
-		}
-		catch (JSONException jsonException) {
-			return definition;
-		}
-	}
-
 	protected void upgradeDDMStructureDefinition() throws Exception {
 		StringBundler sb = new StringBundler(2);
 
@@ -90,7 +66,7 @@ public class UpgradeDDMStructureIndexType extends UpgradeProcess {
 					String definition = rs.getString(1);
 					long structureId = rs.getLong(2);
 
-					String newDefinition = updateDefinition(definition);
+					String newDefinition = upgradeIndexType(definition);
 
 					ps2.setString(1, newDefinition);
 
@@ -108,6 +84,31 @@ public class UpgradeDDMStructureIndexType extends UpgradeProcess {
 				ps2.executeBatch();
 				ps3.executeBatch();
 			}
+		}
+	}
+
+	protected String upgradeIndexType(String definition)
+		throws PortalException {
+
+		try {
+			JSONObject definitionJSONObject = _jsonFactory.createJSONObject(
+				definition);
+
+			JSONArray fieldsJSONArray = definitionJSONObject.getJSONArray(
+				"fields");
+
+			for (int i = 0; i < fieldsJSONArray.length(); i++) {
+				JSONObject jsonObject = fieldsJSONArray.getJSONObject(i);
+
+				if (!jsonObject.has("indexType")) {
+					jsonObject.put("indexType", "text");
+				}
+			}
+
+			return definitionJSONObject.toString();
+		}
+		catch (JSONException jsonException) {
+			return definition;
 		}
 	}
 
