@@ -38,10 +38,10 @@ public class UpgradeDDMStructureIndexType extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		upgradeDDMStructureDefinition();
+		_upgradeDDMStructureDefinition();
 	}
 
-	protected void upgradeDDMStructureDefinition() throws Exception {
+	private void _upgradeDDMStructureDefinition() throws Exception {
 		StringBundler sb = new StringBundler(2);
 
 		sb.append("select DDMStructure.definition, DDMStructure.structureId ");
@@ -66,7 +66,7 @@ public class UpgradeDDMStructureIndexType extends UpgradeProcess {
 					String definition = rs.getString(1);
 					long structureId = rs.getLong(2);
 
-					String newDefinition = upgradeIndexType(definition);
+					String newDefinition = _upgradeIndexType(definition);
 
 					ps2.setString(1, newDefinition);
 
@@ -87,9 +87,7 @@ public class UpgradeDDMStructureIndexType extends UpgradeProcess {
 		}
 	}
 
-	protected String upgradeIndexType(String definition)
-		throws PortalException {
-
+	private String _upgradeIndexType(String definition) throws PortalException {
 		try {
 			JSONObject definitionJSONObject = _jsonFactory.createJSONObject(
 				definition);
