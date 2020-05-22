@@ -26,7 +26,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -653,15 +653,11 @@ public class DataDefinitionResourceTest
 		DataDefinition postDataDefinition =
 			testPutDataDefinition_addDataDefinition();
 
-		DataLayout dataLayout = postDataDefinition.getDefaultDataLayout();
-
 		DataDefinition randomDataDefinition = randomDataDefinition();
 
 		DataLayout newDataLayout = DataLayoutTestUtil.createDataLayout(
 			postDataDefinition.getId(), "Data Layout Updated",
 			postDataDefinition.getSiteId());
-
-		newDataLayout.setId(dataLayout.getId());
 
 		randomDataDefinition.setDefaultDataLayout(newDataLayout);
 
@@ -846,49 +842,29 @@ public class DataDefinitionResourceTest
 			String description, String name)
 		throws Exception {
 
-		DataDefinition dataDefinition = new DataDefinition() {
-			{
-				availableLanguageIds = new String[] {"en_US", "pt_BR"};
-				dataDefinitionFields = new DataDefinitionField[] {
-					new DataDefinitionField() {
-						{
-							description = HashMapBuilder.<String, Object>put(
-								"en_US", RandomTestUtil.randomString()
-							).build();
-							fieldType = "text";
-							label = HashMapBuilder.<String, Object>put(
-								"en_US", RandomTestUtil.randomString()
-							).put(
-								"pt_BR", RandomTestUtil.randomString()
-							).build();
-							name = RandomTestUtil.randomString();
-							tip = HashMapBuilder.<String, Object>put(
-								"en_US", RandomTestUtil.randomString()
-							).put(
-								"pt_BR", RandomTestUtil.randomString()
-							).build();
-						}
-					}
-				};
-				dataDefinitionKey = RandomTestUtil.randomString();
-				defaultDataLayout = DataLayoutTestUtil.createDataLayout(
-					0L, "Data Layout Name", testGroup.getGroupId());
-				defaultLanguageId = "en_US";
-				siteId = testGroup.getGroupId();
-				userId = TestPropsValues.getUserId();
-			}
-		};
+		DataDefinition dataDefinition = DataDefinition.toDTO(
+			_read("data-definition.json"));
 
 		dataDefinition.setDescription(
 			HashMapBuilder.<String, Object>put(
 				"en_US", description
+			).put(
+				"pt_BR", description
 			).build());
 		dataDefinition.setName(
 			HashMapBuilder.<String, Object>put(
 				"en_US", name
+			).put(
+				"pt_BR", name
 			).build());
+		dataDefinition.setSiteId(testGroup.getGroupId());
 
 		return dataDefinition;
+	}
+
+	private String _read(String fileName) throws Exception {
+		return new String(
+			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
 	}
 
 	private void _testGetSiteDataDefinitionsPage(
