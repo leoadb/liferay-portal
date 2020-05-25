@@ -36,7 +36,6 @@ import com.liferay.portal.search.test.util.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Assert;
@@ -215,51 +214,9 @@ public class DataDefinitionResourceTest
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text1";
-								}
-							},
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text2";
-								}
-							},
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text2";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				DataDefinition.toDTO(
+					_read(
+						"data-definition-must-not-duplicate-field-name.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -276,29 +233,8 @@ public class DataDefinitionResourceTest
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[0];
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text1";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				DataDefinition.toDTO(
+					_read("data-definition-must-set-available-locales.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -314,29 +250,10 @@ public class DataDefinitionResourceTest
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text1";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "es_ES";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				DataDefinition.toDTO(
+					_read(
+						"data-definition-must-set-default-locale-as-" +
+							"available-locale.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -354,28 +271,8 @@ public class DataDefinitionResourceTest
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text1";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				DataDefinition.toDTO(
+					_read("data-definition-must-set-field-type.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -392,29 +289,10 @@ public class DataDefinitionResourceTest
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "select";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "select1";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				DataDefinition.toDTO(
+					_read(
+						"data-definition-must-set-field-options-for-" +
+							"field.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -428,52 +306,13 @@ public class DataDefinitionResourceTest
 
 		// MustSetValidAvailableLocalesForProperty
 
-		HashMap<String, Object> optionsMap = HashMapBuilder.<String, Object>put(
-			"en_US",
-			new String[] {
-				JSONUtil.put(
-					"label", "Label 1"
-				).put(
-					"value", "value1"
-				).toJSONString(),
-				JSONUtil.put(
-					"label", "Label 2"
-				).put(
-					"value", "value2"
-				).toJSONString()
-			}
-		).build();
-
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									customProperties =
-										HashMapBuilder.<String, Object>put(
-											"options", optionsMap
-										).build();
-									fieldType = "select";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "select1";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				DataDefinition.toDTO(
+					_read(
+						"data-definition-must-set-valid-available-locales-" +
+							"for-property.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -497,29 +336,10 @@ public class DataDefinitionResourceTest
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "#name*";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				DataDefinition.toDTO(
+					_read(
+						"data-definition-must-set-valid-characters-for-field-" +
+							"name.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -537,29 +357,10 @@ public class DataDefinitionResourceTest
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "text$#";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text1";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				DataDefinition.toDTO(
+					_read(
+						"data-definition-must-set-valid-characters-for-field-" +
+							"type.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -576,30 +377,7 @@ public class DataDefinitionResourceTest
 
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
-				"INVALID",
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text1";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-						name = HashMapBuilder.<String, Object>put(
-							"en_US", RandomTestUtil.randomString()
-						).build();
-					}
-				});
+				"INVALID", DataDefinition.toDTO(_read("data-definition.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -615,27 +393,9 @@ public class DataDefinitionResourceTest
 
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
-				"app-builder",
-				new DataDefinition() {
-					{
-						availableLanguageIds = new String[] {"en_US", "pt_BR"};
-						dataDefinitionFields = new DataDefinitionField[] {
-							new DataDefinitionField() {
-								{
-									fieldType = "text";
-									label = HashMapBuilder.<String, Object>put(
-										"en_US", RandomTestUtil.randomString()
-									).put(
-										"pt_BR", RandomTestUtil.randomString()
-									).build();
-									name = "text1";
-								}
-							}
-						};
-						dataDefinitionKey = RandomTestUtil.randomString();
-						defaultLanguageId = "en_US";
-					}
-				});
+				_CONTENT_TYPE,
+				DataDefinition.toDTO(
+					_read("data-definition-must-set-valid-name.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
