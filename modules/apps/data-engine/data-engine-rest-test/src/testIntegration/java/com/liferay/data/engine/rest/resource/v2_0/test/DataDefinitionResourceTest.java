@@ -21,12 +21,12 @@ import com.liferay.data.engine.rest.client.dto.v2_0.DataLayout;
 import com.liferay.data.engine.rest.client.pagination.Page;
 import com.liferay.data.engine.rest.client.pagination.Pagination;
 import com.liferay.data.engine.rest.client.problem.Problem;
+import com.liferay.data.engine.rest.resource.v2_0.test.util.DataDefinitionTestUtil;
 import com.liferay.data.engine.rest.resource.v2_0.test.util.DataLayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -215,7 +215,7 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read(
+					DataDefinitionTestUtil.read(
 						"data-definition-must-not-duplicate-field-name.json")));
 
 			Assert.fail("An exception must be thrown");
@@ -234,7 +234,8 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read("data-definition-must-set-available-locales.json")));
+					DataDefinitionTestUtil.read(
+						"data-definition-must-set-available-locales.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -251,7 +252,7 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read(
+					DataDefinitionTestUtil.read(
 						"data-definition-must-set-default-locale-as-" +
 							"available-locale.json")));
 
@@ -272,7 +273,8 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read("data-definition-must-set-field-type.json")));
+					DataDefinitionTestUtil.read(
+						"data-definition-must-set-field-type.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -290,7 +292,7 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read(
+					DataDefinitionTestUtil.read(
 						"data-definition-must-set-field-options-for-" +
 							"field.json")));
 
@@ -310,7 +312,7 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read(
+					DataDefinitionTestUtil.read(
 						"data-definition-must-set-valid-available-locales-" +
 							"for-property.json")));
 
@@ -337,7 +339,7 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read(
+					DataDefinitionTestUtil.read(
 						"data-definition-must-set-valid-characters-for-field-" +
 							"name.json")));
 
@@ -358,7 +360,7 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read(
+					DataDefinitionTestUtil.read(
 						"data-definition-must-set-valid-characters-for-field-" +
 							"type.json")));
 
@@ -377,7 +379,9 @@ public class DataDefinitionResourceTest
 
 		try {
 			dataDefinitionResource.postDataDefinitionByContentType(
-				"INVALID", DataDefinition.toDTO(_read("data-definition.json")));
+				"INVALID",
+				DataDefinition.toDTO(
+					DataDefinitionTestUtil.read("data-definition.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -395,7 +399,8 @@ public class DataDefinitionResourceTest
 			dataDefinitionResource.postDataDefinitionByContentType(
 				_CONTENT_TYPE,
 				DataDefinition.toDTO(
-					_read("data-definition-must-set-valid-name.json")));
+					DataDefinitionTestUtil.read(
+						"data-definition-must-set-valid-name.json")));
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -603,7 +608,7 @@ public class DataDefinitionResourceTest
 		throws Exception {
 
 		DataDefinition dataDefinition = DataDefinition.toDTO(
-			_read("data-definition.json"));
+			DataDefinitionTestUtil.read("data-definition.json"));
 
 		dataDefinition.setDescription(
 			HashMapBuilder.<String, Object>put(
@@ -620,11 +625,6 @@ public class DataDefinitionResourceTest
 		dataDefinition.setSiteId(testGroup.getGroupId());
 
 		return dataDefinition;
-	}
-
-	private String _read(String fileName) throws Exception {
-		return new String(
-			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
 	}
 
 	private void _testGetSiteDataDefinitionsPage(
