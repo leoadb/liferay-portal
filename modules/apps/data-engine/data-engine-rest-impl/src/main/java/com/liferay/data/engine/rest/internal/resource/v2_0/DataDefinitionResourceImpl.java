@@ -163,6 +163,9 @@ public class DataDefinitionResourceImpl
 
 		_ddmStructureLocalService.deleteStructure(dataDefinitionId);
 
+		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
+			_portal.getClassNameId(DDMStructure.class), dataDefinitionId);
+
 		for (DEDataDefinitionFieldLink deDataDefinitionFieldLink :
 				_deDataDefinitionFieldLinkLocalService.
 					getDEDataDefinitionFieldLinks(dataDefinitionId)) {
