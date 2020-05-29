@@ -5,6 +5,7 @@ Import-Package:\
 	!com.zaxxer.sparsebits.*,\
 	\
 	!org.apache.commons.collections4.*,\
+	!org.apache.commons.math3.*,\
 	!org.apache.poi.*,\
 	\
 	*
