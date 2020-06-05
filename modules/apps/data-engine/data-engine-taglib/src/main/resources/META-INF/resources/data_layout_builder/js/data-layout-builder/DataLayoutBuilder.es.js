@@ -444,8 +444,11 @@ class DataLayoutBuilder extends React.Component {
 		});
 	}
 
-	serialize(pages) {
-		const {definition, layout} = this.getDataDefinitionAndDataLayout(pages);
+	serialize(pages, rules) {
+		const {definition, layout} = this.getDataDefinitionAndDataLayout(
+			pages,
+			rules || []
+		);
 
 		return {
 			definition: JSON.stringify(definition),
