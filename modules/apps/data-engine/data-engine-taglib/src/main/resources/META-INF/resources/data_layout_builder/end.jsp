@@ -63,6 +63,8 @@ Map<String, Object> data = HashMapBuilder.<String, Object>put(
 	<liferay-ui:message arguments="<%= HtmlUtil.escape(StringUtil.merge(mndfn.getDuplicatedFieldNames(), StringPool.COMMA_AND_SPACE)) %>" key="the-definition-field-name-x-was-defined-more-than-once" translateArguments="<%= false %>" />
 </liferay-ui:error>
 
+<liferay-ui:error exception="<%= DataDefinitionValidationException.MustSetFields.class %>" message="at-least-one-field-must-be-added" />
+
 <liferay-ui:error exception="<%= DataDefinitionValidationException.MustSetOptionsForField.class %>">
 
 	<%
