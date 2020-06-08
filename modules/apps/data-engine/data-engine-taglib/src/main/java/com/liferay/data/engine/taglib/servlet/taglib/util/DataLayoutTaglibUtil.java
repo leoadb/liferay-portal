@@ -793,7 +793,7 @@ public class DataLayoutTaglibUtil {
 				dataRuleJSONObject.put(
 					"conditions", jsonArray
 				).put(
-					"logical-operator", dataRule.getLogicalOperator()
+					"logicalOperator", dataRule.getLogicalOperator()
 				);
 
 				dataRulesJSONArray.put(dataRuleJSONObject);
