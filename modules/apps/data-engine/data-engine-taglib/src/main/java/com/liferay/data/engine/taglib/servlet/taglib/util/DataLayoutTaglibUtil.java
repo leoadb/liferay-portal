@@ -14,6 +14,7 @@
 
 package com.liferay.data.engine.taglib.servlet.taglib.util;
 
+import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.renderer.DataLayoutRenderer;
 import com.liferay.data.engine.renderer.DataLayoutRendererContext;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
@@ -795,7 +796,7 @@ public class DataLayoutTaglibUtil {
 				).put(
 					"logicalOperator", dataRule.getLogicalOperator()
 				).put(
-					"name", _toJSONObject(dataRule.getName())
+					"name", LocalizedValueUtil.toJSONObject(dataRule.getName())
 				);
 
 				dataRulesJSONArray.put(dataRuleJSONObject);
@@ -933,20 +934,6 @@ public class DataLayoutTaglibUtil {
 					}
 				}
 			}
-		}
-
-		private JSONObject _toJSONObject(Map<String, Object> map) {
-			JSONObject jsonObject = _jsonFactory.createJSONObject();
-
-			if (MapUtil.isEmpty(map)) {
-				return jsonObject;
-			}
-
-			for (Map.Entry<String, Object> entry : map.entrySet()) {
-				jsonObject.put(entry.getKey(), entry.getValue());
-			}
-
-			return jsonObject;
 		}
 
 		private final Set<Locale> _availableLocales;
