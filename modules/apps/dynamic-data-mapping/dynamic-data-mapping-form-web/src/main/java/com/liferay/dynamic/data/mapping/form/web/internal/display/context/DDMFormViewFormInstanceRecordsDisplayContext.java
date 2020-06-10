@@ -158,11 +158,9 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 			});
 
 		if (ddmFormFieldType.equals("select")) {
-			DDMFormFieldOptions ddmFormFieldOptions =
-				ddmFormField.getDDMFormFieldOptions();
-
 			renderedDDMFormFieldValues = _getOptionsRenderedFormFieldValues(
-				ddmFormFieldOptions, renderedDDMFormFieldValues);
+				ddmFormField.getDDMFormFieldOptions(),
+				renderedDDMFormFieldValues);
 		}
 
 		return StringUtil.merge(
