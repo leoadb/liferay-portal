@@ -17,7 +17,7 @@ package com.liferay.dynamic.data.mapping.form.web.internal.display.context;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesTracker;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueRenderer;
-import com.liferay.dynamic.data.mapping.form.web.internal.search.FormInstanceRecordSearch;
+import com.liferay.dynamic.data.mapping.form.web.internal.search.DDMFormInstanceRecordSearch;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
@@ -330,34 +330,35 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 
 		portletURL.setParameter("displayStyle", displayStyle);
 
-		FormInstanceRecordSearch formInstanceRecordSearch =
-			new FormInstanceRecordSearch(
+		DDMFormInstanceRecordSearch ddmFormInstanceRecordSearch =
+			new DDMFormInstanceRecordSearch(
 				_renderRequest, portletURL, getHeaderNames());
 
 		String orderByCol = getOrderByCol();
 		String orderByType = getOrderByType();
 
 		OrderByComparator<DDMFormInstanceRecord> orderByComparator =
-			FormInstanceRecordSearch.getDDMFormInstanceRecordOrderByComparator(
-				orderByCol, orderByType);
+			DDMFormInstanceRecordSearch.
+				getDDMFormInstanceRecordOrderByComparator(
+					orderByCol, orderByType);
 
-		formInstanceRecordSearch.setOrderByCol(orderByCol);
-		formInstanceRecordSearch.setOrderByComparator(orderByComparator);
-		formInstanceRecordSearch.setOrderByType(orderByType);
+		ddmFormInstanceRecordSearch.setOrderByCol(orderByCol);
+		ddmFormInstanceRecordSearch.setOrderByComparator(orderByComparator);
+		ddmFormInstanceRecordSearch.setOrderByType(orderByType);
 
-		if (formInstanceRecordSearch.isSearch()) {
-			formInstanceRecordSearch.setEmptyResultsMessage(
+		if (ddmFormInstanceRecordSearch.isSearch()) {
+			ddmFormInstanceRecordSearch.setEmptyResultsMessage(
 				"no-entries-were-found");
 		}
 		else {
-			formInstanceRecordSearch.setEmptyResultsMessage(
+			ddmFormInstanceRecordSearch.setEmptyResultsMessage(
 				"there-are-no-entries");
 		}
 
-		setDDMFormInstanceRecordSearchResults(formInstanceRecordSearch);
-		setDDMFormInstanceRecordSearchTotal(formInstanceRecordSearch);
+		setDDMFormInstanceRecordSearchResults(ddmFormInstanceRecordSearch);
+		setDDMFormInstanceRecordSearchTotal(ddmFormInstanceRecordSearch);
 
-		return formInstanceRecordSearch;
+		return ddmFormInstanceRecordSearch;
 	}
 
 	public String getSearchActionURL() {
@@ -541,7 +542,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 	}
 
 	protected void setDDMFormInstanceRecordSearchResults(
-		FormInstanceRecordSearch formInstanceRecordSearch) {
+		DDMFormInstanceRecordSearch ddmFormInstanceRecordSearch) {
 
 		List<DDMFormInstanceRecord> results;
 
@@ -553,9 +554,9 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		else if (Validator.isNull(getKeywords())) {
 			results = _ddmFormInstanceRecordLocalService.getFormInstanceRecords(
 				_ddmFormInstance.getFormInstanceId(), status,
-				formInstanceRecordSearch.getStart(),
-				formInstanceRecordSearch.getEnd(),
-				formInstanceRecordSearch.getOrderByComparator());
+				ddmFormInstanceRecordSearch.getStart(),
+				ddmFormInstanceRecordSearch.getEnd(),
+				ddmFormInstanceRecordSearch.getOrderByComparator());
 		}
 		else {
 			BaseModelSearchResult<DDMFormInstanceRecord> baseModelSearchResult =
@@ -565,11 +566,11 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 			results = baseModelSearchResult.getBaseModels();
 		}
 
-		formInstanceRecordSearch.setResults(results);
+		ddmFormInstanceRecordSearch.setResults(results);
 	}
 
 	protected void setDDMFormInstanceRecordSearchTotal(
-		FormInstanceRecordSearch ddmFormInstanceRecordSearch) {
+		DDMFormInstanceRecordSearch ddmFormInstanceRecordSearch) {
 
 		int total;
 

@@ -22,13 +22,13 @@ import javax.portlet.PortletRequest;
 /**
  * @author Marcellus Tavares
  */
-public class FormInstanceDisplayTerms extends DisplayTerms {
+public class DDMFormInstanceDisplayTerms extends DisplayTerms {
 
 	public static final String DESCRIPTION = "description";
 
 	public static final String NAME = "name";
 
-	public FormInstanceDisplayTerms(PortletRequest portletRequest) {
+	public DDMFormInstanceDisplayTerms(PortletRequest portletRequest) {
 		super(portletRequest);
 
 		description = ParamUtil.getString(portletRequest, DESCRIPTION);

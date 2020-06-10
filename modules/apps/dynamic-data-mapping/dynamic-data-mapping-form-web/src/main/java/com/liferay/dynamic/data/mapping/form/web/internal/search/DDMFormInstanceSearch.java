@@ -26,7 +26,7 @@ import javax.portlet.PortletURL;
 /**
  * @author Marcellus Tavares
  */
-public class FormInstanceSearch extends SearchContainer<DDMFormInstance> {
+public class DDMFormInstanceSearch extends SearchContainer<DDMFormInstance> {
 
 	public static final String EMPTY_RESULTS_MESSAGE = "no-entries-were-found";
 
@@ -39,22 +39,22 @@ public class FormInstanceSearch extends SearchContainer<DDMFormInstance> {
 		}
 	};
 
-	public FormInstanceSearch(
+	public DDMFormInstanceSearch(
 		PortletRequest portletRequest, PortletURL iteratorURL) {
 
 		super(
-			portletRequest, new FormInstanceDisplayTerms(portletRequest),
-			new FormInstaceSearchTerms(portletRequest), DEFAULT_CUR_PARAM,
+			portletRequest, new DDMFormInstanceDisplayTerms(portletRequest),
+			new DDMFormInstaceSearchTerms(portletRequest), DEFAULT_CUR_PARAM,
 			DEFAULT_DELTA, iteratorURL, headerNames, EMPTY_RESULTS_MESSAGE);
 
-		FormInstanceDisplayTerms displayTerms =
-			(FormInstanceDisplayTerms)getDisplayTerms();
+		DDMFormInstanceDisplayTerms displayTerms =
+			(DDMFormInstanceDisplayTerms)getDisplayTerms();
 
 		iteratorURL.setParameter(
-			FormInstanceDisplayTerms.DESCRIPTION,
+			DDMFormInstanceDisplayTerms.DESCRIPTION,
 			displayTerms.getDescription());
 		iteratorURL.setParameter(
-			FormInstanceDisplayTerms.NAME,
+			DDMFormInstanceDisplayTerms.NAME,
 			String.valueOf(displayTerms.getName()));
 	}
 

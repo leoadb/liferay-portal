@@ -28,9 +28,9 @@ import javax.portlet.PortletResponse;
 /**
  * @author Rafael Praxedes
  */
-public class FormInstanceRowChecker extends EmptyOnClickRowChecker {
+public class DDMFormInstanceRowChecker extends EmptyOnClickRowChecker {
 
-	public FormInstanceRowChecker(PortletResponse portletResponse) {
+	public DDMFormInstanceRowChecker(PortletResponse portletResponse) {
 		super(portletResponse);
 	}
 
@@ -56,6 +56,6 @@ public class FormInstanceRowChecker extends EmptyOnClickRowChecker {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		FormInstanceRowChecker.class);
+		DDMFormInstanceRowChecker.class);
 
 }

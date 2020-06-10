@@ -21,9 +21,9 @@ import javax.portlet.PortletRequest;
 /**
  * @author Marcellus Tavares
  */
-public class FormInstaceSearchTerms extends FormInstanceDisplayTerms {
+public class DDMFormInstaceSearchTerms extends DDMFormInstanceDisplayTerms {
 
-	public FormInstaceSearchTerms(PortletRequest portletRequest) {
+	public DDMFormInstaceSearchTerms(PortletRequest portletRequest) {
 		super(portletRequest);
 
 		description = DAOParamUtil.getString(portletRequest, DESCRIPTION);

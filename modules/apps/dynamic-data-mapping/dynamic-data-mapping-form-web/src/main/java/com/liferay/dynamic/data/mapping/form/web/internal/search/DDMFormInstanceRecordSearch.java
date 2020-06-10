@@ -38,7 +38,7 @@ import javax.portlet.PortletURL;
 /**
  * @author Leonardo Barros
  */
-public class FormInstanceRecordSearch
+public class DDMFormInstanceRecordSearch
 	extends SearchContainer<DDMFormInstanceRecord> {
 
 	public static final String EMPTY_RESULTS_MESSAGE = "no-entries-were-found";
@@ -71,7 +71,7 @@ public class FormInstanceRecordSearch
 		return orderByComparator;
 	}
 
-	public FormInstanceRecordSearch(
+	public DDMFormInstanceRecordSearch(
 		PortletRequest portletRequest, PortletURL iteratorURL,
 		List<String> headerNames) {
 
@@ -130,6 +130,6 @@ public class FormInstanceRecordSearch
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		FormInstanceRecordSearch.class);
+		DDMFormInstanceRecordSearch.class);
 
 }
