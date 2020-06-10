@@ -84,6 +84,11 @@ public class DDMFormValues implements Serializable {
 		return _ddmFormFieldValues;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 * #getDDMFormFieldValuesMap(boolean)}
+	 */
+	@Deprecated
 	public Map<String, List<DDMFormFieldValue>> getDDMFormFieldValuesMap() {
 		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
 			new LinkedHashMap<>();
