@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
@@ -39,20 +38,17 @@ import org.junit.runner.RunWith;
 public class DataDefinitionFieldLinkResourceTest
 	extends BaseDataDefinitionFieldLinkResourceTestCase {
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
 		DataDefinitionResource.Builder builder =
 			DataDefinitionResource.builder();
 
 		_dataDefinitionResource = builder.locale(
 			LocaleUtil.getDefault()
 		).build();
-	}
-
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
 
 		_dataDefinition =
 			_dataDefinitionResource.postDataDefinitionByContentType(
@@ -111,8 +107,7 @@ public class DataDefinitionFieldLinkResourceTest
 		return _dataDefinition.getId();
 	}
 
-	private static DataDefinitionResource _dataDefinitionResource;
-
 	private DataDefinition _dataDefinition;
+	private DataDefinitionResource _dataDefinitionResource;
 
 }
