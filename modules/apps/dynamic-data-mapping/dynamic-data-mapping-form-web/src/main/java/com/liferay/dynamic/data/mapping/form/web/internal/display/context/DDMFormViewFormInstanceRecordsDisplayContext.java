@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -168,22 +169,29 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 			renderedFormFieldValues, StringPool.COMMA_AND_SPACE);
 	}
 
+	public DDMForm getDDMForm(DDMFormInstanceRecord ddmFormInstanceRecord)
+		throws PortalException {
+
+		DDMFormValues ddmFormValues = _getDDMFormValues(ddmFormInstanceRecord);
+
+		return ddmFormValues.getDDMForm();
+	}
+
 	public List<DDMFormField> getDDMFormFields() {
 		return _ddmFormFields;
 	}
 
-	public DDMFormInstance getDDMFormInstance() {
-		return _ddmFormInstance;
-	}
-
-	public DDMFormValues getDDMFormValues(
-			DDMFormInstanceRecord formInstanceRecord)
+	public Map<String, List<DDMFormFieldValue>> getDDMFormFieldValues(
+			DDMFormInstanceRecord ddmFormInstanceRecord)
 		throws PortalException {
 
-		DDMFormInstanceRecordVersion formInstanceRecordVersion =
-			formInstanceRecord.getFormInstanceRecordVersion();
+		DDMFormValues ddmFormValues = _getDDMFormValues(ddmFormInstanceRecord);
 
-		return formInstanceRecordVersion.getDDMFormValues();
+		return ddmFormValues.getDDMFormFieldValuesMap(true);
+	}
+
+	public DDMFormInstance getDDMFormInstance() {
+		return _ddmFormInstance;
 	}
 
 	public String getDisplayStyle() {
@@ -457,7 +465,10 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 	protected List<DDMFormField> getNontransientFormFields(DDMForm form) {
 		List<DDMFormField> formFields = new ArrayList<>();
 
-		for (DDMFormField formField : form.getDDMFormFields()) {
+		Map<String, DDMFormField> ddmFormFields = form.getDDMFormFieldsMap(
+			true);
+
+		for (DDMFormField formField : ddmFormFields.values()) {
 			if (formField.isTransient()) {
 				continue;
 			}
@@ -580,6 +591,16 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		}
 
 		ddmFormInstanceRecordSearch.setTotal(total);
+	}
+
+	private DDMFormValues _getDDMFormValues(
+			DDMFormInstanceRecord formInstanceRecord)
+		throws PortalException {
+
+		DDMFormInstanceRecordVersion formInstanceRecordVersion =
+			formInstanceRecord.getFormInstanceRecordVersion();
+
+		return formInstanceRecordVersion.getDDMFormValues();
 	}
 
 	private List<String> _getOptionsRenderedFormFieldValues(
