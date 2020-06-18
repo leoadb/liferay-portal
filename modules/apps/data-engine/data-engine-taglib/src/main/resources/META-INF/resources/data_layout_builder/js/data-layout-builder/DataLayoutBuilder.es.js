@@ -144,7 +144,13 @@ class DataLayoutBuilder extends React.Component {
 		const pagesVisitor = new PagesVisitor(pages);
 
 		const newPages = pagesVisitor.mapFields((field) => {
-			fieldDefinitions.push(this.getDataDefinitionField(field));
+			fieldDefinitions.push(
+				this.getDataDefinitionField(
+					field,
+					availableLanguageIds,
+					defaultLanguageId
+				)
+			);
 
 			return field.fieldName;
 		}, false);
@@ -192,11 +198,19 @@ class DataLayoutBuilder extends React.Component {
 		};
 	}
 
-	getDataDefinitionField({nestedFields = [], settingsContext}) {
+	getDataDefinitionField(
+		{nestedFields = [], settingsContext},
+		availableLanguageIds = [],
+		defaultLanguageId
+	) {
 		const fieldConfig = {
 			customProperties: {},
 			nestedDataDefinitionFields: nestedFields.map((nestedField) =>
-				this.getDataDefinitionField(nestedField)
+				this.getDataDefinitionField(
+					nestedField,
+					availableLanguageIds,
+					defaultLanguageId
+				)
 			),
 		};
 		const settingsContextVisitor = new PagesVisitor(settingsContext.pages);
@@ -211,6 +225,13 @@ class DataLayoutBuilder extends React.Component {
 				}
 
 				if (localizable) {
+					availableLanguageIds.forEach((languageId) => {
+						if (!localizedValue[languageId]) {
+							localizedValue[languageId] =
+								localizedValue[defaultLanguageId] || '';
+						}
+					});
+
 					if (this._isCustomProperty(fieldName)) {
 						fieldConfig.customProperties[
 							fieldName
