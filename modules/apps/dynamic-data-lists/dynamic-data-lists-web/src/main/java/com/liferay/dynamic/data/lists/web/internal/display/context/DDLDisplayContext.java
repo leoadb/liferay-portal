@@ -70,6 +70,7 @@ import com.liferay.portal.kernel.util.PrefsParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -870,12 +871,21 @@ public class DDLDisplayContext {
 	protected void setDDLRecordSetSearchResults(
 		RecordSetSearch recordSetSearch) {
 
-		List<DDLRecordSet> results = _ddlRecordSetLocalService.search(
-			_ddlRequestHelper.getCompanyId(),
-			_ddlRequestHelper.getScopeGroupId(), getKeywords(),
-			DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS,
-			recordSetSearch.getStart(), recordSetSearch.getEnd(),
-			recordSetSearch.getOrderByComparator());
+		List<DDLRecordSet> results = new ArrayList<>(
+			_ddlRecordSetLocalService.search(
+				_ddlRequestHelper.getCompanyId(),
+				_ddlRequestHelper.getScopeGroupId(), getKeywords(),
+				DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS,
+				recordSetSearch.getStart(), recordSetSearch.getEnd(),
+				recordSetSearch.getOrderByComparator()));
+
+		results.addAll(
+			_ddlRecordSetLocalService.search(
+				_ddlRequestHelper.getCompanyId(),
+				_ddlRequestHelper.getScopeGroupId(), getKeywords(),
+				DDLRecordSetConstants.SCOPE_DATA_ENGINE,
+				recordSetSearch.getStart(), recordSetSearch.getEnd(),
+				recordSetSearch.getOrderByComparator()));
 
 		recordSetSearch.setResults(results);
 	}
@@ -885,6 +895,11 @@ public class DDLDisplayContext {
 			_ddlRequestHelper.getCompanyId(),
 			_ddlRequestHelper.getScopeGroupId(), getKeywords(),
 			DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS);
+
+		total += _ddlRecordSetLocalService.searchCount(
+			_ddlRequestHelper.getCompanyId(),
+			_ddlRequestHelper.getScopeGroupId(), getKeywords(),
+			DDLRecordSetConstants.SCOPE_DATA_ENGINE);
 
 		recordSetSearch.setTotal(total);
 	}
