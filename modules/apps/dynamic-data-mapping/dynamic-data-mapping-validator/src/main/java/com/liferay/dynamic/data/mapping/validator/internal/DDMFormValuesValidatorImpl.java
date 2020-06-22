@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -225,7 +226,7 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 
 		Value value = ddmFormFieldValue.getValue();
 
-		if ((value == null) || value.getAvailableLocales().isEmpty()) {
+		if ((value == null) || SetUtil.isEmpty(value.getAvailableLocales())) {
 			return true;
 		}
 
