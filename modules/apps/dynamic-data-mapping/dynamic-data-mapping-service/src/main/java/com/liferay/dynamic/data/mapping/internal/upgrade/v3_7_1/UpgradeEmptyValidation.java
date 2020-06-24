@@ -52,9 +52,8 @@ public class UpgradeEmptyValidation extends UpgradeProcess {
 	@Override
 	public void doUpgrade() throws Exception {
 		try (PreparedStatement ps1 = connection.prepareStatement(
-				"select DDMStructure.definition, DDMStructure.structureId " +
-					"from DDMStructure where classNameId = ? and definition " +
-						"like '%validation%'");
+				"select structureId, definition from DDMStructure where " +
+					"classNameId = ? and definition like '%validation%'");
 			PreparedStatement ps2 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
@@ -76,7 +75,7 @@ public class UpgradeEmptyValidation extends UpgradeProcess {
 
 			try (ResultSet rs = ps1.executeQuery()) {
 				while (rs.next()) {
-					String definition = rs.getString(1);
+					String definition = rs.getString("definition");
 
 					String newDefinition = _updateEmptyValidation(definition);
 
@@ -84,7 +83,7 @@ public class UpgradeEmptyValidation extends UpgradeProcess {
 						continue;
 					}
 
-					long structureId = rs.getLong(2);
+					long structureId = rs.getLong("structureId");
 
 					ps2.setString(1, newDefinition);
 
