@@ -715,7 +715,21 @@ AUI.add(
 					var fields = [];
 
 					if (definition && definition.fields) {
-						fields = definition.fields;
+						for (var i = 0; i < definition.fields.length; i++) {
+							fields.push(definition.fields[i]);
+							if (definition.fields[i].nestedFields) {
+								for (
+									var j = 0;
+									j <
+									definition.fields[i].nestedFields.length;
+									j++
+								) {
+									fields.push(
+										definition.fields[i].nestedFields[j]
+									);
+								}
+							}
+						}
 					}
 
 					return AArray.find(fields, (item) => {
