@@ -28,6 +28,8 @@ if (editable || ddlDisplayContext.isAdminPortlet()) {
 DDMStructure ddmStructure = recordSet.getDDMStructure();
 %>
 
+<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/ddl/update_record" var="updateRecordURL" />
+
 <clay:container-fluid
 	cssClass="lfr-spreadsheet-container"
 >
@@ -166,6 +168,7 @@ DDMStructure ddmStructure = recordSet.getDDMStructure();
 			sortBy: '<liferay-ui:message arguments="{column}" key="sort-by-x" />',
 		},
 		structure: structure,
+		updateRecordURL: '<%= String.valueOf(updateRecordURL) %>',
 		width: '100%',
 	});
 
