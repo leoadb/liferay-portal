@@ -25,10 +25,6 @@ AUI.add(
 
 		var EMPTY_FN = A.Lang.emptyFn;
 
-		var FIELDS_DISPLAY_INSTANCE_SEPARATOR = '_INSTANCE_';
-
-		var FIELDS_DISPLAY_NAME = '_fieldsDisplay';
-
 		var STR_EMPTY = '';
 
 		var isArray = Array.isArray;
@@ -496,12 +492,7 @@ AUI.add(
 					}
 				},
 
-				_normalizeFieldData(
-					item,
-					record,
-					fieldsDisplayValues,
-					normalized
-				) {
+				_normalizeFieldData(item, record, normalized) {
 					var instance = this;
 
 					var type = item.type;
@@ -526,20 +517,27 @@ AUI.add(
 						value = JSON.stringify(value);
 					}
 
-					normalized[item.name] = instance._normalizeValue(value);
+					var fieldValue = {
+						instanceId: instance._randomString(8),
+						name: item.name,
+					};
 
-					fieldsDisplayValues.push(
-						item.name +
-							FIELDS_DISPLAY_INSTANCE_SEPARATOR +
-							instance._randomString(8)
-					);
+					if (item.localizable) {
+						fieldValue['value'] = {
+							[themeDisplay.getLanguageId()]: value,
+						};
+					}
+					else {
+						fieldValue['value'] = value;
+					}
+
+					normalized['fieldValues'].push(fieldValue);
 
 					if (isArray(item.fields)) {
 						item.fields.forEach((item) => {
 							instance._normalizeFieldData(
 								item,
 								record,
-								fieldsDisplayValues,
 								normalized
 							);
 						});
@@ -551,30 +549,30 @@ AUI.add(
 
 					var structure = instance.get('structure');
 
-					var fieldsDisplayValues = [];
-					var normalized = {};
+					var normalized = {
+						availableLanguageIds: [themeDisplay.getLanguageId()],
+						defaultLanguageId: themeDisplay.getLanguageId(),
+						fieldValues: [],
+					};
 
 					structure.forEach((item) => {
-						instance._normalizeFieldData(
-							item,
-							record,
-							fieldsDisplayValues,
-							normalized
-						);
-					});
+						instance._normalizeFieldData(item, record, normalized);
 
-					normalized[FIELDS_DISPLAY_NAME] = fieldsDisplayValues.join(
-						','
-					);
+						if (item.fields) {
+							item.fields.forEach((nestedField) =>
+								instance._normalizeFieldData(
+									nestedField,
+									record,
+									normalized
+								)
+							);
+						}
+					});
 
 					delete normalized.displayIndex;
 					delete normalized.recordId;
 
 					return normalized;
-				},
-
-				_normalizeValue(value) {
-					return String(value);
 				},
 
 				_onDataChange(event) {
@@ -642,7 +640,9 @@ AUI.add(
 								recordId,
 								recordIndex,
 								fieldsMap,
-								true
+								false,
+								instance.get('portletNamespace'),
+								instance.get('updateRecordURL')
 							);
 						}
 						else {
