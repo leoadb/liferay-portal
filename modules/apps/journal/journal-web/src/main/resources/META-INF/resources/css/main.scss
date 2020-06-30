@@ -184,6 +184,12 @@ $productMenuWidth: 320px;
 					}
 				}
 			}
+
+			@media (max-width: 992px) {
+				.sidebar-body {
+					height: calc(100vh - 270px);
+				}
+			}
 		}
 
 		.edit-article-sidebar {
