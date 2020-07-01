@@ -39,9 +39,9 @@ import java.util.Map;
 /**
  * @author Sam Ziemer
  */
-public class UpgradeEmptyValidation extends UpgradeProcess {
+public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 
-	public UpgradeEmptyValidation(
+	public UpgradeDDMStructureEmptyValidation(
 		DDMFormDeserializer ddmFormDeserializer,
 		DDMFormSerializer ddmFormSerializer) {
 
