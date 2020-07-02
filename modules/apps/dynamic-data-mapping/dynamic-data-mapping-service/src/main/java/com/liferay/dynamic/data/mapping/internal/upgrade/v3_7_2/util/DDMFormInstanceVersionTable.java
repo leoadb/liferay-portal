@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.dynamic.data.mapping.internal.upgrade.v3_7_1.util;
+package com.liferay.dynamic.data.mapping.internal.upgrade.v3_7_2.util;
 
 import java.sql.Types;
 
