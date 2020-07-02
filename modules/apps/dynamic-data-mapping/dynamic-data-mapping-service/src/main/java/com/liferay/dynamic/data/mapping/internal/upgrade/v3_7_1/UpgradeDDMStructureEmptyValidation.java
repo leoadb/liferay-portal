@@ -132,7 +132,7 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 
 		List<DDMFormRule> ddmFormRules = ddmForm.getDDMFormRules();
 
-		List<DDMFormField> ddmformfieldsList = new ArrayList<>();
+		List<DDMFormField> ddmFormFields = new ArrayList<>();
 
 		for (DDMFormField ddmFormField : ddmFormFieldsMap.values()) {
 			DDMFormFieldValidation ddmFormFieldValidation =
@@ -152,13 +152,12 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 				}
 			}
 
-			ddmformfieldsList.add(ddmFormField);
+			ddmFormFields.add(ddmFormField);
 		}
 
 		ddmForm.setDDMFormRules(ddmFormRules);
 
-		ddmForm.setDDMFormFields(ddmformfieldsList);
-
+		ddmForm.setDDMFormFields(ddmFormFields);
 
 		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
 			_ddmFormSerializer.serialize(
