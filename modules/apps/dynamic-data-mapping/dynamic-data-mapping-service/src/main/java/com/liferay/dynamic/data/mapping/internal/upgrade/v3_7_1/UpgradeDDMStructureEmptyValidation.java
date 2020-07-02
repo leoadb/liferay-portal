@@ -32,8 +32,6 @@ import com.liferay.portal.kernel.util.Validator;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -130,8 +128,6 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 		Map<String, DDMFormField> ddmFormFieldsMap =
 			ddmForm.getDDMFormFieldsMap(true);
 
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
-
 		for (DDMFormField ddmFormField : ddmFormFieldsMap.values()) {
 			DDMFormFieldValidation ddmFormFieldValidation =
 				ddmFormField.getDDMFormFieldValidation();
@@ -150,11 +146,7 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 					ddmFormField.setDDMFormFieldValidation(null);
 				}
 			}
-
-			ddmFormFields.add(ddmFormField);
 		}
-
-		ddmForm.setDDMFormFields(ddmFormFields);
 
 		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
 			_ddmFormSerializer.serialize(
