@@ -27,6 +27,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -141,10 +142,11 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 						ddmFormFieldValidation.
 							getDDMFormFieldValidationExpression();
 
-				String name = ddmFormFieldValidationExpression.getName();
-				String value = ddmFormFieldValidationExpression.getValue();
+				if (Validator.isNull(
+						ddmFormFieldValidationExpression.getName()) &&
+					Validator.isNull(
+						ddmFormFieldValidationExpression.getValue())) {
 
-				if (name.isEmpty() && value.isEmpty()) {
 					ddmFormField.setDDMFormFieldValidation(null);
 				}
 			}
