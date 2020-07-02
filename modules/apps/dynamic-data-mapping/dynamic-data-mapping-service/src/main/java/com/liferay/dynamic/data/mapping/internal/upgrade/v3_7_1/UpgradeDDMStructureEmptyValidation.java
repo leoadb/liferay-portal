@@ -24,7 +24,6 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
-import com.liferay.dynamic.data.mapping.model.DDMFormRule;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -130,8 +129,6 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 		Map<String, DDMFormField> ddmFormFieldsMap =
 			ddmForm.getDDMFormFieldsMap(true);
 
-		List<DDMFormRule> ddmFormRules = ddmForm.getDDMFormRules();
-
 		List<DDMFormField> ddmFormFields = new ArrayList<>();
 
 		for (DDMFormField ddmFormField : ddmFormFieldsMap.values()) {
@@ -154,8 +151,6 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 
 			ddmFormFields.add(ddmFormField);
 		}
-
-		ddmForm.setDDMFormRules(ddmFormRules);
 
 		ddmForm.setDDMFormFields(ddmFormFields);
 
