@@ -68,10 +68,10 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 					"update DDMStructureVersion set definition = ? where " +
 						"structureVersionId = ?")) {
 
-			long classNameId = PortalUtil.getClassNameId(
-				"com.liferay.dynamic.data.lists.model.DDLRecordSet");
-
-			ps1.setLong(1, classNameId);
+			ps1.setLong(
+				1,
+				PortalUtil.getClassNameId(
+					"com.liferay.dynamic.data.lists.model.DDLRecordSet"));
 
 			try (ResultSet rs = ps1.executeQuery()) {
 				while (rs.next()) {
@@ -83,15 +83,13 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 						continue;
 					}
 
-					long structureId = rs.getLong("structureId");
-
 					ps2.setString(1, newDefinition);
 
-					ps2.setLong(2, structureId);
+					ps2.setLong(2, rs.getLong("structureId"));
 
 					ps2.addBatch();
 
-					ps3.setLong(1, structureId);
+					ps3.setLong(1, rs.getLong("structureId"));
 
 					try (ResultSet rs2 = ps3.executeQuery()) {
 						while (rs2.next()) {
@@ -105,10 +103,7 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 
 							ps4.setString(1, newDefinition);
 
-							long structureVersionId = rs2.getLong(
-								"structureVersionId");
-
-							ps4.setLong(2, structureVersionId);
+							ps4.setLong(2, rs2.getLong("structureVersionId"));
 
 							ps4.addBatch();
 						}
@@ -123,13 +118,12 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 	}
 
 	private String _updateEmptyValidation(String definition) {
-		DDMFormDeserializerDeserializeRequest.Builder deserializerBuilder =
-			DDMFormDeserializerDeserializeRequest.Builder.newBuilder(
-				definition);
-
 		DDMFormDeserializerDeserializeResponse
 			ddmFormDeserializerDeserializeResponse =
-				_ddmFormDeserializer.deserialize(deserializerBuilder.build());
+				_ddmFormDeserializer.deserialize(
+					DDMFormDeserializerDeserializeRequest.Builder.newBuilder(
+						definition
+					).build());
 
 		DDMForm ddmForm = ddmFormDeserializerDeserializeResponse.getDDMForm();
 
@@ -165,11 +159,12 @@ public class UpgradeDDMStructureEmptyValidation extends UpgradeProcess {
 
 		ddmForm.setDDMFormFields(ddmformfieldsList);
 
-		DDMFormSerializerSerializeRequest.Builder serializerBuilder =
-			DDMFormSerializerSerializeRequest.Builder.newBuilder(ddmForm);
 
 		DDMFormSerializerSerializeResponse ddmFormSerializerSerializeResponse =
-			_ddmFormSerializer.serialize(serializerBuilder.build());
+			_ddmFormSerializer.serialize(
+				DDMFormSerializerSerializeRequest.Builder.newBuilder(
+					ddmForm
+				).build());
 
 		return ddmFormSerializerSerializeResponse.getContent();
 	}
