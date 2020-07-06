@@ -163,7 +163,7 @@ public class DDMStructureLocalServiceImpl
 			structureKey = String.valueOf(counterLocalService.increment());
 		}
 		else {
-			structureKey = StringUtil.toUpperCase(structureKey.trim());
+			structureKey = structureKey.trim();
 		}
 
 		validate(
@@ -241,7 +241,7 @@ public class DDMStructureLocalServiceImpl
 			structureKey = String.valueOf(counterLocalService.increment());
 		}
 		else {
-			structureKey = StringUtil.toUpperCase(structureKey.trim());
+			structureKey = structureKey.trim();
 		}
 
 		long structureId = counterLocalService.increment();
@@ -1805,9 +1805,7 @@ public class DDMStructureLocalServiceImpl
 
 	protected String getStructureKey(String structureKey) {
 		if (structureKey != null) {
-			structureKey = structureKey.trim();
-
-			return StringUtil.toUpperCase(structureKey);
+			return structureKey.trim();
 		}
 
 		return StringPool.BLANK;
