@@ -103,6 +103,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -128,6 +129,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.validation.ValidationException;
@@ -827,6 +829,14 @@ public class DataDefinitionResourceImpl
 		);
 	}
 
+	private String _getNativeObjectFieldColumnName(
+		DataEngineNativeObjectField dataEngineNativeObjectField) {
+
+		Column<?, ?> column = dataEngineNativeObjectField.getColumn();
+
+		return column.getName();
+	}
+
 	private String[] _getRemovedFieldNames(
 			DataDefinition dataDefinition, long dataDefinitionId)
 		throws Exception {
@@ -1395,6 +1405,50 @@ public class DataDefinitionResourceImpl
 		}
 		catch (Exception exception) {
 			throw new DataDefinitionValidationException(exception);
+		}
+
+		if (StringUtil.equals(
+				dataDefinitionContentType.getContentType(), "native-object") &&
+			Validator.isNotNull(dataDefinition.getId())) {
+
+			_validateNativeObject(dataDefinition);
+		}
+	}
+
+	private void _validateNativeObject(DataDefinition dataDefinition) {
+		DataEngineNativeObject dataEngineNativeObject =
+			_dataEngineNativeObjectTracker.getDataEngineNativeObject(
+				dataDefinition.getDataDefinitionKey());
+
+		if ((dataEngineNativeObject == null) ||
+			ListUtil.isEmpty(
+				dataEngineNativeObject.getDataEngineNativeObjectFields())) {
+
+			return;
+		}
+
+		List<DataEngineNativeObjectField> dataEngineNativeObjectFields =
+			dataEngineNativeObject.getDataEngineNativeObjectFields();
+
+		Stream<DataEngineNativeObjectField> stream =
+			dataEngineNativeObjectFields.stream();
+
+		Set<String> removedNativeFields = stream.map(
+			this::_getNativeObjectFieldColumnName
+		).filter(
+			name -> !Stream.of(
+				dataDefinition.getDataDefinitionFields()
+			).anyMatch(
+				dataDefinitionField -> StringUtil.equals(
+					dataDefinitionField.getName(), name)
+			)
+		).collect(
+			Collectors.toSet()
+		);
+
+		if (SetUtil.isNotEmpty(removedNativeFields)) {
+			throw new DataDefinitionValidationException.
+				MustNotRemoveNativeField(removedNativeFields);
 		}
 	}
 
