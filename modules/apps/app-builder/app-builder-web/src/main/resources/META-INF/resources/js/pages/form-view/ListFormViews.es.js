@@ -44,6 +44,11 @@ export default ({
 
 	const COLUMNS = [
 		{
+			key: 'id',
+			sortable: true,
+			value: Liferay.Language.get('id'),
+		},
+		{
 			key: 'name',
 			sortable: true,
 			value: Liferay.Language.get('name'),
