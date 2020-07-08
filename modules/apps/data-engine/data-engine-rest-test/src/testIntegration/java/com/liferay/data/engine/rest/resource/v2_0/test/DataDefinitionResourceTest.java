@@ -538,7 +538,7 @@ public class DataDefinitionResourceTest
 		// MustNotRemoveNativeFields
 
 		try {
-			DataDefinition userDataDefinition = _getUserNativeObject();
+			DataDefinition userDataDefinition = _getUserDataDefinition();
 
 			List<DataDefinitionField> dataDefinitionFields = ListUtil.fromArray(
 				userDataDefinition.getDataDefinitionFields());
@@ -756,7 +756,7 @@ public class DataDefinitionResourceTest
 		return dataDefinition;
 	}
 
-	private DataDefinition _getUserNativeObject() throws Exception {
+	private DataDefinition _getUserDataDefinition() throws Exception {
 		Page<DataDefinition> dataDefinitionPage =
 			dataDefinitionResource.
 				getDataDefinitionByContentTypeContentTypePage(
