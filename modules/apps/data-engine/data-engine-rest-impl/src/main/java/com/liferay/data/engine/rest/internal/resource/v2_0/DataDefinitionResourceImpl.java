@@ -647,6 +647,47 @@ public class DataDefinitionResourceImpl
 		}
 	}
 
+	private void _checkRemovedDataEngineNativeObjectFields(
+		DataDefinition dataDefinition) {
+
+		DataEngineNativeObject dataEngineNativeObject =
+			_dataEngineNativeObjectTracker.getDataEngineNativeObject(
+				dataDefinition.getDataDefinitionKey());
+
+		if ((dataEngineNativeObject == null) ||
+			ListUtil.isEmpty(
+				dataEngineNativeObject.getDataEngineNativeObjectFields())) {
+
+			return;
+		}
+
+		List<DataEngineNativeObjectField> dataEngineNativeObjectFields =
+			dataEngineNativeObject.getDataEngineNativeObjectFields();
+
+		Stream<DataEngineNativeObjectField> stream =
+			dataEngineNativeObjectFields.stream();
+
+		Set<String> removedDataEngineNativeObjectFieldNames = stream.map(
+			this::_getDataEngineNativeObjectFieldName
+		).filter(
+			dataEngineNativeObjectFieldName -> !Stream.of(
+				dataDefinition.getDataDefinitionFields()
+			).anyMatch(
+				dataDefinitionField -> StringUtil.equals(
+					dataDefinitionField.getName(),
+					dataEngineNativeObjectFieldName)
+			)
+		).collect(
+			Collectors.toSet()
+		);
+
+		if (SetUtil.isNotEmpty(removedDataEngineNativeObjectFieldNames)) {
+			throw new DataDefinitionValidationException.
+				MustNotRemoveNativeField(
+					removedDataEngineNativeObjectFieldNames);
+		}
+	}
+
 	private JSONObject _createFieldContextJSONObject(
 		DDMFormFieldType ddmFormFieldType, Locale locale, String type) {
 
@@ -697,6 +738,14 @@ public class DataDefinitionResourceImpl
 		}
 
 		return null;
+	}
+
+	private String _getDataEngineNativeObjectFieldName(
+		DataEngineNativeObjectField dataEngineNativeObjectField) {
+
+		Column<?, ?> column = dataEngineNativeObjectField.getColumn();
+
+		return column.getName();
 	}
 
 	private DataLayoutResource _getDataLayoutResource(boolean checkPermission) {
@@ -827,14 +876,6 @@ public class DataDefinitionResourceImpl
 			MapUtil.getBoolean(
 				ddmFormFieldTypeProperties, "ddm.form.field.type.system")
 		);
-	}
-
-	private String _getNativeObjectFieldColumnName(
-		DataEngineNativeObjectField dataEngineNativeObjectField) {
-
-		Column<?, ?> column = dataEngineNativeObjectField.getColumn();
-
-		return column.getName();
 	}
 
 	private String[] _getRemovedFieldNames(
@@ -1411,44 +1452,7 @@ public class DataDefinitionResourceImpl
 				dataDefinitionContentType.getContentType(), "native-object") &&
 			Validator.isNotNull(dataDefinition.getId())) {
 
-			_validateNativeObject(dataDefinition);
-		}
-	}
-
-	private void _validateNativeObject(DataDefinition dataDefinition) {
-		DataEngineNativeObject dataEngineNativeObject =
-			_dataEngineNativeObjectTracker.getDataEngineNativeObject(
-				dataDefinition.getDataDefinitionKey());
-
-		if ((dataEngineNativeObject == null) ||
-			ListUtil.isEmpty(
-				dataEngineNativeObject.getDataEngineNativeObjectFields())) {
-
-			return;
-		}
-
-		List<DataEngineNativeObjectField> dataEngineNativeObjectFields =
-			dataEngineNativeObject.getDataEngineNativeObjectFields();
-
-		Stream<DataEngineNativeObjectField> stream =
-			dataEngineNativeObjectFields.stream();
-
-		Set<String> removedNativeFields = stream.map(
-			this::_getNativeObjectFieldColumnName
-		).filter(
-			name -> !Stream.of(
-				dataDefinition.getDataDefinitionFields()
-			).anyMatch(
-				dataDefinitionField -> StringUtil.equals(
-					dataDefinitionField.getName(), name)
-			)
-		).collect(
-			Collectors.toSet()
-		);
-
-		if (SetUtil.isNotEmpty(removedNativeFields)) {
-			throw new DataDefinitionValidationException.
-				MustNotRemoveNativeField(removedNativeFields);
+			_checkRemovedDataEngineNativeObjectFields(dataDefinition);
 		}
 	}
 
