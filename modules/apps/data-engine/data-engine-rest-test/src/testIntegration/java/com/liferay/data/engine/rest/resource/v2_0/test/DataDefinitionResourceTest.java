@@ -538,14 +538,15 @@ public class DataDefinitionResourceTest
 		// MustNotRemoveNativeFields
 
 		try {
-			DataDefinition userDataDefinition = _getUserNativeObject();
+			DataDefinition userDataEngineNativeObject =
+				_getUserDataEngineNativeObject();
 
 			List<DataDefinitionField> dataDefinitionFields = ListUtil.fromArray(
-				userDataDefinition.getDataDefinitionFields());
+				userDataEngineNativeObject.getDataDefinitionFields());
 
 			Stream<DataDefinitionField> stream = dataDefinitionFields.stream();
 
-			userDataDefinition.setDataDefinitionFields(
+			userDataEngineNativeObject.setDataDefinitionFields(
 				stream.filter(
 					dataDefinitionField -> !StringUtil.equals(
 						dataDefinitionField.getName(), "emailAddress")
@@ -556,7 +557,7 @@ public class DataDefinitionResourceTest
 				));
 
 			dataDefinitionResource.putDataDefinition(
-				userDataDefinition.getId(), userDataDefinition);
+				userDataEngineNativeObject.getId(), userDataEngineNativeObject);
 
 			Assert.fail("An exception must be thrown");
 		}
@@ -756,7 +757,7 @@ public class DataDefinitionResourceTest
 		return dataDefinition;
 	}
 
-	private DataDefinition _getUserNativeObject() throws Exception {
+	private DataDefinition _getUserDataEngineNativeObject() throws Exception {
 		Page<DataDefinition> dataDefinitionPage =
 			dataDefinitionResource.
 				getDataDefinitionByContentTypeContentTypePage(
