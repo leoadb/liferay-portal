@@ -793,7 +793,7 @@
 		<exception>StructureField</exception>
 		<exception>StructureLayout</exception>
 		<exception>StructureName</exception>
-		<exception>TemplateCreation</exception>
+		<exception>TemplateCreationDisabled</exception>
 		<exception>TemplateDuplicateTemplateKey</exception>
 		<exception>TemplateName</exception>
 		<exception>TemplateScript</exception>
