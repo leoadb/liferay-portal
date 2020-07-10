@@ -19,21 +19,20 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Brian Wing Shun Chan
  */
-public class TemplateCreationException extends PortalException {
+public class TemplateCreationDisabledException extends PortalException {
 
-	public TemplateCreationException() {
-		super("The creation of template is not enable");
+	public TemplateCreationDisabledException() {
 	}
 
-	public TemplateCreationException(String msg) {
+	public TemplateCreationDisabledException(String msg) {
 		super(msg);
 	}
 
-	public TemplateCreationException(String msg, Throwable cause) {
+	public TemplateCreationDisabledException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
-	public TemplateCreationException(Throwable cause) {
+	public TemplateCreationDisabledException(Throwable cause) {
 		super(cause);
 	}
 
