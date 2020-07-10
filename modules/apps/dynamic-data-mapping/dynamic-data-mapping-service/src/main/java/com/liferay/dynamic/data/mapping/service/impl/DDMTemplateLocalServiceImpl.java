@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.exception.InvalidTemplateVersionException;
 import com.liferay.dynamic.data.mapping.exception.NoSuchTemplateException;
 import com.liferay.dynamic.data.mapping.exception.RequiredTemplateException;
+import com.liferay.dynamic.data.mapping.exception.TemplateCreationException;
 import com.liferay.dynamic.data.mapping.exception.TemplateDuplicateTemplateKeyException;
 import com.liferay.dynamic.data.mapping.exception.TemplateNameException;
 import com.liferay.dynamic.data.mapping.exception.TemplateScriptException;
@@ -54,6 +55,8 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.settings.Settings;
+import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.util.Constants;
@@ -190,6 +193,17 @@ public class DDMTemplateLocalServiceImpl
 			boolean cacheable, boolean smallImage, String smallImageURL,
 			File smallImageFile, ServiceContext serviceContext)
 		throws PortalException {
+
+		Settings ddmWebConfigurationSettings =
+			_settingsLocatorHelper.getConfigurationBeanSettings(
+				_DDM_WEB_CONFIGURATION_ID);
+
+		if (!GetterUtil.getBoolean(
+				ddmWebConfigurationSettings.getValue(
+					"enableTemplateCreation", "true"))) {
+
+			throw new TemplateCreationException();
+		}
 
 		// Template
 
@@ -1807,6 +1821,10 @@ public class DDMTemplateLocalServiceImpl
 		}
 	}
 
+	private static final String _DDM_WEB_CONFIGURATION_ID =
+		"com.liferay.dynamic.data.mapping.web.internal.configuration." +
+			"DDMWebConfiguration";
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMTemplateLocalServiceImpl.class);
 
@@ -1827,5 +1845,8 @@ public class DDMTemplateLocalServiceImpl
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SettingsLocatorHelper _settingsLocatorHelper;
 
 }

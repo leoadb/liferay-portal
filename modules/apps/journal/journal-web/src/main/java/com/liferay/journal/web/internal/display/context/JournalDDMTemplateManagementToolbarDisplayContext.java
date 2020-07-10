@@ -32,9 +32,13 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.settings.Settings;
+import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
+import com.liferay.portal.kernel.settings.SettingsLocatorHelperUtil;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.staging.StagingGroupHelper;
@@ -199,8 +203,15 @@ public class JournalDDMTemplateManagementToolbarDisplayContext
 			return false;
 		}
 
+		Settings ddmWebConfigurationSettings =
+			_settingsLocatorHelper.getConfigurationBeanSettings(
+				_DDM_WEB_CONFIGURATION_ID);
+
 		try {
-			if (DDMTemplatePermission.containsAddTemplatePermission(
+			if (GetterUtil.getBoolean(
+					ddmWebConfigurationSettings.getValue(
+						"enableTemplateCreation", "true")) &&
+				DDMTemplatePermission.containsAddTemplatePermission(
 					themeDisplay.getPermissionChecker(),
 					themeDisplay.getScopeGroupId(),
 					PortalUtil.getClassNameId(DDMStructure.class),
@@ -247,7 +258,13 @@ public class JournalDDMTemplateManagementToolbarDisplayContext
 				allowedTemplateLanguageTypes, templateLanguageType));
 	}
 
+	private static final String _DDM_WEB_CONFIGURATION_ID =
+		"com.liferay.dynamic.data.mapping.web.internal.configuration." +
+			"DDMWebConfiguration";
+
 	private final JournalDDMTemplateDisplayContext
 		_journalDDMTemplateDisplayContext;
+	private final SettingsLocatorHelper _settingsLocatorHelper =
+		SettingsLocatorHelperUtil.getSettingsLocatorHelper();
 
 }
