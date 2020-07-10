@@ -203,15 +203,8 @@ public class JournalDDMTemplateManagementToolbarDisplayContext
 			return false;
 		}
 
-		Settings ddmWebConfigurationSettings =
-			_settingsLocatorHelper.getConfigurationBeanSettings(
-				"com.liferay.dynamic.data.mapping.web.internal.configuration." +
-					"DDMWebConfiguration");
-
 		try {
-			if (GetterUtil.getBoolean(
-					ddmWebConfigurationSettings.getValue(
-						"enableTemplateCreation", "true")) &&
+			if (_isTemplateCreationEnabled() &&
 				DDMTemplatePermission.containsAddTemplatePermission(
 					themeDisplay.getPermissionChecker(),
 					themeDisplay.getScopeGroupId(),
@@ -257,6 +250,17 @@ public class JournalDDMTemplateManagementToolbarDisplayContext
 			_journalDDMTemplateDisplayContext.getTemplateLanguageTypes(),
 			templateLanguageType -> ArrayUtil.contains(
 				allowedTemplateLanguageTypes, templateLanguageType));
+	}
+
+	private boolean _isTemplateCreationEnabled() {
+		Settings ddmWebConfigurationSettings =
+			_settingsLocatorHelper.getConfigurationBeanSettings(
+				"com.liferay.dynamic.data.mapping.web.internal.configuration." +
+					"DDMWebConfiguration");
+
+		return GetterUtil.getBoolean(
+			ddmWebConfigurationSettings.getValue(
+				"enableTemplateCreation", "true"));
 	}
 
 	private final JournalDDMTemplateDisplayContext

@@ -194,15 +194,7 @@ public class DDMTemplateLocalServiceImpl
 			File smallImageFile, ServiceContext serviceContext)
 		throws PortalException {
 
-		Settings ddmWebConfigurationSettings =
-			_settingsLocatorHelper.getConfigurationBeanSettings(
-				"com.liferay.dynamic.data.mapping.web.internal.configuration." +
-					"DDMWebConfiguration");
-
-		if (!GetterUtil.getBoolean(
-				ddmWebConfigurationSettings.getValue(
-					"enableTemplateCreation", "true"))) {
-
+		if (!_isTemplateCreationEnabled()) {
 			throw new TemplateCreationDisabledException();
 		}
 
@@ -1820,6 +1812,17 @@ public class DDMTemplateLocalServiceImpl
 		if (Validator.isNull(name)) {
 			throw new TemplateNameException("Name is null");
 		}
+	}
+
+	private boolean _isTemplateCreationEnabled() {
+		Settings ddmWebConfigurationSettings =
+			_settingsLocatorHelper.getConfigurationBeanSettings(
+				"com.liferay.dynamic.data.mapping.web.internal.configuration." +
+					"DDMWebConfiguration");
+
+		return GetterUtil.getBoolean(
+			ddmWebConfigurationSettings.getValue(
+				"enableTemplateCreation", "true"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
