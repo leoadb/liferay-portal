@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -139,12 +141,38 @@ public class DDMFormValuesToMapConverterImpl
 		DDMFormField ddmFormField = ddmFormFields.get(
 			ddmFormFieldValue.getName());
 
-		_addValue(ddmFormField, ddmFormFieldValue, values);
+		if (StringUtil.equals(ddmFormField.getType(), "fieldset")) {
+			if (ListUtil.isEmpty(
+					ddmFormFieldValue.getNestedDDMFormFieldValues())) {
 
-		for (DDMFormFieldValue nestedDDMFormFieldValue :
-				ddmFormFieldValue.getNestedDDMFormFieldValues()) {
+				return;
+			}
 
-			_addValues(ddmFormFields, nestedDDMFormFieldValue, values);
+			if (!values.containsKey(ddmFormField.getName())) {
+				values.put(ddmFormField.getName(), new HashMap<>());
+			}
+
+			Map<String, Object> fieldSetInstanceValues =
+				(Map<String, Object>)values.get(ddmFormField.getName());
+
+			if (!fieldSetInstanceValues.containsKey(
+					ddmFormFieldValue.getInstanceId())) {
+
+				fieldSetInstanceValues.put(
+					ddmFormFieldValue.getInstanceId(), new HashMap<>());
+			}
+
+			for (DDMFormFieldValue nestedDDMFormFieldValue :
+					ddmFormFieldValue.getNestedDDMFormFieldValues()) {
+
+				_addValues(
+					ddmFormFields, nestedDDMFormFieldValue,
+					(Map<String, Object>)fieldSetInstanceValues.get(
+						ddmFormFieldValue.getInstanceId()));
+			}
+		}
+		else {
+			_addValue(ddmFormField, ddmFormFieldValue, values);
 		}
 	}
 
