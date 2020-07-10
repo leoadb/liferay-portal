@@ -20,7 +20,7 @@ import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.exception.InvalidTemplateVersionException;
 import com.liferay.dynamic.data.mapping.exception.NoSuchTemplateException;
 import com.liferay.dynamic.data.mapping.exception.RequiredTemplateException;
-import com.liferay.dynamic.data.mapping.exception.TemplateCreationException;
+import com.liferay.dynamic.data.mapping.exception.TemplateCreationDisabledException;
 import com.liferay.dynamic.data.mapping.exception.TemplateDuplicateTemplateKeyException;
 import com.liferay.dynamic.data.mapping.exception.TemplateNameException;
 import com.liferay.dynamic.data.mapping.exception.TemplateScriptException;
@@ -203,7 +203,7 @@ public class DDMTemplateLocalServiceImpl
 				ddmWebConfigurationSettings.getValue(
 					"enableTemplateCreation", "true"))) {
 
-			throw new TemplateCreationException();
+			throw new TemplateCreationDisabledException();
 		}
 
 		// Template
