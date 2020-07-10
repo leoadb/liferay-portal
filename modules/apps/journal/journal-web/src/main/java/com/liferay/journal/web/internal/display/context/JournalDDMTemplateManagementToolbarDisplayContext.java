@@ -205,7 +205,8 @@ public class JournalDDMTemplateManagementToolbarDisplayContext
 
 		Settings ddmWebConfigurationSettings =
 			_settingsLocatorHelper.getConfigurationBeanSettings(
-				_DDM_WEB_CONFIGURATION_ID);
+				"com.liferay.dynamic.data.mapping.web.internal.configuration." +
+					"DDMWebConfiguration");
 
 		try {
 			if (GetterUtil.getBoolean(
@@ -257,10 +258,6 @@ public class JournalDDMTemplateManagementToolbarDisplayContext
 			templateLanguageType -> ArrayUtil.contains(
 				allowedTemplateLanguageTypes, templateLanguageType));
 	}
-
-	private static final String _DDM_WEB_CONFIGURATION_ID =
-		"com.liferay.dynamic.data.mapping.web.internal.configuration." +
-			"DDMWebConfiguration";
 
 	private final JournalDDMTemplateDisplayContext
 		_journalDDMTemplateDisplayContext;

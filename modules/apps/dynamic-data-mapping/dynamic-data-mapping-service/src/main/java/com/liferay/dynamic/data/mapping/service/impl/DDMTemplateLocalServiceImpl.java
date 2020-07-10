@@ -196,7 +196,8 @@ public class DDMTemplateLocalServiceImpl
 
 		Settings ddmWebConfigurationSettings =
 			_settingsLocatorHelper.getConfigurationBeanSettings(
-				_DDM_WEB_CONFIGURATION_ID);
+				"com.liferay.dynamic.data.mapping.web.internal.configuration." +
+					"DDMWebConfiguration");
 
 		if (!GetterUtil.getBoolean(
 				ddmWebConfigurationSettings.getValue(
@@ -1820,10 +1821,6 @@ public class DDMTemplateLocalServiceImpl
 			throw new TemplateNameException("Name is null");
 		}
 	}
-
-	private static final String _DDM_WEB_CONFIGURATION_ID =
-		"com.liferay.dynamic.data.mapping.web.internal.configuration." +
-			"DDMWebConfiguration";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMTemplateLocalServiceImpl.class);
