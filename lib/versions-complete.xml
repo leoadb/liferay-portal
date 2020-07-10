@@ -339,7 +339,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.data.engine.rest.api.jar!jodd-bean.jar</file-name>
-				<version>3.6.4</version>
+				<version>5.1.4</version>
 				<project-name>Jodd BeanUtil</project-name>
 				<project-url>http://jodd.org</project-url>
 				<licenses>
@@ -351,7 +351,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.data.engine.rest.api.jar!jodd-core.jar</file-name>
-				<version>3.6.4</version>
+				<version>5.1.4</version>
 				<project-name>Jodd Core</project-name>
 				<project-url>http://jodd.org</project-url>
 				<licenses>
