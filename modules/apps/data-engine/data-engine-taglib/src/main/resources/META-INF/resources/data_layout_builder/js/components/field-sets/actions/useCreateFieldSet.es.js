@@ -16,6 +16,7 @@ import {useContext} from 'react';
 
 import AppContext from '../../../AppContext.es';
 import {UPDATE_FIELDSETS} from '../../../actions.es';
+import DataLayoutBuilderContext from '../../../data-layout-builder/DataLayoutBuilderContext.es';
 import {addItem} from '../../../utils/client.es';
 import {containsField} from '../../../utils/dataLayoutVisitor.es';
 import {errorToast, successToast} from '../../../utils/toast.es';
@@ -24,6 +25,8 @@ export default ({childrenContext}) => {
 	const defaultLanguageId = Liferay.ThemeDisplay.getDefaultLanguageId();
 	const [{fieldSets}, dispatch] = useContext(AppContext);
 	const {state: childrenState} = childrenContext;
+	const [dataLayoutBuilder] = useContext(DataLayoutBuilderContext);
+	const {contentType, fieldSetContentType} = dataLayoutBuilder.props;
 
 	return (fieldSetName) => {
 		const {
@@ -50,8 +53,14 @@ export default ({childrenContext}) => {
 			name,
 		};
 
+		let _fieldSetContentType = fieldSetContentType;
+
+		if (!_fieldSetContentType) {
+			_fieldSetContentType = contentType;
+		}
+
 		return addItem(
-			`/o/data-engine/v2.0/data-definitions/by-content-type/app-builder-fieldset`,
+			`/o/data-engine/v2.0/data-definitions/by-content-type/${_fieldSetContentType}`,
 			fieldSetDefinition
 		)
 			.then((dataDefinitionFieldSet) => {
