@@ -53,14 +53,10 @@ export default ({childrenContext}) => {
 			name,
 		};
 
-		let _fieldSetContentType = fieldSetContentType;
-
-		if (!_fieldSetContentType) {
-			_fieldSetContentType = contentType;
-		}
-
 		return addItem(
-			`/o/data-engine/v2.0/data-definitions/by-content-type/${_fieldSetContentType}`,
+			`/o/data-engine/v2.0/data-definitions/by-content-type/${
+				fieldSetContentType || contentType
+			}`,
 			fieldSetDefinition
 		)
 			.then((dataDefinitionFieldSet) => {
