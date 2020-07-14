@@ -28,6 +28,8 @@ if (!ddlDisplayContext.isAdminPortlet()) {
 
 	renderResponse.setTitle(recordSet.getName(locale));
 }
+
+String randomNamespace = PortalUtil.generateRandomKey(request, "portlet_dynamic_data_lists_view_records") + StringPool.UNDERLINE;
 %>
 
 <c:if test="<%= ddlViewRecordsDisplayContext.isAdminPortlet() %>">
@@ -40,7 +42,7 @@ if (!ddlDisplayContext.isAdminPortlet()) {
 <clay:management-toolbar
 	actionDropdownItems="<%= ddlViewRecordsDisplayContext.getActionItemsDropdownItems() %>"
 	clearResultsURL="<%= ddlViewRecordsDisplayContext.getClearResultsURL() %>"
-	componentId="ddlViewRecordsManagementToolbar"
+	componentId='<%= randomNamespace + "ddlViewRecordsManagementToolbar" %>'
 	creationMenu="<%= ddlViewRecordsDisplayContext.getCreationMenu() %>"
 	disabled="<%= ddlViewRecordsDisplayContext.isDisabledManagementBar() %>"
 	filterDropdownItems="<%= ddlViewRecordsDisplayContext.getFilterItemsDropdownItems() %>"
@@ -199,7 +201,7 @@ if (!ddlDisplayContext.isAdminPortlet()) {
 		deleteRecords: deleteRecords,
 	};
 
-	Liferay.componentReady('ddlViewRecordsManagementToolbar').then(function (
+	Liferay.componentReady('<%= randomNamespace + "ddlViewRecordsManagementToolbar" %>').then(function (
 		managementToolbar
 	) {
 		managementToolbar.on('actionItemClicked', function (event) {
