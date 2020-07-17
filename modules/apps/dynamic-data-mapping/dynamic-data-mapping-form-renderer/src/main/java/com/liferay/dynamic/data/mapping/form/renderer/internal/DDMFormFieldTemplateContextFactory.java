@@ -794,20 +794,6 @@ public class DDMFormFieldTemplateContextFactory {
 		return columns.stream();
 	}
 
-	private DDMForm _getDDMForm(long ddmStructureId) {
-		try {
-			return _ddmStructureLocalService.getStructureDDMForm(
-				_ddmStructureLocalService.getStructure(ddmStructureId));
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException, portalException);
-			}
-		}
-
-		return new DDMForm();
-	}
-
 	private DDMFormLayout _getDDMFormLayout(long ddmStructureLayoutId) {
 		try {
 			return _ddmStructureLayoutLocalService.
