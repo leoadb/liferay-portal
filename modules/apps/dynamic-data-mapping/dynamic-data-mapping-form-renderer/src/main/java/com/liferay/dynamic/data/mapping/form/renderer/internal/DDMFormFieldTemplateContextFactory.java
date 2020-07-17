@@ -74,7 +74,7 @@ public class DDMFormFieldTemplateContextFactory {
 		DDMFormRenderingContext ddmFormRenderingContext,
 		DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
 		DDMStructureLocalService ddmStructureLocalService,
-		boolean pageEnabled) {
+		JSONFactory jsonFactory, boolean pageEnabled) {
 
 		_ddmFormEvaluator = ddmFormEvaluator;
 		_ddmFormFieldName = ddmFormFieldName;
@@ -935,6 +935,7 @@ public class DDMFormFieldTemplateContextFactory {
 	private final DDMStructureLayoutLocalService
 		_ddmStructureLayoutLocalService;
 	private final DDMStructureLocalService _ddmStructureLocalService;
+	private final JSONFactory _jsonFactory;
 	private final Locale _locale;
 	private final boolean _pageEnabled;
 
