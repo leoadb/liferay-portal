@@ -81,7 +81,8 @@ public class DDMFormFieldTemplateContextFactory {
 		DDMFormRenderingContext ddmFormRenderingContext,
 		DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
 		DDMStructureLocalService ddmStructureLocalService,
-		JSONFactory jsonFactory, boolean pageEnabled) {
+		JSONFactory jsonFactory, boolean pageEnabled,
+		DDMFormLayout parentDDMFormLayout) {
 
 		_ddmFormEvaluator = ddmFormEvaluator;
 		_ddmFormFieldName = ddmFormFieldName;
@@ -93,6 +94,7 @@ public class DDMFormFieldTemplateContextFactory {
 		_ddmStructureLocalService = ddmStructureLocalService;
 		_jsonFactory = jsonFactory;
 		_pageEnabled = pageEnabled;
+		_parentDDMFormLayout = parentDDMFormLayout;
 
 		_locale = ddmFormRenderingContext.getLocale();
 	}
@@ -891,6 +893,9 @@ public class DDMFormFieldTemplateContextFactory {
 						GetterUtil.getLong(
 							ddmFormField.getProperty("ddmStructureId")))));
 
+			ddmFormLayout.setDDMFormRules(
+				_parentDDMFormLayout.getDDMFormRules());
+
 			String rows = MapUtil.getString(
 				ddmFormField.getProperties(), "rows");
 
@@ -998,5 +1003,6 @@ public class DDMFormFieldTemplateContextFactory {
 	private final JSONFactory _jsonFactory;
 	private final Locale _locale;
 	private final boolean _pageEnabled;
+	private final DDMFormLayout _parentDDMFormLayout;
 
 }
