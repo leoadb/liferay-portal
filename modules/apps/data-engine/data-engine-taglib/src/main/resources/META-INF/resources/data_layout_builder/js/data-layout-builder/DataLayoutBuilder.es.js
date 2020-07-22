@@ -219,7 +219,13 @@ class DataLayoutBuilder extends React.Component {
 		const settingsContextVisitor = new PagesVisitor(settingsContext.pages);
 
 		settingsContextVisitor.mapFields(
-			({dataType, fieldName, localizable, localizedValue, value}) => {
+			({
+				dataType,
+				fieldName,
+				localizable,
+				localizedValue = {},
+				value,
+			}) => {
 				if (fieldName === 'predefinedValue') {
 					fieldName = 'defaultValue';
 				}
