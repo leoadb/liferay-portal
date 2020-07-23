@@ -106,6 +106,11 @@ export const dropFieldSet = ({
 	parentFieldName,
 	useFieldName,
 }) => {
+	const dataLayoutPages = (
+		fieldSet.defaultDataLayout ||
+		dataLayoutBuilder.getDefaultDataLayout(fieldSet)
+	).dataLayoutPages;
+
 	return {
 		fieldName,
 		fieldSet: dataLayoutBuilder.getDDMForm(fieldSet),
@@ -113,9 +118,7 @@ export const dropFieldSet = ({
 		parentFieldName,
 		useFieldName,
 		...(fieldSet.id && {
-			rows: normalizeDataLayoutRows(
-				fieldSet.defaultDataLayout.dataLayoutPages
-			),
+			rows: normalizeDataLayoutRows(dataLayoutPages),
 		}),
 	};
 };
