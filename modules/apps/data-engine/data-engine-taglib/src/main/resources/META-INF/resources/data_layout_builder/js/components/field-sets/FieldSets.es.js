@@ -31,13 +31,14 @@ export default function FieldSets({keywords}) {
 	const [{appProps, dataDefinition, fieldSets}] = useContext(AppContext);
 	const [state, setState] = useState({
 		childrenAppProps: {},
+		editingDataDefinition: null,
 		fieldSet: null,
 		isVisible: false,
 	});
 
 	const defaultLanguageId = Liferay.ThemeDisplay.getDefaultLanguageId();
 
-	const toggleFieldSet = (fieldSet) => {
+	const toggleFieldSet = (fieldSet, editingDataDefinition) => {
 		let childrenAppProps = {
 			context: {},
 			dataDefinitionId: null,
@@ -73,6 +74,7 @@ export default function FieldSets({keywords}) {
 
 		setState({
 			childrenAppProps,
+			editingDataDefinition,
 			fieldSet,
 			isVisible: !state.isVisible,
 		});
@@ -104,7 +106,7 @@ export default function FieldSets({keywords}) {
 			block
 			className="add-fieldset"
 			displayType="secondary"
-			onClick={() => toggleFieldSet()}
+			onClick={() => toggleFieldSet(null, dataDefinition)}
 		>
 			{Liferay.Language.get('create-new-fieldset')}
 		</ClayButton>

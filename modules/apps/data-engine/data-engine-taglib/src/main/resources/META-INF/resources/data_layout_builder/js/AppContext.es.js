@@ -29,6 +29,7 @@ import {
 	UPDATE_DATA_LAYOUT,
 	UPDATE_DATA_LAYOUT_NAME,
 	UPDATE_DATA_LAYOUT_RULE,
+	UPDATE_EDITING_DATA_DEFINITION_ID,
 	UPDATE_EDITING_LANGUAGE_ID,
 	UPDATE_FIELDSETS,
 	UPDATE_FIELD_TYPES,
@@ -67,6 +68,7 @@ const initialState = {
 		paginationMode: 'wizard',
 	},
 	dataLayoutId: 0,
+	editingDataDefinitionId: 0,
 	editingLanguageId: themeDisplay.getLanguageId(),
 	fieldSets: [],
 	fieldTypes: [],
@@ -389,6 +391,14 @@ const createReducer = (dataLayoutBuilder) => {
 					},
 				};
 			}
+			case UPDATE_EDITING_DATA_DEFINITION_ID: {
+				const {editingDataDefinitionId} = action.payload;
+
+				return {
+					...state,
+					editingDataDefinitionId,
+				};
+			}
 			case UPDATE_EDITING_LANGUAGE_ID: {
 				const {dataDefinition} = state;
 
@@ -415,12 +425,18 @@ const createReducer = (dataLayoutBuilder) => {
 				};
 			}
 			case UPDATE_FIELDSETS: {
-				const {dataDefinitionId} = state;
+				const {dataDefinitionId, editingDataDefinitionId} = state;
 				let {fieldSets} = action.payload;
 
 				if (dataDefinitionId) {
 					fieldSets = fieldSets.filter(
 						(item) => item.id !== dataDefinitionId
+					);
+				}
+
+				if (editingDataDefinitionId) {
+					fieldSets = fieldSets.filter(
+						(item) => item.id !== editingDataDefinitionId
 					);
 				}
 

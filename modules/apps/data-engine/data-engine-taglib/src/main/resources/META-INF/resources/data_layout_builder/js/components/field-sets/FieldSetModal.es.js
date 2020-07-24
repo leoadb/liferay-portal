@@ -19,7 +19,10 @@ import React, {useContext, useEffect, useState} from 'react';
 
 import App from '../../App.es';
 import AppContext from '../../AppContext.es';
-import {UPDATE_CONFIG} from '../../actions.es';
+import {
+	UPDATE_CONFIG,
+	UPDATE_EDITING_DATA_DEFINITION_ID,
+} from '../../actions.es';
 import {
 	containsField,
 	isDataLayoutEmpty,
@@ -33,6 +36,7 @@ import useSaveFieldSet from './actions/useSaveFieldSet.es';
 const ModalContent = ({
 	childrenAppProps,
 	defaultLanguageId,
+	editingDataDefinition,
 	fieldSet,
 	onClose,
 }) => {
@@ -154,9 +158,21 @@ const ModalContent = ({
 		};
 	}, [dataLayoutBuilder]);
 
+	useEffect(() => {
+		if (editingDataDefinition && editingDataDefinition.id) {
+			dispatch({
+				payload: {
+					editingDataDefinitionId: editingDataDefinition.id,
+				},
+				type: UPDATE_EDITING_DATA_DEFINITION_ID,
+			});
+		}
+	}, [dispatch, editingDataDefinition]);
+
 	const actionProps = {
 		availableLanguageIds,
 		childrenContext,
+		editingDataDefinition,
 		fieldSet,
 	};
 
