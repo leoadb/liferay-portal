@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -85,7 +86,9 @@ public class DDMFormValuesToMapConverterImpl
 			ddmFormValues.getDDMFormFieldValuesMap(false);
 
 		for (DDMFormField ddmFormField : ddmFormFields) {
-			if (!ddmFormFieldValues.containsKey(ddmFormField.getName())) {
+			if (!ddmFormFieldValues.containsKey(ddmFormField.getName()) &&
+				!_isFieldSet(ddmFormField)) {
+
 				DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue() {
 					{
 						setInstanceId(StringUtil.randomString());
@@ -238,6 +241,14 @@ public class DDMFormValuesToMapConverterImpl
 		else {
 			_addValue(ddmFormField, ddmFormFieldValue, values);
 		}
+	}
+
+	private boolean _isFieldSet(DDMFormField ddmFormField) {
+		if (Objects.equals(ddmFormField.getType(), "fieldset")) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private Map<String, Object> _toLocalizedMap(
