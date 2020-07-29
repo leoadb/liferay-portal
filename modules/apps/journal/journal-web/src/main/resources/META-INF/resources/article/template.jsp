@@ -150,7 +150,7 @@ DDMTemplate ddmTemplate = journalEditArticleDisplayContext.getDDMTemplate();
 					.value;
 		}
 
-		if (oldDDMTemplateId != newDDMTemplateId) {
+		if (!newDDMTemplate || oldDDMTemplateId != newDDMTemplate.ddmtemplateid) {
 			if (
 				confirm(
 					'<%= UnicodeLanguageUtil.get(request, "editing-the-current-template-deletes-all-unsaved-content") %>'
@@ -158,12 +158,26 @@ DDMTemplate ddmTemplate = journalEditArticleDisplayContext.getDDMTemplate();
 			) {
 				var uri = '<%= themeDisplay.getURLCurrent() %>';
 
+				var ddmTemplateId = -1;
+				var ddmTemplateKey = '';
+				var ddmTemplateName = '';
+
+				if (newDDMTemplate) {
+					ddmTemplateId = newDDMTemplate.ddmtemplateid;
+					ddmTemplateKey = newDDMTemplate.ddmtemplatekey;
+					ddmTemplateName = newDDMTemplate.name;
+				}
+
 				uri = Liferay.Util.addParams(
-					'<portlet:namespace />ddmTemplateId=' + newDDMTemplateId,
+					'<portlet:namespace />ddmTemplateId=' + ddmTemplateId,
 					uri
 				);
 
-				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateId.value = newDDMTemplateId;
+				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateId.value = ddmTemplateId;
+
+				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateKey.value = ddmTemplateKey;
+
+				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateName.value = ddmTemplateName;
 
 				submitForm(document.<portlet:namespace />fm1, uri, false, false);
 			}
