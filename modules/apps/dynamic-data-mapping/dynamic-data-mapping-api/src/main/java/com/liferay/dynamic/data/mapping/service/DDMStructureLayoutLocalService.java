@@ -256,6 +256,10 @@ public interface DDMStructureLayoutLocalService
 		long groupId, long classNameId, String structureLayoutKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DDMStructureLayout fetchStructureLayoutByStructureVersionId(
+		long structureVersionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
