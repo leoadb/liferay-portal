@@ -127,7 +127,7 @@ DDMTemplate ddmTemplate = journalEditArticleDisplayContext.getDDMTemplate();
 
 				Liferay.Util.openModal({
 					onSelect: function (selectedItem) {
-						changeDDMTemplate(selectedItem.ddmtemplateid);
+						changeDDMTemplate(selectedItem);
 					},
 					selectEventName: '<portlet:namespace />preview',
 					title: '<liferay-ui:message key="preview" />',
@@ -137,7 +137,7 @@ DDMTemplate ddmTemplate = journalEditArticleDisplayContext.getDDMTemplate();
 		}
 	</c:if>
 
-	function changeDDMTemplate(newDDMTemplateId) {
+	function changeDDMTemplate(newDDMTemplate) {
 		var oldDDMTemplateId =
 			'<%= (ddmTemplate != null) ? ddmTemplate.getTemplateId() : 0 %>';
 
@@ -176,7 +176,7 @@ DDMTemplate ddmTemplate = journalEditArticleDisplayContext.getDDMTemplate();
 
 	if (clearDDMTemplateButton) {
 		clearDDMTemplateButton.addEventListener('click', function (event) {
-			changeDDMTemplate(-1);
+			changeDDMTemplate();
 		});
 	}
 
@@ -188,7 +188,7 @@ DDMTemplate ddmTemplate = journalEditArticleDisplayContext.getDDMTemplate();
 		selectDDMTemplateButton.addEventListener('click', function (event) {
 			Liferay.Util.openModal({
 				onSelect: function (selectedItem) {
-					changeDDMTemplate(selectedItem.ddmtemplateid);
+					changeDDMTemplate(selectedItem);
 				},
 				selectEventName: '<portlet:namespace />selectDDMTemplate',
 				title: '<%= UnicodeLanguageUtil.get(request, "templates") %>',
