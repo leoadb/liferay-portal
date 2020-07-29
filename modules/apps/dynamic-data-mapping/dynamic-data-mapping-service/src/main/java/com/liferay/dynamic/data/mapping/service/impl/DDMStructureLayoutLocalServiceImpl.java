@@ -169,6 +169,14 @@ public class DDMStructureLayoutLocalServiceImpl
 	}
 
 	@Override
+	public DDMStructureLayout fetchStructureLayoutByStructureVersionId(
+		long structureVersionId) {
+
+		return ddmStructureLayoutPersistence.fetchByStructureVersionId(
+			structureVersionId);
+	}
+
+	@Override
 	public DDMStructureLayout getStructureLayout(long structureLayoutId)
 		throws PortalException {
 
