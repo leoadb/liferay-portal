@@ -158,15 +158,8 @@ DDMTemplate ddmTemplate = journalEditArticleDisplayContext.getDDMTemplate();
 			) {
 				var uri = '<%= themeDisplay.getURLCurrent() %>';
 
-				var ddmTemplateId = -1;
-				var ddmTemplateKey = '';
-				var ddmTemplateName = '';
-
-				if (newDDMTemplate) {
-					ddmTemplateId = newDDMTemplate.ddmtemplateid;
-					ddmTemplateKey = newDDMTemplate.ddmtemplatekey;
-					ddmTemplateName = newDDMTemplate.name;
-				}
+				var ddmTemplateId =
+					(newDDMTemplate && newDDMTemplate.ddmtemplateid) || -1;
 
 				uri = Liferay.Util.addParams(
 					'<portlet:namespace />ddmTemplateId=' + ddmTemplateId,
@@ -175,9 +168,11 @@ DDMTemplate ddmTemplate = journalEditArticleDisplayContext.getDDMTemplate();
 
 				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateId.value = ddmTemplateId;
 
-				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateKey.value = ddmTemplateKey;
+				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateKey.value =
+					(newDDMTemplate && newDDMTemplate.ddmtemplatekey) || '';
 
-				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateName.value = ddmTemplateName;
+				document.<portlet:namespace />fm1.<portlet:namespace />ddmTemplateName.value =
+					(newDDMTemplate && newDDMTemplate.name) || '';
 
 				submitForm(document.<portlet:namespace />fm1, uri, false, false);
 			}
