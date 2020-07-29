@@ -463,12 +463,11 @@ public class DDMFormValuesFactoryImpl implements DDMFormValuesFactory {
 		HttpServletRequest httpServletRequest, Locale defaultLocale,
 		Set<Locale> availableLocales) {
 
-		String httpServletRequestDefaultLanguageId = ParamUtil.getString(
+		String defaultLanguageId = ParamUtil.getString(
 			httpServletRequest, "defaultLanguageId");
 
-		if (Validator.isNotNull(httpServletRequestDefaultLanguageId)) {
-			return LocaleUtil.fromLanguageId(
-				httpServletRequestDefaultLanguageId);
+		if (Validator.isNotNull(defaultLanguageId)) {
+			return LocaleUtil.fromLanguageId(defaultLanguageId);
 		}
 
 		Locale httpServletRequestLocale = LocaleUtil.fromLanguageId(
