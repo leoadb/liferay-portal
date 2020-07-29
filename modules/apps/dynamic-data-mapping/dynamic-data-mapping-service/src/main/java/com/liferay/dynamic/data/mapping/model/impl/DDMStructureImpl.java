@@ -89,8 +89,19 @@ public class DDMStructureImpl extends DDMStructureBaseImpl {
 
 	@Override
 	public DDMStructureLayout fetchDDMStructureLayout() {
-		return DDMStructureLayoutLocalServiceUtil.fetchStructureLayout(
-			getGroupId(), getClassNameId(), getStructureKey());
+		try {
+			DDMStructureVersion ddmStructureVersion =
+				getLatestStructureVersion();
+
+			return DDMStructureLayoutLocalServiceUtil.
+				fetchStructureLayoutByStructureVersionId(
+					ddmStructureVersion.getStructureVersionId());
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+		}
+
+		return null;
 	}
 
 	@Override
