@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -85,7 +87,9 @@ public class DDMFormValuesToMapConverterImpl
 			ddmFormValues.getDDMFormFieldValuesMap(false);
 
 		for (DDMFormField ddmFormField : ddmFormFields) {
-			if (!ddmFormFieldValues.containsKey(ddmFormField.getName())) {
+			if (!ddmFormFieldValues.containsKey(ddmFormField.getName()) &&
+				!_isUpgradedStructure(ddmFormField)) {
+
 				DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue() {
 					{
 						setInstanceId(StringUtil.randomString());
@@ -238,6 +242,17 @@ public class DDMFormValuesToMapConverterImpl
 		else {
 			_addValue(ddmFormField, ddmFormFieldValue, values);
 		}
+	}
+
+	private boolean _isUpgradedStructure(DDMFormField ddmFormField) {
+		if (Objects.equals(ddmFormField.getType(), "fieldset") &&
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("upgradedStructure"))) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private Map<String, Object> _toLocalizedMap(
